@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { exec } from '../../utils/bashUtil'
+import { Injectable } from '@nestjs/common'
+import { findSomething } from '../../utils/bashUtil'
 
 @Injectable()
 export class EnvService {
@@ -9,6 +9,6 @@ export class EnvService {
    * @returns 
    */
   isExistNginx() {
-    return exec('ls -a')
+    return findSomething('nginx')
   }
 }

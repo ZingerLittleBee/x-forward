@@ -1,8 +1,8 @@
 import { $, nothrow } from "zx";
 
-const exec = async (cmd: string) => {
-  const res = await nothrow($`${cmd}`)
-  return res.exitCode === 0 ? res.stdout : res.stderr 
+const findSomething = async (something: string) => {
+  const res = await nothrow($`which ${something}`)
+  return res.exitCode === 0 ? res.stdout : false
 }
 
-export { exec }
+export { findSomething }
