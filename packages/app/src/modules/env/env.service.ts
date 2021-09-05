@@ -3,22 +3,27 @@ import { findSomething } from '../../utils/bashUtil'
 import { installNginx } from './shell'
 const os = require('os')
 import { $ } from 'zx'
+import { OverviewVO } from './env.vo'
 
 @Injectable()
 export class EnvService {
-  /**
-   * if there is a nginx
-   * @returns
-   */
-  isExistNginx() {
-    return findSomething('nginx')
-  }
+    /**
+     * if there is a nginx
+     * @returns
+     */
+    isExistNginx() {
+        return findSomething('nginx')
+    }
 
-  async installNginx(version: string) {
-    installNginx(version)
-  }
+    async installNginx(version: string) {
+        installNginx(version)
+    }
 
-  async getOS() {
-    return (await $`cat /etc/*release | grep -E ^NAME`).stdout + os.release()
-  }
+    async getOS() {
+        return (await $`cat /etc/*release | grep -E ^NAME`).stdout + os.release()
+    }
+
+    getOverview(): OverviewVO {
+        return {}
+    }
 }

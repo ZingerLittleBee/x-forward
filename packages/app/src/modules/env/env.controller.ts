@@ -1,25 +1,24 @@
-import { Controller, Get, Post, Query, Res } from '@nestjs/common';
-import { EnvService } from './env.service';
-import { Result } from 'src/utils/Result';
+import { Controller, Get, Post, Query, Res } from '@nestjs/common'
+import { EnvService } from './env.service'
+import { Result } from 'src/utils/Result'
+import { OverviewVO } from './env.vo'
 
 @Controller('env')
 export class EnvController {
-  constructor(private envService: EnvService) {}
+    constructor(private envService: EnvService) {}
 
-  @Get('nginx')
-  async findNginx() {
-    let res = await this.envService.isExistNginx()
-    return res ? new Result<string>().okWithData(res) : Result.noWithMsg('nginx 未找到')
-  }
+    @Get('nginx')
+    getOverview() {
+        return new Result<OverviewVO>().okWithData({
+            os: 'Debian GNU/Linux 10',
+            nginxPath: '/usr/local/nginx',
+            nginxUptime: '20d:10h:20m:10s',
+            nginxStatus: 0
+        })
+    }
 
-  @Post('nginx')
-  installNginx(@Query('version') version: string) {
-    this.envService.installNginx(version)
-  }
-
-  @Get('os')
-  getOS() {
-    return this.envService.getOS()
-  }
-
+    @Get('os')
+    getOS() {
+        return this.envService.getOS()
+    }
 }
