@@ -8,17 +8,19 @@ export class EnvController {
     constructor(private envService: EnvService) {}
 
     @Get('nginx')
-    getOverview() {
-        return new Result<OverviewVO>().okWithData({
-            os: 'Debian GNU/Linux 10',
-            nginxPath: '/usr/local/nginx',
-            nginxUptime: '20d:10h:20m:10s',
-            nginxStatus: 0
-        })
+    async getOverview() {
+        let res = await this.envService.getOverview()
+        return new Result().okWithData(res)
     }
 
     @Get('os')
     getOS() {
         return this.envService.getOS()
+    }
+
+    @Get('path')
+    async getDirectory(@Query('url') url: string) {
+        const res = await this.envService.getDirByUrl(url)
+        return new Result<string[]>().okWithData(res.split('\n').filter(r => r !== ''))
     }
 }

@@ -2,7 +2,7 @@ import { $, nothrow } from 'zx'
 
 const findSomething = async (something: string) => {
     const res = await nothrow($`which ${something}`)
-    return res.exitCode === 0 ? res.stdout : false
+    return res.exitCode === 0 ? res.stdout : ''
 }
 
 export { findSomething }

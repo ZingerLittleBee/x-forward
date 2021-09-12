@@ -3,6 +3,10 @@ import { EnvModule } from './modules/env/env.module'
 import { ShellModule } from './modules/shell/shell.module'
 
 @Module({
-  imports: [EnvModule, ShellModule]
+  imports: [
+    TypeOrmModule.forRoot(),
+    EnvModule,
+    ShellModule
+  ]
 })
 export class AppModule {}
