@@ -26,9 +26,11 @@
     "@nestjs/platform-socket.io": "^8.0.6",
     "@nestjs/typeorm": "^8.0.2",
     "@nestjs/websockets": "^8.0.6",
+    "node-pty": "^0.10.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.3.0",
+    "sqlite3": "^5.0.2",
     "typeorm": "^0.2.37",
     "zx": "^4.0.0"
   },
