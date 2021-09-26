@@ -2,8 +2,15 @@ import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EnvModule } from './modules/env/env.module'
 import { ShellModule } from './modules/shell/shell.module'
-// TypeOrmModule.forRoot()
+import { StreamModule } from './modules/stream/stream.module'
+import { UserModule } from './modules/user/user.module'
 @Module({
-    imports: [EnvModule, ShellModule]
+    imports: [
+        TypeOrmModule.forRoot(),
+        UserModule,
+        EnvModule,
+        ShellModule,
+        StreamModule
+    ]
 })
 export class AppModule {}
