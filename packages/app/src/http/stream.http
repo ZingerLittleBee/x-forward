@@ -2,3 +2,29 @@
 
 ### 获取所有 stream 规则
 GET {{url}}
+
+### 添加 stream 规则
+POST {{url}}
+Content-Type: application/json
+
+[{
+    "transitHost": "aereqbv.com",
+    "transitPort": 5678,
+    "remoteHost": "qrxfaf.com",
+    "remotePort": 4653,
+    "loadBalancing": 1
+},{
+    "transitHost": "aereqbv.com",
+    "transitPort": 5678,
+    "remoteHost": "qrxfaf.com",
+    "remotePort": 4653,
+    "loadBalancing": 1
+}]
+
+### 更新 stream 状态
+POST {{url}}/1/state
+Content-Type: application/json
+
+{
+    "state": 2
+}

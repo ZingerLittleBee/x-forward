@@ -10,13 +10,13 @@ export abstract class CommonEntity {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ default: true })
+    @Column({ nullable: true })
     state: number
 
-    @CreateDateColumn({ name: 'create_time' })
+    @CreateDateColumn({ name: 'create_time', nullable: true })
     createTime: Date
 
-    @UpdateDateColumn({ name: 'update_time' })
+    @UpdateDateColumn({ name: 'update_time', nullable: true })
     updateTime: Date
 
     @DeleteDateColumn({ name: 'delete_time', nullable: true })

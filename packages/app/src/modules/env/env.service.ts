@@ -1,13 +1,50 @@
-import { Injectable } from '@nestjs/common'
-import { findSomething } from '../../utils/BashUtil'
-const os = require('os')
+import { CACHE_MANAGER, Inject, Injectable, OnModuleInit } from '@nestjs/common'
+import { Cache } from 'cache-manager'
+import { EnvEnum } from 'src/enums/EnvEnum'
+import NginxConfigArgsEnum from 'src/enums/NginxEnum'
 import { $ } from 'zx'
-import { OverviewVO } from './env.vo'
-import StatusEnum from 'src/enums/StatusEnum'
-import { checkOS, fetchDirectory } from 'src/utils/Shell'
+import StatusEnum from '../../enums/StatusEnum'
+import { findSomething } from '../../utils/BashUtil'
+import { checkOS, fetchDirectory } from '../../utils/Shell'
+const os = require('os')
+
+export interface NginxConfig {
+    version: string
+    args: { [key: string]: { label: string; value: string } }
+    module: string[]
+}
 
 @Injectable()
-export class EnvService {
+export class EnvService implements OnModuleInit {
+    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+
+    nginxConfig: NginxConfig
+
+    async onModuleInit() {
+        await this.judgeLocalOrDocker()
+    }
+
+    async getCache() {
+        console.log(await this.cacheManager.get(EnvEnum.NGINX_CONFIG_ARGS))
+    }
+
+    /**
+     * 判断本地环境还是 docker 环境
+     */
+    private async judgeLocalOrDocker() {
+        // .env 文件配置的参数优先级更高
+        if (process.env[process.env['EFFECTED_NGINX']]) {
+            return
+        }
+        let nginxRes = await findSomething('nginx')
+        if (nginxRes) {
+            process.env['NGINX_BIN'] = nginxRes.replace('\n', '')
+        } else {
+            let { stdout } =
+                await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
+            process.env['DOCKER_CONTAINER_NAME'] = stdout.replace('\n', '')
+        }
+    }
 
     /**
      * if there is a nginx
@@ -17,13 +54,8 @@ export class EnvService {
         return findSomething('nginx')
     }
 
-    handlerMsg(msg: string) {
-        
-    }
-
     async getOS() {
         return await checkOS()
-        // return (await $`cat /etc/*release | grep -E ^NAME`).stdout.replace(/NAME="|"|\n/g, '') + ' ' + os.release()
     }
 
     getNginxStatus() {}
@@ -39,7 +71,6 @@ export class EnvService {
             nginxStatus = StatusEnum.NotInstall
             nginxUptime = '0'
         } else {
-
         }
         return {
             os,
@@ -49,11 +80,87 @@ export class EnvService {
         }
     }
 
+    /**
+     * 获取指定路径下的所有文件夹
+     * @param url 路径
+     * @returns 路径下的所有文件夹
+     */
     getDirByUrl(url: string) {
         // add "/" automatic if url no "/" at the beginning
         if (!url.match(/^\//)) {
             url = '/' + url
         }
         return fetchDirectory(url)
+    }
+
+    /**
+     * 获取 nginx -V 结果
+     * @param isDocker 是否为 docker 容器
+     * @returns ProcessPromise<ProcessOutput>
+     */
+    async fetchNginxConfig(): Promise<string> {
+        let { stdout } = process.env['NGINX_BIN']
+            ? await $`${process.env['NGINX_BIN']} -V`
+            : await $`docker exec -it ${process.env['DOCKER_CONTAINER_NAME']} nginx -V`
+        return stdout
+    }
+
+    /**
+     * 获取 nginx HTTP 文件
+     */
+    fetchNginxHTTPFile() {}
+
+    /**
+     * 获取 nginx stream 文件
+     */
+    fetchNginxStreamFile() {}
+
+    /**
+     * 匹配 nginx -V 结果
+     * @param info nginx -V 结果
+     */
+    fetchNginxConfigAargs(nginxInfo: string): NginxConfig {
+        // 获取 nginx 版本号
+        const version = nginxInfo.match(/nginx\/\d.*/)[0]
+
+        // 获取模块配置
+        let moduleConfig = nginxInfo.match(/with[-\w]+/g)
+        moduleConfig = moduleConfig.filter(
+            m => m !== 'with-ld-opt' && m !== 'with-cc-opt'
+        )
+
+        // 获取键值对配置项
+        // 1. 处理特殊情况(内容包含空格)
+        //  --with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie'
+        //  --with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-1.21.3/debian/debuild-base/nginx-1.21.3=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC'
+        let spaceRegExp = /(with-ld-opt|with-cc-opt)='.*?'/g
+        let opt = nginxInfo.match(spaceRegExp)
+        let argsConfig: String[]
+        // 2. 处理一般情况(内容不带空格)
+        if (opt) {
+            // 如果 --with-ld-opt 存在, 则合并结果
+            argsConfig = nginxInfo
+                .replace(spaceRegExp, '')
+                .match(/([a-z][-\w]+)=(\S+)/gi)
+                .concat(opt)
+        } else {
+            argsConfig = nginxInfo.match(/([a-z][-\w]+)=(\S+)/gi)
+        }
+        // 3. [ 'prefix=/etc/nginx' ] 键值对分离
+        let argsConfigObj = {}
+        argsConfig.forEach(p => {
+            let matchTemp = p.match(/([-_a-z]+)(?:=)(.*)/i)
+            argsConfigObj[matchTemp[1]] = {
+                label: NginxConfigArgsEnum[matchTemp[1]],
+                value: matchTemp[2]
+            }
+        })
+        const nginxConfig = {
+            version: version,
+            args: argsConfigObj,
+            module: moduleConfig
+        }
+        this.cacheManager.set(EnvEnum.NGINX_CONFIG_ARGS, nginxConfig)
+        return nginxConfig
     }
 }

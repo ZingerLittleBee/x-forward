@@ -15,10 +15,10 @@ export class Stream extends CommonEntity {
     @Column({ name: 'remote_port' })
     remotePort: number
 
-    @Column()
+    @Column({ nullable: true })
     status: number
 
-    @Column({ name: 'load_balancing' })
+    @Column({ name: 'load_balancing', nullable: true })
     loadBalancing: number
 
     @Column({ nullable: true })
