@@ -32,4 +32,6 @@
 
 ## CHANGE_LOG
 
-2021-09-05: add page with named "module" for nginx to monitor and manage 2021-09-21: 添加本地终端功能
+- 2021-09-05: add page with named "module" for nginx to monitor and manage 
+- 2021-09-21: 添加本地终端功能
+- 2021-10-03: nginx 系统配置读取
