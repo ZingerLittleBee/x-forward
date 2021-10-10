@@ -1,8 +1,8 @@
 {
-  "name": "nest-typescript-starter",
+  "name": "x-forward-backend",
   "private": true,
-  "version": "1.0.0",
-  "description": "Nest TypeScript starter repository",
+  "version": "0.0.1",
+  "description": "ui for nginx stream",
   "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
