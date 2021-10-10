@@ -1,5 +1,10 @@
 @url = http://localhost:3000/stream
 
+
+### test
+GET {{url}}/test
+
+
 ### 获取所有 stream 规则
 GET {{url}}
 

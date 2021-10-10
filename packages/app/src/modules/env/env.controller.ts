@@ -8,7 +8,7 @@ export class EnvController {
 
     @Get('test')
     async getCache() {
-        await this.envService.getCache()
+        await this.envService.getNginxCache()
     }
 
     /**

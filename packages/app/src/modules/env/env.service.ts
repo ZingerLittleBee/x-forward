@@ -1,12 +1,15 @@
 import { CACHE_MANAGER, Inject, Injectable, OnModuleInit } from '@nestjs/common'
 import { Cache } from 'cache-manager'
+import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
-import NginxConfigArgsEnum from 'src/enums/NginxEnum'
+import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
 import { $ } from 'zx'
 import StatusEnum from '../../enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS, fetchDirectory } from '../../utils/Shell'
-const os = require('os')
+import { ExecutorInterface } from '../executor/executor.interface'
+import { ENV_EXECUTOR } from '../executor/executor.module'
+import { PatchApi } from '../patch/patch.api'
 
 export interface NginxConfig {
     version: string
@@ -16,16 +19,37 @@ export interface NginxConfig {
 
 @Injectable()
 export class EnvService implements OnModuleInit {
-    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
+    constructor(
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
+        @Inject(ENV_EXECUTOR) private executor: ExecutorInterface,
+        private patchApi: PatchApi
+    ) {}
 
     nginxConfig: NginxConfig
 
     async onModuleInit() {
         await this.judgeLocalOrDocker()
+        this.fetchNginxConfigAargs(await this.fetchNginxConfig())
+        this.patchApi.initMainConfig(
+            join(await this.getNginxPrefix(), process.env['NGINX_MAIN_CONFIG'])
+        )
     }
 
-    async getCache() {
-        console.log(await this.cacheManager.get(EnvEnum.NGINX_CONFIG_ARGS))
+    /**
+     * 获取 nginx prefix
+     * @returns $`nginx -V`['prefix']
+     */
+    async getNginxPrefix() {
+        const { args } = await this.getNginxCache()
+        return args['prefix'].value
+    }
+
+    /**
+     * 获取 cache 中的 nginxConfig
+     * @returns NginxConfig
+     */
+    getNginxCache() {
+        return this.cacheManager.get<NginxConfig>(EnvEnum.NGINX_CONFIG_ARGS)
     }
 
     /**
@@ -44,6 +68,10 @@ export class EnvService implements OnModuleInit {
                 await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
             process.env['DOCKER_CONTAINER_NAME'] = stdout.replace('\n', '')
         }
+    }
+
+    patchStream() {
+        this.executor.streamPatch()
     }
 
     /**
@@ -160,7 +188,10 @@ export class EnvService implements OnModuleInit {
             args: argsConfigObj,
             module: moduleConfig
         }
-        this.cacheManager.set(EnvEnum.NGINX_CONFIG_ARGS, nginxConfig)
+        this.cacheManager.set<NginxConfig>(
+            EnvEnum.NGINX_CONFIG_ARGS,
+            nginxConfig
+        )
         return nginxConfig
     }
 }

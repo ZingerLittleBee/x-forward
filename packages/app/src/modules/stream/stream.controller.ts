@@ -5,16 +5,59 @@ import {
     Get,
     Param,
     Patch,
-    Post,
-    Req
+    Post
 } from '@nestjs/common'
+import { NginxLoadBalancing } from 'src/enums/NginxEnum'
 import { Result } from 'src/utils/Result'
+import { PatchApi } from '../patch/patch.api'
 import { Stream } from './stream.entity'
 import { StreamService } from './stream.service'
 
 @Controller('stream')
 export class StreamController {
-    constructor(private streamService: StreamService) {}
+    constructor(
+        private streamService: StreamService,
+        private patchApi: PatchApi
+    ) {}
+
+    @Get('test')
+    test() {
+        let upstreams = [
+            {
+                name: 'upstream1',
+                load_balancing: NginxLoadBalancing.poll,
+                server: [
+                    {
+                        upstream_host: '192.168.0.1',
+                        upstream_port: 9527,
+                        weight: 10,
+                        max_conns: 0,
+                        max_fails: 10,
+                        fail_timeout: '10s'
+                    },
+                    {
+                        upstream_host: '192.168.0.1',
+                        upstream_port: 9527,
+                        weight: 10,
+                        max_conns: 0,
+                        max_fails: 10,
+                        fail_timeout: '10s'
+                    }
+                ]
+            }
+        ]
+        let servers = [
+            {
+                listen_port: 9527,
+                proxy_pass: 'upstream1'
+            },
+            {
+                listen_port: 9527,
+                proxy_pass: 'upstream1'
+            }
+        ]
+        this.patchApi.streamPatch(upstreams, servers)
+    }
 
     @Get('')
     getAllStream(): Promise<Stream[]> {

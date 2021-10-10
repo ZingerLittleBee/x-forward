@@ -45,4 +45,16 @@ enum NginxConfigArgsEnum {
     'with-ld-opt' = '设置链接期间附加参数'
 }
 
-export default NginxConfigArgsEnum
+enum NginxLoadBalancing {
+    // Nginx根据请求次数，将每个请求均匀分配到每台服务器
+    poll,
+    weight,
+    // 客户机的IP地址用作散列键，用于确定应该为客户机的请求选择服务器组中的哪个服务器
+    ip_hash,
+    // 这是更加智能的调度算法，但Nginx本身不支持fair调度算法。如果需要使用fair调度，必须下载Nginx相关模块upstream_fair。
+    fair,
+    // Nginx本身是不支持url_hash，如果需要使用这种调度算法，必须安装Nginx的hash模块软件包。
+    url_hash
+}
+
+export { NginxLoadBalancing, NginxConfigArgsEnum }
