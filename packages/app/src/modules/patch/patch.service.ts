@@ -2,18 +2,17 @@ import { CACHE_MANAGER, Inject, Injectable, Logger } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { existsSync, mkdirSync, readdirSync, writeFile } from 'fs'
 import { configure, renderString } from 'nunjucks'
-import { join } from 'path'
+import { extname, join } from 'path'
+import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxLoadBalancing } from 'src/enums/NginxEnum'
 import { v4, validate } from 'uuid'
 import nginxStreamConfig from '../../template/nginxStreamConfig'
-import { ExecutorInterface } from '../executor/executor.interface'
-import { ENV_EXECUTOR } from '../executor/executor.module'
+import { getEnvByKey } from '../../utils/EnvUtil'
 import { StreamServer, StreamUpstream, UpstreamServer } from './patch.api'
 
 @Injectable()
 export class PatchService {
     constructor(
-        @Inject(ENV_EXECUTOR) private executor: ExecutorInterface,
         @Inject(CACHE_MANAGER) private cacheManager: Cache
     ) {
         configure({ autoescape: true, trimBlocks: true, lstripBlocks: true })
@@ -22,9 +21,19 @@ export class PatchService {
     /**
      * 初始化 nginx 主配置文件
      */
-    initMainConfig(path: string) {
-        // TODO
-        console.log('path', path)
+    initMainConfig(prefix: string) {
+        if (!prefix) {
+            Logger.error("nginx prefix 为空")
+            throw new Error("nginx prefix is null")
+        }
+        const mainConfiPath = join(prefix, getEnvByKey(EnvEnum.NGINX_MAIN_CONFIG_NAME))
+        const streamIncludePath = this.generatorStreamInclude(prefix)
+    }
+
+    private generatorStreamInclude(prefix: string) {
+        const streamSuffix = extname(getEnvByKey(EnvEnum.STREAM_FILE_NAME))
+        const streamConfigPath = join(prefix, getEnvByKey(EnvEnum.STREAM_DIR))
+        return streamConfigPath + `/*${streamSuffix}`
     }
 
     /**
@@ -71,7 +80,6 @@ export class PatchService {
                 )
             }
         )
-        this.executor.streamPatch()
     }
 
     // 生成负载均衡算法
@@ -117,3 +125,4 @@ export class PatchService {
         return (resStr += ';')
     }
 }
+

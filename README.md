@@ -28,6 +28,7 @@
 -   React
 -   Ant Design
 -   Nginx
+-   Node
 -   NestJS
 -   SocketIO
 -   Xterm

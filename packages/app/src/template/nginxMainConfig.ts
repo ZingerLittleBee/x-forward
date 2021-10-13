@@ -1,4 +1,4 @@
-export default `user {{user}};
+export default `user nginx;
 worker_processes auto;
 error_log /var/log/nginx/error.log notice;
 pid /var/run/nginx.pid;
@@ -21,3 +21,11 @@ http {
     #gzip on;
     include /etc/nginx/conf.d/*.conf;
 }`
+
+export const streamBlock = `
+stream {
+    include {{streamDir}}/*.conf;
+}`
+
+export const streamIndule = `
+    include {{streamDir}}/*.conf;`

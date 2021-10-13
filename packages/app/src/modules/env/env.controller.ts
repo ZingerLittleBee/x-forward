@@ -1,15 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { Result } from '../../utils/Result'
-import { EnvService, NginxConfig } from './env.service'
+import { NginxConfig } from '../executor/interface/executor.interface'
+import { EnvService } from './env.service'
 
 @Controller('env')
 export class EnvController {
     constructor(private envService: EnvService) {}
-
-    @Get('test')
-    async getCache() {
-        await this.envService.getNginxCache()
-    }
 
     /**
      * 获取 nginx 配置
@@ -17,10 +13,9 @@ export class EnvController {
      */
     @Get('nginx/config')
     async getNginxConfig() {
+        console.log('fetchNginxConfigAargs()', await this.envService.fetchNginxConfigAargs())
         return new Result<NginxConfig>().okWithData(
-            this.envService.fetchNginxConfigAargs(
-                await this.envService.fetchNginxConfig()
-            )
+            await this.envService.fetchNginxConfigAargs()
         )
     }
 
