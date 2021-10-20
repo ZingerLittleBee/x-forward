@@ -1,32 +1,16 @@
-import {
-    MessageBody,
-    OnGatewayConnection,
-    OnGatewayDisconnect,
-    OnGatewayInit,
-    SubscribeMessage,
-    WebSocketGateway,
-    WebSocketServer
-} from '@nestjs/websockets'
-import { Server } from 'socket.io'
+import { MessageBody, OnGatewayConnection, OnGatewayDisconnect, OnGatewayInit, SubscribeMessage, WebSocketGateway, WebSocketServer } from '@nestjs/websockets'
 import { IPty, spawn } from 'node-pty'
-import { installNginx } from 'src/utils/Shell'
+import { Server } from 'socket.io'
 import WSEnum from 'src/enums/WSEnum'
+import { installNginx } from 'src/utils/Shell'
 
 @WebSocketGateway(1234, {
     cors: {
-        origin: [
-            'http://localhost:5000',
-            'http://localhost:8000',
-            'http://localhost:3000',
-            'http://localhost:3001',
-            'https://admin.socket.io'
-        ],
+        origin: ['http://localhost:5000', 'http://localhost:8000', 'http://localhost:3000', 'http://localhost:3001', 'https://admin.socket.io'],
         credentials: true
     }
 })
-export class ShellGateway
-    implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
-{
+export class ShellGateway implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect {
     @WebSocketServer()
     server: Server
 
@@ -60,7 +44,7 @@ export class ShellGateway
      * @param version 安装的版本
      */
     @SubscribeMessage(WSEnum.INSTALL_NGINX)
-    handlerInstallNginx(@MessageBody('version') version: string) {
+    handlerInstallNginx(@MessageBody() version: string) {
         console.log('version', version)
         installNginx(version, msg => this.server.send(msg))
     }
@@ -131,9 +115,7 @@ export class ShellGateway
      * @param dimensions 尺寸
      */
     @SubscribeMessage(WSEnum.TERMINAL_RESIZE)
-    handlerTerminalResize(
-        @MessageBody('dimensions') dimensions: { cols: number; rows: number }
-    ) {
+    handlerTerminalResize(@MessageBody() dimensions: { cols: number; rows: number }) {
         this.ptyProcess.resize(dimensions.cols, dimensions.rows)
     }
 }

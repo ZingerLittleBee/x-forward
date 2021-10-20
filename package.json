@@ -4,7 +4,8 @@
   "scripts": {
     "install": "lerna bootstrap",
     "list": "lerna list",
-    "clean": "lerna clean"
+    "clean": "lerna clean",
+    "app:dev": "cd packages/app && yarn dev"
   },
   "devDependencies": {
     "lerna": "^4.0.0"

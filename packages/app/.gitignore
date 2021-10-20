@@ -397,5 +397,6 @@ Temporary Items
 dist
 .history
 nginx
-temp
 .env
+pkg
+ormconfig.json

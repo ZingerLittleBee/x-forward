@@ -1,8 +1,6 @@
 {
     "type": "sqlite",
-    "host": "localhost",
-    "port": 3306,
-    "database": "x-forward.db",
+    "database": "./x-forward.db",
     "entities": [
         "dist/**/*.entity{.ts,.js}"
     ],
