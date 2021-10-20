@@ -4,8 +4,8 @@ import { renderString } from 'nunjucks'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { streamBlock, streamIndule } from 'src/template/nginxMainConfig'
 import { findSomething } from 'src/utils/BashUtil'
+import { inspect } from 'util'
 import { $ } from 'zx'
-import { NginxConfigArgsReflectEnum } from '../../enums/NginxEnum'
 import { ExecutorDocker } from './executor.docker'
 import { ExecutorLocal } from './executor.local'
 import { ExecutorInterface, NginxConfig } from './interface/executor.interface'
@@ -24,12 +24,11 @@ export class ExecutorService implements OnModuleInit {
 
         // 初始化 bean
         process.env[EnvEnum.EFFECTED_NGINX] === EnvEnum.DOCKER_CONTAINER_NAME
-        ?
-        this.initDockerExecutor(process.env[EnvEnum.DOCKER_CONTAINER_NAME])
-        :
-        this.initLocalExecutor(process.env[EnvEnum.NGINX_BIN])
-
-        this.initNginxConfig()
+            ? this.initDockerExecutor(process.env[EnvEnum.DOCKER_CONTAINER_NAME])
+            : this.initLocalExecutor(process.env[EnvEnum.NGINX_BIN])
+        Logger.debug(`执行环境初始化完毕, effect nginx 为 ${inspect(await this.cacheManager.get(EnvEnum.EFFECTED_NGINX))}`)
+        await this.initNginxConfig()
+        Logger.debug(`nginx 配置文件初始化完毕`)
     }
 
     /**
@@ -43,10 +42,13 @@ export class ExecutorService implements OnModuleInit {
      */
     async initNginxConfig() {
         // 装载 nginx 配置参数
-        await this.executor.getNginxConfigArgs()
+        const nginxConfigArgs = await this.executor.getNginxConfigArgs()
+        Logger.debug(`nginx 配置参数解析成功: ${inspect(nginxConfigArgs)}`)
+        this.cacheManager.set<NginxConfig>(EnvEnum.NGINX_CONFIG_ARGS, nginxConfigArgs)
         let nginxMainConfigContent = await this.executor.getMainConfigContent()
-        console.log(nginxMainConfigContent)
+        Logger.debug(`nginx 主配置文件初始内容: ${nginxMainConfigContent}`)
         const streamDir = await this.executor.getStreamDirectory()
+        Logger.debug(`nginx stream 目录: ${streamDir}`)
         // 检索 includes ${streamDir}/*.conf
         const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
         if (!nginxMainConfigContent.match(streamConfigIncludeReg)) {
@@ -71,17 +73,17 @@ export class ExecutorService implements OnModuleInit {
      */
     async changeExecutor() {
         this.executor instanceof ExecutorDocker
-        ? this.initLocalExecutor(process.env[EnvEnum.NGINX_BIN])
-        : this.initDockerExecutor(process.env[EnvEnum.DOCKER_CONTAINER_NAME])
+            ? this.initLocalExecutor(process.env[EnvEnum.NGINX_BIN])
+            : this.initDockerExecutor(process.env[EnvEnum.DOCKER_CONTAINER_NAME])
     }
 
     private initLocalExecutor(bin: string) {
-        this.cacheManager.set(EnvEnum.EFFECTED_NGINX, bin)
-        this.executor = new ExecutorLocal(bin)
+        this.cacheManager.set(EnvEnum.EFFECTED_NGINX, { bin })
+        this.executor = new ExecutorLocal(bin, this.cacheManager)
     }
 
     private initDockerExecutor(containerName: string) {
-        this.cacheManager.set(EnvEnum.EFFECTED_NGINX, containerName)
+        this.cacheManager.set(EnvEnum.EFFECTED_NGINX, { containerName })
         this.executor = new ExecutorDocker(containerName, this.cacheManager)
     }
 
@@ -90,17 +92,18 @@ export class ExecutorService implements OnModuleInit {
      */
     private async judgeLocalOrDocker() {
         // .env 文件配置的参数优先级更高
-        if (process.env[process.env['EFFECTED_NGINX']]) {
-            return
+        if (!process.env[process.env[EnvEnum.EFFECTED_NGINX]]) {
+            let nginxRes = await findSomething('nginx')
+            if (nginxRes) {
+                process.env[EnvEnum.NGINX_BIN] = nginxRes.replace('\n', '')
+                process.env[EnvEnum.EFFECTED_NGINX] = EnvEnum.NGINX_BIN
+            } else {
+                let { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
+                process.env[EnvEnum.DOCKER_CONTAINER_NAME] = stdout.replace('\n', '')
+                process.env[EnvEnum.EFFECTED_NGINX] = EnvEnum.DOCKER_CONTAINER_NAME
+            }
         }
-        let nginxRes = await findSomething('nginx')
-        if (nginxRes) {
-            process.env['NGINX_BIN'] = nginxRes.replace('\n', '')
-        } else {
-            let { stdout } =
-                await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
-            process.env['DOCKER_CONTAINER_NAME'] = stdout.replace('\n', '')
-        }
+        Logger.debug(`当前 nginx 执行环境为 ${process.env[EnvEnum.EFFECTED_NGINX]}: ${process.env[process.env[EnvEnum.EFFECTED_NGINX]]}`)
     }
 
     /**
@@ -108,68 +111,5 @@ export class ExecutorService implements OnModuleInit {
      */
     async getNginxConfigAargs() {
         return this.executor.getNginxConfigArgs()
-    }
-
-    /**
-     * 获取 nginx -V 结果
-     * @param isDocker 是否为 docker 容器
-     * @returns ProcessPromise<ProcessOutput>
-     */
-     async fetchNginxConfig(): Promise<string> {
-        let { stdout } = process.env['NGINX_BIN']
-            ? await $`${process.env['NGINX_BIN']} -V`
-            : await $`docker exec -it ${process.env['DOCKER_CONTAINER_NAME']} nginx -V`
-        return stdout
-    }
-
-    /**
-     * 匹配 nginx -V 结果
-     * @param info nginx -V 结果
-     */
-    async fetchNginxConfigAargs(nginxInfo: string): Promise<NginxConfig> {
-        // 获取 nginx 版本号
-        const version = nginxInfo.match(/nginx\/\d.*/)[0]
-
-        // 获取模块配置
-        let moduleConfig = nginxInfo.match(/with[-\w]+/g)
-        moduleConfig = moduleConfig.filter(
-            m => m !== 'with-ld-opt' && m !== 'with-cc-opt'
-        )
-
-        // 获取键值对配置项
-        // 1. 处理特殊情况(内容包含空格)
-        //  --with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie'
-        //  --with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-1.21.3/debian/debuild-base/nginx-1.21.3=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC'
-        let spaceRegExp = /(with-ld-opt|with-cc-opt)='.*?'/g
-        let opt = nginxInfo.match(spaceRegExp)
-        let argsConfig: String[]
-        // 2. 处理一般情况(内容不带空格)
-        if (opt) {
-            // 如果 --with-ld-opt 存在, 则合并结果
-            argsConfig = nginxInfo
-                .replace(spaceRegExp, '')
-                .match(/([a-z][-\w]+)=(\S+)/gi)
-                .concat(opt)
-        } else {
-            argsConfig = nginxInfo.match(/([a-z][-\w]+)=(\S+)/gi)
-        }
-        // 3. [ 'prefix=/etc/nginx' ] 键值对分离
-        let argsConfigObj = {}
-        argsConfig.forEach(p => {
-            let matchTemp = p.match(/([-_a-z]+)(?:=)(.*)/i)
-            argsConfigObj[matchTemp[1]] = {
-                label: NginxConfigArgsReflectEnum[matchTemp[1]],
-                value: matchTemp[2]
-            }
-        })
-        const nginxConfig = {
-            version: version,
-            args: argsConfigObj,
-            module: moduleConfig
-        }
-        return this.cacheManager.set<NginxConfig>(
-            EnvEnum.NGINX_CONFIG_ARGS,
-            nginxConfig
-        )
     }
 }

@@ -9,15 +9,17 @@ export const installNginx = async (version: string, handlerMsg?: (msg: string) =
     handlerMsg && handlerMsg(`$ wget http://nginx.org/download/nginx-${version}.tar.gz\n`)
     const downloadRes = $`wget http://nginx.org/download/nginx-${version}.tar.gz`
     // let res = $`sleep 1; echo 1; sleep 2; echo 2`
-    handlerMsg && downloadRes.stderr.on('data', msg => {
-        handlerMsg(msg + '\n')
-    })
+    handlerMsg &&
+        downloadRes.stderr.on('data', msg => {
+            handlerMsg(msg + '\n')
+        })
     await downloadRes
     handlerMsg && handlerMsg(`$ tar zxvf nginx-${version}.tar.gz`)
     const unzipRes = $`tar zxvf nginx-${version}.tar.gz`
-    handlerMsg && unzipRes.stdout.on('data', msg => {
-        handlerMsg(msg + '\n')
-    })
+    handlerMsg &&
+        unzipRes.stdout.on('data', msg => {
+            handlerMsg(msg + '\n')
+        })
     await unzipRes
     handlerMsg && handlerMsg(`$ cd nginx-${version}`)
     cd(`nginx-${version}`)
@@ -28,16 +30,14 @@ const findSomething = async (something: string) => {
     return res.exitCode === 0 ? res.stdout : ''
 }
 
-const checkCompoileUtil = () => {
-
-}
+const checkCompoileUtil = () => {}
 
 /**
  * get infomation of os
  * @returns linux release infomation
  */
 export const checkOS = async () => {
-    const lsb = await $`lsb_release -d`
+    const lsb = await nothrow($`lsb_release -d`)
     if (lsb.stdout) {
         return lsb.stdout.replace(/Description:|\t|\n/g, '')
     }
@@ -55,7 +55,7 @@ export const checkOS = async () => {
 /**
  * return fileName by input url
  */
-export const fetchDirectory =  async (url: string): Promise<string> => {
+export const fetchDirectory = async (url: string): Promise<string> => {
     const res = await nothrow($`ls -F ${url} | grep "/$"`)
     return res.exitCode === 0 ? res.stdout : ''
 }

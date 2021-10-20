@@ -23,7 +23,7 @@ export interface ExecutorInterface {
      * 获取 nginx -V 结果
      */
     getNginxVersion: () => Promise<string>
-    
+
     /**
      * 获取 nginx 主配置文件路径
      */
@@ -32,7 +32,7 @@ export interface ExecutorInterface {
     /**
      * 获取 nginx 主配置文件内容
      */
-     getMainConfigContent: () => Promise<string>
+    getMainConfigContent: () => Promise<string>
 
     /**
      * 获取 stream 配置文件路径
@@ -46,10 +46,6 @@ export interface ExecutorInterface {
      */
     getStreamDirectory: () => Promise<string>
 
-    /**
-     * 确保 stream 文件路径存在
-     */
-    makesureStreamDirectoryExists: () => void
     /**
      * 获取 HTTP 配置文件路径
      */
@@ -69,7 +65,6 @@ export interface ExecutorInterface {
      * stream 配置替换
      */
     streamPatch: () => void
-
 }
 
 /**
