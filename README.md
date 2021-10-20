@@ -52,6 +52,7 @@ TODO
 The following are the features I want to achieve or are under development:
 
 - [x] 整合前端, 后端, 部署模块到一个 project 中 power by lerna
+- [x] 使用 pkg 构建后端模块, 放入容器使用
 
 ## Thanks
 -   React
