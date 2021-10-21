@@ -53,6 +53,10 @@ The following are the features I want to achieve or are under development:
 
 - [x] 整合前端, 后端, 部署模块到一个 project 中 power by lerna
 - [x] 使用 pkg 构建后端模块, 放入容器使用
+- [ ] 数据库存储表的 crud
+- [ ] 单元测试
+- [ ] 前端 API 对接
+- [ ] deploy 相关的 dockerfile 和 shell 脚本
 
 ## Thanks
 -   React
