@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import StatusEnum from '../../enums/StatusEnum'
+import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS, fetchDirectory } from '../../utils/Shell'
 import { ExecutorService } from '../executor/executor.service'
@@ -7,7 +7,6 @@ import { NginxConfig } from '../executor/interface/executor.interface'
 
 @Injectable()
 export class EnvService {
-    
     constructor(private executorService: ExecutorService) {}
 
     async fetchNginxConfigAargs(): Promise<NginxConfig> {

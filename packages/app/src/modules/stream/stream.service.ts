@@ -1,18 +1,22 @@
+import { InjectMapper } from '@automapper/nestjs'
+import { Mapper } from '@automapper/types'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { Optimized, Preprocess } from 'src/decorators/args.decorator'
 import { Repository } from 'typeorm'
-import { User } from '../user/user.entity'
 import { Stream } from './stream.entity'
 
 @Injectable()
 export class StreamService {
     constructor(
         @InjectRepository(Stream)
-        private userRepository: Repository<Stream>
+        private userRepository: Repository<Stream>,
+        @InjectMapper() private blahMapper: Mapper
     ) {}
 
     /**
      * 获取所有 stream 规则
+     * 排除 delete_time 不为空的记录
      * @returns Stream[]
      */
     streamList(): Promise<Stream[]> {
@@ -40,5 +44,31 @@ export class StreamService {
         await this.userRepository.update(id, { state: state })
         let res = await this.userRepository.findOne(id)
         return res.state === state
+    }
+
+    /**
+     * 根据 primary key, streamEntity 更新记录
+     * @param id primary key
+     * @param streamEntity 只需要包含需要更新的值
+     */
+    @Preprocess()
+    async patchStreamById(id: string, @Optimized() streamEntity: Stream) {
+        return (await this.userRepository.update(id, streamEntity)).affected
+    }
+
+    /**
+     * 更新 delete_time 字段
+     * @param id primary key
+     */
+    async updateDeletetimeById(id: string) {
+        return (await this.userRepository.update(id, { deleteTime: new Date() })).affected
+    }
+
+    /**
+     * 更新所有记录的 delete_time
+     * @returns affect rows
+     */
+    async updateDeletetime() {
+        return (await this.userRepository.createQueryBuilder().update(Stream).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()).affected
     }
 }

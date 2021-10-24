@@ -92,7 +92,7 @@ enum NginxConfigArgsEnum {
     WITH_LD_OPT = 'with-ld-opt'
 }
 
-enum NginxLoadBalancing {
+enum NginxLoadBalancingEnum {
     // Nginx根据请求次数，将每个请求均匀分配到每台服务器
     poll,
     weight,
@@ -104,4 +104,4 @@ enum NginxLoadBalancing {
     url_hash
 }
 
-export { NginxLoadBalancing, NginxConfigArgsEnum, NginxConfigArgsReflectEnum };
+export { NginxLoadBalancingEnum, NginxConfigArgsEnum, NginxConfigArgsReflectEnum }

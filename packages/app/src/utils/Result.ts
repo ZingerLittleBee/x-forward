@@ -7,6 +7,13 @@ export class Result<T> {
         }
     }
 
+    static okData(t: any) {
+        return {
+            success: true,
+            data: t
+        }
+    }
+
     okWithData(t: T) {
         return {
             success: true,

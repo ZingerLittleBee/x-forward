@@ -6,8 +6,8 @@ import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
 import ShellEnum from 'src/enums/ShellEnum'
 import { v4, validate } from 'uuid'
 import { ExecutorInterface } from './interface/executor.interface'
-import { fetchNginxConfigArgs, getNginxCache } from './utils/CacheUtil'
-import { ShellExec } from './utils/ShellUtil'
+import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
+import { ShellExec } from './utils/shell.util'
 
 export class ExecutorLocal implements ExecutorInterface {
     constructor(private bin: string, private cacheManager: Cache) {

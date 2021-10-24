@@ -1,22 +1,21 @@
-import {
-    Column,
-    CreateDateColumn,
-    DeleteDateColumn,
-    PrimaryGeneratedColumn,
-    UpdateDateColumn
-} from 'typeorm'
+import { AutoMap } from '@automapper/classes'
+import { StateEnum } from 'src/enums/StatusEnum'
+import { Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 
 export abstract class CommonEntity {
-    @PrimaryGeneratedColumn()
-    id: number
+    @AutoMap()
+    @PrimaryGeneratedColumn('uuid')
+    id: string
 
-    @Column({ nullable: true })
-    state: number
+    @AutoMap()
+    @Column({ default: () => StateEnum.Able })
+    state: StateEnum
 
-    @CreateDateColumn({ name: 'create_time', nullable: true })
+    @AutoMap()
+    @CreateDateColumn({ name: 'create_time' })
     createTime: Date
 
-    @UpdateDateColumn({ name: 'update_time', nullable: true })
+    @UpdateDateColumn({ name: 'update_time' })
     updateTime: Date
 
     @DeleteDateColumn({ name: 'delete_time', nullable: true })

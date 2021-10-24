@@ -1,3 +1,5 @@
+import { classes } from '@automapper/classes'
+import { AutomapperModule } from '@automapper/nestjs'
 import { CacheModule, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -16,6 +18,10 @@ import { UserModule } from './modules/user/user.module'
             entities: [User, Stream],
             synchronize: true,
             logging: true
+        }),
+        AutomapperModule.forRoot({
+            options: [{ name: 'blah', pluginInitializer: classes }],
+            singular: true
         }),
         ConfigModule.forRoot(),
         CacheModule.register(),

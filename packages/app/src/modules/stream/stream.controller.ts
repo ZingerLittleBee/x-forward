@@ -1,31 +1,23 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Patch,
-    Post
-} from '@nestjs/common'
-import { NginxLoadBalancing } from 'src/enums/NginxEnum'
+import { MapInterceptor, MapPipe } from '@automapper/nestjs'
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
+import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { Result } from 'src/utils/Result'
 import { PatchApi } from '../patch/patch.api'
+import { StreamDto } from './stream.dto'
 import { Stream } from './stream.entity'
 import { StreamService } from './stream.service'
+import { StreamVo } from './stream.vo'
 
 @Controller('stream')
 export class StreamController {
-    constructor(
-        private streamService: StreamService,
-        private patchApi: PatchApi
-    ) {}
+    constructor(private streamService: StreamService, private patchApi: PatchApi) {}
 
     @Get('test')
     test() {
         let upstreams = [
             {
                 name: 'upstream1',
-                load_balancing: NginxLoadBalancing.poll,
+                load_balancing: NginxLoadBalancingEnum.poll,
                 server: [
                     {
                         upstream_host: '192.168.0.1',
@@ -60,7 +52,8 @@ export class StreamController {
     }
 
     @Get('')
-    getAllStream(): Promise<Stream[]> {
+    @UseInterceptors(MapInterceptor(StreamVo, Stream, { isArray: true }))
+    async getAllStream(): Promise<Stream[]> {
         return this.streamService.streamList()
     }
 
@@ -70,9 +63,8 @@ export class StreamController {
      * @returns 添加的 id
      */
     @Post('')
-    addStream(@Body() streamEntitys: Stream[]) {
-        console.log(streamEntitys)
-        return this.streamService.streamAdd(streamEntitys)
+    addStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) stream: StreamDto[]) {
+        return this.streamService.streamAdd(stream as Stream[])
     }
 
     /**
@@ -80,10 +72,7 @@ export class StreamController {
      * @param state state
      */
     @Post(':id/state')
-    async updateStateById(
-        @Param('id') id: number,
-        @Body() { state }: { state: number }
-    ) {
+    async updateStateById(@Param('id') id: number, @Body() { state }: { state: number }) {
         let res = await this.streamService.stateUpdate(id, state)
         return res ? Result.ok() : Result.noWithMsg('更新 state 状态失败')
     }
@@ -93,7 +82,9 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch(':id')
-    updateStreamById(@Param('id') id: number, @Body() streamEntity: Stream) {}
+    updateStreamById(@Param('id') id: string, @Body(MapPipe(Stream, StreamDto)) stream: StreamDto) {
+        this.streamService.patchStreamById(id, stream as Stream)
+    }
 
     /**
      * 根据 stream id 更新所有 stream
@@ -104,18 +95,20 @@ export class StreamController {
 
     /**
      * 根据 id 删除 stream (软删除)
-     * 1. 更新 state 字段
-     * 2. 更新 delete_time
+     * 更新 delete_time 字段
      * @param id id
      */
     @Delete(':id')
-    deleteStreamById(@Param('id') id: number) {}
+    deleteStreamById(@Param('id') id: string) {
+        this.streamService.updateDeletetimeById(id)
+    }
 
     /**
-     * 删除所有 stream
-     * 1. 更新 state 字段
-     * 2. 更新 delete_time
+     * 删除所有 stream (软删除)
+     * 更新 delete_time 字段
      */
     @Delete('')
-    deleteAllStream() {}
+    async deleteAllStream() {
+        return Result.okData(await this.streamService.updateDeletetime())
+    }
 }

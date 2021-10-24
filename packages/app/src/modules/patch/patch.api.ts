@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { NginxLoadBalancing } from 'src/enums/NginxEnum'
+import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { PatchService } from './patch.service'
 
 // 为了配置项的一目了然, 这里还是遵循 nginx 的下划线写法吧
@@ -24,7 +24,7 @@ export interface StreamServer {
 
 export interface StreamUpstream {
     name: string
-    load_balancing?: NginxLoadBalancing
+    load_balancing?: NginxLoadBalancingEnum
     server: UpstreamServer[]
 }
 
