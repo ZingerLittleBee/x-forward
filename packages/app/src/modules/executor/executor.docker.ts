@@ -6,6 +6,7 @@ import { MakesureDirectoryExists } from 'src/decorators/file.decorator'
 import { RemoveEndOfLine } from 'src/decorators/string.decorator'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
+import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
 import { $ } from 'zx'
 import ShellEnum from '../../enums/ShellEnum'
@@ -30,7 +31,7 @@ export class ExecutorDocker implements ExecutorInterface {
     async getNginxBin() {
         const nginxBinInCache = (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.SBIN_PATH]?.value
         if (nginxBinInCache) return nginxBinInCache
-        const nginxBinInEnv = process.env[EnvEnum.NGINX_BIN]
+        const nginxBinInEnv = getEnvSetting[EnvEnum.NGINX_BIN]
         if (nginxBinInEnv) return nginxBinInEnv
         const { stdout } = await dockerExec(this.containerName, ShellEnum.WHICH, ['nginx'])
         if (!stdout) throw new Error('找不到 nginx 执行目录')
@@ -65,8 +66,8 @@ export class ExecutorDocker implements ExecutorInterface {
 
     @MakesureDirectoryExists(true)
     async getStreamDirectory() {
-        Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${process.env[EnvEnum.STREAM_DIR]}`)
-        return join(await this.getPrefix(), process.env[EnvEnum.STREAM_DIR])
+        Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${getEnvSetting(EnvEnum.STREAM_DIR)}`)
+        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
     }
 
     streamPatch() {}

@@ -7,7 +7,7 @@ import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { v4, validate } from 'uuid'
 import nginxStreamConfig from '../../template/nginxStreamConfig'
-import { getEnvByKey } from '../../utils/EnvUtil'
+import { getEnvSetting } from '../../utils/env.util'
 import { StreamServer, StreamUpstream, UpstreamServer } from './patch.api'
 
 @Injectable()
@@ -24,13 +24,13 @@ export class PatchService {
             Logger.error('nginx prefix 为空')
             throw new Error('nginx prefix is null')
         }
-        const mainConfiPath = join(prefix, getEnvByKey(EnvEnum.NGINX_MAIN_CONFIG_NAME))
+        const mainConfiPath = join(prefix, getEnvSetting(EnvEnum.NGINX_MAIN_CONFIG_NAME))
         const streamIncludePath = this.generatorStreamInclude(prefix)
     }
 
     private generatorStreamInclude(prefix: string) {
-        const streamSuffix = extname(getEnvByKey(EnvEnum.STREAM_FILE_NAME))
-        const streamConfigPath = join(prefix, getEnvByKey(EnvEnum.STREAM_DIR))
+        const streamSuffix = extname(getEnvSetting(EnvEnum.STREAM_FILE_NAME))
+        const streamConfigPath = join(prefix, getEnvSetting(EnvEnum.STREAM_DIR))
         return streamConfigPath + `/*${streamSuffix}`
     }
 

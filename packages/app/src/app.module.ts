@@ -12,7 +12,7 @@ import { UserModule } from './modules/user/user.module'
 @Module({
     imports: [
         TypeOrmModule.forRoot({
-            type: 'sqlite',
+            type: 'better-sqlite3',
             database: './x-forward.db',
             // to solve pkg which can not find entity in ormconfig.json
             entities: [User, Stream],

@@ -29,21 +29,20 @@ export class StreamService {
      * @returns 插入的 id
      */
     async streamAdd(streamEntitys: Stream[]) {
-        const insertRes = await this.userRepository.insert(streamEntitys)
-        return insertRes.identifiers
+        const { identifiers } = await this.userRepository.insert(streamEntitys)
+        return identifiers
     }
 
     /**
      * 更新 stream 的 state 状态
      * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
+     * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
      * @param id streamID
      * @param state state
      * @returns 影响行数
      */
     async stateUpdate(id: number, state: number) {
-        await this.userRepository.update(id, { state: state })
-        let res = await this.userRepository.findOne(id)
-        return res.state === state
+        return (await this.userRepository.update(id, { state: state })).affected
     }
 
     /**

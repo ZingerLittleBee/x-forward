@@ -4,6 +4,7 @@ import { renderString } from 'nunjucks'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { streamBlock, streamIndule } from 'src/template/nginxMainConfig'
 import { findSomething } from 'src/utils/BashUtil'
+import { getEnvSetting } from 'src/utils/env.util'
 import { inspect } from 'util'
 import { $ } from 'zx'
 import { ExecutorDocker } from './executor.docker'
@@ -21,12 +22,6 @@ export class ExecutorService implements OnModuleInit {
 
     async onModuleInit() {
         await this.judgeLocalOrDocker()
-
-        // 初始化 bean
-        process.env[EnvEnum.EFFECTED_NGINX] === EnvEnum.DOCKER_CONTAINER_NAME
-            ? this.initDockerExecutor(process.env[EnvEnum.DOCKER_CONTAINER_NAME])
-            : this.initLocalExecutor(process.env[EnvEnum.NGINX_BIN])
-        Logger.debug(`执行环境初始化完毕, effect nginx 为 ${inspect(await this.cacheManager.get(EnvEnum.EFFECTED_NGINX))}`)
         await this.initNginxConfig()
         Logger.debug(`nginx 配置文件初始化完毕`)
     }
@@ -92,18 +87,21 @@ export class ExecutorService implements OnModuleInit {
      */
     private async judgeLocalOrDocker() {
         // .env 文件配置的参数优先级更高
-        if (!process.env[process.env[EnvEnum.EFFECTED_NGINX]]) {
-            let nginxRes = await findSomething('nginx')
-            if (nginxRes) {
-                process.env[EnvEnum.NGINX_BIN] = nginxRes.replace('\n', '')
-                process.env[EnvEnum.EFFECTED_NGINX] = EnvEnum.NGINX_BIN
-            } else {
-                let { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
-                process.env[EnvEnum.DOCKER_CONTAINER_NAME] = stdout.replace('\n', '')
-                process.env[EnvEnum.EFFECTED_NGINX] = EnvEnum.DOCKER_CONTAINER_NAME
+        let effectInEnv = getEnvSetting(EnvEnum.EFFECTED_NGINX)
+        if (effectInEnv) {
+            let value = getEnvSetting(effectInEnv)
+            if (value) {
+                effectInEnv === EnvEnum.DOCKER_CONTAINER_NAME ? this.initDockerExecutor(value) : this.initLocalExecutor(value)
             }
         }
-        Logger.debug(`当前 nginx 执行环境为 ${process.env[EnvEnum.EFFECTED_NGINX]}: ${process.env[process.env[EnvEnum.EFFECTED_NGINX]]}`)
+        let nginxRes = await findSomething('nginx')
+        if (nginxRes) {
+            this.initLocalExecutor(nginxRes.replace('\n', ''))
+        } else {
+            let { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
+            this.initDockerExecutor(stdout.replace('\n', ''))
+        }
+        Logger.debug(`当前 nginx 执行环境为 ${inspect(await this.cacheManager.get(EnvEnum.EFFECTED_NGINX))}`)
     }
 
     /**
