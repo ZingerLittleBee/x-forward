@@ -4,10 +4,11 @@ import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
 import ShellEnum from 'src/enums/ShellEnum'
+import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
 import { ExecutorInterface } from './interface/executor.interface'
-import { fetchNginxConfigArgs, getNginxCache } from './utils/CacheUtil'
-import { ShellExec } from './utils/ShellUtil'
+import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
+import { ShellExec } from './utils/shell.util'
 
 export class ExecutorLocal implements ExecutorInterface {
     constructor(private bin: string, private cacheManager: Cache) {
@@ -30,7 +31,7 @@ export class ExecutorLocal implements ExecutorInterface {
         return readFile(await this.getMainConfigPath(), 'utf-8')
     }
     async getStreamDirectory() {
-        return join(await this.getPrefix(), process.env[EnvEnum.STREAM_DIR])
+        return join(await this.getPrefix(), getEnvSetting[EnvEnum.STREAM_DIR])
     }
     async getPrefix() {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.PREFIX]?.value

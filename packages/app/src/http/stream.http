@@ -14,7 +14,7 @@ Content-Type: application/json
 
 [{
     "transitHost": "aereqbv.com",
-    "transitPort": 5678,
+    "transitPort": 56789,
     "remoteHost": "qrxfaf.com",
     "remotePort": 4653,
     "loadBalancing": 1
@@ -26,10 +26,41 @@ Content-Type: application/json
     "loadBalancing": 1
 }]
 
-### 更新 stream 状态
+### 更新 stream 可用状态
 POST {{url}}/1/state
 Content-Type: application/json
 
 {
-    "state": 2
+    "state": 1
 }
+
+### patch stream
+PATCH {{url}}/1
+Content-Type: application/json
+
+{
+    "transitHost": "jjjjj.com"
+}
+
+### patch all stream
+PATCH {{url}}
+Content-Type: application/json
+
+[
+    {
+        "id": "c6fac42b-d657-4e84-9057-29e629699f9b",
+        "transitHost": "aereqbv.com",
+        "transitPort": 1111,
+        "remoteHost": "qrxfaf.com",
+        "remotePort": 2222,
+        "loadBalancing": 1
+    }
+]
+
+
+### 删除单条记录(软删除)
+DELETE {{url}}/23712df8-5c86-44fc-bada-8f67949d690b
+
+
+### 删除所有 stream (软删除)
+DELETE {{url}}/

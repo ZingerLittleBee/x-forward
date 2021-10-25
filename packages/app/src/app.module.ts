@@ -1,3 +1,5 @@
+import { classes } from '@automapper/classes'
+import { AutomapperModule } from '@automapper/nestjs'
 import { CacheModule, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
@@ -10,12 +12,16 @@ import { UserModule } from './modules/user/user.module'
 @Module({
     imports: [
         TypeOrmModule.forRoot({
-            type: 'sqlite',
+            type: 'better-sqlite3',
             database: './x-forward.db',
             // to solve pkg which can not find entity in ormconfig.json
             entities: [User, Stream],
             synchronize: true,
             logging: true
+        }),
+        AutomapperModule.forRoot({
+            options: [{ name: 'blah', pluginInitializer: classes }],
+            singular: true
         }),
         ConfigModule.forRoot(),
         CacheModule.register(),

@@ -4,17 +4,15 @@ import { existsSync, mkdirSync, readdirSync, writeFile } from 'fs'
 import { configure, renderString } from 'nunjucks'
 import { extname, join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
-import { NginxLoadBalancing } from 'src/enums/NginxEnum'
+import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { v4, validate } from 'uuid'
 import nginxStreamConfig from '../../template/nginxStreamConfig'
-import { getEnvByKey } from '../../utils/EnvUtil'
+import { getEnvSetting } from '../../utils/env.util'
 import { StreamServer, StreamUpstream, UpstreamServer } from './patch.api'
 
 @Injectable()
 export class PatchService {
-    constructor(
-        @Inject(CACHE_MANAGER) private cacheManager: Cache
-    ) {
+    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {
         configure({ autoescape: true, trimBlocks: true, lstripBlocks: true })
     }
 
@@ -23,16 +21,16 @@ export class PatchService {
      */
     initMainConfig(prefix: string) {
         if (!prefix) {
-            Logger.error("nginx prefix 为空")
-            throw new Error("nginx prefix is null")
+            Logger.error('nginx prefix 为空')
+            throw new Error('nginx prefix is null')
         }
-        const mainConfiPath = join(prefix, getEnvByKey(EnvEnum.NGINX_MAIN_CONFIG_NAME))
+        const mainConfiPath = join(prefix, getEnvSetting(EnvEnum.NGINX_MAIN_CONFIG_NAME))
         const streamIncludePath = this.generatorStreamInclude(prefix)
     }
 
     private generatorStreamInclude(prefix: string) {
-        const streamSuffix = extname(getEnvByKey(EnvEnum.STREAM_FILE_NAME))
-        const streamConfigPath = join(prefix, getEnvByKey(EnvEnum.STREAM_DIR))
+        const streamSuffix = extname(getEnvSetting(EnvEnum.STREAM_FILE_NAME))
+        const streamConfigPath = join(prefix, getEnvSetting(EnvEnum.STREAM_DIR))
         return streamConfigPath + `/*${streamSuffix}`
     }
 
@@ -69,34 +67,27 @@ export class PatchService {
             generateLoadBalancing: this.generateLoadBalancing,
             generateUpstreamServer: this.generateUpstreamServer
         })
-        writeFile(
-            this.generatorTempPath('stream'),
-            streamFileContent,
-            'utf-8',
-            err => {
-                if (!err) return
-                Logger.error(
-                    `${process.env['STREAM_FILE_NAME']}文件写入失败, ${err}`
-                )
-            }
-        )
+        writeFile(this.generatorTempPath('stream'), streamFileContent, 'utf-8', err => {
+            if (!err) return
+            Logger.error(`${process.env['STREAM_FILE_NAME']}文件写入失败, ${err}`)
+        })
     }
 
     // 生成负载均衡算法
     private generateLoadBalancing({ load_balancing }: StreamUpstream) {
-        if (load_balancing === NginxLoadBalancing.poll) {
+        if (load_balancing === NginxLoadBalancingEnum.poll) {
             return
         }
-        if (load_balancing === NginxLoadBalancing.weight) {
+        if (load_balancing === NginxLoadBalancingEnum.weight) {
             return
         }
-        if (load_balancing === NginxLoadBalancing.ip_hash) {
+        if (load_balancing === NginxLoadBalancingEnum.ip_hash) {
             return 'ip_hash'
         }
-        if (load_balancing === NginxLoadBalancing.fair) {
+        if (load_balancing === NginxLoadBalancingEnum.fair) {
             return 'fair'
         }
-        if (load_balancing === NginxLoadBalancing.url_hash) {
+        if (load_balancing === NginxLoadBalancingEnum.url_hash) {
             return 'url_hash'
         }
     }
@@ -104,16 +95,7 @@ export class PatchService {
     // 生成 upstream 模块下的 server, 直接放在模版中太冗余
     private generateUpstreamServer(upstreamServer: UpstreamServer) {
         if (upstreamServer == null) return ''
-        const {
-            upstream_host,
-            upstream_port,
-            weight,
-            max_conns,
-            max_fails,
-            fail_timeout,
-            backup,
-            down
-        } = upstreamServer
+        const { upstream_host, upstream_port, weight, max_conns, max_fails, fail_timeout, backup, down } = upstreamServer
         let resStr = 'server'
         resStr += ' ' + upstream_host + ':' + upstream_port
         weight && (resStr += ` wight=${weight}`)
@@ -125,4 +107,3 @@ export class PatchService {
         return (resStr += ';')
     }
 }
-
