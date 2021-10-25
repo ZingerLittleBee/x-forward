@@ -55,6 +55,11 @@ export class StreamService {
         return (await this.userRepository.update(id, streamEntity)).affected
     }
 
+    @Preprocess()
+    async patchAllStream(@Optimized() streamEntities: Stream[]) {
+        return Promise.all(streamEntities.map(s => this.patchStreamById(s.id, s)))
+    }
+
     /**
      * 更新 delete_time 字段
      * @param id primary key

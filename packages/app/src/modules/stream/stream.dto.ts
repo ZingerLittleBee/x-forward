@@ -4,6 +4,9 @@ import { StateEnum } from 'src/enums/StatusEnum'
 
 export class StreamDto {
     @AutoMap()
+    readonly id?: string
+
+    @AutoMap()
     @IsString()
     readonly transitHost: string
 
@@ -25,7 +28,7 @@ export class StreamDto {
 
     @AutoMap()
     @IsNumberString()
-    readonly loadBalancing: number
+    readonly loadBalancing?: number
 
     @AutoMap()
     @IsString()

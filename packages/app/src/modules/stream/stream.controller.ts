@@ -91,7 +91,10 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch('')
-    updateAllStream(@Body() streamEntity: Stream[]) {}
+    async updateAllStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) streams: StreamDto[]) {
+        // 剔除 id 为空的选项
+        return Result.okData(await this.streamService.patchAllStream(streams.filter(s => s.id) as Stream[]))
+    }
 
     /**
      * 根据 id 删除 stream (软删除)
@@ -99,8 +102,8 @@ export class StreamController {
      * @param id id
      */
     @Delete(':id')
-    deleteStreamById(@Param('id') id: string) {
-        this.streamService.updateDeletetimeById(id)
+    async deleteStreamById(@Param('id') id: string) {
+        return Result.okData(await this.streamService.updateDeletetimeById(id))
     }
 
     /**

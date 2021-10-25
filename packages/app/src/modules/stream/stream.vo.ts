@@ -24,7 +24,7 @@ export class StreamVo {
     readonly status: number
 
     @AutoMap()
-    readonly loadBalancing: number
+    readonly loadBalancing?: number
 
     @AutoMap()
     readonly commment?: string

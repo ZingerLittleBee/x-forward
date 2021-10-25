@@ -42,6 +42,21 @@ Content-Type: application/json
     "transitHost": "jjjjj.com"
 }
 
+### patch all stream
+PATCH {{url}}
+Content-Type: application/json
+
+[
+    {
+        "id": "c6fac42b-d657-4e84-9057-29e629699f9b",
+        "transitHost": "aereqbv.com",
+        "transitPort": 1111,
+        "remoteHost": "qrxfaf.com",
+        "remotePort": 2222,
+        "loadBalancing": 1
+    }
+]
+
 
 ### 删除单条记录(软删除)
 DELETE {{url}}/23712df8-5c86-44fc-bada-8f67949d690b
