@@ -15,6 +15,14 @@ export class ExecutorLocal implements ExecutorInterface {
         this.bin = bin
         this.cacheManager = cacheManager
     }
+    async fetchDirectory(url: string) {
+        // add "/" automatic if url no "/" at the beginning
+        if (!url.match(/^\//)) {
+            url = '/' + url
+        }
+        // ls -F ${url} | grep "/$"
+        return ShellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')
+    }
     async getNginxVersion() {
         return ShellExec(this.bin, '-V')
     }

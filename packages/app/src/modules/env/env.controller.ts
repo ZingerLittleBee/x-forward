@@ -14,9 +14,7 @@ export class EnvController {
     @Get('nginx/config')
     async getNginxConfig() {
         console.log('fetchNginxConfigAargs()', await this.envService.fetchNginxConfigAargs())
-        return new Result<NginxConfig>().okWithData(
-            await this.envService.fetchNginxConfigAargs()
-        )
+        return new Result<NginxConfig>().okWithData(await this.envService.fetchNginxConfigAargs())
     }
 
     @Get('nginx/config/staream')
@@ -49,8 +47,6 @@ export class EnvController {
     @Get('path')
     async getDirectory(@Query('url') url: string) {
         const res = await this.envService.getDirByUrl(url)
-        return new Result<string[]>().okWithData(
-            res.split('\n').filter(r => r !== '')
-        )
+        return new Result<string[]>().okWithData(res.split('\n').filter(r => r !== ''))
     }
 }

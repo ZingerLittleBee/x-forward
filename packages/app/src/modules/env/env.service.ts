@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
-import { checkOS, fetchDirectory } from '../../utils/Shell'
+import { checkOS } from '../../utils/Shell'
 import { ExecutorService } from '../executor/executor.service'
 import { NginxConfig } from '../executor/interface/executor.interface'
 
@@ -52,21 +52,26 @@ export class EnvService {
      * @param url 路径
      * @returns 路径下的所有文件夹
      */
-    getDirByUrl(url: string) {
-        // add "/" automatic if url no "/" at the beginning
-        if (!url.match(/^\//)) {
-            url = '/' + url
-        }
-        return fetchDirectory(url)
+    async getDirByUrl(url: string) {
+        // // add "/" automatic if url no "/" at the beginning
+        // if (!url.match(/^\//)) {
+        //     url = '/' + url
+        // }
+        // return fetchDirectory(url)
+        return this.executorService.getDirByUrl(url)
     }
 
     /**
      * 获取 nginx HTTP 文件
      */
-    fetchNginxHTTPFile() {}
+    fetchNginxHTTPFile() {
+        this.executorService.getNginxMainConfigContent()
+    }
 
     /**
      * 获取 nginx stream 文件
      */
-    fetchNginxStreamFile() {}
+    fetchNginxStreamFile() {
+        this.executorService.getNginxStreamConfigContent()
+    }
 }

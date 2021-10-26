@@ -1,5 +1,9 @@
-import { $ } from 'zx'
+import { $, nothrow } from 'zx'
 
-export const dockerExec = async (containerName: string, cmd: string, arg: string[]) => {
-    return $`docker exec ${containerName} ${cmd} ${arg}`
+export const dockerExec = async (containerName: string, cmd: string, ...args: string[]) => {
+    $.quote = input => {
+        return input === '|' ? '|' : input
+    }
+    const { exitCode, stdout, stderr } = await nothrow($`docker exec ${containerName} ${cmd} ${[...args]}`)
+    return exitCode === 0 ? stdout || stderr : ''
 }

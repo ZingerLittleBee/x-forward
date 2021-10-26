@@ -65,6 +65,11 @@ export interface ExecutorInterface {
      * stream 配置替换
      */
     streamPatch: () => void
+
+    /**
+     * 获取 url 下的文件夹
+     */
+    fetchDirectory: (url: string) => Promise<string>
 }
 
 /**

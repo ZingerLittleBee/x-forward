@@ -19,12 +19,18 @@ export class ExecutorDocker implements ExecutorInterface {
         this.containerName = containerName
         this.cacheManager = cacheManager
     }
+    async fetchDirectory(url: string) {
+        if (!url.match(/^\//)) {
+            url = '/' + url
+        }
+        // ls -F ${url} | grep "/$"
+        return dockerExec(this.containerName, ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')
+    }
 
     async getNginxVersion() {
         const nginxBin = await this.getNginxBin()
-        const { stdout, stderr, exitCode } = await dockerExec(this.containerName, nginxBin, ['-V'])
         // why return value of `nginx -V` in the stderr
-        return exitCode === 0 && (stdout || stderr)
+        return await dockerExec(this.containerName, nginxBin, '-V')
     }
 
     @RemoveEndOfLine()
@@ -33,9 +39,9 @@ export class ExecutorDocker implements ExecutorInterface {
         if (nginxBinInCache) return nginxBinInCache
         const nginxBinInEnv = getEnvSetting[EnvEnum.NGINX_BIN]
         if (nginxBinInEnv) return nginxBinInEnv
-        const { stdout } = await dockerExec(this.containerName, ShellEnum.WHICH, ['nginx'])
-        if (!stdout) throw new Error('找不到 nginx 执行目录')
-        return stdout
+        const res = await dockerExec(this.containerName, ShellEnum.WHICH, 'nginx')
+        if (!res) throw new Error('找不到 nginx 执行目录')
+        return res
     }
 
     async getNginxConfigArgs() {
@@ -49,8 +55,7 @@ export class ExecutorDocker implements ExecutorInterface {
     }
 
     async getMainConfigContent() {
-        const { stdout } = await dockerExec(this.containerName, ShellEnum.CAT, [await this.getMainConfigPath()])
-        return stdout
+        return dockerExec(this.containerName, ShellEnum.CAT, await this.getMainConfigPath())
     }
 
     private async getNginxConfArgs(): Promise<NginxConfig> {
@@ -74,9 +79,9 @@ export class ExecutorDocker implements ExecutorInterface {
     async getStreamConfigPath() {
         let streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
-        const { stdout } = await dockerExec(this.containerName, ShellEnum.LS, [streamDir])
+        const res = await dockerExec(this.containerName, ShellEnum.LS, streamDir)
         let fileList = []
-        if (stdout !== '') fileList = stdout.split(EOL)
+        if (res !== '') fileList = res.split(EOL)
         for (let i = 0; i < fileList.length; i++) {
             let fileName = fileList[i].split('.')[0]
             // 如果文件名是 uuid, 则直接返回
@@ -86,13 +91,12 @@ export class ExecutorDocker implements ExecutorInterface {
         }
         // 不存在, 则创建文件
         let newStreamPath = join(streamDir, `${v4()}.conf`)
-        dockerExec(this.containerName, ShellEnum.TOUCH, [newStreamPath])
+        dockerExec(this.containerName, ShellEnum.TOUCH, newStreamPath)
         return newStreamPath
     }
     getHTTPConfigPath: () => Promise<string>
 
     async getStreamFileContent() {
-        const { stdout } = await dockerExec(this.containerName, ShellEnum.CAT, [await this.getStreamConfigPath()])
-        return stdout
+        return await dockerExec(this.containerName, ShellEnum.CAT, await this.getStreamConfigPath())
     }
 }
