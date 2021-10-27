@@ -4,7 +4,11 @@ enum ShellEnum {
     LS = 'ls',
     WHICH = 'which',
     ECHO = 'echo',
-    GREP = 'grep'
+    GREP = 'grep',
+    CP = 'cp',
+    BASH = 'bash',
+    MV = 'mv',
+    SERVICE = 'service'
 }
 
 export default ShellEnum

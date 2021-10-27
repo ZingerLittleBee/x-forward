@@ -46,7 +46,6 @@ export class EnvController {
      */
     @Get('path')
     async getDirectory(@Query('url') url: string) {
-        const res = await this.envService.getDirByUrl(url)
-        return new Result<string[]>().okWithData(res.split('\n').filter(r => r !== ''))
+        return Result.okData(await this.envService.getDirByUrl(url))
     }
 }

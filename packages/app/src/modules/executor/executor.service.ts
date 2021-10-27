@@ -131,4 +131,9 @@ export class ExecutorService implements OnModuleInit {
     async getDirByUrl(url: string) {
         return this.executor.fetchDirectory(url)
     }
+
+    async patchStream(content: string) {
+        console.log(`patch content: ${content}`)
+        this.executor.streamPatch(content)
+    }
 }

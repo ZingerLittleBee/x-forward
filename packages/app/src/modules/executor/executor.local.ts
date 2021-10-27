@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { readdir, readFile } from 'fs/promises'
 import { join } from 'path'
@@ -15,16 +16,23 @@ export class ExecutorLocal implements ExecutorInterface {
         this.bin = bin
         this.cacheManager = cacheManager
     }
+    nginxReload() {
+        ShellExec(this.bin, '-s', 'reload')
+    }
+
+    nginxRestart() {
+        ShellExec(ShellEnum.SERVICE, 'nginx', 'restart')
+    }
     async fetchDirectory(url: string) {
         // add "/" automatic if url no "/" at the beginning
         if (!url.match(/^\//)) {
             url = '/' + url
         }
         // ls -F ${url} | grep "/$"
-        return ShellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')
+        return (await ShellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
     async getNginxVersion() {
-        return ShellExec(this.bin, '-V')
+        return (await ShellExec(this.bin, '-V')).res
     }
     async getNginxBin() {
         return this.bin
@@ -48,6 +56,9 @@ export class ExecutorLocal implements ExecutorInterface {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.CONF_PATH].value
     }
     async getStreamConfigPath() {
+        // 先查找缓存
+        let nginxConfigArgs = await getNginxCache(this.cacheManager)
+        if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value) return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
         let streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
         let fileList = await readdir(streamDir)
@@ -66,6 +77,32 @@ export class ExecutorLocal implements ExecutorInterface {
     async getStreamFileContent() {
         return readFile(await this.getStreamConfigPath(), { encoding: 'utf-8' })
     }
-    streamPatch() {}
     getHTTPConfigPath: () => Promise<string>
+
+    /**
+     * 1. 先备份一份原配置文件, 名为 stream.conf.bak
+     * 2. 新配置文件覆写
+     * 3. nginx -t -c stream.conf 检查语法是否通过
+     * 4. 不通过则回滚 stream.conf.bak
+     * @param content 新 stream 文件内容
+     */
+    async streamPatch(content: string) {
+        const streamPath = await this.getStreamConfigPath()
+        const backupRes = await ShellExec(ShellEnum.CP, streamPath, `${streamPath}.bak`)
+        if (backupRes.exitCode === 0) {
+            Logger.verbose(`${streamPath} 备份成功`)
+        } else {
+            Logger.error(`${streamPath} 备份失败, ${backupRes.res}`)
+            throw new Error(`${streamPath} 备份失败, ${backupRes.res}`)
+        }
+        ShellExec(ShellEnum.CAT, '>', `${streamPath}<<EOF\n${content}\nEOF`)
+        const { res, exitCode } = await ShellExec(await this.getNginxBin(), '-t', '-c', await this.getMainConfigPath())
+        if (exitCode) {
+            Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
+            // rollback
+            const rollbackRes = await ShellExec(ShellEnum.MV, `${streamPath}.bak`, streamPath)
+            rollbackRes.exitCode === 0 ? Logger.verbose(`${streamPath} 回滚成功`) : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
+        }
+        this.nginxReload()
+    }
 }

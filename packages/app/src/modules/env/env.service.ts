@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common'
 import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS } from '../../utils/Shell'
-import { ExecutorService } from '../executor/executor.service'
 import { NginxConfig } from '../executor/interface/executor.interface'
+import { GatewayService } from '../gateway/gateway.service'
 
 @Injectable()
 export class EnvService {
-    constructor(private executorService: ExecutorService) {}
+    constructor(private gatewayService: GatewayService) {}
 
     async fetchNginxConfigAargs(): Promise<NginxConfig> {
-        return this.executorService.getNginxConfigAargs()
+        return this.gatewayService.fetchNginxConfigArgs()
     }
 
     /**
@@ -53,25 +53,13 @@ export class EnvService {
      * @returns 路径下的所有文件夹
      */
     async getDirByUrl(url: string) {
-        // // add "/" automatic if url no "/" at the beginning
-        // if (!url.match(/^\//)) {
-        //     url = '/' + url
-        // }
-        // return fetchDirectory(url)
-        return this.executorService.getDirByUrl(url)
-    }
-
-    /**
-     * 获取 nginx HTTP 文件
-     */
-    fetchNginxHTTPFile() {
-        this.executorService.getNginxMainConfigContent()
+        return this.gatewayService.fetchDirByUrl(url)
     }
 
     /**
      * 获取 nginx stream 文件
      */
     fetchNginxStreamFile() {
-        this.executorService.getNginxStreamConfigContent()
+        this.gatewayService.fetchNginxStreamConfigContent()
     }
 }

@@ -4,6 +4,7 @@ import { CacheModule, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EnvModule } from './modules/env/env.module'
+import { GatewayModule } from './modules/gateway/gateway.module'
 import { ShellModule } from './modules/shell/shell.module'
 import { Stream } from './modules/stream/stream.entity'
 import { StreamModule } from './modules/stream/stream.module'
@@ -28,7 +29,8 @@ import { UserModule } from './modules/user/user.module'
         UserModule,
         EnvModule,
         ShellModule,
-        StreamModule
+        StreamModule,
+        GatewayModule
     ]
 })
 export class AppModule {}

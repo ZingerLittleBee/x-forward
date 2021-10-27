@@ -28,7 +28,7 @@ export class StreamController {
                         fail_timeout: '10s'
                     },
                     {
-                        upstream_host: '192.168.0.1',
+                        upstream_host: '192.168.0.2',
                         upstream_port: 9527,
                         weight: 10,
                         max_conns: 0,
@@ -44,7 +44,7 @@ export class StreamController {
                 proxy_pass: 'upstream1'
             },
             {
-                listen_port: 9527,
+                listen_port: 9528,
                 proxy_pass: 'upstream1'
             }
         ]

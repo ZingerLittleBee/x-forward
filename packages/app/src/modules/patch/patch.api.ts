@@ -50,17 +50,6 @@ export interface UpstreamServer {
 export class PatchApi {
     constructor(private patchService: PatchService) {}
 
-    /**
-     * 初始化 nginx 主配置文件
-     * 1. 添加 stream includes
-     * 2. 设置 stream log format
-     * @param prefix nginx prefix
-     */
-
-    initMainConfig(prefix: string) {
-        this.patchService.initMainConfig(prefix)
-    }
-
     httpPatch() {}
 
     streamPatch(upstreams: StreamUpstream[], servers: StreamServer[]) {
