@@ -6,7 +6,7 @@ export interface ExecutorInterface {
      */
     getNginxConfigArgs: () => Promise<NginxConfig>
     /**
-     * 获取 nginx prefix
+     * get nginx configuration prefix
      */
     getPrefix: () => Promise<string>
 
@@ -20,17 +20,17 @@ export interface ExecutorInterface {
     getNginxBin: () => Promise<string>
 
     /**
-     * 获取 nginx -V 结果
+     * get ${nginx -V} result
      */
     getNginxVersion: () => Promise<string>
 
     /**
-     * 获取 nginx 主配置文件路径
+     * get nginx.conf full path
      */
     getMainConfigPath: () => Promise<string>
 
     /**
-     * 获取 nginx 主配置文件内容
+     * get nginx.conf file content
      */
     getMainConfigContent: () => Promise<string>
 
@@ -42,36 +42,55 @@ export interface ExecutorInterface {
     getStreamConfigPath: () => Promise<string>
 
     /**
-     * 获取 stream 配置文件路径
+     * get stream.conf directory
      */
     getStreamDirectory: () => Promise<string>
 
     /**
-     * 获取 HTTP 配置文件路径
+     * get HTTP conf file full path
      */
     getHTTPConfigPath: () => Promise<string>
 
     /**
-     * 获取 stream.conf 的内容
+     * get stream.conf file content
      */
     getStreamFileContent: () => Promise<string>
 
     /**
-     * nginx 主配置尾部追加
+     * nginx configuartion append ${appendString} in the end of file
      */
     mainConfigAppend: (appendString: string) => void
 
     /**
-     * stream 配置替换
+     * 1. 先备份一份原配置文件, 名为 stream.conf.bak
+     * 2. 新配置文件覆写
+     * 3. nginx -t -c stream.conf 检查语法是否通过
+     * 4. 不通过则回滚 stream.conf.bak
+     * @param content 新 stream 文件内容
      */
-    streamPatch: () => void
+    streamPatch: (content: string) => void
+
+    /**
+     * get all directory under url
+     */
+    fetchDirectory: (url: string) => Promise<string>
+
+    /**
+     * nginx reload to make configuartion effect
+     */
+    nginxReload: () => void
+
+    /**
+     * nginx restart
+     */
+    nginxRestart: () => void
 }
 
 /**
- * 缓存处理过的 nginx -V 配置信息
+ * 缓存处理过的 nginx -V 配置信息结构体
  */
 export interface NginxConfig {
-    version: string
-    args: { [key: string]: { label: string; value: string } }
-    module: string[]
+    version?: string
+    args?: { [key: string]: { label: string; value: string } }
+    module?: string[]
 }

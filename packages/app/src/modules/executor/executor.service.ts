@@ -16,7 +16,7 @@ export class ExecutorService implements OnModuleInit {
     constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache) {}
 
     /**
-     * 环境指令 executor
+     * nginx executor
      */
     private executor: ExecutorInterface
 
@@ -106,8 +106,34 @@ export class ExecutorService implements OnModuleInit {
 
     /**
      * 获取 nginx 配置
+     * @returns Promise<NginxConfig>
      */
     async getNginxConfigAargs() {
         return this.executor.getNginxConfigArgs()
+    }
+
+    /**
+     * 获取 nginx 配置文件内容
+     * @returns Promise<string>
+     */
+    async getNginxMainConfigContent() {
+        return this.executor.getMainConfigContent()
+    }
+
+    /**
+     * 获取 stream 配置文件内容
+     * @returns Promise<string>
+     */
+    async getNginxStreamConfigContent() {
+        return this.executor.getStreamFileContent()
+    }
+
+    async getDirByUrl(url: string) {
+        return this.executor.fetchDirectory(url)
+    }
+
+    async patchStream(content: string) {
+        console.log(`patch content: ${content}`)
+        this.executor.streamPatch(content)
     }
 }

@@ -3,7 +3,12 @@ enum ShellEnum {
     TOUCH = 'touch',
     LS = 'ls',
     WHICH = 'which',
-    ECHO = 'echo'
+    ECHO = 'echo',
+    GREP = 'grep',
+    CP = 'cp',
+    BASH = 'bash',
+    MV = 'mv',
+    SERVICE = 'service'
 }
 
 export default ShellEnum
