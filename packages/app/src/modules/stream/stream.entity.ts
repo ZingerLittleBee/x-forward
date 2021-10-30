@@ -4,7 +4,7 @@ import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { StatusEnum } from 'src/enums/StatusEnum'
 import { Column, Entity } from 'typeorm'
 
-@Entity()
+@Entity('stream')
 export class Stream extends CommonEntity {
     @AutoMap()
     @Column({ name: 'transit_host' })
@@ -15,22 +15,26 @@ export class Stream extends CommonEntity {
     transitPort: number
 
     @AutoMap()
-    @Column({ name: 'remote_host' })
-    remoteHost: string
+    @Column({ name: 'upstream', nullable: true })
+    upstream?: string
 
     @AutoMap()
-    @Column({ name: 'remote_port' })
-    remotePort: number
+    @Column({ name: 'remote_host', nullable: true })
+    remoteHost?: string
+
+    @AutoMap()
+    @Column({ name: 'remote_port', nullable: true })
+    remotePort?: number
 
     @AutoMap()
     @Column({ default: () => StatusEnum.Checking })
-    status: number
+    status?: number
 
     @AutoMap()
     @Column({ name: 'load_balancing', default: () => NginxLoadBalancingEnum.poll })
-    loadBalancing: number
+    loadBalancing?: number
 
     @AutoMap()
     @Column({ nullable: true })
-    commment: string
+    comment?: string
 }

@@ -25,12 +25,11 @@ export class StreamService {
 
     /**
      * 添加 stream 规则
-     * @param streamEntitys Stream[]
-     * @returns 插入的 id
+     * @param streamEntities Stream[]
+     * @returns Stream[]
      */
-    async streamAdd(streamEntitys: Stream[]) {
-        const { identifiers } = await this.userRepository.insert(streamEntitys)
-        return identifiers
+    streamSave(streamEntities: Stream[]) {
+        return this.userRepository.save(streamEntities)
     }
 
     /**
@@ -39,10 +38,10 @@ export class StreamService {
      * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
      * @param id streamID
      * @param state state
-     * @returns 影响行数
+     * @returns UpdateResult
      */
-    async stateUpdate(id: number, state: number) {
-        return (await this.userRepository.update(id, { state: state })).affected
+    stateUpdate(id: number, state: number) {
+        return this.userRepository.update(id, { state: state })
     }
 
     /**
@@ -51,8 +50,8 @@ export class StreamService {
      * @param streamEntity 只需要包含需要更新的值
      */
     @Preprocess()
-    async patchStreamById(id: string, @Optimized() streamEntity: Stream) {
-        return (await this.userRepository.update(id, streamEntity)).affected
+    patchStreamById(id: string, @Optimized() streamEntity: Stream) {
+        return this.userRepository.update(id, streamEntity)
     }
 
     @Preprocess()
@@ -64,15 +63,15 @@ export class StreamService {
      * 更新 delete_time 字段
      * @param id primary key
      */
-    async updateDeletetimeById(id: string) {
-        return (await this.userRepository.update(id, { deleteTime: new Date() })).affected
+    delete(id: string) {
+        return this.userRepository.softDelete(id)
     }
 
     /**
      * 更新所有记录的 delete_time
      * @returns affect rows
      */
-    async updateDeletetime() {
-        return (await this.userRepository.createQueryBuilder().update(Stream).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()).affected
+    deleteAll() {
+        return this.userRepository.createQueryBuilder().update(Stream).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
     }
 }

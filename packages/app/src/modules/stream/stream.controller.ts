@@ -51,7 +51,7 @@ export class StreamController {
         this.patchApi.streamPatch(upstreams, servers)
     }
 
-    @Get('')
+    @Get()
     @UseInterceptors(MapInterceptor(StreamVo, Stream, { isArray: true }))
     async getAllStream(): Promise<Stream[]> {
         return this.streamService.streamList()
@@ -62,9 +62,9 @@ export class StreamController {
      * @param streamEntitys Stream[]
      * @returns 添加的 id
      */
-    @Post('')
+    @Post()
     addStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) stream: StreamDto[]) {
-        return this.streamService.streamAdd(stream as Stream[])
+        return this.streamService.streamSave(stream as Stream[])
     }
 
     /**
@@ -73,8 +73,7 @@ export class StreamController {
      */
     @Post(':id/state')
     async updateStateById(@Param('id') id: number, @Body() { state }: { state: number }) {
-        let res = await this.streamService.stateUpdate(id, state)
-        return res ? Result.ok() : Result.noWithMsg('更新 state 状态失败')
+        return Result.okData((await this.streamService.stateUpdate(id, state)).affected)
     }
 
     /**
@@ -82,15 +81,15 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch(':id')
-    updateStreamById(@Param('id') id: string, @Body(MapPipe(Stream, StreamDto)) stream: StreamDto) {
-        this.streamService.patchStreamById(id, stream as Stream)
+    async updateStreamById(@Param('id') id: string, @Body(MapPipe(Stream, StreamDto)) stream: StreamDto) {
+        return Result.okData((await this.streamService.patchStreamById(id, stream as Stream)).affected)
     }
 
     /**
      * 根据 stream id 更新所有 stream
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
-    @Patch('')
+    @Patch()
     async updateAllStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) streams: StreamDto[]) {
         // 剔除 id 为空的选项
         return Result.okData(await this.streamService.patchAllStream(streams.filter(s => s.id) as Stream[]))
@@ -102,16 +101,16 @@ export class StreamController {
      * @param id id
      */
     @Delete(':id')
-    async deleteStreamById(@Param('id') id: string) {
-        return Result.okData(await this.streamService.updateDeletetimeById(id))
+    async delete(@Param('id') id: string) {
+        return Result.okData(await this.streamService.delete(id))
     }
 
     /**
      * 删除所有 stream (软删除)
      * 更新 delete_time 字段
      */
-    @Delete('')
+    @Delete()
     async deleteAllStream() {
-        return Result.okData(await this.streamService.updateDeletetime())
+        return Result.okData(await this.streamService.deleteAll())
     }
 }

@@ -402,3 +402,4 @@ pkg
 ormconfig.json
 *.db-shm
 *.db-wal
+package-lock.json

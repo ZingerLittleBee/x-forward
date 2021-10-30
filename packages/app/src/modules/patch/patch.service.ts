@@ -85,8 +85,8 @@ export class PatchService {
         max_conns && (resStr += ` max_conns=${max_conns}`)
         max_fails && (resStr += ` max_fails=${max_fails}`)
         fail_timeout && (resStr += ` fail_timeout=${fail_timeout}`)
-        backup && (resStr += ` ${backup}`)
-        down && (resStr += ` ${down}`)
+        backup && (resStr += ` backup`)
+        down && (resStr += ` down`)
         return (resStr += ';')
     }
 }
