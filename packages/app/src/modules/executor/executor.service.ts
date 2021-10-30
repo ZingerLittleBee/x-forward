@@ -99,6 +99,10 @@ export class ExecutorService implements OnModuleInit {
             this.initLocalExecutor(nginxRes.replace('\n', ''))
         } else {
             let { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
+            if (!stdout) {
+                Logger.error(`自动获取 nginx 环境失败, 请在 .env 配置`)
+                throw new Error('env of nginx not found')
+            }
             this.initDockerExecutor(stdout.replace('\n', ''))
         }
         Logger.debug(`当前 nginx 执行环境为 ${inspect(await this.cacheManager.get(EnvEnum.EFFECTED_NGINX))}`)

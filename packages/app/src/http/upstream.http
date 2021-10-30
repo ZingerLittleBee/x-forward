@@ -1,0 +1,39 @@
+@url = http://localhost:3000/upstream
+
+### create upstream
+POST {{url}}/
+Content-Type: application/json
+
+{
+    "name": "test7",
+    "server": [
+        {
+            "upstreamHost": "upstream.test",
+            "upstreamPort": "1231"
+        }
+    ]
+}
+
+### findAll
+GET {{url}}/
+
+### findOne
+GET {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+
+### update
+PATCH {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+Content-Type: application/json
+
+{
+    "name": "patch-test",
+    "server": [
+        {
+            "id": "afbbc262-9897-45df-8731-33d7d126299c",
+            "upstreamHost": "upstream.patch",
+            "upstreamPort": "11312"
+        }
+    ]
+}
+
+### remove
+DELETE {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
