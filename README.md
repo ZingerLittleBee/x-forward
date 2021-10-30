@@ -65,7 +65,6 @@ The following are the features I want to achieve or are under development:
 -   [x] 使用 pkg 构建后端模块, 放入容器使用
 -   [x] 数据库存储表的 crud
 -   [x] 更新实体关系
--   [ ] 数据库存储表的 crud
 -   [ ] 单元测试
 -   [ ] 前端 API 对接
 -   [ ] deploy 相关的 dockerfile 和 shell 脚本
@@ -93,4 +92,3 @@ The following are the features I want to achieve or are under development:
 -   2021-10-25: 1. change sqlite engine 2. relieve coupling with .env
 -   2021-10-27: add stream file patch funtion
 -   2021-10-30: add 'upstream' module
--   2021-10-27: add stream file patch funtion
