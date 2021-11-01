@@ -11,7 +11,7 @@ export class UpstreamEntity extends CommonEntity {
     name: string
 
     @AutoMap()
-    @Column({ name: 'load_balancing', type: 'tinyint', nullable: true })
+    @Column({ name: 'load_balancing', type: 'tinyint', nullable: true, default: () => NginxLoadBalancingEnum.poll })
     loadBalancing?: NginxLoadBalancingEnum
 
     @AutoMap({ typeFn: () => ServerEntity })

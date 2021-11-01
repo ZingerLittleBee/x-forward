@@ -53,7 +53,7 @@ export class EnvService {
      * @returns 路径下的所有文件夹
      */
     async getDirByUrl(url: string) {
-        return this.gatewayService.fetchDirByUrl(url)
+        return this.gatewayService.fetchDirectoryByUrl(url)
     }
 
     /**

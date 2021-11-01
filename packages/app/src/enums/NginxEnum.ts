@@ -1,4 +1,4 @@
-enum NginxConfigArgsReflectEnum {
+export enum NginxConfigArgsReflectEnum {
     'prefix' = '目录前缀',
     'sbin-path' = '执行文件路径',
     'modules-path' = '模块路径',
@@ -46,7 +46,7 @@ enum NginxConfigArgsReflectEnum {
     'with-ld-opt' = '链接期间附加参数'
 }
 
-enum NginxConfigArgsEnum {
+export enum NginxConfigArgsEnum {
     PREFIX = 'prefix',
     SBIN_PATH = 'sbin-path',
     MODULES_PATH = 'modules-path',
@@ -94,7 +94,7 @@ enum NginxConfigArgsEnum {
     WITH_LD_OPT = 'with-ld-opt'
 }
 
-enum NginxLoadBalancingEnum {
+export enum NginxLoadBalancingEnum {
     // Nginx根据请求次数，将每个请求均匀分配到每台服务器
     poll,
     weight,
@@ -106,4 +106,12 @@ enum NginxLoadBalancingEnum {
     url_hash
 }
 
-export { NginxLoadBalancingEnum, NginxConfigArgsEnum, NginxConfigArgsReflectEnum }
+export enum ProtocolEnum {
+    TCP = 'tcp',
+    UDP = 'udp'
+}
+
+export enum RetriesEnum {
+    ON = 'on',
+    OFF = 'off'
+}

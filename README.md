@@ -88,7 +88,15 @@ The following are the features I want to achieve or are under development:
 -   2021-10-03: nginx 系统配置读取
 -   2021-10-07: 根据模版文件生成 conf
 -   2021-10-13: 环境相关功能模块分离, 实现 x-forward in local, nginx in docker, ExecutorInterface 功能接口
--   2021-10-20: 1. add local-executor, 2. import pkg to package nest.js project into an executable
--   2021-10-25: 1. change sqlite engine 2. relieve coupling with .env
+-   2021-10-20:
+    1. add local-executor
+    2. import pkg to package nest.js project into an executable
+-   2021-10-25:
+    1. change sqlite engine
+    2. relieve coupling with .env
 -   2021-10-27: add stream file patch funtion
 -   2021-10-30: add 'upstream' module
+-   2021-11-01:
+    1. add patch-event
+    2. change stream entity
+    3. use gateway dispatch request

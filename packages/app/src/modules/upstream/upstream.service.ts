@@ -29,6 +29,15 @@ export class UpstreamService {
         return this.upstreamRepository.findOne({ name: name })
     }
 
+    findByNames(names: string[]) {
+        return this.upstreamRepository
+            .createQueryBuilder()
+            .select('upstream')
+            .from(UpstreamEntity, 'upstream')
+            .where('upstream.name IN (:...names)', { names })
+            .getMany()
+    }
+
     findOne(id: string) {
         return this.upstreamRepository.findOne(id)
     }

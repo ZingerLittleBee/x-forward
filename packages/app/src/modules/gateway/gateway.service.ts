@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common'
 import { ExecutorService } from '../executor/executor.service'
+import { StreamServer, StreamUpstream } from '../render/render.interface'
+import { RenderService } from '../render/render.service'
 import { GatewayApi } from './gateway.interface'
 
 @Injectable()
 export class GatewayService implements GatewayApi {
-    constructor(private executorService: ExecutorService) {}
+    constructor(private executorService: ExecutorService, private renderService: RenderService) {}
 
     async fetchNginxConfigArgs() {
         return this.executorService.getNginxConfigAargs()
@@ -14,11 +16,11 @@ export class GatewayService implements GatewayApi {
         return this.executorService.getNginxStreamConfigContent()
     }
 
-    async fetchDirByUrl(url: string) {
+    async fetchDirectoryByUrl(url: string) {
         return (await this.executorService.getDirByUrl(url))?.split('\n').filter(r => r !== '')
     }
 
-    streamPatch(content: string) {
-        this.executorService.patchStream(content)
+    streamPatch(servers: StreamServer[], upstreams?: StreamUpstream[]) {
+        this.executorService.patchStream(this.renderService.renderStream(servers, upstreams))
     }
 }

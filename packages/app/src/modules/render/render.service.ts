@@ -5,15 +5,27 @@ import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { v4, validate } from 'uuid'
-import nginxStreamConfig from '../../template/nginxStreamConfig'
 import { getEnvSetting } from '../../utils/env.util'
-import { GatewayService } from '../gateway/gateway.service'
-import { StreamServer, StreamUpstream, UpstreamServer } from './patch.api'
+import { StreamServer, StreamUpstream, UpstreamServer } from './render.interface'
+import nginxStreamConfig from './template/nginxStreamConfig'
 
 @Injectable()
-export class PatchService {
-    constructor(private gatewayService: GatewayService) {
-        configure({ autoescape: true, trimBlocks: true, lstripBlocks: true })
+export class RenderService {
+    constructor() {
+        configure({ autoescape: true, trimBlocks: true })
+    }
+
+    renderStream(servers: StreamServer[], upstreams?: StreamUpstream[]) {
+        return renderString(nginxStreamConfig, {
+            upstreams,
+            servers,
+            generateLoadBalancing: this.generateLoadBalancing,
+            generateUpstreamServer: this.generateUpstreamServer
+        })
+        // writeFile(this.generatorTempPath('stream'), streamFileContent, 'utf-8', err => {
+        //     if (!err) return
+        //     Logger.error(`${process.env['STREAM_FILE_NAME']}文件写入失败, ${err}`)
+        // })
     }
 
     /**
@@ -40,20 +52,6 @@ export class PatchService {
         }
         // 不存在, 则创建
         return join(tempDir, `${v4()}.conf`)
-    }
-
-    patchStream(upstreams: StreamUpstream[], servers: StreamServer[]) {
-        const streamFileContent = renderString(nginxStreamConfig, {
-            upstreams,
-            servers,
-            generateLoadBalancing: this.generateLoadBalancing,
-            generateUpstreamServer: this.generateUpstreamServer
-        })
-        this.gatewayService.streamPatch(streamFileContent)
-        // writeFile(this.generatorTempPath('stream'), streamFileContent, 'utf-8', err => {
-        //     if (!err) return
-        //     Logger.error(`${process.env['STREAM_FILE_NAME']}文件写入失败, ${err}`)
-        // })
     }
 
     // 生成负载均衡算法

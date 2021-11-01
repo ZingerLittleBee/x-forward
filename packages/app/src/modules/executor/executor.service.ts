@@ -2,7 +2,7 @@ import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { EnvEnum } from 'src/enums/EnvEnum'
-import { streamBlock, streamIndule } from 'src/template/nginxMainConfig'
+import { streamBlock, streamIndule } from 'src/modules/render/template/nginxMainConfig'
 import { findSomething } from 'src/utils/BashUtil'
 import { getEnvSetting } from 'src/utils/env.util'
 import { inspect } from 'util'

@@ -9,6 +9,7 @@ import { UpstreamService } from './upstream.service'
 @Module({
     imports: [TypeOrmModule.forFeature([UpstreamEntity]), ServerModule],
     controllers: [UpstreamController],
-    providers: [UpstreamService, UpstreamProfile]
+    providers: [UpstreamService, UpstreamProfile],
+    exports: [UpstreamService]
 })
 export class UpstreamModule {}

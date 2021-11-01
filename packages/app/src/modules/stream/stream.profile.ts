@@ -1,7 +1,7 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs'
 import type { Mapper } from '@automapper/types'
 import { StreamDto } from './stream.dto'
-import { Stream } from './stream.entity'
+import { StreamEntity } from './stream.entity'
 import { StreamVo } from './stream.vo'
 
 export class StreamProfile extends AutomapperProfile {
@@ -11,10 +11,10 @@ export class StreamProfile extends AutomapperProfile {
 
     mapProfile() {
         return (mapper: Mapper) => {
-            mapper.createMap(Stream, StreamDto)
-            mapper.createMap(StreamDto, Stream)
-            mapper.createMap(Stream, StreamVo)
-            mapper.createMap(StreamVo, Stream)
+            mapper.createMap(StreamEntity, StreamDto)
+            mapper.createMap(StreamDto, StreamEntity)
+            mapper.createMap(StreamEntity, StreamVo)
+            mapper.createMap(StreamVo, StreamEntity)
         }
     }
 }

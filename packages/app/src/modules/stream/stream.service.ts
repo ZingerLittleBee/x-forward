@@ -1,17 +1,20 @@
 import { InjectMapper } from '@automapper/nestjs'
 import { Mapper } from '@automapper/types'
 import { Injectable } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
+import { EventEnum } from 'src/enums/event.enum'
 import { Repository } from 'typeorm'
-import { Stream } from './stream.entity'
+import { StreamEntity } from './stream.entity'
 
 @Injectable()
 export class StreamService {
     constructor(
-        @InjectRepository(Stream)
-        private userRepository: Repository<Stream>,
-        @InjectMapper() private blahMapper: Mapper
+        @InjectRepository(StreamEntity)
+        private userRepository: Repository<StreamEntity>,
+        @InjectMapper() private blahMapper: Mapper,
+        private eventEmitter: EventEmitter2
     ) {}
 
     /**
@@ -19,7 +22,7 @@ export class StreamService {
      * 排除 delete_time 不为空的记录
      * @returns Stream[]
      */
-    streamList(): Promise<Stream[]> {
+    streamList(): Promise<StreamEntity[]> {
         return this.userRepository.find()
     }
 
@@ -28,8 +31,10 @@ export class StreamService {
      * @param streamEntities Stream[]
      * @returns Stream[]
      */
-    streamSave(streamEntities: Stream[]) {
-        return this.userRepository.save(streamEntities)
+    async streamSave(streamEntities: StreamEntity[]) {
+        const res = await this.userRepository.save(streamEntities)
+        this.eventEmitter.emit(EventEnum.CONFIG_CREATED, res)
+        return res
     }
 
     /**
@@ -50,12 +55,12 @@ export class StreamService {
      * @param streamEntity 只需要包含需要更新的值
      */
     @Preprocess()
-    patchStreamById(id: string, @Optimized() streamEntity: Stream) {
+    patchStreamById(id: string, @Optimized() streamEntity: StreamEntity) {
         return this.userRepository.update(id, streamEntity)
     }
 
     @Preprocess()
-    async patchAllStream(@Optimized() streamEntities: Stream[]) {
+    async patchAllStream(@Optimized() streamEntities: StreamEntity[]) {
         return Promise.all(streamEntities.map(s => this.patchStreamById(s.id, s)))
     }
 
@@ -72,6 +77,6 @@ export class StreamService {
      * @returns affect rows
      */
     deleteAll() {
-        return this.userRepository.createQueryBuilder().update(Stream).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+        return this.userRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
     }
 }

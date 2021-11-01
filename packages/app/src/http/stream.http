@@ -14,16 +14,31 @@ Content-Type: application/json
 
 [{
     "transitHost": "aereqbv.com",
-    "transitPort": 56789,
-    "remoteHost": "qrxfaf.com",
+    "transitPort": 1111,
+    "remoteHost": "baidu.com",
     "remotePort": 4653,
-    "loadBalancing": 1
+    "loadBalancing": 1,
+    "protocol": "udp",
+    "isRetries": "on",
+    "tries": "5",
+    "retriesTimeout": "5s",
+    "connectTimeout": "2s",
+    "uploadRate": "100",
+    "downloadRate": "100",
+    "proxyTimeout": "2s"
 },{
     "transitHost": "aereqbv.com",
-    "transitPort": 5678,
-    "remoteHost": "qrxfaf.com",
+    "transitPort": 1111,
+    "remoteHost": "baidu.com",
     "remotePort": 4653,
-    "loadBalancing": 1
+    "loadBalancing": 1,
+    "isRetries": "on",
+    "tries": "5",
+    "retriesTimeout": "5s",
+    "connectTimeout": "2s",
+    "uploadRate": "100",
+    "downloadRate": "100",
+    "proxyTimeout": "2s"
 }]
 
 ### 更新 stream 可用状态

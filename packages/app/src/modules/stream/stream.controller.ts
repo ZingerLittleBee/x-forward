@@ -1,59 +1,18 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
-import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { Result } from 'src/utils/Result'
-import { PatchApi } from '../patch/patch.api'
 import { StreamDto } from './stream.dto'
-import { Stream } from './stream.entity'
+import { StreamEntity } from './stream.entity'
 import { StreamService } from './stream.service'
 import { StreamVo } from './stream.vo'
 
 @Controller('stream')
 export class StreamController {
-    constructor(private streamService: StreamService, private patchApi: PatchApi) {}
-
-    @Get('test')
-    test() {
-        let upstreams = [
-            {
-                name: 'upstream1',
-                load_balancing: NginxLoadBalancingEnum.poll,
-                server: [
-                    {
-                        upstream_host: '192.168.0.1',
-                        upstream_port: 9527,
-                        weight: 10,
-                        max_conns: 0,
-                        max_fails: 10,
-                        fail_timeout: '10s'
-                    },
-                    {
-                        upstream_host: '192.168.0.2',
-                        upstream_port: 9527,
-                        weight: 10,
-                        max_conns: 0,
-                        max_fails: 10,
-                        fail_timeout: '10s'
-                    }
-                ]
-            }
-        ]
-        let servers = [
-            {
-                listen_port: 9527,
-                proxy_pass: 'upstream1'
-            },
-            {
-                listen_port: 9528,
-                proxy_pass: 'upstream1'
-            }
-        ]
-        this.patchApi.streamPatch(upstreams, servers)
-    }
+    constructor(private streamService: StreamService) {}
 
     @Get()
-    @UseInterceptors(MapInterceptor(StreamVo, Stream, { isArray: true }))
-    async getAllStream(): Promise<Stream[]> {
+    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
+    async getAllStream(): Promise<StreamEntity[]> {
         return this.streamService.streamList()
     }
 
@@ -63,8 +22,8 @@ export class StreamController {
      * @returns 添加的 id
      */
     @Post()
-    addStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) stream: StreamDto[]) {
-        return this.streamService.streamSave(stream as Stream[])
+    addStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) stream: StreamDto[]) {
+        return this.streamService.streamSave(stream as StreamEntity[])
     }
 
     /**
@@ -81,8 +40,8 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch(':id')
-    async updateStreamById(@Param('id') id: string, @Body(MapPipe(Stream, StreamDto)) stream: StreamDto) {
-        return Result.okData((await this.streamService.patchStreamById(id, stream as Stream)).affected)
+    async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
+        return Result.okData((await this.streamService.patchStreamById(id, stream as StreamEntity)).affected)
     }
 
     /**
@@ -90,9 +49,9 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch()
-    async updateAllStream(@Body(MapPipe(Stream, StreamDto, { isArray: true })) streams: StreamDto[]) {
+    async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
         // 剔除 id 为空的选项
-        return Result.okData(await this.streamService.patchAllStream(streams.filter(s => s.id) as Stream[]))
+        return Result.okData(await this.streamService.patchAllStream(streams.filter(s => s.id) as StreamEntity[]))
     }
 
     /**

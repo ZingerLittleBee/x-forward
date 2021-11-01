@@ -1,5 +1,6 @@
 import { AutoMap } from '@automapper/classes'
 import { IsNumberString, IsString } from 'class-validator'
+import { ProtocolEnum, RetriesEnum } from 'src/enums/NginxEnum'
 import { StateEnum } from 'src/enums/StatusEnum'
 
 export class StreamDto {
@@ -25,6 +26,30 @@ export class StreamDto {
     @AutoMap()
     @IsNumberString()
     readonly remotePort: number
+
+    @AutoMap()
+    protocol?: ProtocolEnum
+
+    @AutoMap()
+    isRetries?: RetriesEnum
+
+    @AutoMap()
+    tries: number
+
+    @AutoMap()
+    retriesTimeout?: string
+
+    @AutoMap()
+    connectTimeout?: string
+
+    @AutoMap()
+    uploadRate?: string
+
+    @AutoMap()
+    downloadRate?: string
+
+    @AutoMap()
+    proxyTimeout?: string
 
     @AutoMap()
     @IsNumberString()
