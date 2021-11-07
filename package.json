@@ -3,6 +3,7 @@
   "private": true,
   "scripts": {
     "app:dev": "cd packages/app && yarn dev",
+    "app:test": "cd packages/app && yarn test",
     "install": "lerna bootstrap",
     "list": "lerna list",
     "clean": "lerna clean"

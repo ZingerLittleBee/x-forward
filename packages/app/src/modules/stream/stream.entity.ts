@@ -2,7 +2,8 @@ import { AutoMap } from '@automapper/classes'
 import { CommonEntity } from 'src/common/common.entity'
 import { NginxLoadBalancingEnum, ProtocolEnum, RetriesEnum } from 'src/enums/NginxEnum'
 import { StatusEnum } from 'src/enums/StatusEnum'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { UpstreamEntity } from '../upstream/upstream.entity'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
@@ -13,10 +14,6 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @Column({ name: 'transit_port', type: 'int' })
     transitPort: number
-
-    @AutoMap()
-    @Column({ name: 'upstream', type: 'varchar', nullable: true })
-    upstream?: string
 
     @AutoMap()
     @Column({ name: 'remote_host', type: 'varchar', nullable: true })
@@ -69,4 +66,9 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @Column({ name: 'comment', type: 'varchar', nullable: true })
     comment?: string
+
+    @AutoMap({ typeFn: () => UpstreamEntity })
+    @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'upstream_id' })
+    upstreamId?: string
 }

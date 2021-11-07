@@ -1,11 +1,14 @@
 import { Injectable } from '@nestjs/common'
+import { omit } from 'lodash'
 import { ExecutorService } from '../executor/executor.service'
-import { StreamServer, StreamUpstream } from '../render/render.interface'
+import { RenderModel } from '../render/render.interface'
 import { RenderService } from '../render/render.service'
-import { GatewayApi } from './gateway.interface'
+import { StreamService } from '../stream/stream.service'
+import { UpstreamService } from '../upstream/upstream.service'
+import { ExecutorGatewayApi, ModelGatewayApi } from './gateway.interface'
 
 @Injectable()
-export class GatewayService implements GatewayApi {
+export class ExecutorGatewayService implements ExecutorGatewayApi {
     constructor(private executorService: ExecutorService, private renderService: RenderService) {}
 
     async fetchNginxConfigArgs() {
@@ -20,7 +23,30 @@ export class GatewayService implements GatewayApi {
         return (await this.executorService.getDirByUrl(url))?.split('\n').filter(r => r !== '')
     }
 
-    streamPatch(servers: StreamServer[], upstreams?: StreamUpstream[]) {
-        this.executorService.patchStream(this.renderService.renderStream(servers, upstreams))
+    streamPatch(renderModel: RenderModel) {
+        this.executorService.patchStream(this.renderService.renderStream(renderModel))
+    }
+}
+
+@Injectable()
+export class ModelGatewayService implements ModelGatewayApi {
+    constructor(private readonly upstreamService: UpstreamService, private readonly streamService: StreamService) {}
+
+    async getFullStream() {
+        let upstreams = await this.upstreamService.findAll()
+        let streams = await this.streamService.findNullFK()
+        streams = streams.concat(
+            upstreams
+                .map(u => {
+                    u.stream?.forEach(s => (s.upstreamId = u.id))
+                    return u.stream
+                })
+                .flat()
+        )
+        upstreams = upstreams.map(u => omit(u, 'stream'))
+        return {
+            streamEntities: streams,
+            upstreamEntities: upstreams
+        }
     }
 }

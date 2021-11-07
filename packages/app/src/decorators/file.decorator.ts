@@ -1,4 +1,4 @@
-import { existsSync, mkdirSync } from "fs"
+import { existsSync, mkdirSync } from 'fs'
 import { $, nothrow } from 'zx'
 
 /**
@@ -9,7 +9,7 @@ import { $, nothrow } from 'zx'
 export const MakesureDirectoryExists = (isDocker?: boolean) => {
     return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
         let originalMethod = descriptor.value
-        descriptor.value = async function(...args: any[]) {
+        descriptor.value = async function (...args: any[]) {
             const res = await Reflect.apply(originalMethod, this, args)
             if (isDocker) {
                 let { exitCode } = await nothrow($`docker exec ${this.containerName} ls ${res}`)

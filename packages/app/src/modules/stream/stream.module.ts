@@ -9,6 +9,7 @@ import { StreamService } from './stream.service'
 @Module({
     imports: [TypeOrmModule.forFeature([StreamEntity]), RenderModule],
     providers: [StreamProfile, StreamService],
-    controllers: [StreamController]
+    controllers: [StreamController],
+    exports: [StreamService]
 })
 export class StreamModule {}

@@ -1,11 +1,11 @@
 export default `{% for upstream in upstreams %}
 upstream {{upstream['name']}} {
-  {% if generateLoadBalancing(upstream) %}
+{% if generateLoadBalancing(upstream) %}
   {{generateLoadBalancing(upstream)}}
-  {% endif %}
-  {% for server in upstream['server'] %}
+{% endif %}
+{% for server in upstream['server'] %}
   {{generateUpstreamServer(server)}}
-  {% endfor %}
+{% endfor %}
 }
 {% endfor %}
 

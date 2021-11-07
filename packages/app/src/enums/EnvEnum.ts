@@ -16,7 +16,8 @@ enum EnvEnum {
     TEMP_FILE_NAME = 'TEMP_FILE_NAME',
 
     // nginx 主 config 文件名, 完整路径为: prefix/${NGINX_MAIN_CONFIG_NAME}
-    NGINX_MAIN_CONFIG_NAME = 'NGINX_MAIN_CONFIG_NAME'
+    NGINX_MAIN_CONFIG_NAME = 'NGINX_MAIN_CONFIG_NAME',
+    DNS_SERVERS = 'DNS_SERVERS'
 }
 
 export { EnvEnum }

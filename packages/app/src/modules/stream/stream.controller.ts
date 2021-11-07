@@ -1,6 +1,7 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
 import { Result } from 'src/utils/Result'
+import { CreateStreamDto } from './create-stream.dto'
 import { StreamDto } from './stream.dto'
 import { StreamEntity } from './stream.entity'
 import { StreamService } from './stream.service'
@@ -13,18 +14,23 @@ export class StreamController {
     @Get()
     @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
     async getAllStream(): Promise<StreamEntity[]> {
-        return this.streamService.streamList()
+        return this.streamService.findAll()
     }
 
-    /**
-     * 批量添加 stream
-     * @param streamEntitys Stream[]
-     * @returns 添加的 id
-     */
     @Post()
-    addStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) stream: StreamDto[]) {
-        return this.streamService.streamSave(stream as StreamEntity[])
+    createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
+        return this.streamService.create(stream as StreamEntity)
     }
+
+    // /**
+    //  * 批量添加 stream
+    //  * @param streamEntitys Stream[]
+    //  * @returns 添加的 id
+    //  */
+    // @Post()
+    // createStream(@Body(MapPipe(StreamEntity, CreateStreamDto, { isArray: true })) stream: CreateStreamDto[]) {
+    //     return this.streamService.streamSaveAll(stream as StreamEntity[])
+    // }
 
     /**
      * 更新 stream 规则的可用状态

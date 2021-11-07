@@ -1,7 +1,9 @@
 import { NginxConfig } from '../executor/interface/executor.interface'
-import { StreamServer, StreamUpstream } from '../render/render.interface'
+import { RenderModel } from '../render/render.interface'
+import { StreamEntity } from '../stream/stream.entity'
+import { UpstreamEntity } from '../upstream/upstream.entity'
 
-export interface GatewayApi {
+export interface ExecutorGatewayApi {
     /**
      * fetch args of nginx configuration
      * @returns NginxConfig
@@ -26,5 +28,9 @@ export interface GatewayApi {
      * @param servers StreamServer[]
      * @param upstreams StreamUpstream[]
      */
-    streamPatch: (servers: StreamServer[], upstreams?: StreamUpstream[]) => void
+    streamPatch: (renderModel: RenderModel) => void
+}
+
+export interface ModelGatewayApi {
+    getFullStream: () => Promise<{ streamEntities: StreamEntity[]; upstreamEntities: UpstreamEntity[] }>
 }

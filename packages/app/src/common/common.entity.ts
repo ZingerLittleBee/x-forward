@@ -5,19 +5,19 @@ import { Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, Upd
 export abstract class CommonEntity {
     @AutoMap()
     @PrimaryGeneratedColumn('uuid')
-    id: string
+    id?: string
 
     @AutoMap()
     @Column({ default: () => StateEnum.Able })
-    state: StateEnum
+    state?: StateEnum
 
     @AutoMap()
     @CreateDateColumn({ name: 'create_time' })
-    createTime: Date
+    createTime?: Date
 
     @UpdateDateColumn({ name: 'update_time' })
-    updateTime: Date
+    updateTime?: Date
 
     @DeleteDateColumn({ name: 'delete_time', nullable: true })
-    deleteTime: Date
+    deleteTime?: Date
 }

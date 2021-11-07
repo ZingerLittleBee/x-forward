@@ -43,3 +43,8 @@ export interface UpstreamServer {
     // 将服务器标记为永久不可用。
     down?: 'down'
 }
+
+export interface RenderModel {
+    servers?: StreamServer[]
+    upstreams?: StreamUpstream[]
+}

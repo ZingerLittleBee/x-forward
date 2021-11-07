@@ -50,4 +50,7 @@ export class StreamVo {
 
     @AutoMap()
     readonly commment?: string
+
+    @AutoMap()
+    readonly upstreamId?: string
 }

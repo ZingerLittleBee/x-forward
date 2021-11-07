@@ -8,7 +8,7 @@ import { ServerEntity } from './entities/server.entity'
 export class ServerService {
     constructor(@InjectRepository(ServerEntity) private serverRepository: Repository<ServerEntity>) {}
 
-    create(createServer: ServerEntity[]) {
+    createAll(createServer: ServerEntity[]) {
         return this.serverRepository.save(createServer)
     }
 

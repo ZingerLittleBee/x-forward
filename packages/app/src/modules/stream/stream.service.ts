@@ -1,10 +1,6 @@
-import { InjectMapper } from '@automapper/nestjs'
-import { Mapper } from '@automapper/types'
 import { Injectable } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
-import { EventEnum } from 'src/enums/event.enum'
 import { Repository } from 'typeorm'
 import { StreamEntity } from './stream.entity'
 
@@ -12,30 +8,60 @@ import { StreamEntity } from './stream.entity'
 export class StreamService {
     constructor(
         @InjectRepository(StreamEntity)
-        private userRepository: Repository<StreamEntity>,
-        @InjectMapper() private blahMapper: Mapper,
-        private eventEmitter: EventEmitter2
+        private streamRepository: Repository<StreamEntity>
     ) {}
 
     /**
      * 获取所有 stream 规则
      * 排除 delete_time 不为空的记录
-     * @returns Stream[]
+     * @returns StreamEntity[]
      */
-    streamList(): Promise<StreamEntity[]> {
-        return this.userRepository.find()
+    async findAll(): Promise<StreamEntity[]> {
+        return this.streamRepository.find({ loadRelationIds: true })
+    }
+
+    /**
+     * find record which fk is null
+     * @returns StreamEntity[]
+     */
+    async findNullFK() {
+        return this.streamRepository.createQueryBuilder().select('stream').from(StreamEntity, 'stream').where('stream_upstream_id IS NULL').getMany()
     }
 
     /**
      * 添加 stream 规则
-     * @param streamEntities Stream[]
-     * @returns Stream[]
+     * @param streamEntity Stream
+     * @returns StreamEntity
      */
-    async streamSave(streamEntities: StreamEntity[]) {
-        const res = await this.userRepository.save(streamEntities)
-        this.eventEmitter.emit(EventEnum.CONFIG_CREATED, res)
-        return res
+    async create(streamEntity: StreamEntity) {
+        return await this.streamRepository.save(streamEntity)
     }
+
+    /**
+     * 批量添加 stream 规则
+     * @param streamEntities Stream[]
+     * @returns StreamEntity[]
+     */
+    async createAll(streamEntities: StreamEntity[]) {
+        return await this.streamRepository.save(streamEntities)
+    }
+
+    // /**
+    //  * 添加 stream 规则
+    //  * @param streamEntities StreamEntity[]
+    //  * @returns StreamEntity[]
+    //  */
+    // async streamSaveAll(streamEntities: StreamEntity[]) {
+    //     return Promise.all(streamEntities.map(s => this.create(s)))
+    //     // let upstreams = streamEntities.map(s => s.upstream).filter(s => s)
+    //     // if (upstreams) {
+    //     //     console.log('upstreams', upstreams)
+    //     //     this.upstreamService.createAll(upstreams)
+    //     // }
+    //     // const res = await this.userRepository.save(streamEntities)
+    //     // this.eventEmitter.emit(EventEnum.CONFIG_CREATED, res)
+    //     // return res
+    // }
 
     /**
      * 更新 stream 的 state 状态
@@ -46,7 +72,16 @@ export class StreamService {
      * @returns UpdateResult
      */
     stateUpdate(id: number, state: number) {
-        return this.userRepository.update(id, { state: state })
+        return this.streamRepository.update(id, { state: state })
+    }
+
+    @Preprocess()
+    update(id: string, @Optimized() streamEntity: StreamEntity) {
+        return this.streamRepository.update(id, streamEntity)
+    }
+
+    updateAll(streamEntities: StreamEntity[]) {
+        return streamEntities.map(s => this.update(s.id, s))
     }
 
     /**
@@ -56,7 +91,7 @@ export class StreamService {
      */
     @Preprocess()
     patchStreamById(id: string, @Optimized() streamEntity: StreamEntity) {
-        return this.userRepository.update(id, streamEntity)
+        return this.streamRepository.update(id, streamEntity)
     }
 
     @Preprocess()
@@ -69,7 +104,7 @@ export class StreamService {
      * @param id primary key
      */
     delete(id: string) {
-        return this.userRepository.softDelete(id)
+        return this.streamRepository.softDelete(id)
     }
 
     /**
@@ -77,6 +112,10 @@ export class StreamService {
      * @returns affect rows
      */
     deleteAll() {
-        return this.userRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+        return this.streamRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+    }
+
+    removeByFK(id: string) {
+        this.streamRepository.createQueryBuilder().softDelete().from(StreamEntity).where('upstream_id = :id', { id }).execute()
     }
 }

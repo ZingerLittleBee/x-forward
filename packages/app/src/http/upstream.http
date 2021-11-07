@@ -8,10 +8,38 @@ Content-Type: application/json
     "name": "test7",
     "server": [
         {
-            "upstreamHost": "upstream.test",
+            "upstreamHost": "baidu.com",
             "upstreamPort": "1231"
         }
-    ]
+    ],
+    "stream": [{
+        "transitHost": "aereqbv.com",
+        "transitPort": 1111,
+        "remoteHost": "baidu.com",
+        "remotePort": 4653,
+        "loadBalancing": 1,
+        "protocol": "udp",
+        "isRetries": "on",
+        "tries": "5",
+        "retriesTimeout": "5s",
+        "connectTimeout": "2s",
+        "uploadRate": "100",
+        "downloadRate": "100",
+        "proxyTimeout": "2s"
+    },{
+        "transitHost": "aereqbv.com",
+        "transitPort": 1111,
+        "remoteHost": "baidu.com",
+        "remotePort": 4653,
+        "loadBalancing": 1,
+        "isRetries": "on",
+        "tries": "5",
+        "retriesTimeout": "5s",
+        "connectTimeout": "2s",
+        "uploadRate": "100",
+        "downloadRate": "100",
+        "proxyTimeout": "2s"
+    }]
 }
 
 ### findAll

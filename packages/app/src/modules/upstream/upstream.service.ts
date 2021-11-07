@@ -1,24 +1,54 @@
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { EventEmitter2 } from '@nestjs/event-emitter'
 import { InjectRepository } from '@nestjs/typeorm'
 import { omit } from 'lodash'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
+import { EventEnum } from 'src/enums/event.enum'
+import { eventThrottle } from 'src/utils/event.util'
 import { Repository } from 'typeorm'
+import { StreamService } from '../stream/stream.service'
 import { ServerService } from './server/server.service'
 import { UpstreamEntity } from './upstream.entity'
 
 @Injectable()
-export class UpstreamService {
-    constructor(@InjectRepository(UpstreamEntity) private upstreamRepository: Repository<UpstreamEntity>, private serverService: ServerService) {}
+export class UpstreamService implements OnModuleInit {
+    constructor(
+        @InjectRepository(UpstreamEntity) private upstreamRepository: Repository<UpstreamEntity>,
+        private serverService: ServerService,
+        private streamService: StreamService,
+        private eventEmitter: EventEmitter2
+    ) {}
 
-    async create(createUpstream: UpstreamEntity) {
-        if (createUpstream.server) {
-            await this.serverService.create(createUpstream.server)
-        }
-        return this.upstreamRepository.save(createUpstream)
+    triggerCreateEvent: Function
+
+    private initEvent() {
+        this.triggerCreateEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_CREATED, 5000)
+        Logger.verbose(`${EventEnum.CONFIG_CREATED} registered`)
     }
 
-    async createAll(createUpstreams: UpstreamEntity[]) {
-        return Promise.all(createUpstreams.map(upstream => this.create(upstream)))
+    onModuleInit() {
+        this.initEvent()
+    }
+
+    async create(upstream: UpstreamEntity) {
+        // server - foreign key
+        if (upstream.server) {
+            await this.serverService.createAll(upstream.server)
+        }
+        // stream - foreign key
+        if (upstream.stream) {
+            await this.streamService.createAll(upstream.stream)
+        }
+        // trigger event
+        Logger.verbose(`${EventEnum.CONFIG_CREATED} triggered`)
+        let upstreamEntity = await this.upstreamRepository.save(upstream)
+        // just for test
+        this.triggerCreateEvent ? this.triggerCreateEvent() : (this.initEvent(), this.triggerCreateEvent())
+        return upstreamEntity
+    }
+
+    async createAll(upstreams: UpstreamEntity[]) {
+        return Promise.all(upstreams.map(upstream => this.create(upstream)))
     }
 
     findAll() {
@@ -26,16 +56,11 @@ export class UpstreamService {
     }
 
     findByName(name: string) {
-        return this.upstreamRepository.findOne({ name: name })
+        return this.upstreamRepository.findOne({ name })
     }
 
     findByNames(names: string[]) {
-        return this.upstreamRepository
-            .createQueryBuilder()
-            .select('upstream')
-            .from(UpstreamEntity, 'upstream')
-            .where('upstream.name IN (:...names)', { names })
-            .getMany()
+        return names.map(n => this.findByName(n)).filter(n => n)
     }
 
     findOne(id: string) {
@@ -44,11 +69,13 @@ export class UpstreamService {
 
     @Preprocess()
     async update(id: string, @Optimized() updateUpstream: UpstreamEntity) {
-        console.log('updateUpstream', updateUpstream)
         if (updateUpstream.server) {
             this.serverService.updateAll(updateUpstream.server)
         }
-        return this.upstreamRepository.update(id, omit(updateUpstream, 'server'))
+        if (updateUpstream.stream) {
+            this.streamService.updateAll(updateUpstream.stream)
+        }
+        return this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
     }
 
     async remove(id: string) {

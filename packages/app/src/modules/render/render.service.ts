@@ -6,7 +6,8 @@ import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
 import { v4, validate } from 'uuid'
 import { getEnvSetting } from '../../utils/env.util'
-import { StreamServer, StreamUpstream, UpstreamServer } from './render.interface'
+import { checkChain } from './render.check'
+import { RenderModel, StreamUpstream, UpstreamServer } from './render.interface'
 import nginxStreamConfig from './template/nginxStreamConfig'
 
 @Injectable()
@@ -15,10 +16,11 @@ export class RenderService {
         configure({ autoescape: true, trimBlocks: true })
     }
 
-    renderStream(servers: StreamServer[], upstreams?: StreamUpstream[]) {
+    renderStream(renderModel: RenderModel) {
+        checkChain(renderModel)
         return renderString(nginxStreamConfig, {
-            upstreams,
-            servers,
+            upstreams: renderModel.upstreams,
+            servers: renderModel.servers,
             generateLoadBalancing: this.generateLoadBalancing,
             generateUpstreamServer: this.generateUpstreamServer
         })
