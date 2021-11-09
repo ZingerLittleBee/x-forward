@@ -1,31 +1,39 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
+import { EventService } from 'src/modules/event/event.service'
 import { Repository } from 'typeorm'
 import { ServerEntity } from './entities/server.entity'
 
 @Injectable()
 export class ServerService {
-    constructor(@InjectRepository(ServerEntity) private serverRepository: Repository<ServerEntity>) {}
+    constructor(@InjectRepository(ServerEntity) private serverRepository: Repository<ServerEntity>, private readonly eventService: EventService) {}
 
-    create(createServer: ServerEntity[]) {
-        return this.serverRepository.save(createServer)
+    async createAll(createServer: ServerEntity[]) {
+        let res = await this.serverRepository.save(createServer)
+        this.eventService.triggerCreateEvent()
+        return res
     }
 
     @Preprocess()
-    update(id: string, @Optimized() server: ServerEntity) {
-        return this.serverRepository.update(id, server)
+    async update(id: string, @Optimized() server: ServerEntity) {
+        let res = await this.serverRepository.update(id, server)
+        this.eventService.triggerUpdateEvent()
+        return res
     }
 
     updateAll(servers: ServerEntity[]) {
         return Promise.all(servers.map(s => this.update(s.id, s)))
     }
 
-    remove(id: string) {
-        return this.serverRepository.softDelete(id)
+    async remove(id: string) {
+        let res = await this.serverRepository.softDelete(id)
+        this.eventService.triggerDeleteEvent()
+        return res
     }
 
-    removeByFK(id: string) {
-        this.serverRepository.createQueryBuilder().softDelete().from(ServerEntity).where('upstream_id = :id', { id }).execute()
+    async removeByFK(id: string) {
+        await this.serverRepository.createQueryBuilder().softDelete().from(ServerEntity).where('upstream_id = :id', { id }).execute()
+        this.eventService.triggerDeleteEvent()
     }
 }

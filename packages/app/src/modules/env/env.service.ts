@@ -3,14 +3,14 @@ import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS } from '../../utils/Shell'
 import { NginxConfig } from '../executor/interface/executor.interface'
-import { GatewayService } from '../gateway/gateway.service'
+import { ExecutorGatewayService } from '../gateway/gateway.service'
 
 @Injectable()
 export class EnvService {
-    constructor(private gatewayService: GatewayService) {}
+    constructor(private executorGateway: ExecutorGatewayService) {}
 
     async fetchNginxConfigAargs(): Promise<NginxConfig> {
-        return this.gatewayService.fetchNginxConfigArgs()
+        return this.executorGateway.fetchNginxConfigArgs()
     }
 
     /**
@@ -53,13 +53,13 @@ export class EnvService {
      * @returns 路径下的所有文件夹
      */
     async getDirByUrl(url: string) {
-        return this.gatewayService.fetchDirByUrl(url)
+        return this.executorGateway.fetchDirectoryByUrl(url)
     }
 
     /**
      * 获取 nginx stream 文件
      */
     fetchNginxStreamFile() {
-        this.gatewayService.fetchNginxStreamConfigContent()
+        this.executorGateway.fetchNginxStreamConfigContent()
     }
 }

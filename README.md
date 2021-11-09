@@ -1,18 +1,20 @@
 <div align="center">
   <h1>XForward</h1>
-  <p align="center">又双叒叕一个 Nginx UI</p>
+  <p align="center">a Ambitious NginxUI for Stream</p>
 </div>
 
 ## Introduction
 
 ### Feature
 
--   Nginx UI
--   本地 Web 终端
--   监听 nginx 状态
--   管理 Stream 模块
--   管理 HTTP 模块
--   日志信息可视化
+-   Friendly UI
+-   Easier Setup
+-   Docker Support
+-   Rich Configuration Tips
+-   Flexible Choice of Scenarios
+-   Make Set the Stream Module More Easy
+-   Local Web Terminal
+-   Visual Log
 
 ## Table of Contents
 
@@ -68,6 +70,7 @@ The following are the features I want to achieve or are under development:
 -   [ ] 单元测试
 -   [ ] 前端 API 对接
 -   [ ] deploy 相关的 dockerfile 和 shell 脚本
+-   [ ] 多服务器管理
 
 ## Thanks
 
@@ -88,7 +91,16 @@ The following are the features I want to achieve or are under development:
 -   2021-10-03: nginx 系统配置读取
 -   2021-10-07: 根据模版文件生成 conf
 -   2021-10-13: 环境相关功能模块分离, 实现 x-forward in local, nginx in docker, ExecutorInterface 功能接口
--   2021-10-20: 1. add local-executor, 2. import pkg to package nest.js project into an executable
--   2021-10-25: 1. change sqlite engine 2. relieve coupling with .env
+-   2021-10-20:
+    1. add local-executor
+    2. import pkg to package nest.js project into an executable
+-   2021-10-25:
+    1. change sqlite engine
+    2. relieve coupling with .env
 -   2021-10-27: add stream file patch funtion
 -   2021-10-30: add 'upstream' module
+-   2021-11-01:
+    1. add patch-event
+    2. change stream entity
+    3. use gateway dispatch request
+-   2021-11-09: finish backend function basiclly

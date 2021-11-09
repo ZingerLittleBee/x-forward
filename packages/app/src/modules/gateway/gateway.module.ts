@@ -1,10 +1,13 @@
 import { Module } from '@nestjs/common'
 import { ExecutorModule } from '../executor/executor.module'
-import { GatewayService } from './gateway.service'
+import { RenderModule } from '../render/render.module'
+import { StreamModule } from '../stream/stream.module'
+import { UpstreamModule } from '../upstream/upstream.module'
+import { ExecutorGatewayService, ModelGatewayService } from './gateway.service'
 
 @Module({
-    imports: [ExecutorModule],
-    providers: [GatewayService],
-    exports: [GatewayService]
+    imports: [ExecutorModule, RenderModule, UpstreamModule, StreamModule],
+    providers: [ExecutorGatewayService, ModelGatewayService],
+    exports: [ExecutorGatewayService, ModelGatewayService]
 })
 export class GatewayModule {}

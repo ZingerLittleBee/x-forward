@@ -1,31 +1,30 @@
 import { AutoMap } from '@automapper/classes'
-import { IsNumberString, IsString } from 'class-validator'
 import { ProtocolEnum, RetriesEnum } from 'src/enums/NginxEnum'
 import { StateEnum } from 'src/enums/StatusEnum'
+import { Entity } from 'typeorm'
 
-export class StreamDto {
+@Entity('stream')
+export class UpdateStreamDto {
     @AutoMap()
-    readonly id?: string
-
-    @AutoMap()
-    @IsString()
-    readonly transitHost: string
+    state: StateEnum
 
     @AutoMap()
-    @IsNumberString()
-    readonly state: StateEnum
+    transitHost: string
 
     @AutoMap()
-    @IsNumberString()
-    readonly transitPort: number
+    transitPort: number
 
     @AutoMap()
-    @IsString()
-    readonly remoteHost: string
+    remoteHost?: string
 
     @AutoMap()
-    @IsNumberString()
-    readonly remotePort: number
+    remotePort?: number
+
+    @AutoMap()
+    status?: number
+
+    @AutoMap()
+    loadBalancing?: number
 
     @AutoMap()
     protocol?: ProtocolEnum
@@ -52,10 +51,8 @@ export class StreamDto {
     proxyTimeout?: string
 
     @AutoMap()
-    @IsNumberString()
-    readonly loadBalancing?: number
+    comment?: string
 
     @AutoMap()
-    @IsString()
-    readonly commment?: string
+    upstreamId?: string
 }

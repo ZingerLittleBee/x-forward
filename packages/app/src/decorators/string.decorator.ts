@@ -2,7 +2,7 @@ import { EOL } from 'os'
 
 /**
  * 移除返回值的 EOL
- * @returns value without EOL
+ * @returns value remove EOL
  */
 export const RemoveEndOfLine = () => {
     return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {

@@ -1,10 +1,8 @@
-import { Injectable } from '@nestjs/common'
-import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
-import { PatchService } from './patch.service'
+import { NginxLoadBalancingEnum, ProtocolEnum } from 'src/enums/NginxEnum'
 
 // 为了配置项的一目了然, 这里还是遵循 nginx 的下划线写法吧
 export interface StreamServer {
-    protocol?: 'tcp' | 'udp'
+    protocol?: ProtocolEnum
     listen_port: number
     // 失败重试
     proxy_next_upstream?: 'on' | 'off'
@@ -46,13 +44,7 @@ export interface UpstreamServer {
     down?: 'down'
 }
 
-@Injectable()
-export class PatchApi {
-    constructor(private patchService: PatchService) {}
-
-    httpPatch() {}
-
-    streamPatch(upstreams: StreamUpstream[], servers: StreamServer[]) {
-        this.patchService.patchStream(upstreams, servers)
-    }
+export interface RenderModel {
+    servers?: StreamServer[]
+    upstreams?: StreamUpstream[]
 }
