@@ -23,8 +23,8 @@ export class ExecutorGatewayService implements ExecutorGatewayApi {
         return (await this.executorService.getDirByUrl(url))?.split('\n').filter(r => r !== '')
     }
 
-    streamPatch(renderModel: RenderModel) {
-        this.executorService.patchStream(this.renderService.renderStream(renderModel))
+    async streamPatch(renderModel: RenderModel) {
+        this.executorService.patchStream(await this.renderService.renderStream(renderModel))
     }
 }
 

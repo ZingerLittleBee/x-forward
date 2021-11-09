@@ -16,11 +16,11 @@ export class RenderService {
         configure({ autoescape: true, trimBlocks: true })
     }
 
-    renderStream(renderModel: RenderModel) {
-        checkChain(renderModel)
+    async renderStream(renderModel: RenderModel) {
+        const { upstreams, servers } = await checkChain(renderModel)
         return renderString(nginxStreamConfig, {
-            upstreams: renderModel.upstreams,
-            servers: renderModel.servers,
+            upstreams,
+            servers,
             generateLoadBalancing: this.generateLoadBalancing,
             generateUpstreamServer: this.generateUpstreamServer
         })

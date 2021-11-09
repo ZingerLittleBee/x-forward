@@ -1,6 +1,9 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
 import { Result } from 'src/utils/Result'
+import { inspect } from 'util'
+import { checkChain } from '../render/render.check'
+import { RenderModel } from '../render/render.interface'
 import { CreateStreamDto } from './create-stream.dto'
 import { StreamDto } from './stream.dto'
 import { StreamEntity } from './stream.entity'
@@ -10,6 +13,57 @@ import { StreamVo } from './stream.vo'
 @Controller('stream')
 export class StreamController {
     constructor(private streamService: StreamService) {}
+
+    @Get('test')
+    async test() {
+        let renderModel: RenderModel = {
+            servers: [
+                // normal
+                {
+                    listen_port: 1111,
+                    proxy_pass: 'baidu.com:4653'
+                },
+                // error domain
+                {
+                    listen_port: 1112,
+                    proxy_pass: 'xxxzq.qrqw:4653'
+                },
+                // normal
+                {
+                    listen_port: 1113,
+                    proxy_pass: 'test7'
+                },
+                // error upstreamName
+                {
+                    listen_port: 1114,
+                    proxy_pass: 'test8'
+                },
+                // repeated listen_port
+                {
+                    listen_port: 1114,
+                    proxy_pass: 'test8'
+                }
+            ],
+            upstreams: [
+                {
+                    name: 'test7',
+                    server: [
+                        { upstream_host: 'baidu.com', upstream_port: 123 },
+                        { upstream_host: '123q.c', upstream_port: 123 }
+                    ]
+                },
+                {
+                    name: 'test7',
+                    server: [
+                        { upstream_host: 'baidu.com', upstream_port: 123 },
+                        { upstream_host: '123q.c', upstream_port: 123 }
+                    ]
+                }
+            ]
+        }
+        console.log('dnsCheck', inspect(await checkChain(renderModel), { depth: 4 }))
+        console.log('dnsCheck end')
+    }
 
     @Get()
     @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
