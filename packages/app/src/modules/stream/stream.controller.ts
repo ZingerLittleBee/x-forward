@@ -101,7 +101,7 @@ export class StreamController {
      */
     @Patch(':id')
     async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
-        return Result.okData((await this.streamService.patchStreamById(id, stream as StreamEntity)).affected)
+        return Result.okData((await this.streamService.update(id, stream as StreamEntity)).affected)
     }
 
     /**
@@ -111,7 +111,7 @@ export class StreamController {
     @Patch()
     async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
         // 剔除 id 为空的选项
-        return Result.okData(await this.streamService.patchAllStream(streams.filter(s => s.id) as StreamEntity[]))
+        return Result.okData(await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[]))
     }
 
     /**

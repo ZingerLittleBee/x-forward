@@ -1,5 +1,5 @@
 export enum EventEnum {
-    CONFIG_CREATED = 'config.created',
-    CONFIG_PATCH = 'config.patch',
+    CONFIG_CREATE = 'config.create',
+    CONFIG_UPDATE = 'config.update',
     CONFIG_DELETE = 'config.delete'
 }

@@ -117,7 +117,7 @@ const uniqueLocalPortCheck = ({ servers, upstreams }: RenderModel) => {
     let localPorts = new Set()
     servers = servers.filter(s => {
         if (localPorts.has(s.listen_port)) {
-            Logger.warn(`本地端口号: ${s.listen_port} 重复, 将被移除`)
+            Logger.warn(`${inspect(s)}, 本地端口号: ${s.listen_port} 重复, 将被移除`)
             return false
         } else {
             localPorts.add(s.listen_port)
@@ -131,7 +131,7 @@ const uniqueUpstreamNameCheck = ({ servers, upstreams }: RenderModel) => {
     let upstreamNames = new Set()
     upstreams = upstreams.filter(s => {
         if (upstreamNames.has(s.name)) {
-            Logger.warn(`upstream_name: ${s.name} 重复, 将被移除`)
+            Logger.warn(`${inspect(s)}, upstream_name: ${s.name} 重复, 将被移除`)
             return false
         } else {
             upstreamNames.add(s.name)

@@ -1,34 +1,23 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { EventEmitter2 } from '@nestjs/event-emitter'
+import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { omit } from 'lodash'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
 import { EventEnum } from 'src/enums/event.enum'
-import { eventThrottle } from 'src/utils/event.util'
+import { StateEnum } from 'src/enums/StatusEnum'
 import { Repository } from 'typeorm'
+import { EventService } from '../event/event.service'
 import { StreamService } from '../stream/stream.service'
 import { ServerService } from './server/server.service'
 import { UpstreamEntity } from './upstream.entity'
 
 @Injectable()
-export class UpstreamService implements OnModuleInit {
+export class UpstreamService {
     constructor(
         @InjectRepository(UpstreamEntity) private upstreamRepository: Repository<UpstreamEntity>,
         private serverService: ServerService,
         private streamService: StreamService,
-        private eventEmitter: EventEmitter2
+        private eventService: EventService
     ) {}
-
-    triggerCreateEvent: Function
-
-    private initEvent() {
-        this.triggerCreateEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_CREATED, 5000)
-        Logger.verbose(`${EventEnum.CONFIG_CREATED} registered`)
-    }
-
-    onModuleInit() {
-        this.initEvent()
-    }
 
     async create(upstream: UpstreamEntity) {
         // server - foreign key
@@ -40,10 +29,9 @@ export class UpstreamService implements OnModuleInit {
             await this.streamService.createAll(upstream.stream)
         }
         // trigger event
-        Logger.verbose(`${EventEnum.CONFIG_CREATED} triggered`)
         let upstreamEntity = await this.upstreamRepository.save(upstream)
-        // just for test
-        this.triggerCreateEvent ? this.triggerCreateEvent() : (this.initEvent(), this.triggerCreateEvent())
+        this.eventService.triggerCreateEvent()
+        Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
     }
 
@@ -53,6 +41,10 @@ export class UpstreamService implements OnModuleInit {
 
     findAll() {
         return this.upstreamRepository.find()
+    }
+
+    findEffect() {
+        return this.upstreamRepository.find({ state: StateEnum.Able })
     }
 
     findByName(name: string) {
@@ -75,11 +67,17 @@ export class UpstreamService implements OnModuleInit {
         if (updateUpstream.stream) {
             this.streamService.updateAll(updateUpstream.stream)
         }
-        return this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        let res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        this.eventService.triggerUpdateEvent()
+        Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
+        return res
     }
 
     async remove(id: string) {
         this.serverService.removeByFK(id)
-        return this.upstreamRepository.softDelete(id)
+        let res = await this.upstreamRepository.softDelete(id)
+        this.eventService.triggerDeleteEvent()
+        Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)
+        return res
     }
 }

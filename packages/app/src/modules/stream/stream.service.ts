@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess } from 'src/decorators/args.decorator'
+import { StateEnum } from 'src/enums/StatusEnum'
 import { Repository } from 'typeorm'
+import { EventService } from '../event/event.service'
 import { StreamEntity } from './stream.entity'
 
 @Injectable()
 export class StreamService {
     constructor(
         @InjectRepository(StreamEntity)
-        private streamRepository: Repository<StreamEntity>
+        private streamRepository: Repository<StreamEntity>,
+        private readonly eventService: EventService
     ) {}
 
     /**
@@ -25,7 +28,13 @@ export class StreamService {
      * @returns StreamEntity[]
      */
     async findNullFK() {
-        return this.streamRepository.createQueryBuilder().select('stream').from(StreamEntity, 'stream').where('stream_upstream_id IS NULL').getMany()
+        return this.streamRepository
+            .createQueryBuilder()
+            .select('stream')
+            .from(StreamEntity, 'stream')
+            .where('stream.upstream_id IS NULL')
+            .andWhere('stream.state = :state', { state: StateEnum.Able })
+            .getMany()
     }
 
     /**
@@ -34,7 +43,9 @@ export class StreamService {
      * @returns StreamEntity
      */
     async create(streamEntity: StreamEntity) {
-        return await this.streamRepository.save(streamEntity)
+        let res = await this.streamRepository.save(streamEntity)
+        this.eventService.triggerCreateEvent()
+        return res
     }
 
     /**
@@ -43,25 +54,8 @@ export class StreamService {
      * @returns StreamEntity[]
      */
     async createAll(streamEntities: StreamEntity[]) {
-        return await this.streamRepository.save(streamEntities)
+        return this.streamRepository.save(streamEntities)
     }
-
-    // /**
-    //  * 添加 stream 规则
-    //  * @param streamEntities StreamEntity[]
-    //  * @returns StreamEntity[]
-    //  */
-    // async streamSaveAll(streamEntities: StreamEntity[]) {
-    //     return Promise.all(streamEntities.map(s => this.create(s)))
-    //     // let upstreams = streamEntities.map(s => s.upstream).filter(s => s)
-    //     // if (upstreams) {
-    //     //     console.log('upstreams', upstreams)
-    //     //     this.upstreamService.createAll(upstreams)
-    //     // }
-    //     // const res = await this.userRepository.save(streamEntities)
-    //     // this.eventEmitter.emit(EventEnum.CONFIG_CREATED, res)
-    //     // return res
-    // }
 
     /**
      * 更新 stream 的 state 状态
@@ -76,8 +70,9 @@ export class StreamService {
     }
 
     @Preprocess()
-    update(id: string, @Optimized() streamEntity: StreamEntity) {
-        return this.streamRepository.update(id, streamEntity)
+    async update(id: string, @Optimized() streamEntity: StreamEntity) {
+        let res = await this.streamRepository.update(id, streamEntity)
+        return res
     }
 
     updateAll(streamEntities: StreamEntity[]) {
@@ -85,37 +80,28 @@ export class StreamService {
     }
 
     /**
-     * 根据 primary key, streamEntity 更新记录
-     * @param id primary key
-     * @param streamEntity 只需要包含需要更新的值
-     */
-    @Preprocess()
-    patchStreamById(id: string, @Optimized() streamEntity: StreamEntity) {
-        return this.streamRepository.update(id, streamEntity)
-    }
-
-    @Preprocess()
-    async patchAllStream(@Optimized() streamEntities: StreamEntity[]) {
-        return Promise.all(streamEntities.map(s => this.patchStreamById(s.id, s)))
-    }
-
-    /**
      * 更新 delete_time 字段
      * @param id primary key
      */
     delete(id: string) {
-        return this.streamRepository.softDelete(id)
+        let res = this.streamRepository.softDelete(id)
+        this.eventService.triggerDeleteEvent()
+        return res
     }
 
     /**
      * 更新所有记录的 delete_time
      * @returns affect rows
      */
-    deleteAll() {
-        return this.streamRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+    async deleteAll() {
+        let res = await this.streamRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+        this.eventService.triggerDeleteEvent()
+        return res
     }
 
-    removeByFK(id: string) {
-        this.streamRepository.createQueryBuilder().softDelete().from(StreamEntity).where('upstream_id = :id', { id }).execute()
+    async removeByFK(id: string) {
+        let res = await this.streamRepository.createQueryBuilder().softDelete().from(StreamEntity).where('upstream_id = :id', { id }).execute()
+        this.eventService.triggerDeleteEvent()
+        return res
     }
 }

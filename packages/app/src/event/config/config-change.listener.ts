@@ -30,7 +30,7 @@ export class ConfigChangeListener {
             }
         })
         const { servers, upstreams } = this.fieldTransformation(streamEntities, upstreamEntities)
-        Logger.verbose(`Model -> servers: ${inspect(servers)}, upstreams: ${inspect(upstreams)}`)
+        Logger.verbose(`Model -> servers: ${inspect(servers)}, upstreams: ${inspect(upstreams, { depth: 3 })}`)
         return { servers, upstreams }
     }
 
@@ -49,19 +49,21 @@ export class ConfigChangeListener {
         return res
     }
 
-    @OnEvent(EventEnum.CONFIG_CREATED)
-    async handleConfigCreated() {
-        Logger.verbose(`received ${EventEnum.CONFIG_CREATED} event}`)
+    @OnEvent(EventEnum.CONFIG_CREATE)
+    async handleConfigCreate() {
+        Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
         this.executorGateway.streamPatch(await this.collectModels())
     }
 
-    @OnEvent(EventEnum.CONFIG_PATCH)
-    handleConfigPatch() {
-        console.log('received config patch event')
+    @OnEvent(EventEnum.CONFIG_UPDATE)
+    async handleConfigUpdate() {
+        Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
+        this.executorGateway.streamPatch(await this.collectModels())
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
-    handleConfigDelete() {
-        console.log('received config delete event')
+    async handleConfigDelete() {
+        Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
+        this.executorGateway.streamPatch(await this.collectModels())
     }
 }

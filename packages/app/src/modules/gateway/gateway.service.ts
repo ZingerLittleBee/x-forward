@@ -33,7 +33,7 @@ export class ModelGatewayService implements ModelGatewayApi {
     constructor(private readonly upstreamService: UpstreamService, private readonly streamService: StreamService) {}
 
     async getFullStream() {
-        let upstreams = await this.upstreamService.findAll()
+        let upstreams = await this.upstreamService.findEffect()
         let streams = await this.streamService.findNullFK()
         streams = streams.concat(
             upstreams
