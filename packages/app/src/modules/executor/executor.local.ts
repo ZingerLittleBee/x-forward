@@ -1,6 +1,6 @@
 import { Logger } from '@nestjs/common'
 import { Cache } from 'cache-manager'
-import { readdir, readFile } from 'fs/promises'
+import { appendFile, readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
@@ -41,13 +41,13 @@ export class ExecutorLocal implements ExecutorInterface {
         return fetchNginxConfigArgs(await this.getNginxVersion(), this.cacheManager)
     }
     async mainConfigAppend(appendString: string) {
-        ShellExec(ShellEnum.ECHO, '-e', appendString, '>>', await this.getMainConfigPath())
+        appendFile(await this.getMainConfigPath(), appendString)
     }
     async getMainConfigContent() {
         return readFile(await this.getMainConfigPath(), 'utf-8')
     }
     async getStreamDirectory() {
-        return join(await this.getPrefix(), getEnvSetting[EnvEnum.STREAM_DIR])
+        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
     }
     async getPrefix() {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.PREFIX]?.value
@@ -58,7 +58,8 @@ export class ExecutorLocal implements ExecutorInterface {
     async getStreamConfigPath() {
         // 先查找缓存
         let nginxConfigArgs = await getNginxCache(this.cacheManager)
-        if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value) return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
+        if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value)
+            return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
         let streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
         let fileList = await readdir(streamDir)
@@ -101,7 +102,9 @@ export class ExecutorLocal implements ExecutorInterface {
             Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
             // rollback
             const rollbackRes = await ShellExec(ShellEnum.MV, `${streamPath}.bak`, streamPath)
-            rollbackRes.exitCode === 0 ? Logger.verbose(`${streamPath} 回滚成功`) : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
+            rollbackRes.exitCode === 0
+                ? Logger.verbose(`${streamPath} 回滚成功`)
+                : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
         }
         this.nginxReload()
     }
