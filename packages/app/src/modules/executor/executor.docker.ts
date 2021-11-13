@@ -8,7 +8,6 @@ import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum, NginxConfigArgsReflectEnum } from 'src/enums/NginxEnum'
 import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
-import { $ } from 'zx'
 import ShellEnum from '../../enums/ShellEnum'
 import { ExecutorInterface, NginxConfig } from './interface/executor.interface'
 import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
@@ -51,7 +50,7 @@ export class ExecutorDocker implements ExecutorInterface {
     }
 
     async mainConfigAppend(appendString: string) {
-        $`docker exec ${this.containerName} bash -c "echo -e ${appendString} >> ${await this.getMainConfigPath()}"`
+        dockerExec(this.containerName, ShellEnum.BASH, '-c', `"${ShellEnum.CAT}>>${await this.getMainConfigPath()}<<EOF\n${appendString}\nEOF"`)
     }
 
     async getMainConfigContent() {

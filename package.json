@@ -4,6 +4,7 @@
   "scripts": {
     "app:dev": "cd packages/app && yarn dev",
     "app:test": "cd packages/app && yarn test",
+    "view:dev": "cd packages/view && yarn start",
     "install": "lerna bootstrap",
     "list": "lerna list",
     "clean": "lerna clean"
