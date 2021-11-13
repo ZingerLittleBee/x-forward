@@ -2,3 +2,21 @@
 
 ### 获取所有用户
 GET {{url}}
+
+### create user
+POST {{url}}
+Content-Type: application/json
+
+{
+    "username": "zhangsan",
+    "password": "password"
+}
+
+### login
+POST {{url}}/login
+Content-Type: application/json
+
+{
+    "username": "zhangsan",
+    "password": "password"
+}

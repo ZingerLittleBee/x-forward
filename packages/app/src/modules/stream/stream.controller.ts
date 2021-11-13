@@ -16,7 +16,7 @@ export class StreamController {
 
     @Get('test')
     async test() {
-        let renderModel: RenderModel = {
+        const renderModel: RenderModel = {
             servers: [
                 // normal
                 {
@@ -72,6 +72,7 @@ export class StreamController {
     }
 
     @Post()
+    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
     createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
         return this.streamService.create(stream as StreamEntity)
     }

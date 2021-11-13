@@ -35,7 +35,7 @@ describe('StreamService', () => {
         repository.clear()
     })
 
-    let streamEntitiy: StreamEntity = {
+    const streamEntitiy: StreamEntity = {
         transitHost: 'aereqbv.com',
         transitPort: 1111,
         remoteHost: 'baidu.com',

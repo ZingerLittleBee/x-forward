@@ -1,6 +1,4 @@
 export class Result<T> {
-    constructor() {}
-
     static ok() {
         return {
             success: true
@@ -11,6 +9,13 @@ export class Result<T> {
         return {
             success: true,
             data: t
+        }
+    }
+
+    static okMsg(message: string) {
+        return {
+            success: true,
+            message
         }
     }
 
@@ -27,10 +32,10 @@ export class Result<T> {
         }
     }
 
-    static noWithMsg(msg: string) {
+    static noWithMsg(message: string) {
         return {
             success: false,
-            message: msg
+            message
         }
     }
 }

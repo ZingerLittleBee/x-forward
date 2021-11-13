@@ -43,7 +43,7 @@ export class StreamService {
      * @returns StreamEntity
      */
     async create(streamEntity: StreamEntity) {
-        let res = await this.streamRepository.save(streamEntity)
+        const res = await this.streamRepository.save(streamEntity)
         this.eventService.triggerCreateEvent()
         return res
     }
@@ -71,7 +71,7 @@ export class StreamService {
 
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
-        let res = await this.streamRepository.update(id, streamEntity)
+        const res = await this.streamRepository.update(id, streamEntity)
         return res
     }
 
@@ -84,7 +84,7 @@ export class StreamService {
      * @param id primary key
      */
     delete(id: string) {
-        let res = this.streamRepository.softDelete(id)
+        const res = this.streamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         return res
     }
@@ -94,13 +94,23 @@ export class StreamService {
      * @returns affect rows
      */
     async deleteAll() {
-        let res = await this.streamRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+        const res = await this.streamRepository
+            .createQueryBuilder()
+            .update(StreamEntity)
+            .set({ deleteTime: new Date() })
+            .where('delete_time is NULL')
+            .execute()
         this.eventService.triggerDeleteEvent()
         return res
     }
 
     async removeByFK(id: string) {
-        let res = await this.streamRepository.createQueryBuilder().softDelete().from(StreamEntity).where('upstream_id = :id', { id }).execute()
+        const res = await this.streamRepository
+            .createQueryBuilder()
+            .softDelete()
+            .from(StreamEntity)
+            .where('upstream_id = :id', { id })
+            .execute()
         this.eventService.triggerDeleteEvent()
         return res
     }

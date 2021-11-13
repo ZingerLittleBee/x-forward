@@ -1,14 +1,18 @@
+import { AutoMap } from '@automapper/classes'
 import { CommonEntity } from 'src/common/common.entity'
 import { Column, Entity } from 'typeorm'
 
 @Entity('user')
-export class User extends CommonEntity {
-    @Column()
+export class UserEntity extends CommonEntity {
+    @AutoMap()
+    @Column({ name: 'username', unique: true })
     username: string
 
-    @Column()
+    @AutoMap()
+    @Column({ name: 'password' })
     password: string
 
+    @AutoMap()
     @Column({ nullable: true })
-    comment: string
+    comment?: string
 }

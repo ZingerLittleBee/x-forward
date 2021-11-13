@@ -15,9 +15,11 @@ export abstract class CommonEntity {
     @CreateDateColumn({ name: 'create_time' })
     createTime?: Date
 
+    @AutoMap()
     @UpdateDateColumn({ name: 'update_time' })
     updateTime?: Date
 
+    @AutoMap()
     @DeleteDateColumn({ name: 'delete_time', nullable: true })
     deleteTime?: Date
 }
