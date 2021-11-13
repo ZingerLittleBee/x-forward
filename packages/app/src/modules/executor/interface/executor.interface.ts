@@ -59,7 +59,7 @@ export interface ExecutorInterface {
     /**
      * nginx configuartion append ${appendString} in the end of file
      */
-    mainConfigAppend: (appendString: string) => void
+    mainConfigAppend: (appendString: string) => Promise<void>
 
     /**
      * 1. 先备份一份原配置文件, 名为 stream.conf.bak

@@ -1,6 +1,7 @@
 import DefaultEnum from 'src/enums/default.enum'
+import { isUndef } from './common.util'
 
 // process.env util
 export const getEnvSetting = (key: string): string => {
-    return process.env[key] ? process.env[key] : DefaultEnum[key]
+    return isUndef(process.env[key]) ? (isUndef(DefaultEnum[key]) ? '' : DefaultEnum[key]) : process.env[key]
 }

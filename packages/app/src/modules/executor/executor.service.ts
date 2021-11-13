@@ -52,15 +52,20 @@ export class ExecutorService implements OnModuleInit {
             if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
                 const streamBlockString = renderString(streamBlock, { streamDir })
                 Logger.debug(`未找到 stream 模块, 将自动在文件尾部添加\n${streamBlockString}`)
-                this.executor.mainConfigAppend(streamBlockString)
+                await this.executor.mainConfigAppend(streamBlockString)
             }
             // 找到 stream {} 块, 但是没有 include
             else {
                 // TODO 暂不进行处理
-                Logger.log(`请自行在 ${await this.executor.getMainConfigPath()} 文件 stream 模块中添加 ${renderString(streamIndule, { streamDir })}`)
+                Logger.log(
+                    `请自行在 ${await this.executor.getMainConfigPath()} 文件 stream 模块中添加 ${renderString(
+                        streamIndule,
+                        { streamDir }
+                    )}`
+                )
             }
         }
-        Logger.debug('stream include 模块存在, 无需初始化')
+        Logger.debug('stream include 模块存在, 初始化完毕')
     }
 
     /**
@@ -91,7 +96,9 @@ export class ExecutorService implements OnModuleInit {
         if (effectInEnv) {
             let value = getEnvSetting(effectInEnv)
             if (value) {
-                effectInEnv === EnvEnum.DOCKER_CONTAINER_NAME ? this.initDockerExecutor(value) : this.initLocalExecutor(value)
+                effectInEnv === EnvEnum.DOCKER_CONTAINER_NAME
+                    ? this.initDockerExecutor(value)
+                    : this.initLocalExecutor(value)
             }
         }
         let nginxRes = await findSomething('nginx')
