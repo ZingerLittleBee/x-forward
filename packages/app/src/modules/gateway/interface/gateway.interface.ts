@@ -1,5 +1,5 @@
-import { NginxStatusEnum } from 'src/enums/NginxEnum'
-import { NginxConfig } from '../../executor/interface/executor.interface'
+import { NginxConfig } from 'src/modules/executor/interface/nginx-config.interface'
+import { NginxStatus } from 'src/modules/executor/interface/nginx-status.interface'
 import { RenderModel } from '../../render/render.interface'
 import { StreamEntity } from '../../stream/stream.entity'
 import { UpstreamEntity } from '../../upstream/upstream.entity'
@@ -17,7 +17,7 @@ export interface QueryGatewayApi {
     /**
      * query nginx running status
      */
-    queryNginxStatus: () => NginxStatusEnum
+    queryNginxStatus: () => Promise<NginxStatus>
 
     /**
      * fetch args of nginx configuration

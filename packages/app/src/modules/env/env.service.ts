@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS } from '../../utils/Shell'
-import { NginxConfig } from '../executor/interface/executor.interface'
+import { NginxConfig } from '../executor/interface/nginx-config.interface'
 import { QueryGatewayService } from '../gateway/query-gateway.service'
 
 @Injectable()

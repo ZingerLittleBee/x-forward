@@ -1,4 +1,4 @@
-enum ShellEnum {
+export enum ShellEnum {
     CAT = 'cat',
     TOUCH = 'touch',
     LS = 'ls',
@@ -8,7 +8,13 @@ enum ShellEnum {
     CP = 'cp',
     BASH = 'bash',
     MV = 'mv',
-    SERVICE = 'service'
+    SERVICE = 'service',
+    SYSTEMCTL = 'systemctl'
 }
 
-export default ShellEnum
+export enum ServiceEnum {
+    STATUS = 'status',
+    START = 'start',
+    RESTARt = 'restart',
+    STOP = 'stop'
+}

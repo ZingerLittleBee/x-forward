@@ -4,10 +4,12 @@ import { appendFile, readdir, readFile } from 'fs/promises'
 import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
-import ShellEnum from 'src/enums/ShellEnum'
+import { ServiceEnum, ShellEnum } from 'src/enums/ShellEnum'
+import { findSomething } from 'src/utils/BashUtil'
 import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
 import { ExecutorInterface } from './interface/executor.interface'
+import { NginxStatus } from './interface/nginx-status.interface'
 import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
 import { ShellExec } from './utils/shell.util'
 
@@ -16,6 +18,36 @@ export class ExecutorLocal implements ExecutorInterface {
         this.bin = bin
         this.cacheManager = cacheManager
     }
+    async queryNginxStatus() {
+        const status: NginxStatus = {}
+        let cmd = (await findSomething(ShellEnum.SERVICE)).trim()
+        if (!cmd) {
+            cmd = (await findSomething(ShellEnum.SYSTEMCTL)).trim()
+        }
+        if (!cmd) {
+            Logger.warn(`系统不存在, ${ShellEnum.SERVICE}, ${ShellEnum.SYSTEMCTL}`)
+            return {}
+        }
+        const { res: serviceStatus } = await ShellExec(cmd, 'nginx', ServiceEnum.STATUS)
+        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)[0]
+        active && (status.active = active)
+        const uptime = serviceStatus.match(/(\w+)(?=\sago)/)[0]
+        uptime && (status.uptime = uptime)
+        const since = serviceStatus.match(/(?<=since\s).*(?=;)/)[0]
+        since && (status.since = since)
+        const memory = serviceStatus.match(/(?<=Memory:\s).*/)[0]
+        memory && (status.memory = memory)
+        const mainPid = serviceStatus.match(/(?<=Main\sPID:\s)\d+/)[0]
+        mainPid && (status.mainPid = mainPid)
+        const workerPid = serviceStatus.match(/\d+(?=\snginx:\sworker\sprocess)/g)
+        workerPid && (status.workerPid = workerPid)
+        const tasks = serviceStatus.match(/(?<=Tasks:\s)\d/)[0]
+        tasks && (status.tasks = tasks)
+        const tasksLimit = serviceStatus.match(/(?<=limit:\s)\d+/)[0]
+        tasksLimit && (status.tasksLimit = tasksLimit)
+        return status
+    }
+
     nginxReload() {
         ShellExec(this.bin, '-s', 'reload')
     }
@@ -57,21 +89,21 @@ export class ExecutorLocal implements ExecutorInterface {
     }
     async getStreamConfigPath() {
         // 先查找缓存
-        let nginxConfigArgs = await getNginxCache(this.cacheManager)
+        const nginxConfigArgs = await getNginxCache(this.cacheManager)
         if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value)
             return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
-        let streamDir = await this.getStreamDirectory()
+        const streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
-        let fileList = await readdir(streamDir)
+        const fileList = await readdir(streamDir)
         for (let i = 0; i < fileList.length; i++) {
-            let fileName = fileList[i].split('.')[0]
+            const fileName = fileList[i].split('.')[0]
             // 如果文件名是 uuid, 则直接返回
             if (validate(fileName)) {
                 return join(streamDir, fileList[i])
             }
         }
         // 不存在, 则创建文件
-        let newStreamPath = join(streamDir, `${v4()}.conf`)
+        const newStreamPath = join(streamDir, `${v4()}.conf`)
         ShellExec(ShellEnum.TOUCH, [newStreamPath])
         return newStreamPath
     }

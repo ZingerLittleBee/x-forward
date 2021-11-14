@@ -1,13 +1,19 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { Result } from '../../utils/Result'
-import { NginxConfig } from '../executor/interface/executor.interface'
+import { NginxConfig } from '../executor/interface/nginx-config.interface'
+import { QueryGatewayService } from '../gateway/query-gateway.service'
 import { EnvService } from './env.service'
 
 @ApiTags('env')
 @Controller('env')
 export class EnvController {
-    constructor(private envService: EnvService) {}
+    constructor(private envService: EnvService, private query: QueryGatewayService) {}
+
+    @Get()
+    test() {
+        return this.query.queryNginxStatus()
+    }
 
     /**
      * 获取 nginx 配置
@@ -28,7 +34,7 @@ export class EnvController {
      */
     @Get('nginx')
     async getOverview() {
-        let res = await this.envService.getOverview()
+        const res = await this.envService.getOverview()
         return new Result<typeof res>().okWithData(res)
     }
 
@@ -38,7 +44,7 @@ export class EnvController {
      */
     @Get('os')
     async getOS() {
-        return new Result<String>().okWithData(await this.envService.getOS())
+        return new Result<string>().okWithData(await this.envService.getOS())
     }
 
     /**

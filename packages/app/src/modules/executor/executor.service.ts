@@ -9,7 +9,8 @@ import { inspect } from 'util'
 import { $ } from 'zx'
 import { ExecutorDocker } from './executor.docker'
 import { ExecutorLocal } from './executor.local'
-import { ExecutorInterface, NginxConfig } from './interface/executor.interface'
+import { ExecutorInterface } from './interface/executor.interface'
+import { NginxConfig } from './interface/nginx-config.interface'
 
 @Injectable()
 export class ExecutorService implements OnModuleInit {
@@ -146,5 +147,9 @@ export class ExecutorService implements OnModuleInit {
     async patchStream(content: string) {
         Logger.verbose(`patch content: ${inspect(content)}`)
         this.executor.streamPatch(content)
+    }
+
+    async queryNginxStatus() {
+        return this.executor.queryNginxStatus()
     }
 }

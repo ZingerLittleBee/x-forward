@@ -117,6 +117,7 @@ export enum RetriesEnum {
 }
 
 export enum NginxStatusEnum {
-    Running,
-    Dead
+    Active,
+    Inactice,
+    Failed
 }

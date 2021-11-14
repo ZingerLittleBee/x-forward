@@ -1,3 +1,6 @@
+import { NginxConfig } from './nginx-config.interface'
+import { NginxStatus } from './nginx-status.interface'
+
 export interface ExecutorInterface {
     /**
      * 获取 nginx 配置参数
@@ -84,13 +87,6 @@ export interface ExecutorInterface {
      * nginx restart
      */
     nginxRestart: () => void
-}
 
-/**
- * 缓存处理过的 nginx -V 配置信息结构体
- */
-export interface NginxConfig {
-    version?: string
-    args?: { [key: string]: { label: string; value: string } }
-    module?: string[]
+    queryNginxStatus: () => Promise<NginxStatus>
 }
