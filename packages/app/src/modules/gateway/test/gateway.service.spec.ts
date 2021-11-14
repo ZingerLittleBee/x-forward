@@ -13,7 +13,7 @@ import { UpstreamEntity } from 'src/modules/upstream/upstream.entity'
 import { UpstreamModule } from 'src/modules/upstream/upstream.module'
 import { UpstreamService } from 'src/modules/upstream/upstream.service'
 import { Repository } from 'typeorm'
-import { ModelGatewayService } from '../gateway.service'
+import { ModelGatewayService } from '../model-gateway.service'
 
 describe('GatewayService', () => {
     describe('ModelGatewayService', () => {
@@ -77,7 +77,7 @@ describe('GatewayService', () => {
             streamRepository.clear()
         })
 
-        let upstreamEntity: UpstreamEntity = {
+        const upstreamEntity: UpstreamEntity = {
             name: 'test1',
             server: [
                 {

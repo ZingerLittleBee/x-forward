@@ -23,7 +23,7 @@ export class ExecutorService implements OnModuleInit {
     async onModuleInit() {
         await this.judgeLocalOrDocker()
         await this.initNginxConfig()
-        Logger.debug(`nginx 配置文件初始化完毕`)
+        Logger.debug(`nginx config inited`)
     }
 
     /**
@@ -40,7 +40,7 @@ export class ExecutorService implements OnModuleInit {
         const nginxConfigArgs = await this.executor.getNginxConfigArgs()
         Logger.debug(`nginx 配置参数解析成功: ${inspect(nginxConfigArgs)}`)
         this.cacheManager.set<NginxConfig>(EnvEnum.NGINX_CONFIG_ARGS, nginxConfigArgs)
-        let nginxMainConfigContent = await this.executor.getMainConfigContent()
+        const nginxMainConfigContent = await this.executor.getMainConfigContent()
         Logger.debug(`nginx 主配置文件初始内容: ${nginxMainConfigContent}`)
         const streamDir = await this.executor.getStreamDirectory()
         Logger.debug(`nginx stream 目录: ${streamDir}`)
@@ -92,20 +92,20 @@ export class ExecutorService implements OnModuleInit {
      */
     private async judgeLocalOrDocker() {
         // .env 文件配置的参数优先级更高
-        let effectInEnv = getEnvSetting(EnvEnum.EFFECTED_NGINX)
+        const effectInEnv = getEnvSetting(EnvEnum.EFFECTED_NGINX)
         if (effectInEnv) {
-            let value = getEnvSetting(effectInEnv)
+            const value = getEnvSetting(effectInEnv)
             if (value) {
                 effectInEnv === EnvEnum.DOCKER_CONTAINER_NAME
                     ? this.initDockerExecutor(value)
                     : this.initLocalExecutor(value)
             }
         }
-        let nginxRes = await findSomething('nginx')
+        const nginxRes = await findSomething('nginx')
         if (nginxRes) {
             this.initLocalExecutor(nginxRes.replace('\n', ''))
         } else {
-            let { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
+            const { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
             if (!stdout) {
                 Logger.error(`自动获取 nginx 环境失败, 请在 .env 配置`)
                 throw new Error('env of nginx not found')
@@ -144,7 +144,7 @@ export class ExecutorService implements OnModuleInit {
     }
 
     async patchStream(content: string) {
-        console.log(`patch content: ${content}`)
+        Logger.verbose(`patch content: ${inspect(content)}`)
         this.executor.streamPatch(content)
     }
 }

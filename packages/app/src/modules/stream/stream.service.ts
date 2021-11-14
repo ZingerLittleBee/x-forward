@@ -71,12 +71,11 @@ export class StreamService {
 
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
-        const res = await this.streamRepository.update(id, streamEntity)
-        return res
+        return this.streamRepository.update(id, streamEntity)
     }
 
-    updateAll(streamEntities: StreamEntity[]) {
-        return streamEntities.map(s => this.update(s.id, s))
+    async updateAll(streamEntities: StreamEntity[]) {
+        return Promise.all(streamEntities.map(s => this.update(s.id, s)))
     }
 
     /**

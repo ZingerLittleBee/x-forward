@@ -1,5 +1,7 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
+import { ApiResultResponse } from 'src/decorators/response.api'
 import { Result } from 'src/utils/Result'
 import { inspect } from 'util'
 import { checkChain } from '../render/render.check'
@@ -10,6 +12,7 @@ import { StreamEntity } from './stream.entity'
 import { StreamService } from './stream.service'
 import { StreamVo } from './stream.vo'
 
+@ApiTags('stream')
 @Controller('stream')
 export class StreamController {
     constructor(private streamService: StreamService) {}
@@ -66,15 +69,17 @@ export class StreamController {
     }
 
     @Get()
+    @ApiResultResponse(StreamEntity, { isArray: true })
     @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
-    async getAllStream(): Promise<StreamEntity[]> {
-        return this.streamService.findAll()
+    async getAllStream() {
+        return Result.okData(await this.streamService.findAll())
     }
 
     @Post()
+    @ApiResultResponse(StreamEntity)
     @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
-    createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
-        return this.streamService.create(stream as StreamEntity)
+    async createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
+        return Result.okData(await this.streamService.create(stream as StreamEntity))
     }
 
     // /**
@@ -92,8 +97,10 @@ export class StreamController {
      * @param state state
      */
     @Post(':id/state')
+    @ApiResultResponse()
     async updateStateById(@Param('id') id: number, @Body() { state }: { state: number }) {
-        return Result.okData((await this.streamService.stateUpdate(id, state)).affected)
+        await this.streamService.stateUpdate(id, state)
+        return Result.okMsg(`更新 id: ${id}, 成功`)
     }
 
     /**
@@ -101,8 +108,10 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch(':id')
+    @ApiResultResponse()
     async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
-        return Result.okData((await this.streamService.update(id, stream as StreamEntity)).affected)
+        await this.streamService.update(id, stream as StreamEntity)
+        return Result.okMsg('更新成功')
     }
 
     /**
@@ -110,9 +119,11 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch()
+    @ApiResultResponse()
     async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
         // 剔除 id 为空的选项
-        return Result.okData(await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[]))
+        await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
+        return Result.okMsg('更新成功')
     }
 
     /**
@@ -121,8 +132,10 @@ export class StreamController {
      * @param id id
      */
     @Delete(':id')
+    @ApiResultResponse()
     async delete(@Param('id') id: string) {
-        return Result.okData(await this.streamService.delete(id))
+        await this.streamService.delete(id)
+        return Result.okMsg(`删除 id: ${id} 成功`)
     }
 
     /**
@@ -130,7 +143,9 @@ export class StreamController {
      * 更新 delete_time 字段
      */
     @Delete()
+    @ApiResultResponse()
     async deleteAllStream() {
-        return Result.okData(await this.streamService.deleteAll())
+        await this.streamService.deleteAll()
+        return Result.okMsg('全部删除成功')
     }
 }

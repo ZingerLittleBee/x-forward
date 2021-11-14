@@ -115,3 +115,8 @@ export enum RetriesEnum {
     ON = 'on',
     OFF = 'off'
 }
+
+export enum NginxStatusEnum {
+    Running,
+    Dead
+}

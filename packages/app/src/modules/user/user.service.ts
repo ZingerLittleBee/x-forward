@@ -19,8 +19,7 @@ export class UserService {
         return this.userRepository.find()
     }
 
-    create(user: UserEntity) {
-        console.log('user', user)
+    async create(user: UserEntity) {
         return this.userRepository.save(user)
     }
 

@@ -8,8 +8,8 @@ POST {{url}}
 Content-Type: application/json
 
 {
-    "username": "zhangsan",
-    "password": "password"
+    "username": "admin",
+    "password": "admin"
 }
 
 ### login
@@ -17,6 +17,6 @@ POST {{url}}/login
 Content-Type: application/json
 
 {
-    "username": "zhangsan",
-    "password": "password"
+    "username": "admin",
+    "password": "admin"
 }

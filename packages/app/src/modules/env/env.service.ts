@@ -3,14 +3,14 @@ import { StatusEnum } from 'src/enums/StatusEnum'
 import { findSomething } from '../../utils/BashUtil'
 import { checkOS } from '../../utils/Shell'
 import { NginxConfig } from '../executor/interface/executor.interface'
-import { ExecutorGatewayService } from '../gateway/gateway.service'
+import { QueryGatewayService } from '../gateway/query-gateway.service'
 
 @Injectable()
 export class EnvService {
-    constructor(private executorGateway: ExecutorGatewayService) {}
+    constructor(private queryGatewayService: QueryGatewayService) {}
 
     async fetchNginxConfigAargs(): Promise<NginxConfig> {
-        return this.executorGateway.fetchNginxConfigArgs()
+        return this.queryGatewayService.fetchNginxConfigArgs()
     }
 
     /**
@@ -25,13 +25,15 @@ export class EnvService {
         return await checkOS()
     }
 
-    getNginxStatus() {}
+    // getNginxStatus() {
+    //     return
+    // }
 
-    getNginxUptime() {}
+    // getNginxUptime() {}
 
     async getOverview() {
-        let os = await this.getOS()
-        let nginxPath = await this.getNginxPath()
+        const os = await this.getOS()
+        const nginxPath = await this.getNginxPath()
         let nginxUptime
         let nginxStatus
         if (!nginxPath) {
@@ -53,13 +55,13 @@ export class EnvService {
      * @returns 路径下的所有文件夹
      */
     async getDirByUrl(url: string) {
-        return this.executorGateway.fetchDirectoryByUrl(url)
+        return this.queryGatewayService.fetchDirectoryByUrl(url)
     }
 
     /**
      * 获取 nginx stream 文件
      */
     fetchNginxStreamFile() {
-        this.executorGateway.fetchNginxStreamConfigContent()
+        this.queryGatewayService.fetchNginxStreamConfigContent()
     }
 }

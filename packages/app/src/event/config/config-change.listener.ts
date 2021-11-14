@@ -1,7 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EventEnum } from 'src/enums/event.enum'
-import { ExecutorGatewayService, ModelGatewayService } from 'src/modules/gateway/gateway.service'
+import { ExecutorGatewayService } from 'src/modules/gateway/executor-gateway.service'
+import { ModelGatewayService } from 'src/modules/gateway/model-gateway.service'
 import { StreamServer, StreamUpstream } from 'src/modules/render/render.interface'
 import { StreamEntity } from 'src/modules/stream/stream.entity'
 import { UpstreamEntity } from 'src/modules/upstream/upstream.entity'
@@ -41,10 +42,10 @@ export class ConfigChangeListener {
      * @returns RenderModel
      */
     private fieldTransformation(streamEntities: StreamEntity[], upstreamEntities: UpstreamEntity[]) {
-        let res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [] }
-        let upstreams = upstreamEntities.map(u => upstreamEntities2StreamUpstream(u))
+        const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [] }
+        const upstreams = upstreamEntities.map(u => upstreamEntities2StreamUpstream(u))
         upstreams && (res.upstreams = upstreams)
-        let servers = streamEntities.map(s => streamEntities2StreamServer(s))
+        const servers = streamEntities.map(s => streamEntities2StreamServer(s))
         servers && (res.servers = servers)
         return res
     }

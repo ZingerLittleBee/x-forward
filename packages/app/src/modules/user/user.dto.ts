@@ -1,26 +1,6 @@
-import { AutoMap } from '@automapper/classes'
-import { PartialType } from '@nestjs/swagger'
-import { StateEnum } from 'src/enums/StatusEnum'
+import { PickType } from '@nestjs/swagger'
 import { UserEntity } from './user.entity'
 
-export class CreateUserDto extends PartialType(UserEntity) {
-    @AutoMap()
-    username: string
+export class CreateUserDto extends PickType(UserEntity, ['username', 'password', 'state', 'comment']) {}
 
-    @AutoMap()
-    password: string
-
-    @AutoMap()
-    state?: StateEnum
-
-    @AutoMap()
-    comment?: string
-}
-
-export class LoginUserDto extends PartialType(UserEntity) {
-    @AutoMap()
-    username: string
-
-    @AutoMap()
-    password: string
-}
+export class LoginUserDto extends PickType(UserEntity, ['username', 'password']) {}

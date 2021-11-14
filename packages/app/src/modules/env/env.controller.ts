@@ -1,8 +1,10 @@
 import { Controller, Get, Query } from '@nestjs/common'
+import { ApiTags } from '@nestjs/swagger'
 import { Result } from '../../utils/Result'
 import { NginxConfig } from '../executor/interface/executor.interface'
 import { EnvService } from './env.service'
 
+@ApiTags('env')
 @Controller('env')
 export class EnvController {
     constructor(private envService: EnvService) {}
