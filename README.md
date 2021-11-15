@@ -5,6 +5,8 @@
 
 ## Introduction
 
+[![Join the chat at https://gitter.im/x-forward/community](https://badges.gitter.im/x-forward/community.svg)](https://gitter.im/x-forward/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ### Feature
 
 -   Friendly UI
