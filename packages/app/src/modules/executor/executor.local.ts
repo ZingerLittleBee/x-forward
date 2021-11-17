@@ -1,6 +1,7 @@
 import { Logger } from '@nestjs/common'
 import { Cache } from 'cache-manager'
 import { appendFile, readdir, readFile } from 'fs/promises'
+import { EOL } from 'os'
 import { join } from 'path'
 import { EnvEnum } from 'src/enums/EnvEnum'
 import { NginxConfigArgsEnum } from 'src/enums/NginxEnum'
@@ -8,16 +9,51 @@ import { ServiceEnum, ShellEnum } from 'src/enums/ShellEnum'
 import { findSomething } from 'src/utils/BashUtil'
 import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
-import { ExecutorInterface } from './interface/executor.interface'
-import { NginxStatus } from './interface/nginx-status.interface'
+import { IExecutor } from './interfaces/executor.interface'
+import { NginxStatus } from './interfaces/nginx-status.interface'
 import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
 import { ShellExec } from './utils/shell.util'
 
-export class ExecutorLocal implements ExecutorInterface {
+export class ExecutorLocal implements IExecutor {
     constructor(private bin: string, private cacheManager: Cache) {
         this.bin = bin
         this.cacheManager = cacheManager
     }
+    s
+    async getSystemInfo() {
+        const { res } = await ShellExec(
+            ShellEnum.UNAME,
+            '-n;',
+            ShellEnum.UNAME,
+            '-r;',
+            ShellEnum.UNAME,
+            '-v;',
+            ShellEnum.UNAME,
+            '-m;',
+            ShellEnum.LSB_RELEASE,
+            '-a;'
+        )
+        const [hostname, kernelRelease, kernelVersion, hardware, distributorId, description, release, codename] = res
+            .split(EOL)
+            .map(r => {
+                return r.includes(':') ? r.split(':')[r.split(':').length - 1].trim() : r
+            })
+        return {
+            uname: {
+                hostname,
+                kernelRelease,
+                kernelVersion,
+                hardware
+            },
+            lsb: {
+                distributorId,
+                description,
+                release,
+                codename
+            }
+        }
+    }
+
     async queryNginxStatus() {
         const status: NginxStatus = {}
         let cmd = (await findSomething(ShellEnum.SERVICE)).trim()

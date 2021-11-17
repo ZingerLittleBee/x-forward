@@ -8,3 +8,10 @@ export interface NginxStatus {
     tasks?: string
     tasksLimit?: string
 }
+
+export interface INginxStatus {
+    /**
+     * query nginx status from `service nginx status`
+     */
+    queryNginxStatus: () => Promise<NginxStatus>
+}

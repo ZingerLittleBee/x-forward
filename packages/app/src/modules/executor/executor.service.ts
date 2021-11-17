@@ -9,8 +9,8 @@ import { inspect } from 'util'
 import { $ } from 'zx'
 import { ExecutorDocker } from './executor.docker'
 import { ExecutorLocal } from './executor.local'
-import { ExecutorInterface } from './interface/executor.interface'
-import { NginxConfig } from './interface/nginx-config.interface'
+import { IExecutor } from './interfaces/executor.interface'
+import { NginxConfig } from './interfaces/nginx-config.interface'
 
 @Injectable()
 export class ExecutorService implements OnModuleInit {
@@ -19,7 +19,7 @@ export class ExecutorService implements OnModuleInit {
     /**
      * nginx executor
      */
-    private executor: ExecutorInterface
+    private executor: IExecutor
 
     async onModuleInit() {
         await this.judgeLocalOrDocker()
@@ -151,5 +151,13 @@ export class ExecutorService implements OnModuleInit {
 
     async queryNginxStatus() {
         return this.executor.queryNginxStatus()
+    }
+
+    async getNginxPath() {
+        return this.executor.getNginxBin()
+    }
+
+    async getSystemInfo() {
+        return this.executor.getSystemInfo()
     }
 }

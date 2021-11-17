@@ -9,7 +9,9 @@ export enum ShellEnum {
     BASH = 'bash',
     MV = 'mv',
     SERVICE = 'service',
-    SYSTEMCTL = 'systemctl'
+    SYSTEMCTL = 'systemctl',
+    UNAME = 'uname',
+    LSB_RELEASE = 'lsb_release'
 }
 
 export enum ServiceEnum {

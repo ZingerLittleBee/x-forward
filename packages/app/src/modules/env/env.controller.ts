@@ -1,7 +1,7 @@
 import { Controller, Get, Query } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { Result } from '../../utils/Result'
-import { NginxConfig } from '../executor/interface/nginx-config.interface'
+import { NginxConfig } from '../executor/interfaces/nginx-config.interface'
 import { QueryGatewayService } from '../gateway/query-gateway.service'
 import { EnvService } from './env.service'
 
@@ -12,7 +12,7 @@ export class EnvController {
 
     @Get()
     test() {
-        return this.query.queryNginxStatus()
+        return this.query.getSystemInfo()
     }
 
     /**

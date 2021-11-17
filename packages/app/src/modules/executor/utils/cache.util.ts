@@ -1,7 +1,7 @@
 import { Cache } from 'cache-manager'
 import { NginxConfigArgsReflectEnum } from 'src/enums/NginxEnum'
 import { EnvEnum } from '../../../enums/EnvEnum'
-import { NginxConfig } from '../interface/nginx-config.interface'
+import { NginxConfig } from '../interfaces/nginx-config.interface'
 
 /**
  * 获取 cache 中的 nginxConfig
