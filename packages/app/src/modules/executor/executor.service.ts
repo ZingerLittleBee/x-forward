@@ -36,7 +36,7 @@ export class ExecutorService implements OnModuleInit {
      * 3. 创建 ${prefix}/${process.env[EnvEnum.STREAM_DIR]} 文件夹 (如果不存在)
      * 4. 创建 ${prefix}/stream/${process.env[EnvEnum.STREAM_FILE_NAME]}
      */
-    async initNginxConfig() {
+    private async initNginxConfig() {
         // 装载 nginx 配置参数
         const nginxConfigArgs = await this.executor.getNginxConfigArgs()
         Logger.debug(`nginx 配置参数解析成功: ${inspect(nginxConfigArgs)}`)
@@ -153,11 +153,11 @@ export class ExecutorService implements OnModuleInit {
         return this.executor.queryNginxStatus()
     }
 
-    async getNginxPath() {
-        return this.executor.getNginxBin()
-    }
-
     async getSystemInfo() {
         return this.executor.getSystemInfo()
+    }
+
+    async getNginxBin() {
+        return this.executor.getNginxBin()
     }
 }

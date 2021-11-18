@@ -1,16 +1,12 @@
 export interface SystemInfo {
-    uname?: {
-        hostname?: string
-        kernelRelease?: string
-        kernelVersion?: string
-        hardware?: string
-    }
-    lsb?: {
-        distributorId?: string
-        description?: string
-        release?: string
-        codename?: string
-    }
+    hostname?: string
+    kernelRelease?: string
+    kernelVersion?: string
+    hardware?: string
+    distributorId?: string
+    description?: string
+    release?: string
+    codename?: string
 }
 
 export interface ISystem {

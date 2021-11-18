@@ -1,9 +1,7 @@
 import { Injectable } from '@nestjs/common'
-import { StatusEnum } from 'src/enums/StatusEnum'
-import { findSomething } from '../../utils/BashUtil'
-import { checkOS } from '../../utils/Shell'
 import { NginxConfig } from '../executor/interfaces/nginx-config.interface'
 import { QueryGatewayService } from '../gateway/query-gateway.service'
+import { Overview } from './env.interface'
 
 @Injectable()
 export class EnvService {
@@ -18,11 +16,11 @@ export class EnvService {
      * @returns
      */
     getNginxPath() {
-        return findSomething('nginx')
+        return this.queryGatewayService
     }
 
-    async getOS() {
-        return await checkOS()
+    async getSystemInfo() {
+        return this.queryGatewayService.getSystemInfo()
     }
 
     // getNginxStatus() {
@@ -31,21 +29,15 @@ export class EnvService {
 
     // getNginxUptime() {}
 
-    async getOverview() {
-        const os = await this.getOS()
-        const nginxPath = await this.getNginxPath()
-        let nginxUptime
-        let nginxStatus
-        if (!nginxPath) {
-            nginxStatus = StatusEnum.NotInstall
-            nginxUptime = '0'
-        } else {
-        }
+    async getOverview(): Promise<Overview> {
+        const nginxPath = await this.queryGatewayService.getNginxBin()
+        const { description } = await this.queryGatewayService.getSystemInfo()
+        const { uptime, active } = await this.queryGatewayService.queryNginxStatus()
         return {
-            os,
+            os: description,
             nginxPath,
-            nginxUptime,
-            nginxStatus
+            nginxUptime: uptime,
+            nginxStatus: active
         }
     }
 

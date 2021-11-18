@@ -39,7 +39,7 @@ import { ApiOkResponse, getSchemaPath } from '@nestjs/swagger'
 // }
 
 export const ApiResultResponse = <TModel extends Type<any>>(
-    model?: TModel,
+    model?: TModel | string,
     options: { isArray?: boolean; isMessage?: boolean } = { isArray: false, isMessage: true }
 ) => {
     const schema: any = {}
@@ -53,10 +53,14 @@ export const ApiResultResponse = <TModel extends Type<any>>(
         if (options.isArray) {
             resultSchema['data'] = {
                 type: 'array',
-                items: { $ref: getSchemaPath(model) }
+                items: typeof model === 'string' ? { type: model } : { $ref: getSchemaPath(model) }
             }
         } else {
-            resultSchema['data'] = { $ref: getSchemaPath(model) }
+            if (typeof model === 'string') {
+                resultSchema['data'] = { type: model }
+            } else {
+                resultSchema['data'] = { $ref: getSchemaPath(model) }
+            }
         }
     }
     return applyDecorators(

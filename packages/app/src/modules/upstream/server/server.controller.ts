@@ -13,13 +13,13 @@ export class ServerController {
     constructor(private serverService: ServerService) {}
 
     @Patch(':id')
-    @ApiResultResponse(Number)
+    @ApiResultResponse('number')
     async patch(@Param() id: string, @Body(MapPipe(ServerEntity, UpdateServerDto)) server: UpdateServerDto) {
         return Result.okData((await this.serverService.update(id, server as ServerEntity)).affected)
     }
 
     @Delete(':id')
-    @ApiResultResponse(Number)
+    @ApiResultResponse('number')
     async remove(@Param() id: string) {
         return Result.okData((await this.serverService.remove(id)).affected)
     }

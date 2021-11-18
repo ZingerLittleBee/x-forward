@@ -25,4 +25,8 @@ export class QueryGatewayService implements QueryGatewayApi {
     async getSystemInfo() {
         return this.executorService.getSystemInfo()
     }
+
+    async getNginxBin() {
+        return this.executorService.getNginxBin()
+    }
 }

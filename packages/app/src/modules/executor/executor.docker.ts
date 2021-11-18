@@ -9,7 +9,7 @@ import { NginxConfigArgsEnum, NginxConfigArgsReflectEnum } from 'src/enums/Nginx
 import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
 import { $ } from 'zx'
-import { ShellEnum } from '../../enums/ShellEnum'
+import { ServiceEnum, ShellEnum } from '../../enums/ShellEnum'
 import { IExecutor } from './interfaces/executor.interface'
 import { NginxConfig } from './interfaces/nginx-config.interface'
 import { NginxStatus } from './interfaces/nginx-status.interface'
@@ -41,21 +41,46 @@ export class ExecutorDocker implements IExecutor {
                 return r.includes(':') ? r.split(':')[r.split(':').length - 1].trim() : r
             })
         return {
-            uname: {
-                hostname,
-                kernelRelease,
-                kernelVersion,
-                hardware
-            },
-            lsb: {
-                distributorId,
-                description,
-                release,
-                codename
-            }
+            hostname,
+            kernelRelease,
+            kernelVersion,
+            hardware,
+            distributorId,
+            description,
+            release,
+            codename
         }
     }
-    queryNginxStatus: () => Promise<NginxStatus>
+    async queryNginxStatus() {
+        const status: NginxStatus = {}
+        let cmd = (await dockerExec(this.containerName, ShellEnum.WHICH, ShellEnum.SERVICE))?.res?.trim()
+        if (!cmd) {
+            cmd = (await dockerExec(this.containerName, ShellEnum.SYSTEMCTL))?.res?.trim()
+        }
+        if (!cmd) {
+            Logger.warn(`系统不存在, ${ShellEnum.SERVICE}, ${ShellEnum.SYSTEMCTL}`)
+            return {}
+        }
+        const { res: serviceStatus } = await dockerExec(this.containerName, cmd, 'nginx', ServiceEnum.STATUS)
+        console.log('serviceStatus', serviceStatus)
+        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
+        active && (status.active = active)
+        const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
+        uptime && (status.uptime = uptime)
+        const since = serviceStatus.match(/(?<=since\s).*(?=;)/)?.[0]
+        since && (status.since = since)
+        const memory = serviceStatus.match(/(?<=Memory:\s).*/)?.[0]
+        memory && (status.memory = memory)
+        const mainPid = serviceStatus.match(/(?<=Main\sPID:\s)\d+/)?.[0]
+        mainPid && (status.mainPid = mainPid)
+        const workerPid = serviceStatus.match(/\d+(?=\snginx:\sworker\sprocess)/g)
+        workerPid && (status.workerPid = workerPid)
+        const tasks = serviceStatus.match(/(?<=Tasks:\s)\d/)?.[0]
+        tasks && (status.tasks = tasks)
+        const tasksLimit = serviceStatus.match(/(?<=limit:\s)\d+/)?.[0]
+        tasksLimit && (status.tasksLimit = tasksLimit)
+        return status
+    }
     async fetchDirectory(url: string) {
         if (!url.match(/^\//)) {
             url = '/' + url

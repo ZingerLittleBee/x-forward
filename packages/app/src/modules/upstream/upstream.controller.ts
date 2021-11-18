@@ -38,7 +38,7 @@ export class UpstreamController {
     }
 
     @Patch(':id')
-    @ApiResultResponse(Number)
+    @ApiResultResponse('number')
     async update(
         @Param('id') id: string,
         @Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto
@@ -47,7 +47,7 @@ export class UpstreamController {
     }
 
     @Delete(':id')
-    @ApiResultResponse(Number)
+    @ApiResultResponse('number')
     async remove(@Param('id') id: string) {
         return Result.okData((await this.upstreamService.remove(id)).affected)
     }

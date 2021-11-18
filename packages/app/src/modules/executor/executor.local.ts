@@ -19,7 +19,6 @@ export class ExecutorLocal implements IExecutor {
         this.bin = bin
         this.cacheManager = cacheManager
     }
-    s
     async getSystemInfo() {
         const { res } = await ShellExec(
             ShellEnum.UNAME,
@@ -39,18 +38,14 @@ export class ExecutorLocal implements IExecutor {
                 return r.includes(':') ? r.split(':')[r.split(':').length - 1].trim() : r
             })
         return {
-            uname: {
-                hostname,
-                kernelRelease,
-                kernelVersion,
-                hardware
-            },
-            lsb: {
-                distributorId,
-                description,
-                release,
-                codename
-            }
+            hostname,
+            kernelRelease,
+            kernelVersion,
+            hardware,
+            distributorId,
+            description,
+            release,
+            codename
         }
     }
 
@@ -65,21 +60,22 @@ export class ExecutorLocal implements IExecutor {
             return {}
         }
         const { res: serviceStatus } = await ShellExec(cmd, 'nginx', ServiceEnum.STATUS)
-        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)[0]
+        console.log('serviceStatus', serviceStatus)
+        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
         active && (status.active = active)
-        const uptime = serviceStatus.match(/(\w+)(?=\sago)/)[0]
+        const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
         uptime && (status.uptime = uptime)
-        const since = serviceStatus.match(/(?<=since\s).*(?=;)/)[0]
+        const since = serviceStatus.match(/(?<=since\s).*(?=;)/)?.[0]
         since && (status.since = since)
-        const memory = serviceStatus.match(/(?<=Memory:\s).*/)[0]
+        const memory = serviceStatus.match(/(?<=Memory:\s).*/)?.[0]
         memory && (status.memory = memory)
-        const mainPid = serviceStatus.match(/(?<=Main\sPID:\s)\d+/)[0]
+        const mainPid = serviceStatus.match(/(?<=Main\sPID:\s)\d+/)?.[0]
         mainPid && (status.mainPid = mainPid)
         const workerPid = serviceStatus.match(/\d+(?=\snginx:\sworker\sprocess)/g)
         workerPid && (status.workerPid = workerPid)
-        const tasks = serviceStatus.match(/(?<=Tasks:\s)\d/)[0]
+        const tasks = serviceStatus.match(/(?<=Tasks:\s)\d/)?.[0]
         tasks && (status.tasks = tasks)
-        const tasksLimit = serviceStatus.match(/(?<=limit:\s)\d+/)[0]
+        const tasksLimit = serviceStatus.match(/(?<=limit:\s)\d+/)?.[0]
         tasksLimit && (status.tasksLimit = tasksLimit)
         return status
     }
