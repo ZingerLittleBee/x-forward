@@ -29,7 +29,7 @@ export class UpstreamService {
             await this.streamService.createAll(upstream.stream)
         }
         // trigger event
-        let upstreamEntity = await this.upstreamRepository.save(upstream)
+        const upstreamEntity = await this.upstreamRepository.save(upstream)
         this.eventService.triggerCreateEvent()
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
@@ -41,6 +41,15 @@ export class UpstreamService {
 
     findAll() {
         return this.upstreamRepository.find()
+    }
+
+    findAllWithoutEager() {
+        return this.upstreamRepository
+            .createQueryBuilder()
+            .select('upstream')
+            .from(UpstreamEntity, 'upstream')
+            .leftJoinAndSelect('upstream.server', 'server')
+            .getMany()
     }
 
     findEffect() {
@@ -67,7 +76,7 @@ export class UpstreamService {
         if (updateUpstream.stream) {
             this.streamService.updateAll(updateUpstream.stream)
         }
-        let res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
         this.eventService.triggerUpdateEvent()
         Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
         return res
@@ -75,7 +84,7 @@ export class UpstreamService {
 
     async remove(id: string) {
         this.serverService.removeByFK(id)
-        let res = await this.upstreamRepository.softDelete(id)
+        const res = await this.upstreamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)
         return res

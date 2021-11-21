@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common'
-import { ApiTags } from '@nestjs/swagger'
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse } from 'src/decorators/response.api'
 import { Result } from '../../utils/Result'
 import { QueryGatewayService } from '../gateway/query-gateway.service'
@@ -21,6 +21,7 @@ export class EnvController {
      * @returns Promise<{ success: boolean; data: NginxConfig; }>
      */
     @Get('nginx/config')
+    @ApiExtraModels(NginxConfigVo, OverviewVo, SystemInfoVo)
     @ApiResultResponse(NginxConfigVo)
     async getNginxConfig() {
         return Result.okData(await this.envService.fetchNginxConfigAargs())

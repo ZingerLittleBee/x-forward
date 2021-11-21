@@ -15,11 +15,11 @@ export class UserController {
     constructor(private userService: UserService) {}
 
     @Get('')
-    @ApiExtraModels(UserVo, Result)
+    @ApiExtraModels(UserVo, Result, UserEntity)
     @ApiResultResponse(UserVo, { isArray: true })
     @UseInterceptors(MapInterceptor(UserVo, UserEntity, { isArray: true }))
     async getAll() {
-        return new Result<UserEntity[]>().okWithData(await this.userService.findAll())
+        return Result.okData(await this.userService.findAll())
     }
 
     @Post('/login')
@@ -36,7 +36,7 @@ export class UserController {
     }
 
     @Delete(':id')
-    @ApiResultResponse(Number)
+    @ApiResultResponse('number')
     async delete(@Param('id') id: string): Promise<IResult<number>> {
         return new Result<number>().okWithData(await this.userService.delete(id))
     }

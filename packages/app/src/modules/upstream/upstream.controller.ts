@@ -23,11 +23,18 @@ export class UpstreamController {
         return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))
     }
 
+    // @Get()
+    // @ApiResultResponse(UpstreamVo, { isArray: true })
+    // @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
+    // async findAll() {
+    //     return Result.okData(await this.upstreamService.findAll())
+    // }
+
     @Get()
-    @ApiResultResponse(UpstreamVo)
+    @ApiResultResponse(UpstreamVo, { isArray: true })
     @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
     async findAll() {
-        return Result.okData(await this.upstreamService.findAll())
+        return Result.okData(await this.upstreamService.findAllWithoutEager())
     }
 
     @Get(':id')
