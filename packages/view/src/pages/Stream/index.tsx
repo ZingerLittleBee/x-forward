@@ -3,16 +3,16 @@ import { DeleteOutlined, EditOutlined, PauseCircleOutlined, PlayCircleOutlined, 
 import { loadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Button, message, Result, Tag } from 'antd'
-import { getAllStream } from '@/services/stream'
-import { useRequest } from 'ahooks'
-import ProForm, { ModalForm, ProFormInstance, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
+import { useRequest } from 'umi'
+import type { ProFormInstance } from '@ant-design/pro-form'
+import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { useRef, useState } from 'react'
+import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
+import { StreamControllerGetAllStream } from '@/services/x-forward-frontend/stream'
 
 export default () => {
-    // 请求转发规则接口
-    const { loading, data } = useRequest(getAllStream)
-
-    const dataSource = data?.data
+    const { loading: upstreamLoading, data: upstreamData } = useRequest(UpstreamControllerFindAll)
+    const { loading: streamLoading, data: streamData } = useRequest(StreamControllerGetAllStream)
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -31,9 +31,9 @@ export default () => {
 
     return (
         <>
-            <ProCard gutter={[16, 16]} wrap ghost loading={loading}>
-                {dataSource?.length !== 0 ? (
-                    dataSource?.map(d => (
+            <ProCard gutter={[16, 16]} wrap ghost loading={streamLoading || upstreamLoading}>
+                {streamData ? (
+                    streamData?.map(d => (
                         <ProCard
                             hoverable
                             bordered
@@ -75,12 +75,12 @@ export default () => {
                                         valueEnum: StreamStatusEnum,
                                         render: (_, entity) => {
                                             return entity.state ? (
-                                                <Tag icon={<PauseCircleOutlined />} color="#EF4444">
-                                                    已停止
-                                                </Tag>
-                                            ) : (
                                                 <Tag icon={<PlayCircleOutlined />} color="#34D399">
                                                     正在运行
+                                                </Tag>
+                                            ) : (
+                                                <Tag icon={<PauseCircleOutlined />} color="#EF4444">
+                                                    已停止
                                                 </Tag>
                                             )
                                         }

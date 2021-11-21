@@ -1,15 +1,14 @@
 import { useState } from 'react'
 import { PageContainer } from '@ant-design/pro-layout'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
-import { Space, Tag } from 'antd'
 import RcResizeObserver from 'rc-resize-observer'
-import { MacCommandOutlined } from '@ant-design/icons'
 import ProList from '@ant-design/pro-list'
-import DirTreeSelect from '@/pages/Module/components/DirTreeSelect'
 import { useModel } from '@@/plugin-model/useModel'
 import EnvEnum from '@/enums/EnvEnum'
-import StatusEnum from '@/enums/StatusEnum'
-import DirEnum from '@/enums/DirEnum'
+import { StatusEnum } from '@/enums/StatusEnum'
+import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
+import type { BadgeProps } from 'antd/lib/badge'
+import defaultSettings from '../../../config/defaultSettings'
 
 const Module = () => {
     // const { data, error, loading, run } = useRequest(username => ({
@@ -32,26 +31,44 @@ const Module = () => {
         height: 42
     }
 
-    type DataItem = { id: string; name: string; image: JSX.Element; desc: string | string[] }
+    type DataItem = { id: string; name: string; image: JSX.Element; desc: string | string[]; subTitle?: string }
 
     const { initialState } = useModel('@@initialState')
 
-    const defaultDataSource = initialState?.nginxPath?.map((n, index) => {
-        return {
-            id: index.toString(),
-            name: n.label,
-            image: <MacCommandOutlined style={{ fontSize: '22px', color: '#52c41a' }} />,
-            desc: n.value
-        }
-    })
+    const nginxConfig = initialState?.nginxConfig
 
-    const overview = initialState?.currEnv
+    const nginxArgsDataSource: DataItem[] = []
+    for (const arg in nginxConfig?.args) {
+        nginxArgsDataSource.push({
+            id: arg,
+            name: arg,
+            image: <MacCommandOutlined style={{ fontSize: '22px', color: '#52c41a' }} />,
+            desc: nginxConfig?.args[arg].value,
+            subTitle: nginxConfig?.args[arg].label
+        })
+    }
+
+    const nginxModuleDataSource: DataItem[] = []
+    for (const module in nginxConfig?.module) {
+        nginxModuleDataSource.push({
+            id: module,
+            name: module,
+            image: <CheckSquareOutlined style={{ fontSize: '22px', color: defaultSettings.primaryColor }} />,
+            desc: nginxConfig?.module[module]
+        })
+    }
+
+    const overview = initialState?.overview
+
+    const nginxStatus = overview?.nginxStatus
 
     const genIcon = (url: string) => {
         return <img style={imgStyle} src={url} alt="icon" />
     }
 
-    const statisticProps = [
+    type StatisticProps = { title: EnvEnum; value: string; status?: () => { value: string; status?: BadgeProps['status'] }; icon: JSX.Element }[]
+
+    const statisticProps: StatisticProps = [
         {
             title: EnvEnum.os,
             value: overview?.os ? overview.os : '-',
@@ -64,9 +81,9 @@ const Module = () => {
         },
         {
             title: EnvEnum.nginxStatus,
-            value: overview?.nginxStatus !== undefined ? overview.nginxStatus : '-',
+            value: nginxStatus !== undefined ? nginxStatus : '-',
             status: () => {
-                switch (overview?.nginxStatus) {
+                switch (nginxStatus as unknown) {
                     case StatusEnum.Running:
                         return { value: '正在运行', status: 'processing' }
                     case StatusEnum.NotInstall:
@@ -75,6 +92,8 @@ const Module = () => {
                         return { value: '已停止', status: 'warning' }
                     case StatusEnum.Error:
                         return { value: '出错', status: 'error' }
+                    case StatusEnum.Checking:
+                        return { value: 'Checking', status: 'warning' }
                     default:
                         return { value: '未知', status: 'default' }
                 }
@@ -89,7 +108,8 @@ const Module = () => {
     ]
 
     const [responsive, setResponsive] = useState(false)
-    const [dataSource, setDataSource] = useState<DataItem[] | undefined>(defaultDataSource)
+    const [argsDataSource, setArgsDataSource] = useState(nginxArgsDataSource)
+    const [moduleDataSource, setModuleDataSource] = useState(nginxModuleDataSource)
 
     return (
         <PageContainer>
@@ -128,16 +148,8 @@ const Module = () => {
                     <ProList<DataItem>
                         rowKey="id"
                         headerTitle="Nginx路径"
-                        dataSource={dataSource}
-                        showActions="hover"
-                        editable={{
-                            actionRender: (row, config, dom) => [dom.save, dom.cancel],
-                            onSave: async (key, record, originRow) => {
-                                console.log(key, record, originRow)
-                                return true
-                            }
-                        }}
-                        onDataSourceChange={setDataSource}
+                        dataSource={argsDataSource}
+                        onDataSourceChange={setArgsDataSource}
                         metas={{
                             title: {
                                 dataIndex: 'name',
@@ -149,26 +161,11 @@ const Module = () => {
                             },
                             description: {
                                 dataIndex: 'desc',
-                                renderFormItem: () => <DirTreeSelect onChange={v => console.log('vaklue', v)} />
+                                editable: false
                             },
                             subTitle: {
-                                render: (dom, entity) => (
-                                    <Space size={0}>
-                                        <Tag color="blue">{Object.keys(DirEnum).filter(d => entity.name === DirEnum[d])[0]}</Tag>
-                                    </Space>
-                                )
-                            },
-                            actions: {
-                                render: (text, row, index, action) => [
-                                    <a
-                                        onClick={() => {
-                                            action?.startEditable(row.id)
-                                        }}
-                                        key="link"
-                                    >
-                                        编辑
-                                    </a>
-                                ]
+                                dataIndex: 'subTitle',
+                                editable: false
                             }
                         }}
                     />
@@ -177,46 +174,15 @@ const Module = () => {
                     <ProList<DataItem>
                         rowKey="id"
                         headerTitle="已安装模块"
-                        dataSource={dataSource}
-                        showActions="hover"
-                        editable={{
-                            onSave: async () => {
-                                return true
-                            }
-                        }}
-                        onDataSourceChange={setDataSource}
+                        dataSource={moduleDataSource}
+                        onDataSourceChange={setModuleDataSource}
                         metas={{
                             title: {
-                                dataIndex: 'name'
+                                dataIndex: 'desc'
                             },
                             avatar: {
                                 dataIndex: 'image',
                                 editable: false
-                            },
-                            description: {
-                                dataIndex: 'desc'
-                            },
-                            subTitle: {
-                                render: () => {
-                                    return (
-                                        <Space size={0}>
-                                            <Tag color="blue">Ant Design</Tag>
-                                            <Tag color="#5BD8A6">TechUI</Tag>
-                                        </Space>
-                                    )
-                                }
-                            },
-                            actions: {
-                                render: (text, row, index, action) => [
-                                    <a
-                                        onClick={() => {
-                                            action?.startEditable(row.id)
-                                        }}
-                                        key="link"
-                                    >
-                                        编辑
-                                    </a>
-                                ]
                             }
                         }}
                     />
