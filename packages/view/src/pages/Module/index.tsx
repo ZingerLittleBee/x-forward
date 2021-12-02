@@ -9,6 +9,7 @@ import { StatusEnum } from '@/enums/StatusEnum'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import type { BadgeProps } from 'antd/lib/badge'
 import defaultSettings from '../../../config/defaultSettings'
+import { CommonEnum } from '@/enums/CommonEnum'
 
 const Module = () => {
     // const { data, error, loading, run } = useRequest(username => ({
@@ -71,17 +72,17 @@ const Module = () => {
     const statisticProps: StatisticProps = [
         {
             title: EnvEnum.os,
-            value: overview?.os ? overview.os : '-',
+            value: overview?.os ? overview.os : CommonEnum.PLACEHOLDER,
             icon: genIcon('https://iconfont.alicdn.com/s/66342523-5218-4c48-8213-453811e13cef_origin.svg')
         },
         {
             title: EnvEnum.nginxPath,
-            value: overview?.nginxPath ? overview.nginxPath : '-',
+            value: overview?.nginxPath ? overview.nginxPath : CommonEnum.PLACEHOLDER,
             icon: genIcon('https://iconfont.alicdn.com/s/142b06ff-0e37-43ce-9211-6e15034272d6_origin.svg')
         },
         {
             title: EnvEnum.nginxStatus,
-            value: nginxStatus !== undefined ? nginxStatus : '-',
+            value: nginxStatus !== undefined ? nginxStatus : CommonEnum.PLACEHOLDER,
             status: () => {
                 switch (nginxStatus as unknown) {
                     case StatusEnum.Running:
@@ -102,7 +103,7 @@ const Module = () => {
         },
         {
             title: EnvEnum.nginxUptime,
-            value: overview?.nginxUptime ? overview.nginxUptime : '-',
+            value: overview?.nginxUptime ? overview.nginxUptime : CommonEnum.PLACEHOLDER,
             icon: genIcon('https://iconfont.alicdn.com/s/3d98ca59-a5ac-4462-945e-72cec8e6c11d_origin.svg')
         }
     ]

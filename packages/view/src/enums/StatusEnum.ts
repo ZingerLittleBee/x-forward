@@ -10,3 +10,8 @@ export enum StatusEnum {
     // 发生错误
     Error = 'failed (Result: exit-code)'
 }
+
+export enum StateEnum {
+    ABLE,
+    DISABLE
+}

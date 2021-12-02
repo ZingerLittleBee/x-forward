@@ -9,6 +9,9 @@ import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormT
 import { useRef, useState } from 'react'
 import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
 import { StreamControllerGetAllStream } from '@/services/x-forward-frontend/stream'
+import { utc2local } from '@/utils/timeUtil'
+import { CommonEnum } from '@/enums/CommonEnum'
+import Upstream from '@/pages/Stream/components/Upstream'
 
 export default () => {
     const { loading: upstreamLoading, data: upstreamData } = useRequest(UpstreamControllerFindAll)
@@ -29,6 +32,13 @@ export default () => {
             })
     }
 
+    const upstreamNameSelectEnum: Record<string, string> = {}
+
+    upstreamData?.forEach(u => {
+        const { id, name } = u
+        if (id && name) upstreamNameSelectEnum[id] = name
+    })
+
     return (
         <>
             <ProCard gutter={[16, 16]} wrap ghost loading={streamLoading || upstreamLoading}>
@@ -47,7 +57,7 @@ export default () => {
                             key={d.id}
                         >
                             <ProDescriptions
-                                title={d.title}
+                                // title={d.title}
                                 column={1}
                                 labelStyle={{ color: '#6B7280' }}
                                 contentStyle={{ fontWeight: 500 }}
@@ -68,6 +78,14 @@ export default () => {
                                     {
                                         title: StreamItemEnum.remotePort,
                                         dataIndex: 'remotePort'
+                                    },
+                                    {
+                                        title: StreamItemEnum.upstream,
+                                        render: (_, entity) => {
+                                            const { upstreamId } = entity
+                                            const currUpstream = upstreamData?.find(u => u.id === upstreamId)
+                                            return currUpstream ? <Upstream upstream={currUpstream} upstreamNameSelectEnum={upstreamNameSelectEnum} /> : '-'
+                                        }
                                     },
                                     {
                                         title: StreamItemEnum.state,
@@ -91,8 +109,10 @@ export default () => {
                                         valueEnum: loadBalancingEnum
                                     },
                                     {
-                                        title: StreamItemEnum.createdTime,
-                                        dataIndex: 'createdTime'
+                                        title: StreamItemEnum.createTime,
+                                        renderText: (text, { createTime }) => {
+                                            return createTime ? utc2local(createTime) : CommonEnum.PLACEHOLDER
+                                        }
                                     },
                                     {
                                         title: StreamItemEnum.comment,

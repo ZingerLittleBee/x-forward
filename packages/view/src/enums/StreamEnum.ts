@@ -26,12 +26,14 @@ enum StreamItemEnum {
     remoteHost = '远程地址',
     // 远程端口号
     remotePort = '远程端口',
+    // 上游服务
+    upstream = '上游服务',
     // 启用状态
     state = '启用状态',
     // 负载均衡算法
     loadBalancing = '负载算法',
     // 创建时间
-    createdTime = '创建时间',
+    createTime = '创建时间',
     // 更新时间
     updatedTime = '更新时间',
     // 备注
