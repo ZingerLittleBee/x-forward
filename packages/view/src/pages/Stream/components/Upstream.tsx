@@ -1,13 +1,15 @@
 import React from 'react'
-type UpstreamProps = API.UpstreamVo
 import ProForm, { DrawerForm, ProFormDigit, ProFormList, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form'
 import { message } from 'antd'
 import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
 import './upstream.less'
+import { CommonEnum } from '@/enums/CommonEnum'
 
 type DataSourceType = API.ServerEntity
 
+// @ts-ignore
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const initialValues: DataSourceType = {
     id: '123123',
     /** 是否生效; 0: able, 1: disable */
@@ -31,11 +33,17 @@ const initialValues: DataSourceType = {
     down: 0
 }
 
-const Upstream: React.FC<{ upstream: UpstreamProps; upstreamNameSelectEnum: Record<string, string> }> = ({ upstream, upstreamNameSelectEnum }) => {
+type UpstreamProps = {
+    upstream: API.UpstreamVo | undefined
+    upstreamNameSelectEnum: Record<string, string>
+    upstreamSelectChange: (id: string) => void
+}
+
+const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, upstreamSelectChange }) => {
     return (
         <DrawerForm
             title="上游服务"
-            trigger={<span>{upstream.name}</span>}
+            trigger={<span>{upstream?.name || CommonEnum.PLACEHOLDER}</span>}
             onFinish={async e => {
                 console.log('e', e)
                 message.success('提交成功')
@@ -44,15 +52,20 @@ const Upstream: React.FC<{ upstream: UpstreamProps; upstreamNameSelectEnum: Reco
         >
             <ProFormSelect
                 name="upstreamName"
-                label={ServerEnum.UPSTREAM_NAME}
-                initialValue={upstream.name}
-                // rules={requiredRuleUtil(ServerEnum.UPSTREAM_NAME)}
+                label={upstream?.id}
+                initialValue={upstream?.name}
                 valueEnum={upstreamNameSelectEnum}
+                fieldProps={{
+                    onChange(value) {
+                        upstreamSelectChange(value)
+                    }
+                }}
             />
             <ProFormList
                 name={['server']}
-                initialValue={[initialValues]}
-                itemContainerRender={doms => {
+                initialValue={upstream?.server}
+                itemContainerRender={(doms, { fields }) => {
+                    console.log('fields', fields)
                     return <ProForm.Group>{doms}</ProForm.Group>
                 }}
                 creatorButtonProps={{

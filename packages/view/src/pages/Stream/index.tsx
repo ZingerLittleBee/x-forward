@@ -83,8 +83,18 @@ export default () => {
                                         title: StreamItemEnum.upstream,
                                         render: (_, entity) => {
                                             const { upstreamId } = entity
-                                            const currUpstream = upstreamData?.find(u => u.id === upstreamId)
-                                            return currUpstream ? <Upstream upstream={currUpstream} upstreamNameSelectEnum={upstreamNameSelectEnum} /> : '-'
+                                            return (() => {
+                                                const [currUpstream, setCurrUpstream] = useState(upstreamData?.find(u => u.id === upstreamId))
+                                                return (
+                                                    <Upstream
+                                                        upstream={currUpstream}
+                                                        upstreamNameSelectEnum={upstreamNameSelectEnum}
+                                                        upstreamSelectChange={e => {
+                                                            setCurrUpstream(upstreamData?.find(u => u.id === e))
+                                                        }}
+                                                    />
+                                                )
+                                            })()
                                         }
                                     },
                                     {
