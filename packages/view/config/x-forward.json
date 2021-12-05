@@ -431,7 +431,7 @@
                         "required": true,
                         "in": "path",
                         "schema": {
-                            "type": "number"
+                            "type": "string"
                         }
                     }
                 ],
@@ -455,6 +455,46 @@
                     },
                     "201": {
                         "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/{id}/name": {
+            "patch": {
+                "operationId": "StreamController_updateUpstreamIdById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 },
                 "tags": [
@@ -1211,8 +1251,14 @@
                             1
                         ],
                         "description": "将服务器标记为永久不可用; 0: false, 1: true"
+                    },
+                    "id": {
+                        "type": "string"
                     }
-                }
+                },
+                "required": [
+                    "id"
+                ]
             },
             "UpstreamVo": {
                 "type": "object",
@@ -1367,6 +1413,7 @@
                     }
                 },
                 "required": [
+                    "state",
                     "transitHost",
                     "transitPort",
                     "tries"
@@ -1437,6 +1484,7 @@
                         "description": "上游端口"
                     },
                     "status": {
+                        "type": "number",
                         "enum": [
                             0,
                             1,
@@ -1444,10 +1492,10 @@
                             3,
                             4
                         ],
-                        "type": "number",
                         "description": "联通状态, 1: Checking, 0: Running, 2: Stop, 3: NotInstall, 4: Error"
                     },
                     "loadBalancing": {
+                        "type": "number",
                         "enum": [
                             0,
                             1,
@@ -1455,7 +1503,6 @@
                             3,
                             4
                         ],
-                        "type": "number",
                         "description": "负载均衡算法, 0: poll, 1: weight, 2: ip_hash, 3: fair, 4: url_hash"
                     },
                     "protocol": {

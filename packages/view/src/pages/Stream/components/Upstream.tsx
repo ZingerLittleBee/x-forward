@@ -1,10 +1,12 @@
-import React from 'react'
-import ProForm, { DrawerForm, ProFormDigit, ProFormList, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form'
-import { message } from 'antd'
+import React, { useEffect } from 'react'
+import ProForm, { DrawerForm, ProFormDependency, ProFormDigit, ProFormList, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form'
+import { Form, message } from 'antd'
 import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
 import './upstream.less'
 import { CommonEnum } from '@/enums/CommonEnum'
+import { UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
+import { getKeyByValue } from '@/utils/objectUtil'
 
 type DataSourceType = API.ServerEntity
 
@@ -36,72 +38,92 @@ const initialValues: DataSourceType = {
 type UpstreamProps = {
     upstream: API.UpstreamVo | undefined
     upstreamNameSelectEnum: Record<string, string>
-    upstreamSelectChange: (id: string) => void
+    onUpstreamSelectChange: (id: string) => void
+    onUpstreamSubmit: (data: API.UpdateUpstreamDto) => void
+    onUpstreamRest: () => void
 }
 
-const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, upstreamSelectChange }) => {
+const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, onUpstreamSelectChange, onUpstreamSubmit, onUpstreamRest }) => {
+    const [form] = Form.useForm()
+    useEffect(() => {
+        form.setFieldsValue({
+            name: upstream?.name,
+            server: upstream?.server
+        })
+    }, [form, upstream])
     return (
         <DrawerForm
             title="上游服务"
+            form={form}
             trigger={<span>{upstream?.name || CommonEnum.PLACEHOLDER}</span>}
-            onFinish={async e => {
-                console.log('e', e)
+            onFinish={async (e: API.UpdateUpstreamDto) => {
+                onUpstreamSubmit(e)
+                await UpstreamControllerUpdate({ id: getKeyByValue(upstreamNameSelectEnum, e.name)! }, e)
                 message.success('提交成功')
                 return true
             }}
+            onVisibleChange={visible => {
+                if (!visible) onUpstreamRest()
+                form.resetFields()
+            }}
         >
             <ProFormSelect
-                name="upstreamName"
-                label={upstream?.id}
+                name="name"
+                label={ServerEnum.UPSTREAM_NAME}
                 initialValue={upstream?.name}
                 valueEnum={upstreamNameSelectEnum}
                 fieldProps={{
                     onChange(value) {
-                        upstreamSelectChange(value)
+                        onUpstreamSelectChange(value)
                     }
                 }}
             />
-            <ProFormList
-                name={['server']}
-                initialValue={upstream?.server}
-                itemContainerRender={(doms, { fields }) => {
-                    console.log('fields', fields)
-                    return <ProForm.Group>{doms}</ProForm.Group>
-                }}
-                creatorButtonProps={{
-                    position: 'bottom',
-                    creatorButtonText: '添加一条 server'
-                }}
-                alwaysShowItemLabel={true}
-            >
-                {(f, index, action) => {
-                    console.log(f, index, action)
+            <ProFormDependency name={['name']} ignoreFormListField>
+                {({ name }) => {
+                    if (!name) return null
                     return (
-                        <>
-                            <ProForm.Group>
-                                <ProFormText
-                                    width="md"
-                                    name="upstreamHost"
-                                    label={ServerEnum.UPSTREAM_HOST}
-                                    rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
-                                />
-                                <ProFormText
-                                    width="md"
-                                    name="upstreamPort"
-                                    label={ServerEnum.UPSTREAM_PORT}
-                                    rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
-                                />
-                            </ProForm.Group>
-                            <ProFormText width={100} name="weight" label={ServerEnum.WEIGHT} tooltip={ServerTipsEnum.WEIGHT} />
-                            <ProFormDigit width={100} name="maxConns" label={ServerEnum.MAX_CONN} tooltip={ServerTipsEnum.MAX_CONN} />
-                            <ProFormDigit width={100} name="maxFails" label={ServerEnum.MAX_FAILS} tooltip={ServerTipsEnum.MAX_FAILS} />
-                            <ProFormText width={100} name="failTimeout" label={ServerEnum.FAIL_TIMEOUT} tooltip={ServerTipsEnum.FAIL_TIMEOUT} />
-                            <ProFormSwitch name="backup" label={ServerEnum.BACKUP} tooltip={ServerTipsEnum.BACKUP} />
-                            <ProFormSwitch name="down" label={ServerEnum.DOWN} tooltip={ServerTipsEnum.DOWN} />
-                        </>
+                        <ProFormList
+                            name={['server']}
+                            initialValue={upstream?.server}
+                            itemContainerRender={doms => {
+                                return <ProForm.Group>{doms}</ProForm.Group>
+                            }}
+                            creatorButtonProps={{
+                                position: 'bottom',
+                                creatorButtonText: '添加一条 server'
+                            }}
+                            alwaysShowItemLabel={true}
+                        >
+                            {() => {
+                                return (
+                                    <>
+                                        <ProForm.Group>
+                                            <ProFormText
+                                                width="md"
+                                                name="upstreamHost"
+                                                label={ServerEnum.UPSTREAM_HOST}
+                                                rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
+                                            />
+                                            <ProFormText
+                                                width="md"
+                                                name="upstreamPort"
+                                                label={ServerEnum.UPSTREAM_PORT}
+                                                rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
+                                            />
+                                        </ProForm.Group>
+                                        <ProFormText width={100} name="weight" label={ServerEnum.WEIGHT} tooltip={ServerTipsEnum.WEIGHT} />
+                                        <ProFormDigit width={100} name="maxConns" label={ServerEnum.MAX_CONN} tooltip={ServerTipsEnum.MAX_CONN} />
+                                        <ProFormDigit width={100} name="maxFails" label={ServerEnum.MAX_FAILS} tooltip={ServerTipsEnum.MAX_FAILS} />
+                                        <ProFormText width={100} name="failTimeout" label={ServerEnum.FAIL_TIMEOUT} tooltip={ServerTipsEnum.FAIL_TIMEOUT} />
+                                        <ProFormSwitch name="backup" label={ServerEnum.BACKUP} tooltip={ServerTipsEnum.BACKUP} />
+                                        <ProFormSwitch name="down" label={ServerEnum.DOWN} tooltip={ServerTipsEnum.DOWN} />
+                                    </>
+                                )
+                            }}
+                        </ProFormList>
                     )
                 }}
-            </ProFormList>
+            </ProFormDependency>
         </DrawerForm>
     )
 }

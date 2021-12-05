@@ -116,6 +116,7 @@ declare namespace API {
     backup?: 0 | 1;
     /** 将服务器标记为永久不可用; 0: false, 1: true */
     down?: 0 | 1;
+    id: string;
   };
 
   type UpstreamVo = {
@@ -135,7 +136,7 @@ declare namespace API {
 
   type CreateStreamDto = {
     /** 是否生效; 0: able, 1: disable */
-    state?: 0 | 1;
+    state: 0 | 1;
     /** 中转地址 */
     transitHost: string;
     /** 中转端口 */
@@ -367,7 +368,11 @@ declare namespace API {
   };
 
   type StreamControllerUpdateStateByIdParams = {
-    id: number;
+    id: string;
+  };
+
+  type StreamControllerUpdateUpstreamIdByIdParams = {
+    id: string;
   };
 
   type StreamControllerDeleteParams = {
