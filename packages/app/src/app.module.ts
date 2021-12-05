@@ -50,6 +50,7 @@ import { UserModule } from './modules/user/user.module'
         ConfigModule.forRoot(),
         CacheModule.register(),
         ConfigChangeModule,
+        ShellModule,
         UserModule,
         EnvModule,
         ShellModule,

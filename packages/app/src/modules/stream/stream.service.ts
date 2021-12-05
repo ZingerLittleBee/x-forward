@@ -58,6 +58,15 @@ export class StreamService {
     }
 
     /**
+     * 更新 upstreamId
+     * @param id StreamId
+     * @param upstreamId upstreamId
+     */
+    upstreamIdUpdate(id: string, upstreamId: string) {
+        return this.streamRepository.update(id, { upstreamId: upstreamId })
+    }
+
+    /**
      * 更新 stream 的 state 状态
      * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
      * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
@@ -65,7 +74,7 @@ export class StreamService {
      * @param state state
      * @returns UpdateResult
      */
-    stateUpdate(id: number, state: number) {
+    stateUpdate(id: string, state: number) {
         return this.streamRepository.update(id, { state: state })
     }
 

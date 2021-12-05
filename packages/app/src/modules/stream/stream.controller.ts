@@ -98,9 +98,19 @@ export class StreamController {
      */
     @Post(':id/state')
     @ApiResultResponse()
-    async updateStateById(@Param('id') id: number, @Body() { state }: { state: number }) {
+    async updateStateById(@Param('id') id: string, @Body() { state }: { state: number }) {
         await this.streamService.stateUpdate(id, state)
         return Result.okMsg(`更新 id: ${id}, 成功`)
+    }
+
+    /**
+     * update UpstreamName by StreamId
+     * @param name name
+     */
+    @Patch(':id/name')
+    @ApiResultResponse('number')
+    async updateUpstreamIdById(@Param('id') id: string, @Body() { upstreamId }: { upstreamId: string }) {
+        return Result.okData((await this.streamService.upstreamIdUpdate(id, upstreamId)).affected)
     }
 
     /**

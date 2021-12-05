@@ -7,17 +7,20 @@ import { ServerEntity } from './entities/server.entity'
 
 @Injectable()
 export class ServerService {
-    constructor(@InjectRepository(ServerEntity) private serverRepository: Repository<ServerEntity>, private readonly eventService: EventService) {}
+    constructor(
+        @InjectRepository(ServerEntity) private serverRepository: Repository<ServerEntity>,
+        private readonly eventService: EventService
+    ) {}
 
     async createAll(createServer: ServerEntity[]) {
-        let res = await this.serverRepository.save(createServer)
+        const res = await this.serverRepository.save(createServer)
         this.eventService.triggerCreateEvent()
         return res
     }
 
     @Preprocess()
     async update(id: string, @Optimized() server: ServerEntity) {
-        let res = await this.serverRepository.update(id, server)
+        const res = await this.serverRepository.update(id, server)
         this.eventService.triggerUpdateEvent()
         return res
     }
@@ -27,13 +30,18 @@ export class ServerService {
     }
 
     async remove(id: string) {
-        let res = await this.serverRepository.softDelete(id)
+        const res = await this.serverRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         return res
     }
 
     async removeByFK(id: string) {
-        await this.serverRepository.createQueryBuilder().softDelete().from(ServerEntity).where('upstream_id = :id', { id }).execute()
+        await this.serverRepository
+            .createQueryBuilder()
+            .softDelete()
+            .from(ServerEntity)
+            .where('upstream_id = :id', { id })
+            .execute()
         this.eventService.triggerDeleteEvent()
     }
 }
