@@ -62,9 +62,11 @@ const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, o
                 message.success('提交成功')
                 return true
             }}
-            onVisibleChange={visible => {
-                if (!visible) onUpstreamRest()
-                form.resetFields()
+            drawerProps={{
+                onClose() {
+                    onUpstreamRest()
+                    form.resetFields()
+                }
             }}
         >
             <ProFormSelect

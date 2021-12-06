@@ -15,8 +15,8 @@ import Upstream from '@/pages/Stream/components/Upstream'
 import { getKeyByValue } from '@/utils/objectUtil'
 
 export default () => {
-    const { loading: upstreamLoading, data: upstreamData } = useRequest(UpstreamControllerFindAll)
-    const { loading: streamLoading, data: streamData } = useRequest(StreamControllerGetAllStream)
+    const { loading: upstreamLoading, data: upstreamData, refresh: upstreamRefresh } = useRequest(UpstreamControllerFindAll)
+    const { loading: streamLoading, data: streamData, refresh: streamRefresh } = useRequest(StreamControllerGetAllStream)
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -84,30 +84,28 @@ export default () => {
                                         title: StreamItemEnum.upstream,
                                         render: (_, entity) => {
                                             const { upstreamId, id } = entity
-                                            console.log('upstreamId', upstreamId)
                                             return (() => {
                                                 const [currUpstream, setCurrUpstream] = useState(upstreamData?.find(u => u.id === upstreamId))
                                                 return (
                                                     <Upstream
                                                         upstream={currUpstream}
                                                         upstreamNameSelectEnum={upstreamNameSelectEnum}
-                                                        onUpstreamSelectChange={e => {
+                                                        onUpstreamSelectChange={async e => {
                                                             setCurrUpstream(upstreamData?.find(u => u.id === e))
                                                         }}
                                                         onUpstreamRest={() => setCurrUpstream(upstreamData?.find(u => u.id === upstreamId))}
-                                                        onUpstreamSubmit={e => {
+                                                        onUpstreamSubmit={async e => {
                                                             const { name } = e
-                                                            console.log('e', e)
                                                             const selectUpstreamId = getKeyByValue(upstreamNameSelectEnum, name)
-                                                            console.log(
-                                                                'selectUpstreamId && upstreamId',
-                                                                selectUpstreamId,
-                                                                upstreamId,
-                                                                selectUpstreamId !== upstreamId
-                                                            )
                                                             if (selectUpstreamId !== upstreamId) {
-                                                                StreamControllerUpdateUpstreamIdById({ id: id! }, { data: { upstreamId: selectUpstreamId } })
+                                                                await StreamControllerUpdateUpstreamIdById(
+                                                                    { id: id! },
+                                                                    { data: { upstreamId: selectUpstreamId } }
+                                                                )
                                                             }
+                                                            // may be can optimize
+                                                            setTimeout(streamRefresh, 100)
+                                                            setTimeout(upstreamRefresh, 100)
                                                         }}
                                                     />
                                                 )
