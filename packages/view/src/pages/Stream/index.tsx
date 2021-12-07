@@ -1,11 +1,11 @@
 import ProCard from '@ant-design/pro-card'
 import { DeleteOutlined, EditOutlined, PauseCircleOutlined, PlayCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
-import { loadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
+import { LoadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Button, message, Result, Tag } from 'antd'
 import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
-import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
+import ProForm, { ModalForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { useRef, useState } from 'react'
 import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
 import { StreamControllerGetAllStream, StreamControllerUpdateUpstreamIdById } from '@/services/x-forward-frontend/stream'
@@ -20,18 +20,6 @@ export default () => {
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
-
-    // 将 loadBalancingEnum 组装成 [{ value: xxx, label: xxx }]
-    const loadBalancingSelectProp = () => {
-        return Object.keys(loadBalancingEnum)
-            .filter((_, i) => loadBalancingEnum[i] !== undefined)
-            .map(l => {
-                return {
-                    label: loadBalancingEnum[l],
-                    value: l
-                }
-            })
-    }
 
     const upstreamNameSelectEnum: Record<string, string> = {}
 
@@ -131,7 +119,7 @@ export default () => {
                                     {
                                         title: StreamItemEnum.loadBalancing,
                                         dataIndex: 'loadBalancing',
-                                        valueEnum: loadBalancingEnum
+                                        valueEnum: LoadBalancingEnum
                                     },
                                     {
                                         title: StreamItemEnum.createTime,
@@ -187,13 +175,6 @@ export default () => {
                     <ProFormText width="md" name="remoteHost" label={StreamItemEnum.remoteHost} placeholder={`请输入${StreamItemEnum.remoteHost}`} />
                     <ProFormText name="remotePort" label={StreamItemEnum.remotePort} placeholder={`请输入${StreamItemEnum.remotePort}`} />
                 </ProForm.Group>
-                <ProFormSelect
-                    options={loadBalancingSelectProp()}
-                    width="sm"
-                    name="loadBalancing"
-                    label={StreamItemEnum.loadBalancing}
-                    placeholder={`请选择${StreamItemEnum.loadBalancing}`}
-                />
                 <ProFormSwitch name="state" label="是否启用" />
                 <ProFormTextArea name="comment" label={StreamItemEnum.comment} placeholder={`请输入${StreamItemEnum.comment}`} />
             </ModalForm>

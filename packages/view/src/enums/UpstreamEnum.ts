@@ -2,6 +2,7 @@ export enum ServerEnum {
     UPSTREAM_NAME = '上游名称',
     UPSTREAM_HOST = '上游地址',
     UPSTREAM_PORT = '上游端口',
+    LOAD_BALANCING = '负载算法',
     WEIGHT = '权重',
     MAX_CONN = '最大连接数',
     MAX_FAILS = '最大尝试次数',

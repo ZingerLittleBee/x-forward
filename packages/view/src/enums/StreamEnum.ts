@@ -1,11 +1,11 @@
 // 启用状态
-enum StreamStatusEnum {
+export enum StreamStatusEnum {
     Running,
     Stop
 }
 
 // 负载均衡算法 https://juejin.cn/post/6844904144667590670#heading-11
-enum loadBalancingEnum {
+export enum LoadBalancingEnum {
     // 轮询
     poll,
     // 加权
@@ -18,7 +18,7 @@ enum loadBalancingEnum {
     url_hash
 }
 
-enum StreamItemEnum {
+export enum StreamItemEnum {
     transitHost = '中转地址',
     // 中转端口号
     transitPort = '中转端口',
@@ -39,5 +39,3 @@ enum StreamItemEnum {
     // 备注
     comment = '备注说明'
 }
-
-export { StreamStatusEnum, loadBalancingEnum, StreamItemEnum }

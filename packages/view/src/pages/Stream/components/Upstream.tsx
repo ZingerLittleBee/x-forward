@@ -7,6 +7,8 @@ import './upstream.less'
 import { CommonEnum } from '@/enums/CommonEnum'
 import { UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
 import { getKeyByValue } from '@/utils/objectUtil'
+import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
+import { StreamItemEnum } from '@/enums/StreamEnum'
 
 type DataSourceType = API.ServerEntity
 
@@ -79,6 +81,13 @@ const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, o
                         onUpstreamSelectChange(value)
                     }
                 }}
+            />
+            <ProFormSelect
+                name="loadBalancing"
+                label={ServerEnum.LOAD_BALANCING}
+                options={loadBalancingSelectProp()}
+                initialValue={getEnumKeyByValue(upstream?.loadBalancing)}
+                placeholder={`请选择${StreamItemEnum.loadBalancing}`}
             />
             <ProFormDependency name={['name']} ignoreFormListField>
                 {({ name }) => {
