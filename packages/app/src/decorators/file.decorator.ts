@@ -8,11 +8,11 @@ import { $, nothrow } from 'zx'
  */
 export const MakesureDirectoryExists = (isDocker?: boolean) => {
     return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-        let originalMethod = descriptor.value
+        const originalMethod = descriptor.value
         descriptor.value = async function (...args: any[]) {
             const res = await Reflect.apply(originalMethod, this, args)
             if (isDocker) {
-                let { exitCode } = await nothrow($`docker exec ${this.containerName} ls ${res}`)
+                const { exitCode } = await nothrow($`docker exec ${this.containerName} ls ${res}`)
                 if (exitCode !== 0) {
                     $`docker exec ${this.containerName} mkdir -p ${res}`
                 }
