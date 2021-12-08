@@ -537,6 +537,9 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
                                         }
                                     }
                                 }
@@ -735,27 +738,6 @@
                 },
                 "tags": [
                     "user"
-                ]
-            }
-        },
-        "/env": {
-            "get": {
-                "operationId": "EnvController_test",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "env"
                 ]
             }
         },
@@ -1022,8 +1004,7 @@
                 },
                 "required": [
                     "transitHost",
-                    "transitPort",
-                    "tries"
+                    "transitPort"
                 ]
             },
             "ServerEntity": {
@@ -1689,8 +1670,7 @@
                 },
                 "required": [
                     "transitHost",
-                    "transitPort",
-                    "tries"
+                    "transitPort"
                 ]
             },
             "UserVo": {

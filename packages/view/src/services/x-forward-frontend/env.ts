@@ -2,14 +2,6 @@
 /* eslint-disable */
 import { request } from 'umi';
 
-/** 此处后端没有提供注释 GET /env */
-export async function EnvControllerTest(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/env', {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
 /** 此处后端没有提供注释 GET /env/nginx/config */
 export async function EnvControllerGetNginxConfig(options?: { [key: string]: any }) {
   return request<{ success?: boolean; message?: string; data?: API.NginxConfigVo }>(

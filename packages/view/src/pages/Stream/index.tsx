@@ -1,5 +1,11 @@
 import ProCard from '@ant-design/pro-card'
-import { DeleteOutlined, EditOutlined, PauseCircleOutlined, PlayCircleOutlined, PlusCircleOutlined } from '@ant-design/icons'
+import {
+    DeleteOutlined,
+    EditOutlined,
+    PauseCircleOutlined,
+    PlayCircleOutlined,
+    PlusCircleOutlined
+} from '@ant-design/icons'
 import { LoadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Button, message, Result, Tag } from 'antd'
@@ -8,15 +14,28 @@ import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { useRef, useState } from 'react'
 import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
-import { StreamControllerGetAllStream, StreamControllerUpdateUpstreamIdById } from '@/services/x-forward-frontend/stream'
+import {
+    StreamControllerGetAllStream,
+    StreamControllerUpdateStreamById,
+    StreamControllerUpdateUpstreamIdById
+} from '@/services/x-forward-frontend/stream'
 import { utc2local } from '@/utils/timeUtil'
 import { CommonEnum } from '@/enums/CommonEnum'
 import Upstream from '@/pages/Stream/components/Upstream'
 import { getKeyByValue } from '@/utils/objectUtil'
+import { turnState2Boolean } from '@/utils/enumUtils'
 
 export default () => {
-    const { loading: upstreamLoading, data: upstreamData, refresh: upstreamRefresh } = useRequest(UpstreamControllerFindAll)
-    const { loading: streamLoading, data: streamData, refresh: streamRefresh } = useRequest(StreamControllerGetAllStream)
+    const {
+        loading: upstreamLoading,
+        data: upstreamData,
+        refresh: upstreamRefresh
+    } = useRequest(UpstreamControllerFindAll)
+    const {
+        loading: streamLoading,
+        data: streamData,
+        refresh: streamRefresh
+    } = useRequest(StreamControllerGetAllStream)
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -27,6 +46,8 @@ export default () => {
         const { id, name } = u
         if (id && name) upstreamNameSelectEnum[id] = name
     })
+
+    const [currStreamData, setCurrStreamData] = useState<API.StreamEntity>()
 
     return (
         <>
@@ -40,7 +61,13 @@ export default () => {
                             colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 6 }}
                             actions={[
                                 <DeleteOutlined key="delete" />,
-                                <EditOutlined onClick={() => setModalVisible(true)} key="edit" />,
+                                <EditOutlined
+                                    key="edit"
+                                    onClick={() => {
+                                        setCurrStreamData(d)
+                                        setModalVisible(true)
+                                    }}
+                                />,
                                 <PlayCircleOutlined key="Play" />
                             ]}
                             key={d.id}
@@ -73,7 +100,9 @@ export default () => {
                                         render: (_, entity) => {
                                             const { upstreamId, id } = entity
                                             return (() => {
-                                                const [currUpstream, setCurrUpstream] = useState(upstreamData?.find(u => u.id === upstreamId))
+                                                const [currUpstream, setCurrUpstream] = useState(
+                                                    upstreamData?.find(u => u.id === upstreamId)
+                                                )
                                                 return (
                                                     <Upstream
                                                         upstream={currUpstream}
@@ -81,10 +110,17 @@ export default () => {
                                                         onUpstreamSelectChange={async e => {
                                                             setCurrUpstream(upstreamData?.find(u => u.id === e))
                                                         }}
-                                                        onUpstreamRest={() => setCurrUpstream(upstreamData?.find(u => u.id === upstreamId))}
+                                                        onUpstreamRest={() =>
+                                                            setCurrUpstream(
+                                                                upstreamData?.find(u => u.id === upstreamId)
+                                                            )
+                                                        }
                                                         onUpstreamSubmit={async e => {
                                                             const { name } = e
-                                                            const selectUpstreamId = getKeyByValue(upstreamNameSelectEnum, name)
+                                                            const selectUpstreamId = getKeyByValue(
+                                                                upstreamNameSelectEnum,
+                                                                name
+                                                            )
                                                             if (selectUpstreamId !== upstreamId) {
                                                                 await StreamControllerUpdateUpstreamIdById(
                                                                     { id: id! },
@@ -149,7 +185,7 @@ export default () => {
                 )}
             </ProCard>
             <ModalForm
-                title="添加转发规则"
+                title="修改转发规则"
                 formRef={restFormRef}
                 visible={modalVisible}
                 onVisibleChange={setModalVisible}
@@ -161,22 +197,49 @@ export default () => {
                         onClick: () => restFormRef.current?.resetFields()
                     }
                 }}
-                onFinish={async values => {
-                    await new Promise(resolve => {
-                        setTimeout(resolve, 200)
-                        console.log(values)
-                    })
-                    message.success('提交成功')
-                    return true
+                onFinish={async v => {
+                    const values: API.StreamDto = { ...v, state: Number(!v.state) }
+                    console.log('values', values, currStreamData?.id)
+                    if (currStreamData?.id) {
+                        const { data } = await StreamControllerUpdateStreamById({ id: currStreamData.id }, values)
+                        if (data && data > 0) {
+                            message.success('提交成功')
+                            return true
+                        }
+                    }
+                    message.warn('提交失败')
+                    return false
                 }}
             >
-                <ProFormText width="sm" name="transitPort" label={StreamItemEnum.transitPort} placeholder={`请输入${StreamItemEnum.transitPort}`} />
+                <ProFormText
+                    width="sm"
+                    name="transitPort"
+                    label={StreamItemEnum.transitPort}
+                    initialValue={currStreamData?.transitPort}
+                    placeholder={`请输入${StreamItemEnum.transitPort}`}
+                />
                 <ProForm.Group>
-                    <ProFormText width="md" name="remoteHost" label={StreamItemEnum.remoteHost} placeholder={`请输入${StreamItemEnum.remoteHost}`} />
-                    <ProFormText name="remotePort" label={StreamItemEnum.remotePort} placeholder={`请输入${StreamItemEnum.remotePort}`} />
+                    <ProFormText
+                        width="md"
+                        name="remoteHost"
+                        label={StreamItemEnum.remoteHost}
+                        initialValue={currStreamData?.remoteHost}
+                        placeholder={`请输入${StreamItemEnum.remoteHost}`}
+                    />
+                    <ProFormText
+                        name="remotePort"
+                        label={StreamItemEnum.remotePort}
+                        initialValue={currStreamData?.remotePort}
+                        placeholder={`请输入${StreamItemEnum.remotePort}`}
+                    />
                 </ProForm.Group>
-                <ProFormSwitch name="state" label="是否启用" />
-                <ProFormTextArea name="comment" label={StreamItemEnum.comment} placeholder={`请输入${StreamItemEnum.comment}`} />
+                <ProFormSwitch name="state" label="是否启用" initialValue={turnState2Boolean(currStreamData?.state)} />
+                <ProFormTextArea
+                    name="comment"
+                    label={StreamItemEnum.comment}
+                    initialValue={currStreamData?.comment}
+                    placeholder={`请输入${StreamItemEnum.comment}`}
+                />
             </ModalForm>
         </>
     )

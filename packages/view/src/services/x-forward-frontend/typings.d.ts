@@ -23,7 +23,7 @@ declare namespace API {
     /** 失败重试 */
     isRetries?: 'on' | 'off';
     /** 重试次数 */
-    tries: number;
+    tries?: number;
     /** 重试超时时间 */
     retriesTimeout?: string;
     /** 连接超时时间 */
@@ -245,7 +245,7 @@ declare namespace API {
     /** 失败重试 */
     isRetries?: 'on' | 'off';
     /** 重试次数 */
-    tries: number;
+    tries?: number;
     /** 重试超时时间 */
     retriesTimeout?: string;
     /** 连接超时时间 */
