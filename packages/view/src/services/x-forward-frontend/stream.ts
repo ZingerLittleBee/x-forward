@@ -35,7 +35,7 @@ export async function StreamControllerCreateOne(
 
 /** 此处后端没有提供注释 DELETE /stream */
 export async function StreamControllerDeleteAllStream(options?: { [key: string]: any }) {
-  return request<{ success?: boolean; message?: string }>('/stream', {
+  return request<{ success?: boolean; message?: string; data?: number }>('/stream', {
     method: 'DELETE',
     ...(options || {}),
   });
@@ -100,7 +100,7 @@ export async function StreamControllerDelete(
   options?: { [key: string]: any },
 ) {
   const { id: param0, ...queryParams } = params;
-  return request<{ success?: boolean; message?: string }>(`/stream/${param0}`, {
+  return request<{ success?: boolean; message?: string; data?: number }>(`/stream/${param0}`, {
     method: 'DELETE',
     params: { ...queryParams },
     ...(options || {}),

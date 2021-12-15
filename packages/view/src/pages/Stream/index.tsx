@@ -8,13 +8,14 @@ import {
 } from '@ant-design/icons'
 import { LoadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
 import ProDescriptions from '@ant-design/pro-descriptions'
-import { Button, Form, message, Result, Tag } from 'antd'
+import { Button, Form, message, Popconfirm, Result, Tag } from 'antd'
 import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { useEffect, useRef, useState } from 'react'
 import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
 import {
+    StreamControllerDelete,
     StreamControllerGetAllStream,
     StreamControllerUpdateStreamById,
     StreamControllerUpdateUpstreamIdById
@@ -37,6 +38,10 @@ export default () => {
         data: streamData,
         refresh: streamRefresh
     } = useRequest(StreamControllerGetAllStream)
+
+    const { run: streamDeleteRun } = useRequest((id: string) => StreamControllerDelete({ id }), {
+        manual: true
+    })
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -70,7 +75,14 @@ export default () => {
                             bodyStyle={{ paddingBottom: 0 }}
                             colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 6 }}
                             actions={[
-                                <DeleteOutlined key="delete" />,
+                                <Popconfirm
+                                    title="确定删除?"
+                                    onConfirm={() => {
+                                        if (d.id) streamDeleteRun(d.id)
+                                    }}
+                                >
+                                    <DeleteOutlined key="delete" onClick={() => {}} />
+                                </Popconfirm>,
                                 <EditOutlined
                                     key="edit"
                                     onClick={() => {

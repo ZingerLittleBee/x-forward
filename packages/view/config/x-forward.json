@@ -410,6 +410,9 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
                                         }
                                     }
                                 }
@@ -575,6 +578,9 @@
                                         },
                                         "message": {
                                             "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
                                         }
                                     }
                                 }
