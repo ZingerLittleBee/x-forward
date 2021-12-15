@@ -36,7 +36,14 @@ export class UpstreamService {
     }
 
     async createAll(upstreams: UpstreamEntity[]) {
-        return Promise.all(upstreams.map(upstream => this.create(upstream)))
+        // if use `Pormise.all` like next line, i will get a error that QueryFailedError: SqliteError: cannot start a transaction within a transaction from sqlite
+        // return Promise.all(upstreams.map(upstream => this.create(upstream)))
+        const res = []
+        for (let i = 0; i < upstreams.length; i++) {
+            const createRes = await this.create(upstreams[i])
+            res.push(createRes)
+        }
+        return res
     }
 
     findAll() {

@@ -58,6 +58,7 @@ describe('UpstreamService', () => {
             controllers: [UpstreamController],
             providers: [UpstreamService, UpstreamProfile]
         }).compile()
+        await moduleRef.init()
         repository = moduleRef.get<Repository<UpstreamEntity>>(getRepositoryToken(UpstreamEntity))
         upstreamService = moduleRef.get<UpstreamService>(UpstreamService)
     })
@@ -150,8 +151,8 @@ describe('UpstreamService', () => {
 
     describe('create', () => {
         it('UpstreamService.create fault', async () => {
-            expect(await repository.save(upstreamEntity1)).not.toBeNull()
-            expect(await repository.save(upstreamEntity2)).not.toBeNull()
+            expect(await upstreamService.create(upstreamEntity1)).not.toBeNull()
+            expect(await upstreamService.create(upstreamEntity2)).not.toBeNull()
         })
     })
 
