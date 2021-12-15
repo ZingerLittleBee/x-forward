@@ -18,7 +18,7 @@ export class EventService implements OnModuleInit {
     private initEvent() {
         this.triggerCreateEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_CREATE, 5000)
         this.triggerUpdateEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_UPDATE, 5000)
-        this.triggerCreateEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_DELETE, 5000)
+        this.triggerDeleteEvent = eventThrottle(this.eventEmitter, EventEnum.CONFIG_DELETE, 5000)
         Logger.log(`${EventEnum.CONFIG_CREATE}, ${EventEnum.CONFIG_UPDATE}, ${EventEnum.CONFIG_DELETE} registered`)
     }
 }

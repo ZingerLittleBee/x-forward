@@ -141,10 +141,9 @@ export class StreamController {
      * @param id id
      */
     @Delete(':id')
-    @ApiResultResponse()
+    @ApiResultResponse('number')
     async delete(@Param('id') id: string) {
-        await this.streamService.delete(id)
-        return Result.okMsg(`删除 id: ${id} 成功`)
+        return Result.okData((await this.streamService.delete(id)).affected)
     }
 
     /**
@@ -152,9 +151,8 @@ export class StreamController {
      * 更新 delete_time 字段
      */
     @Delete()
-    @ApiResultResponse()
+    @ApiResultResponse('number')
     async deleteAllStream() {
-        await this.streamService.deleteAll()
-        return Result.okMsg('全部删除成功')
+        return Result.okData((await this.streamService.deleteAll()).affected)
     }
 }
