@@ -8,11 +8,11 @@ import {
 } from '@ant-design/icons'
 import { LoadBalancingEnum, StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
 import ProDescriptions from '@ant-design/pro-descriptions'
-import { Button, message, Result, Tag } from 'antd'
+import { Button, Form, message, Result, Tag } from 'antd'
 import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
 import {
     StreamControllerGetAllStream,
@@ -24,6 +24,7 @@ import { CommonEnum } from '@/enums/CommonEnum'
 import Upstream from '@/pages/Stream/components/Upstream'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { turnState2Boolean } from '@/utils/enumUtils'
+import { requiredRuleUtil } from '@/utils/ruleUtil'
 
 export default () => {
     const {
@@ -48,6 +49,15 @@ export default () => {
     })
 
     const [currStreamData, setCurrStreamData] = useState<API.StreamEntity>()
+
+    const [form] = Form.useForm()
+
+    useEffect(() => {
+        form.setFieldsValue({
+            ...currStreamData,
+            state: turnState2Boolean(currStreamData?.state)
+        })
+    }, [form, currStreamData])
 
     return (
         <>
@@ -186,6 +196,7 @@ export default () => {
             </ProCard>
             <ModalForm
                 title="修改转发规则"
+                form={form}
                 formRef={restFormRef}
                 visible={modalVisible}
                 onVisibleChange={setModalVisible}
@@ -216,6 +227,7 @@ export default () => {
                     name="transitPort"
                     label={StreamItemEnum.transitPort}
                     initialValue={currStreamData?.transitPort}
+                    rules={requiredRuleUtil(StreamItemEnum.transitPort)}
                     placeholder={`请输入${StreamItemEnum.transitPort}`}
                 />
                 <ProForm.Group>
