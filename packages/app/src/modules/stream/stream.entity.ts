@@ -57,7 +57,7 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: '重试次数' })
     @Column({ name: 'tries', type: 'int', nullable: true })
-    tries: number
+    tries?: number
 
     @AutoMap()
     @ApiProperty({ description: '重试超时时间' })

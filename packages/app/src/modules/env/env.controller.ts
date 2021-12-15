@@ -2,19 +2,13 @@ import { Controller, Get, Query } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse } from 'src/decorators/response.api'
 import { Result } from '../../utils/Result'
-import { QueryGatewayService } from '../gateway/query-gateway.service'
 import { EnvService } from './env.service'
 import { NginxConfigVo, OverviewVo, SystemInfoVo } from './env.vo'
 
 @ApiTags('env')
 @Controller('env')
 export class EnvController {
-    constructor(private envService: EnvService, private query: QueryGatewayService) {}
-
-    @Get()
-    test() {
-        return this.query.getSystemInfo()
-    }
+    constructor(private envService: EnvService) {}
 
     /**
      * 获取 nginx 配置

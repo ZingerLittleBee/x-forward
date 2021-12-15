@@ -16,7 +16,7 @@ export class EnvService {
      * @returns
      */
     getNginxPath() {
-        return this.queryGatewayService
+        return this.queryGatewayService.getNginxBin()
     }
 
     async getSystemInfo() {

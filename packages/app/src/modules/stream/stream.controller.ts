@@ -118,10 +118,9 @@ export class StreamController {
      * @param streamEntity 要更新的内容, 不存在的属性保持默认
      */
     @Patch(':id')
-    @ApiResultResponse()
+    @ApiResultResponse('number')
     async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
-        await this.streamService.update(id, stream as StreamEntity)
-        return Result.okMsg('更新成功')
+        return Result.okData((await this.streamService.update(id, stream as StreamEntity)).affected)
     }
 
     /**

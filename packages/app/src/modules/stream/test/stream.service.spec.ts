@@ -1,6 +1,8 @@
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { ProtocolEnum, RetriesEnum } from 'src/enums/NginxEnum'
+import { EventModule } from 'src/modules/event/event.module'
 import { ServerEntity } from 'src/modules/upstream/server/entities/server.entity'
 import { UpstreamEntity } from 'src/modules/upstream/upstream.entity'
 import { Repository } from 'typeorm'
@@ -23,10 +25,29 @@ describe('StreamService', () => {
                     logging: true,
                     keepConnectionAlive: true
                 }),
-                TypeOrmModule.forFeature([StreamEntity])
+                EventEmitterModule.forRoot({
+                    // set this to `true` to use wildcards
+                    wildcard: false,
+                    // the delimiter used to segment namespaces
+                    delimiter: '.',
+                    // set this to `true` if you want to emit the newListener event
+                    newListener: false,
+                    // set this to `true` if you want to emit the removeListener event
+                    removeListener: false,
+                    // the maximum amount of listeners that can be assigned to an event
+                    maxListeners: 10,
+                    // show event name in memory leak message when more than maximum amount of listeners is assigned
+                    verboseMemoryLeak: false,
+                    // disable throwing uncaughtException if an error event is emitted and it has no listeners
+                    ignoreErrors: false
+                }),
+                TypeOrmModule.forFeature([StreamEntity]),
+                EventModule
             ],
             providers: [StreamService]
         }).compile()
+        // make sure `onModuleInit` called
+        await moduleRef.init()
         repository = moduleRef.get<Repository<StreamEntity>>(getRepositoryToken(StreamEntity))
         streamService = moduleRef.get<StreamService>(StreamService)
     })
