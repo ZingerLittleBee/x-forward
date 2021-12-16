@@ -270,20 +270,6 @@
                 ]
             }
         },
-        "/stream/test": {
-            "get": {
-                "operationId": "StreamController_test",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
         "/stream": {
             "get": {
                 "operationId": "StreamController_getAllStream",
@@ -301,7 +287,7 @@
                                         "data": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/components/schemas/StreamEntity"
+                                                "$ref": "#/components/schemas/StreamVo"
                                             }
                                         }
                                     }
@@ -341,7 +327,7 @@
                                             "type": "string"
                                         },
                                         "data": {
-                                            "$ref": "#/components/schemas/StreamEntity"
+                                            "$ref": "#/components/schemas/StreamVo"
                                         }
                                     }
                                 }
@@ -1575,6 +1561,119 @@
                 "required": [
                     "name",
                     "server"
+                ]
+            },
+            "StreamVo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "是否生效; 0: able, 1: disable"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "transitHost": {
+                        "type": "string",
+                        "description": "中转地址"
+                    },
+                    "transitPort": {
+                        "type": "number",
+                        "description": "中转端口"
+                    },
+                    "remoteHost": {
+                        "type": "string",
+                        "description": "上游地址"
+                    },
+                    "remotePort": {
+                        "type": "number",
+                        "description": "上游端口"
+                    },
+                    "status": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "联通状态, 1: Checking, 0: Running, 2: Stop, 3: NotInstall, 4: Error"
+                    },
+                    "loadBalancing": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "负载均衡算法, 0: poll, 1: weight, 2: ip_hash, 3: fair, 4: url_hash"
+                    },
+                    "protocol": {
+                        "enum": [
+                            "tcp",
+                            "udp"
+                        ],
+                        "type": "string",
+                        "description": "转发协议"
+                    },
+                    "isRetries": {
+                        "enum": [
+                            "on",
+                            "off"
+                        ],
+                        "type": "string",
+                        "description": "失败重试"
+                    },
+                    "tries": {
+                        "type": "number",
+                        "description": "重试次数"
+                    },
+                    "retriesTimeout": {
+                        "type": "string",
+                        "description": "重试超时时间"
+                    },
+                    "connectTimeout": {
+                        "type": "string",
+                        "description": "连接超时时间"
+                    },
+                    "uploadRate": {
+                        "type": "string",
+                        "description": "从客户端读数据的速率，单位为每秒字节数，默认为0，不限速"
+                    },
+                    "downloadRate": {
+                        "type": "string",
+                        "description": "从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速"
+                    },
+                    "proxyTimeout": {
+                        "type": "string",
+                        "description": "配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "备注"
+                    },
+                    "upstreamId": {
+                        "type": "string"
+                    }
+                },
+                "required": [
+                    "transitHost",
+                    "transitPort"
                 ]
             },
             "StreamDto": {

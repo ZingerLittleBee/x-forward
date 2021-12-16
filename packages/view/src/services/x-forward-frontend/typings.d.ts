@@ -224,6 +224,45 @@ declare namespace API {
     server: UpdateServerDto[];
   };
 
+  type StreamVo = {
+    id?: string;
+    /** 是否生效; 0: able, 1: disable */
+    state?: 0 | 1;
+    createTime?: string;
+    updateTime?: string;
+    /** 中转地址 */
+    transitHost: string;
+    /** 中转端口 */
+    transitPort: number;
+    /** 上游地址 */
+    remoteHost?: string;
+    /** 上游端口 */
+    remotePort?: number;
+    /** 联通状态, 1: Checking, 0: Running, 2: Stop, 3: NotInstall, 4: Error */
+    status?: 0 | 1 | 2 | 3 | 4;
+    /** 负载均衡算法, 0: poll, 1: weight, 2: ip_hash, 3: fair, 4: url_hash */
+    loadBalancing?: 0 | 1 | 2 | 3 | 4;
+    /** 转发协议 */
+    protocol?: 'tcp' | 'udp';
+    /** 失败重试 */
+    isRetries?: 'on' | 'off';
+    /** 重试次数 */
+    tries?: number;
+    /** 重试超时时间 */
+    retriesTimeout?: string;
+    /** 连接超时时间 */
+    connectTimeout?: string;
+    /** 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速 */
+    uploadRate?: string;
+    /** 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速 */
+    downloadRate?: string;
+    /** 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟 */
+    proxyTimeout?: string;
+    /** 备注 */
+    comment?: string;
+    upstreamId?: string;
+  };
+
   type StreamDto = {
     id?: string;
     /** 是否生效; 0: able, 1: disable */

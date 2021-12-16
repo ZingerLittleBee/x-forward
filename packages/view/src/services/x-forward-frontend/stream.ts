@@ -2,17 +2,9 @@
 /* eslint-disable */
 import { request } from 'umi';
 
-/** 此处后端没有提供注释 GET /stream/test */
-export async function StreamControllerTest(options?: { [key: string]: any }) {
-  return request<any>('/stream/test', {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
-
 /** 此处后端没有提供注释 GET /stream */
 export async function StreamControllerGetAllStream(options?: { [key: string]: any }) {
-  return request<{ success?: boolean; data?: API.StreamEntity[] }>('/stream', {
+  return request<{ success?: boolean; data?: API.StreamVo[] }>('/stream', {
     method: 'GET',
     ...(options || {}),
   });
@@ -23,7 +15,7 @@ export async function StreamControllerCreateOne(
   body: API.CreateStreamDto,
   options?: { [key: string]: any },
 ) {
-  return request<{ success?: boolean; message?: string; data?: API.StreamEntity }>('/stream', {
+  return request<{ success?: boolean; message?: string; data?: API.StreamVo }>('/stream', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
