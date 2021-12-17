@@ -26,11 +26,11 @@ export class CreateStreamDto extends PickType(StreamEntity, [
     'upstreamId'
 ]) {
     @AutoMap()
-    state: StateEnum
+    state?: StateEnum
     @AutoMap()
-    transitHost: string
+    transitHost?: string
     @AutoMap()
-    transitPort: number
+    transitPort?: number
     @AutoMap()
     remoteHost?: string
     @AutoMap()
@@ -44,7 +44,7 @@ export class CreateStreamDto extends PickType(StreamEntity, [
     @AutoMap()
     isRetries?: RetriesEnum
     @AutoMap()
-    tries: number
+    tries?: number
     @AutoMap()
     retriesTimeout?: string
     @AutoMap()

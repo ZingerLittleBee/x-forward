@@ -18,7 +18,8 @@ export class StreamDto extends PickType(StreamEntity, [
     'uploadRate',
     'downloadRate',
     'proxyTimeout',
-    'comment'
+    'comment',
+    'upstreamId'
 ]) {
     // @AutoMap()
     // readonly id?: string

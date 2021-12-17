@@ -11,12 +11,12 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: '中转地址' })
     @Column({ name: 'transit_host', type: 'varchar' })
-    transitHost: string
+    transitHost?: string
 
     @AutoMap()
     @ApiProperty({ description: '中转端口' })
     @Column({ name: 'transit_port', type: 'int' })
-    transitPort: number
+    transitPort?: number
 
     @AutoMap()
     @ApiProperty({ description: '上游地址' })
