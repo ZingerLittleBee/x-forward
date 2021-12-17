@@ -22,7 +22,9 @@ import { turnState2Boolean } from '@/utils/enumUtils'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
 import { state2Boolean } from '@/utils/statusUtils'
 import { ServerEnum } from '@/enums/UpstreamEnum'
+import { omit } from 'lodash-es'
 import {
+    StreamControllerCreateOne,
     StreamControllerDelete,
     StreamControllerGetAllStream,
     StreamControllerUpdateStreamById,
@@ -44,6 +46,13 @@ export default () => {
     const { run: streamDeleteRun } = useRequest((id: string) => StreamControllerDelete({ id }), {
         manual: true
     })
+
+    const { run: addStreamRun } = useRequest(
+        (createStreamDto: API.CreateStreamDto) => StreamControllerCreateOne(createStreamDto),
+        {
+            manual: true
+        }
+    )
 
     const restFormRef = useRef<ProFormInstance>()
     const [modalVisible, setModalVisible] = useState<boolean>(false)
@@ -239,7 +248,11 @@ export default () => {
                         setCurrStreamData(undefined)
                         form.resetFields()
                     } else {
-                        form.setFieldsValue({ ...currStreamData, state: state2Boolean(currStreamData?.state) })
+                        form.setFieldsValue({
+                            ...currStreamData,
+                            state: state2Boolean(currStreamData?.state),
+                            name: upstreamData?.find(u => u.id === currStreamData?.upstreamId)?.name
+                        })
                     }
                 }}
                 submitter={{
@@ -251,7 +264,12 @@ export default () => {
                     }
                 }}
                 onFinish={async v => {
-                    const values: API.StreamDto = { ...v, state: Number(!v.state) }
+                    const upstreamId = getKeyByValue(upstreamNameSelectEnum, v.name)
+                    const values: API.StreamDto = {
+                        ...omit(v, 'name'),
+                        state: v.state ? 0 : 1,
+                        upstreamId
+                    }
                     console.log('values', values, currStreamData?.id)
                     if (currStreamData?.id) {
                         const { data } = await StreamControllerUpdateStreamById({ id: currStreamData.id }, values)
@@ -262,6 +280,7 @@ export default () => {
                     } else {
                         message.success('create')
                         console.log(values)
+                        addStreamRun({ ...values, upstreamId })
                     }
                     message.warn('提交失败')
                     return false

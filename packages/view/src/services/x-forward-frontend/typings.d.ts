@@ -7,9 +7,9 @@ declare namespace API {
     updateTime?: string;
     deleteTime?: string;
     /** 中转地址 */
-    transitHost: string;
+    transitHost?: string;
     /** 中转端口 */
-    transitPort: number;
+    transitPort?: number;
     /** 上游地址 */
     remoteHost?: string;
     /** 上游端口 */
@@ -136,11 +136,11 @@ declare namespace API {
 
   type CreateStreamDto = {
     /** 是否生效; 0: able, 1: disable */
-    state: 0 | 1;
+    state?: 0 | 1;
     /** 中转地址 */
-    transitHost: string;
+    transitHost?: string;
     /** 中转端口 */
-    transitPort: number;
+    transitPort?: number;
     /** 上游地址 */
     remoteHost?: string;
     /** 上游端口 */
@@ -154,7 +154,7 @@ declare namespace API {
     /** 失败重试 */
     isRetries?: 'on' | 'off';
     /** 重试次数 */
-    tries: number;
+    tries?: number;
     /** 重试超时时间 */
     retriesTimeout?: string;
     /** 连接超时时间 */
@@ -231,9 +231,9 @@ declare namespace API {
     createTime?: string;
     updateTime?: string;
     /** 中转地址 */
-    transitHost: string;
+    transitHost?: string;
     /** 中转端口 */
-    transitPort: number;
+    transitPort?: number;
     /** 上游地址 */
     remoteHost?: string;
     /** 上游端口 */
@@ -268,9 +268,9 @@ declare namespace API {
     /** 是否生效; 0: able, 1: disable */
     state?: 0 | 1;
     /** 中转地址 */
-    transitHost: string;
+    transitHost?: string;
     /** 中转端口 */
-    transitPort: number;
+    transitPort?: number;
     /** 上游地址 */
     remoteHost?: string;
     /** 上游端口 */
@@ -297,6 +297,7 @@ declare namespace API {
     proxyTimeout?: string;
     /** 备注 */
     comment?: string;
+    upstreamId?: string;
   };
 
   type UserVo = {

@@ -993,11 +993,7 @@
                     "upstreamId": {
                         "type": "string"
                     }
-                },
-                "required": [
-                    "transitHost",
-                    "transitPort"
-                ]
+                }
             },
             "ServerEntity": {
                 "type": "object",
@@ -1384,13 +1380,7 @@
                     "upstreamId": {
                         "type": "string"
                     }
-                },
-                "required": [
-                    "state",
-                    "transitHost",
-                    "transitPort",
-                    "tries"
-                ]
+                }
             },
             "CreateUpstreamDto": {
                 "type": "object",
@@ -1670,11 +1660,7 @@
                     "upstreamId": {
                         "type": "string"
                     }
-                },
-                "required": [
-                    "transitHost",
-                    "transitPort"
-                ]
+                }
             },
             "StreamDto": {
                 "type": "object",
@@ -1771,12 +1757,11 @@
                     "comment": {
                         "type": "string",
                         "description": "备注"
+                    },
+                    "upstreamId": {
+                        "type": "string"
                     }
-                },
-                "required": [
-                    "transitHost",
-                    "transitPort"
-                ]
+                }
             },
             "UserVo": {
                 "type": "object",
