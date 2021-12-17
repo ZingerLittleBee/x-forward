@@ -23,6 +23,10 @@ export class StreamService {
         return this.streamRepository.find({ loadRelationIds: true })
     }
 
+    async findById(id: string) {
+        return this.streamRepository.findOne(id, { loadRelationIds: true })
+    }
+
     /**
      * find record which fk is null
      * @returns StreamEntity[]
@@ -54,7 +58,9 @@ export class StreamService {
      * @returns StreamEntity[]
      */
     async createAll(streamEntities: StreamEntity[]) {
-        return this.streamRepository.save(streamEntities)
+        const res = await this.streamRepository.save(streamEntities)
+        this.eventService.triggerCreateEvent()
+        return res
     }
 
     /**
@@ -91,8 +97,8 @@ export class StreamService {
      * 更新 delete_time 字段
      * @param id primary key
      */
-    delete(id: string) {
-        const res = this.streamRepository.softDelete(id)
+    async delete(id: string) {
+        const res = await this.streamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         return res
     }
