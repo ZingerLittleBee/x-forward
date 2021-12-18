@@ -1,16 +1,14 @@
 import { Injectable } from '@nestjs/common'
-import { StatusEnum } from 'src/enums/StatusEnum'
-import { findSomething } from '../../utils/BashUtil'
-import { checkOS } from '../../utils/Shell'
-import { NginxConfig } from '../executor/interface/executor.interface'
-import { ExecutorGatewayService } from '../gateway/gateway.service'
+import { NginxConfig } from '../executor/interfaces/nginx-config.interface'
+import { QueryGatewayService } from '../gateway/query-gateway.service'
+import { Overview } from './env.interface'
 
 @Injectable()
 export class EnvService {
-    constructor(private executorGateway: ExecutorGatewayService) {}
+    constructor(private queryGatewayService: QueryGatewayService) {}
 
     async fetchNginxConfigAargs(): Promise<NginxConfig> {
-        return this.executorGateway.fetchNginxConfigArgs()
+        return this.queryGatewayService.fetchNginxConfigArgs()
     }
 
     /**
@@ -18,32 +16,28 @@ export class EnvService {
      * @returns
      */
     getNginxPath() {
-        return findSomething('nginx')
+        return this.queryGatewayService.getNginxBin()
     }
 
-    async getOS() {
-        return await checkOS()
+    async getSystemInfo() {
+        return this.queryGatewayService.getSystemInfo()
     }
 
-    getNginxStatus() {}
+    // getNginxStatus() {
+    //     return
+    // }
 
-    getNginxUptime() {}
+    // getNginxUptime() {}
 
-    async getOverview() {
-        let os = await this.getOS()
-        let nginxPath = await this.getNginxPath()
-        let nginxUptime
-        let nginxStatus
-        if (!nginxPath) {
-            nginxStatus = StatusEnum.NotInstall
-            nginxUptime = '0'
-        } else {
-        }
+    async getOverview(): Promise<Overview> {
+        const nginxPath = await this.queryGatewayService.getNginxBin()
+        const { description } = await this.queryGatewayService.getSystemInfo()
+        const { uptime, active } = await this.queryGatewayService.queryNginxStatus()
         return {
-            os,
+            os: description,
             nginxPath,
-            nginxUptime,
-            nginxStatus
+            nginxUptime: uptime,
+            nginxStatus: active
         }
     }
 
@@ -53,13 +47,13 @@ export class EnvService {
      * @returns 路径下的所有文件夹
      */
     async getDirByUrl(url: string) {
-        return this.executorGateway.fetchDirectoryByUrl(url)
+        return this.queryGatewayService.fetchDirectoryByUrl(url)
     }
 
     /**
      * 获取 nginx stream 文件
      */
     fetchNginxStreamFile() {
-        this.executorGateway.fetchNginxStreamConfigContent()
+        this.queryGatewayService.fetchNginxStreamConfigContent()
     }
 }

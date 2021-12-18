@@ -23,6 +23,10 @@ export class StreamService {
         return this.streamRepository.find({ loadRelationIds: true })
     }
 
+    async findById(id: string) {
+        return this.streamRepository.findOne(id, { loadRelationIds: true })
+    }
+
     /**
      * find record which fk is null
      * @returns StreamEntity[]
@@ -43,7 +47,7 @@ export class StreamService {
      * @returns StreamEntity
      */
     async create(streamEntity: StreamEntity) {
-        let res = await this.streamRepository.save(streamEntity)
+        const res = await this.streamRepository.save(streamEntity)
         this.eventService.triggerCreateEvent()
         return res
     }
@@ -54,7 +58,18 @@ export class StreamService {
      * @returns StreamEntity[]
      */
     async createAll(streamEntities: StreamEntity[]) {
-        return this.streamRepository.save(streamEntities)
+        const res = await this.streamRepository.save(streamEntities)
+        this.eventService.triggerCreateEvent()
+        return res
+    }
+
+    /**
+     * 更新 upstreamId
+     * @param id StreamId
+     * @param upstreamId upstreamId
+     */
+    upstreamIdUpdate(id: string, upstreamId: string) {
+        return this.streamRepository.update(id, { upstreamId: upstreamId })
     }
 
     /**
@@ -65,26 +80,25 @@ export class StreamService {
      * @param state state
      * @returns UpdateResult
      */
-    stateUpdate(id: number, state: number) {
+    stateUpdate(id: string, state: number) {
         return this.streamRepository.update(id, { state: state })
     }
 
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
-        let res = await this.streamRepository.update(id, streamEntity)
-        return res
+        return this.streamRepository.update(id, streamEntity)
     }
 
-    updateAll(streamEntities: StreamEntity[]) {
-        return streamEntities.map(s => this.update(s.id, s))
+    async updateAll(streamEntities: StreamEntity[]) {
+        return Promise.all(streamEntities.map(s => this.update(s.id, s)))
     }
 
     /**
      * 更新 delete_time 字段
      * @param id primary key
      */
-    delete(id: string) {
-        let res = this.streamRepository.softDelete(id)
+    async delete(id: string) {
+        const res = await this.streamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         return res
     }
@@ -94,13 +108,23 @@ export class StreamService {
      * @returns affect rows
      */
     async deleteAll() {
-        let res = await this.streamRepository.createQueryBuilder().update(StreamEntity).set({ deleteTime: new Date() }).where('delete_time is NULL').execute()
+        const res = await this.streamRepository
+            .createQueryBuilder()
+            .update(StreamEntity)
+            .set({ deleteTime: new Date() })
+            .where('delete_time is NULL')
+            .execute()
         this.eventService.triggerDeleteEvent()
         return res
     }
 
     async removeByFK(id: string) {
-        let res = await this.streamRepository.createQueryBuilder().softDelete().from(StreamEntity).where('upstream_id = :id', { id }).execute()
+        const res = await this.streamRepository
+            .createQueryBuilder()
+            .softDelete()
+            .from(StreamEntity)
+            .where('upstream_id = :id', { id })
+            .execute()
         this.eventService.triggerDeleteEvent()
         return res
     }

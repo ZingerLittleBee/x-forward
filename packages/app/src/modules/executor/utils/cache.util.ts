@@ -1,7 +1,7 @@
 import { Cache } from 'cache-manager'
 import { NginxConfigArgsReflectEnum } from 'src/enums/NginxEnum'
 import { EnvEnum } from '../../../enums/EnvEnum'
-import { NginxConfig } from '../interface/executor.interface'
+import { NginxConfig } from '../interfaces/nginx-config.interface'
 
 /**
  * 获取 cache 中的 nginxConfig
@@ -27,9 +27,9 @@ export const fetchNginxConfigArgs = (nginxInfo: string, cacheManager: Cache): Ng
     // 1. 处理特殊情况(内容包含空格)
     //  --with-ld-opt='-Wl,-z,relro -Wl,-z,now -Wl,--as-needed -pie'
     //  --with-cc-opt='-g -O2 -fdebug-prefix-map=/data/builder/debuild/nginx-1.21.3/debian/debuild-base/nginx-1.21.3=. -fstack-protector-strong -Wformat -Werror=format-security -Wp,-D_FORTIFY_SOURCE=2 -fPIC'
-    let spaceRegExp = /(with-ld-opt|with-cc-opt)='.*?'/g
-    let opt = nginxInfo.match(spaceRegExp)
-    let argsConfig: String[]
+    const spaceRegExp = /(with-ld-opt|with-cc-opt)='.*?'/g
+    const opt = nginxInfo.match(spaceRegExp)
+    let argsConfig: string[]
     // 2. 处理一般情况(内容不带空格)
     if (opt) {
         // 如果 --with-ld-opt 存在, 则合并结果
@@ -41,9 +41,9 @@ export const fetchNginxConfigArgs = (nginxInfo: string, cacheManager: Cache): Ng
         argsConfig = nginxInfo.match(/([a-z][-\w]+)=(\S+)/gi)
     }
     // 3. [ 'prefix=/etc/nginx' ] 键值对分离
-    let argsConfigObj = {}
+    const argsConfigObj = {}
     argsConfig.forEach(p => {
-        let matchTemp = p.match(/([-_a-z]+)(?:=)(.*)/i)
+        const matchTemp = p.match(/([-_a-z]+)(?:=)(.*)/i)
         argsConfigObj[matchTemp[1]] = {
             label: NginxConfigArgsReflectEnum[matchTemp[1]],
             value: matchTemp[2]

@@ -1,19 +1,6 @@
-import { AutoMap } from '@automapper/classes'
-import { NginxLoadBalancingEnum } from 'src/enums/NginxEnum'
+import { PartialType } from '@nestjs/swagger'
 import { Entity } from 'typeorm'
-import { ServerVo } from './server/server.vo'
+import { UpstreamEntity } from './upstream.entity'
 
 @Entity('upstream')
-export class UpstreamVo {
-    @AutoMap()
-    id: string
-
-    @AutoMap()
-    name: string
-
-    @AutoMap()
-    loadBalancing?: NginxLoadBalancingEnum
-
-    @AutoMap({ typeFn: () => ServerVo })
-    server: ServerVo[]
-}
+export class UpstreamVo extends PartialType(UpstreamEntity) {}

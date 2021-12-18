@@ -14,7 +14,7 @@ import { ServerEntity } from './modules/upstream/server/entities/server.entity'
 import { ServerModule } from './modules/upstream/server/server.module'
 import { UpstreamEntity } from './modules/upstream/upstream.entity'
 import { UpstreamModule } from './modules/upstream/upstream.module'
-import { User } from './modules/user/user.entity'
+import { UserEntity } from './modules/user/user.entity'
 import { UserModule } from './modules/user/user.module'
 @Module({
     imports: [
@@ -22,7 +22,7 @@ import { UserModule } from './modules/user/user.module'
             type: 'better-sqlite3',
             database: './x-forward.db',
             // to solve pkg which can not find entity in ormconfig.json
-            entities: [User, StreamEntity, UpstreamEntity, ServerEntity],
+            entities: [UserEntity, StreamEntity, UpstreamEntity, ServerEntity],
             autoLoadEntities: true,
             synchronize: true,
             logging: true
@@ -50,6 +50,7 @@ import { UserModule } from './modules/user/user.module'
         ConfigModule.forRoot(),
         CacheModule.register(),
         ConfigChangeModule,
+        ShellModule,
         UserModule,
         EnvModule,
         ShellModule,

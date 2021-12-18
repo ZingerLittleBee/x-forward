@@ -29,18 +29,34 @@ export class UpstreamService {
             await this.streamService.createAll(upstream.stream)
         }
         // trigger event
-        let upstreamEntity = await this.upstreamRepository.save(upstream)
+        const upstreamEntity = await this.upstreamRepository.save(upstream)
         this.eventService.triggerCreateEvent()
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
     }
 
     async createAll(upstreams: UpstreamEntity[]) {
-        return Promise.all(upstreams.map(upstream => this.create(upstream)))
+        // if use `Pormise.all` like next line, i will get a error that QueryFailedError: SqliteError: cannot start a transaction within a transaction from sqlite
+        // return Promise.all(upstreams.map(upstream => this.create(upstream)))
+        const res = []
+        for (let i = 0; i < upstreams.length; i++) {
+            const createRes = await this.create(upstreams[i])
+            res.push(createRes)
+        }
+        return res
     }
 
     findAll() {
         return this.upstreamRepository.find()
+    }
+
+    findAllWithoutEager() {
+        return this.upstreamRepository
+            .createQueryBuilder()
+            .select('upstream')
+            .from(UpstreamEntity, 'upstream')
+            .leftJoinAndSelect('upstream.server', 'server')
+            .getMany()
     }
 
     findEffect() {
@@ -67,7 +83,7 @@ export class UpstreamService {
         if (updateUpstream.stream) {
             this.streamService.updateAll(updateUpstream.stream)
         }
-        let res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
         this.eventService.triggerUpdateEvent()
         Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
         return res
@@ -75,7 +91,7 @@ export class UpstreamService {
 
     async remove(id: string) {
         this.serverService.removeByFK(id)
-        let res = await this.upstreamRepository.softDelete(id)
+        const res = await this.upstreamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)
         return res

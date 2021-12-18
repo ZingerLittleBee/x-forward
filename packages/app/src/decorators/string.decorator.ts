@@ -6,7 +6,7 @@ import { EOL } from 'os'
  */
 export const RemoveEndOfLine = () => {
     return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
-        let originalMethod = descriptor.value
+        const originalMethod = descriptor.value
         descriptor.value = async function (...args: any[]) {
             const res = (await Reflect.apply(originalMethod, this, args)) as string
             return res.replace(EOL, '')

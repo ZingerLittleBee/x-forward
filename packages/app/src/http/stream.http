@@ -7,6 +7,14 @@ GET {{url}}/test
 ### 获取所有 stream 规则
 GET {{url}}
 
+### update UpstreamId by StreamId
+PATCH {{url}}/1163c139-e2b1-4df2-b255-7dc37718e188/name
+Content-Type: application/json
+
+{
+    "upstreamId": "ab30b04e-c359-46d5-8a2e-c96e230497fd"
+}
+
 ### 添加单个 stream
 POST {{url}}
 Content-Type: application/json
