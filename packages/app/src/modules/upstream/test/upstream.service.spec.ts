@@ -1,8 +1,10 @@
 import { classes } from '@automapper/classes'
 import { AutomapperModule } from '@automapper/nestjs'
+import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { ProtocolEnum, RetriesEnum } from 'src/enums/NginxEnum'
+import { EventModule } from 'src/modules/event/event.module'
 import { StreamModule } from 'src/modules/stream/stream.module'
 import { Repository } from 'typeorm'
 import { ServerEntity } from '../server/entities/server.entity'
@@ -33,12 +35,30 @@ describe('UpstreamService', () => {
                     options: [{ name: 'blah', pluginInitializer: classes }],
                     singular: true
                 }),
+                EventEmitterModule.forRoot({
+                    // set this to `true` to use wildcards
+                    wildcard: false,
+                    // the delimiter used to segment namespaces
+                    delimiter: '.',
+                    // set this to `true` if you want to emit the newListener event
+                    newListener: false,
+                    // set this to `true` if you want to emit the removeListener event
+                    removeListener: false,
+                    // the maximum amount of listeners that can be assigned to an event
+                    maxListeners: 10,
+                    // show event name in memory leak message when more than maximum amount of listeners is assigned
+                    verboseMemoryLeak: false,
+                    // disable throwing uncaughtException if an error event is emitted and it has no listeners
+                    ignoreErrors: false
+                }),
                 ServerModule,
-                StreamModule
+                StreamModule,
+                EventModule
             ],
             controllers: [UpstreamController],
             providers: [UpstreamService, UpstreamProfile]
         }).compile()
+        await moduleRef.init()
         repository = moduleRef.get<Repository<UpstreamEntity>>(getRepositoryToken(UpstreamEntity))
         upstreamService = moduleRef.get<UpstreamService>(UpstreamService)
     })
@@ -47,7 +67,7 @@ describe('UpstreamService', () => {
         repository.clear()
     })
 
-    let upstreamEntity1: UpstreamEntity = {
+    const upstreamEntity1: UpstreamEntity = {
         name: 'test1',
         server: [
             {
@@ -88,7 +108,7 @@ describe('UpstreamService', () => {
         ]
     }
 
-    let upstreamEntity2: UpstreamEntity = {
+    const upstreamEntity2: UpstreamEntity = {
         name: 'test2',
         server: [
             {
@@ -131,8 +151,8 @@ describe('UpstreamService', () => {
 
     describe('create', () => {
         it('UpstreamService.create fault', async () => {
-            expect(await repository.save(upstreamEntity1)).not.toBeNull()
-            expect(await repository.save(upstreamEntity2)).not.toBeNull()
+            expect(await upstreamService.create(upstreamEntity1)).not.toBeNull()
+            expect(await upstreamService.create(upstreamEntity2)).not.toBeNull()
         })
     })
 

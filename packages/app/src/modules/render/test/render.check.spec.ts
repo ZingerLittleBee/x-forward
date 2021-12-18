@@ -2,7 +2,7 @@ import { dnsCheck } from '../render.check'
 import { RenderModel } from '../render.interface'
 
 describe('RenderCheck', () => {
-    let renderModel: RenderModel = {
+    const renderModel: RenderModel = {
         servers: [
             // normal
             {

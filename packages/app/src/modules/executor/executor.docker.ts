@@ -9,15 +9,77 @@ import { NginxConfigArgsEnum, NginxConfigArgsReflectEnum } from 'src/enums/Nginx
 import { getEnvSetting } from 'src/utils/env.util'
 import { v4, validate } from 'uuid'
 import { $ } from 'zx'
-import ShellEnum from '../../enums/ShellEnum'
-import { ExecutorInterface, NginxConfig } from './interface/executor.interface'
+import { ServiceEnum, ShellEnum } from '../../enums/ShellEnum'
+import { IExecutor } from './interfaces/executor.interface'
+import { NginxConfig } from './interfaces/nginx-config.interface'
+import { NginxStatus } from './interfaces/nginx-status.interface'
 import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
 import { dockerExec } from './utils/docker.util'
 
-export class ExecutorDocker implements ExecutorInterface {
+export class ExecutorDocker implements IExecutor {
     constructor(private containerName: string, private cacheManager: Cache) {
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    async getSystemInfo() {
+        const { res } = await dockerExec(
+            this.containerName,
+            ShellEnum.UNAME,
+            '-n;',
+            ShellEnum.UNAME,
+            '-r;',
+            ShellEnum.UNAME,
+            '-v;',
+            ShellEnum.UNAME,
+            '-m;',
+            ShellEnum.LSB_RELEASE,
+            '-a;'
+        )
+        const [hostname, kernelRelease, kernelVersion, hardware, distributorId, description, release, codename] = res
+            .split(EOL)
+            .map(r => {
+                return r.includes(':') ? r.split(':')[r.split(':').length - 1].trim() : r
+            })
+        return {
+            hostname,
+            kernelRelease,
+            kernelVersion,
+            hardware,
+            distributorId,
+            description,
+            release,
+            codename
+        }
+    }
+    async queryNginxStatus() {
+        const status: NginxStatus = {}
+        let cmd = (await dockerExec(this.containerName, ShellEnum.WHICH, ShellEnum.SERVICE))?.res?.trim()
+        if (!cmd) {
+            cmd = (await dockerExec(this.containerName, ShellEnum.SYSTEMCTL))?.res?.trim()
+        }
+        if (!cmd) {
+            Logger.warn(`系统不存在, ${ShellEnum.SERVICE}, ${ShellEnum.SYSTEMCTL}`)
+            return {}
+        }
+        const { res: serviceStatus } = await dockerExec(this.containerName, cmd, 'nginx', ServiceEnum.STATUS)
+        console.log('serviceStatus', serviceStatus)
+        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
+        active && (status.active = active)
+        const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
+        uptime && (status.uptime = uptime)
+        const since = serviceStatus.match(/(?<=since\s).*(?=;)/)?.[0]
+        since && (status.since = since)
+        const memory = serviceStatus.match(/(?<=Memory:\s).*/)?.[0]
+        memory && (status.memory = memory)
+        const mainPid = serviceStatus.match(/(?<=Main\sPID:\s)\d+/)?.[0]
+        mainPid && (status.mainPid = mainPid)
+        const workerPid = serviceStatus.match(/\d+(?=\snginx:\sworker\sprocess)/g)
+        workerPid && (status.workerPid = workerPid)
+        const tasks = serviceStatus.match(/(?<=Tasks:\s)\d/)?.[0]
+        tasks && (status.tasks = tasks)
+        const tasksLimit = serviceStatus.match(/(?<=limit:\s)\d+/)?.[0]
+        tasksLimit && (status.tasksLimit = tasksLimit)
+        return status
     }
     async fetchDirectory(url: string) {
         if (!url.match(/^\//)) {
@@ -77,22 +139,23 @@ export class ExecutorDocker implements ExecutorInterface {
 
     async getStreamConfigPath() {
         // 先查找缓存
-        let nginxConfigArgs = await getNginxCache(this.cacheManager)
-        if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value) return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
-        let streamDir = await this.getStreamDirectory()
+        const nginxConfigArgs = await getNginxCache(this.cacheManager)
+        if (nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH]?.value)
+            return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
+        const streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
-        let { res } = await dockerExec(this.containerName, ShellEnum.LS, streamDir)
+        const { res } = await dockerExec(this.containerName, ShellEnum.LS, streamDir)
         let fileList = []
         if (res !== '') fileList = res.split(EOL)
         for (let i = 0; i < fileList.length; i++) {
-            let fileName = fileList[i].split('.')[0]
+            const fileName = fileList[i].split('.')[0]
             // 如果文件名是 uuid, 则直接返回
             if (validate(fileName)) {
                 return join(streamDir, fileList[i])
             }
         }
         // 不存在, 则创建文件
-        let newStreamPath = join(streamDir, `${v4()}.conf`)
+        const newStreamPath = join(streamDir, `${v4()}.conf`)
         dockerExec(this.containerName, ShellEnum.TOUCH, newStreamPath)
         nginxConfigArgs.args[NginxConfigArgsEnum.STREAM_PATH] = {
             label: NginxConfigArgsReflectEnum[NginxConfigArgsEnum.STREAM_PATH],
@@ -108,12 +171,16 @@ export class ExecutorDocker implements ExecutorInterface {
 
     async nginxReload() {
         const nginxReloadRes = await dockerExec(this.containerName, await this.getNginxBin(), '-s', 'reload')
-        nginxReloadRes.exitCode === 0 ? Logger.verbose(`nginx reload 成功`) : Logger.error(`nginx reload 失败, ${nginxReloadRes.res}`)
+        nginxReloadRes.exitCode === 0
+            ? Logger.verbose(`nginx reload 成功`)
+            : Logger.error(`nginx reload 失败, ${nginxReloadRes.res}`)
     }
 
     async nginxRestart() {
         const nginxRestartRes = await dockerExec(this.containerName, ShellEnum.SERVICE, 'nginx', 'restart')
-        nginxRestartRes.exitCode === 0 ? Logger.verbose(`nginx restart 成功`) : Logger.error(`nginx restart 失败, ${nginxRestartRes.res}`)
+        nginxRestartRes.exitCode === 0
+            ? Logger.verbose(`nginx restart 成功`)
+            : Logger.error(`nginx restart 失败, ${nginxRestartRes.res}`)
     }
 
     /**
@@ -133,12 +200,20 @@ export class ExecutorDocker implements ExecutorInterface {
             throw new Error(`${streamPath} 备份失败, ${backupRes.res}`)
         }
         dockerExec(this.containerName, ShellEnum.BASH, '-c', `"${ShellEnum.CAT}>${streamPath}<<EOF\n${content}\nEOF"`)
-        const { res, exitCode } = await dockerExec(this.containerName, await this.getNginxBin(), '-t', '-c', await this.getMainConfigPath())
+        const { res, exitCode } = await dockerExec(
+            this.containerName,
+            await this.getNginxBin(),
+            '-t',
+            '-c',
+            await this.getMainConfigPath()
+        )
         if (exitCode) {
             Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
             // rollback
             const rollbackRes = await dockerExec(this.containerName, ShellEnum.MV, `${streamPath}.bak`, streamPath)
-            rollbackRes.exitCode === 0 ? Logger.verbose(`${streamPath} 回滚成功`) : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
+            rollbackRes.exitCode === 0
+                ? Logger.verbose(`${streamPath} 回滚成功`)
+                : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
         }
         this.nginxReload()
     }

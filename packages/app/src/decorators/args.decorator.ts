@@ -8,19 +8,20 @@ const optimizedMetadataKey = Symbol('optimized')
  * @returns Function
  */
 export function Preprocess() {
+    // eslint-disable-next-line @typescript-eslint/ban-types
     return function (target: any, propertyName: string, descriptor: TypedPropertyDescriptor<Function>) {
-        let method = descriptor.value!
-        descriptor.value = function () {
-            let optimizedParameters: number[] = Reflect.getOwnMetadata(optimizedMetadataKey, target, propertyName)
+        const method = descriptor.value
+        descriptor.value = function (...rest: any[]) {
+            const optimizedParameters: number[] = Reflect.getOwnMetadata(optimizedMetadataKey, target, propertyName)
             if (optimizedParameters) {
-                for (let parameterIndex of optimizedParameters) {
-                    let value = arguments[parameterIndex]
+                for (const parameterIndex of optimizedParameters) {
+                    const value = rest[parameterIndex]
                     if (typeof value === 'object') {
-                        arguments[parameterIndex] = removeInvalidField(value)
+                        rest[parameterIndex] = removeInvalidField(value)
                     }
                 }
             }
-            return method.apply(this, arguments)
+            return method.apply(this, rest)
         }
     }
 }
@@ -30,8 +31,9 @@ export function Preprocess() {
  * @returns Function
  */
 export function Optimized() {
-    return function (target: Object, propertyKey: string | symbol, parameterIndex: number) {
-        let existingRequiredParameters: number[] = Reflect.getOwnMetadata(optimizedMetadataKey, target, propertyKey) || []
+    return function (target: unknown, propertyKey: string | symbol, parameterIndex: number) {
+        const existingRequiredParameters: number[] =
+            Reflect.getOwnMetadata(optimizedMetadataKey, target, propertyKey) || []
         existingRequiredParameters.push(parameterIndex)
         Reflect.defineMetadata(optimizedMetadataKey, existingRequiredParameters, target, propertyKey)
     }

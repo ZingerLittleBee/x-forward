@@ -1,7 +1,7 @@
 module.exports = {
     parser: '@typescript-eslint/parser',
     parserOptions: {
-        project: 'tsconfig.json',
+        project: 'packages/app/tsconfig.json',
         sourceType: 'module'
     },
     plugins: ['@typescript-eslint/eslint-plugin'],
@@ -20,7 +20,7 @@ module.exports = {
                 trailingComma: 'none',
                 bracketSpacing: true,
                 semi: false,
-                printWidth: 160,
+                printWidth: 120,
                 arrowParens: 'avoid',
                 tabWidth: 4
             }

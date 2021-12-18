@@ -3,11 +3,13 @@ import { ExecutorModule } from '../executor/executor.module'
 import { RenderModule } from '../render/render.module'
 import { StreamModule } from '../stream/stream.module'
 import { UpstreamModule } from '../upstream/upstream.module'
-import { ExecutorGatewayService, ModelGatewayService } from './gateway.service'
+import { ExecutorGatewayService } from './executor-gateway.service'
+import { ModelGatewayService } from './model-gateway.service'
+import { QueryGatewayService } from './query-gateway.service'
 
 @Module({
     imports: [ExecutorModule, RenderModule, UpstreamModule, StreamModule],
-    providers: [ExecutorGatewayService, ModelGatewayService],
-    exports: [ExecutorGatewayService, ModelGatewayService]
+    providers: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService],
+    exports: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService]
 })
 export class GatewayModule {}

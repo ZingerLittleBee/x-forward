@@ -1,8 +1,11 @@
 import { Controller, Get, Query } from '@nestjs/common'
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
+import { ApiResultResponse } from 'src/decorators/response.api'
 import { Result } from '../../utils/Result'
-import { NginxConfig } from '../executor/interface/executor.interface'
 import { EnvService } from './env.service'
+import { NginxConfigVo, OverviewVo, SystemInfoVo } from './env.vo'
 
+@ApiTags('env')
 @Controller('env')
 export class EnvController {
     constructor(private envService: EnvService) {}
@@ -12,22 +15,25 @@ export class EnvController {
      * @returns Promise<{ success: boolean; data: NginxConfig; }>
      */
     @Get('nginx/config')
+    @ApiExtraModels(NginxConfigVo, OverviewVo, SystemInfoVo)
+    @ApiResultResponse(NginxConfigVo)
     async getNginxConfig() {
-        console.log('fetchNginxConfigAargs()', await this.envService.fetchNginxConfigAargs())
-        return new Result<NginxConfig>().okWithData(await this.envService.fetchNginxConfigAargs())
+        return Result.okData(await this.envService.fetchNginxConfigAargs())
     }
 
-    @Get('nginx/config/staream')
-    getNginxStreamConfig() {}
+    // @Get('nginx/config/staream')
+    // getNginxStreamConfig() {
+    //     return Result.okData(await this.envService.)
+    // }
 
     /**
-     * 获取 nginx 概览
+     * get overview
      * @returns
      */
     @Get('nginx')
+    @ApiResultResponse(OverviewVo)
     async getOverview() {
-        let res = await this.envService.getOverview()
-        return new Result<typeof res>().okWithData(res)
+        return Result.okData(await this.envService.getOverview())
     }
 
     /**
@@ -35,8 +41,9 @@ export class EnvController {
      * @returns Promise<{success: boolean; data: String;}>
      */
     @Get('os')
-    async getOS() {
-        return new Result<String>().okWithData(await this.envService.getOS())
+    @ApiResultResponse(SystemInfoVo)
+    async getSystemInfo() {
+        return Result.okData(await this.envService.getSystemInfo())
     }
 
     /**
@@ -45,6 +52,7 @@ export class EnvController {
      * @returns Promise<{ success: boolean; data: string[]; }>
      */
     @Get('path')
+    @ApiResultResponse('string', { isArray: true })
     async getDirectory(@Query('url') url: string) {
         return Result.okData(await this.envService.getDirByUrl(url))
     }

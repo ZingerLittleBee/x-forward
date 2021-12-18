@@ -1,4 +1,14 @@
-export interface ExecutorInterface {
+/**
+ * 缓存处理过的 nginx -V 配置信息结构体
+ */
+export interface NginxConfig {
+    version?: string
+    args?: { [key: string]: { label: string; value: string } }
+    module?: string[]
+}
+
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface INginxConfig {
     /**
      * 获取 nginx 配置参数
      * 1. 先从 cache 中查找
@@ -69,28 +79,4 @@ export interface ExecutorInterface {
      * @param content 新 stream 文件内容
      */
     streamPatch: (content: string) => void
-
-    /**
-     * get all directory under url
-     */
-    fetchDirectory: (url: string) => Promise<string>
-
-    /**
-     * nginx reload to make configuartion effect
-     */
-    nginxReload: () => void
-
-    /**
-     * nginx restart
-     */
-    nginxRestart: () => void
-}
-
-/**
- * 缓存处理过的 nginx -V 配置信息结构体
- */
-export interface NginxConfig {
-    version?: string
-    args?: { [key: string]: { label: string; value: string } }
-    module?: string[]
 }
