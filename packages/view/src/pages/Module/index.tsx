@@ -67,7 +67,12 @@ const Module = () => {
         return <img style={imgStyle} src={url} alt="icon" />
     }
 
-    type StatisticProps = { title: EnvEnum; value: string; status?: () => { value: string; status?: BadgeProps['status'] }; icon: JSX.Element }[]
+    type StatisticProps = {
+        title: EnvEnum
+        value: string
+        status?: () => { value: string; status?: BadgeProps['status'] }
+        icon: JSX.Element
+    }[]
 
     const statisticProps: StatisticProps = [
         {

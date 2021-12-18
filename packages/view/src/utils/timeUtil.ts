@@ -10,7 +10,7 @@ const zeroFill = (data: number | string) => {
 
 export const utc2local = (time: string) => {
     const date = new Date(time)
-    return `${date.getFullYear()}/${zeroFill(date.getMonth())}/${zeroFill(date.getDate())} ${zeroFill(date.getHours())}:${zeroFill(
-        date.getMinutes()
-    )}:${zeroFill(date.getSeconds())}`
+    return `${date.getFullYear()}/${zeroFill(date.getMonth())}/${zeroFill(date.getDate())} ${zeroFill(
+        date.getHours()
+    )}:${zeroFill(date.getMinutes())}:${zeroFill(date.getSeconds())}`
 }

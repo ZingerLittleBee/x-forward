@@ -9,10 +9,13 @@
     "node": ">= 16"
   },
   "scripts": {
-    "app:dev": "cd packages/app && yarn dev",
-    "app:test": "cd packages/app && yarn test",
-    "view:dev": "cd packages/view && yarn start:dev",
+    "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev",
+    "app:start": "pnpm -C ./packages/app start",
+    "view:start": "pnpm -C ./packages/view start:dev",
     "cz": "pnpm exec git-cz",
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --max-warnings 0 && pretty-quick --check",
+    "lint:fix": "eslint --fix . --ext .vue,.js,.ts,.jsx,.tsx && pretty-quick",
     "style": "stylelint \"**/*.(vue|less|css)\" --fix",
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
@@ -31,27 +34,31 @@
   "homepage": "https://github.com/ZingerLittleBee/x-forward#readme",
   "dependencies": {
     "@x-forward/app": "workspace:*",
-    "@x-forward/view": "workspace:*"
+    "@x-forward/view": "workspace:*",
+    "lodash": "^4.17.11"
   },
   "devDependencies": {
     "@commitlint/cli": "^15.0.0",
     "@commitlint/config-conventional": "^15.0.0",
+    "@types/jest": "^27.0.3",
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
+    "@types/lodash": "^4.14.176",
     "eslint": "^8.4.1",
     "eslint-config-prettier": "8.3.0",
     "eslint-define-config": "1.2.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-prettier": "4.0.0",
-    "eslint-plugin-vue": "8.2.0",
     "git-cz": "^4.8.0",
     "husky": "^7.0.0",
+    "jest": "^27.0.6",
     "lint-staged": "^12.1.2",
     "prettier": "2.5.1",
     "pretty-quick": "^3.1.2",
     "standard-version": "^9.3.2",
     "stylelint": "^14.1.0",
     "stylelint-config-standard": "^24.0.0",
+    "ts-jest": "^27.0.5",
     "typescript": "4.5.3"
   },
   "config": {

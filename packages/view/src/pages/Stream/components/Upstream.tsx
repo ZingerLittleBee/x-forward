@@ -1,5 +1,13 @@
 import React, { useEffect } from 'react'
-import ProForm, { DrawerForm, ProFormDependency, ProFormDigit, ProFormList, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-form'
+import ProForm, {
+    DrawerForm,
+    ProFormDependency,
+    ProFormDigit,
+    ProFormList,
+    ProFormSelect,
+    ProFormSwitch,
+    ProFormText
+} from '@ant-design/pro-form'
 import { Form, message } from 'antd'
 import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
@@ -45,7 +53,13 @@ type UpstreamProps = {
     onUpstreamRest: () => void
 }
 
-const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, onUpstreamSelectChange, onUpstreamSubmit, onUpstreamRest }) => {
+const Upstream: React.FC<UpstreamProps> = ({
+    upstream,
+    upstreamNameSelectEnum,
+    onUpstreamSelectChange,
+    onUpstreamSubmit,
+    onUpstreamRest
+}) => {
     const [form] = Form.useForm()
     useEffect(() => {
         form.setFieldsValue({
@@ -122,12 +136,40 @@ const Upstream: React.FC<UpstreamProps> = ({ upstream, upstreamNameSelectEnum, o
                                                 rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
                                             />
                                         </ProForm.Group>
-                                        <ProFormText width={100} name="weight" label={ServerEnum.WEIGHT} tooltip={ServerTipsEnum.WEIGHT} />
-                                        <ProFormDigit width={100} name="maxConns" label={ServerEnum.MAX_CONN} tooltip={ServerTipsEnum.MAX_CONN} />
-                                        <ProFormDigit width={100} name="maxFails" label={ServerEnum.MAX_FAILS} tooltip={ServerTipsEnum.MAX_FAILS} />
-                                        <ProFormText width={100} name="failTimeout" label={ServerEnum.FAIL_TIMEOUT} tooltip={ServerTipsEnum.FAIL_TIMEOUT} />
-                                        <ProFormSwitch name="backup" label={ServerEnum.BACKUP} tooltip={ServerTipsEnum.BACKUP} />
-                                        <ProFormSwitch name="down" label={ServerEnum.DOWN} tooltip={ServerTipsEnum.DOWN} />
+                                        <ProFormText
+                                            width={100}
+                                            name="weight"
+                                            label={ServerEnum.WEIGHT}
+                                            tooltip={ServerTipsEnum.WEIGHT}
+                                        />
+                                        <ProFormDigit
+                                            width={100}
+                                            name="maxConns"
+                                            label={ServerEnum.MAX_CONN}
+                                            tooltip={ServerTipsEnum.MAX_CONN}
+                                        />
+                                        <ProFormDigit
+                                            width={100}
+                                            name="maxFails"
+                                            label={ServerEnum.MAX_FAILS}
+                                            tooltip={ServerTipsEnum.MAX_FAILS}
+                                        />
+                                        <ProFormText
+                                            width={100}
+                                            name="failTimeout"
+                                            label={ServerEnum.FAIL_TIMEOUT}
+                                            tooltip={ServerTipsEnum.FAIL_TIMEOUT}
+                                        />
+                                        <ProFormSwitch
+                                            name="backup"
+                                            label={ServerEnum.BACKUP}
+                                            tooltip={ServerTipsEnum.BACKUP}
+                                        />
+                                        <ProFormSwitch
+                                            name="down"
+                                            label={ServerEnum.DOWN}
+                                            tooltip={ServerTipsEnum.DOWN}
+                                        />
                                     </>
                                 )
                             }}

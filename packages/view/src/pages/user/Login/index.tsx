@@ -126,7 +126,12 @@ const Login: React.FC = () => {
                                     rules={[
                                         {
                                             required: true,
-                                            message: <FormattedMessage id="pages.login.username.required" defaultMessage="请输入用户名!" />
+                                            message: (
+                                                <FormattedMessage
+                                                    id="pages.login.username.required"
+                                                    defaultMessage="请输入用户名!"
+                                                />
+                                            )
                                         }
                                     ]}
                                 />
@@ -144,7 +149,12 @@ const Login: React.FC = () => {
                                     rules={[
                                         {
                                             required: true,
-                                            message: <FormattedMessage id="pages.login.password.required" defaultMessage="请输入密码！" />
+                                            message: (
+                                                <FormattedMessage
+                                                    id="pages.login.password.required"
+                                                    defaultMessage="请输入密码！"
+                                                />
+                                            )
                                         }
                                     ]}
                                 />

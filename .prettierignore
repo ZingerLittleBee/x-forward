@@ -2,7 +2,7 @@
 package.json
 .umi
 .umi-production
-/dist
+dist
 .dockerignore
 .DS_Store
 .eslintignore
@@ -21,3 +21,4 @@ yarn-error.log
 CNAME
 /build
 /public
+pnpm-lock.yaml
