@@ -1,5 +1,5 @@
 {
-  "name": "x-forward-backend",
+  "name": "@x-forward/app",
   "private": true,
   "version": "0.0.1",
   "description": "ui for nginx stream",

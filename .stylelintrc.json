@@ -1,0 +1,23 @@
+{
+    "extends": "stylelint-config-standard",
+    "rules": {
+        "color-no-invalid-hex": true,
+        "at-rule-no-unknown": [
+            true,
+            {
+                "ignoreAtRules": [
+                    "tailwind",
+                    "apply",
+                    "variants",
+                    "responsive",
+                    "screen",
+                    "function",
+                    "if",
+                    "each",
+                    "include",
+                    "mixin"
+                ]
+            }
+        ]
+    }
+}
