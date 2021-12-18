@@ -113,7 +113,7 @@ export class ExecutorDocker implements IExecutor {
     }
 
     async mainConfigAppend(appendString: string) {
-        $`docker exec ${this.containerName} bash -c "echo -e ${appendString} >> ${await this.getMainConfigPath()}"`
+        dockerExec(this.containerName, ShellEnum.BASH, '-c', `"${ShellEnum.CAT}>>${await this.getMainConfigPath()}<<EOF\n${appendString}\nEOF"`)
     }
 
     async getMainConfigContent() {

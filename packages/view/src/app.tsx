@@ -4,11 +4,14 @@ import type { RunTimeLayoutConfig } from 'umi'
 import { history, Link } from 'umi'
 import RightContent from '@/components/RightContent'
 import Footer from '@/components/Footer'
-import { currentUser as queryCurrentUser } from './services/ant-design-pro/api'
 import { BookOutlined, LinkOutlined } from '@ant-design/icons'
-import { getEnv, getPath } from '@/services/env'
 import { io } from 'socket.io-client'
+// @ts-ignore
 import type { Socket } from 'socket.io-client/build/socket'
+import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/x-forward-frontend/env'
+import { message } from 'antd'
+import type { RequestConfig } from '@@/plugin-request/request'
+import type { RequestOptionsInit } from 'umi-request'
 
 const isDev = process.env.NODE_ENV === 'development'
 const loginPath = '/user/login'
@@ -23,36 +26,23 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
     settings?: Partial<LayoutSettings>
-    currentUser?: API.CurrentUser
-    fetchUserInfo?: () => Promise<API.CurrentUser | undefined>
-    currEnv?: API.Env
-    nginxPath?: API.Path[]
+    overview?: API.OverviewVo
+    nginxConfig?: API.NginxConfigVo
     socket?: Socket
 }> {
-    const fetchEnv = async () => {
+    const fetchOverview = async () => {
         try {
-            const envRes = await getEnv()
-            return envRes.data
+            return (await EnvControllerGetOverview()).data
         } catch (error) {
-            history.push(loginPath)
+            message.warning('获取系统信息失败')
         }
         return undefined
     }
-    const fetchNginx = async (name: string) => {
+    const fetchNginxConfig = async () => {
         try {
-            const envRes = await getPath(name)
-            return envRes.data
+            return (await EnvControllerGetNginxConfig()).data
         } catch (error) {
-            history.push(loginPath)
-        }
-        return undefined
-    }
-    const fetchUserInfo = async () => {
-        try {
-            const msg = await queryCurrentUser()
-            return msg.data
-        } catch (error) {
-            history.push(loginPath)
+            message.warning('获取 nginx 参数失败')
         }
         return undefined
     }
@@ -71,21 +61,17 @@ export async function getInitialState(): Promise<{
     }
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
-        const currentUser = await fetchUserInfo()
-        const currEnv = await fetchEnv()
-        const nginxPath = await fetchNginx('nginx')
+        const overview = await fetchOverview()
         const socket = createSocket('localhost:1234')
+        const nginxConfig = await fetchNginxConfig()
         return {
-            fetchUserInfo,
-            currentUser,
+            overview,
+            nginxConfig,
             settings: {},
-            currEnv,
-            nginxPath,
             socket
         }
     }
     return {
-        fetchUserInfo,
         settings: {}
     }
 }
@@ -100,15 +86,16 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         // },
         footerRender: () => <Footer />,
         onPageChange: () => {
-            const { location } = history
-            // 如果没有登录，重定向到 login
-            if (!initialState?.currentUser && location.pathname !== loginPath) {
-                history.push(loginPath)
-            }
+            // TODO
+            // const { location } = history
+            // // 如果没有登录，重定向到 login
+            // if (!initialState?.currentUser && location.pathname !== loginPath) {
+            //     history.push(loginPath)
+            // }
         },
         links: isDev
             ? [
-                  <Link to="/umi/plugin/openapi" target="_blank">
+                  <Link to="/umi/plugin/x-forward" target="_blank">
                       <LinkOutlined />
                       <span>OpenAPI 文档</span>
                   </Link>,
@@ -123,4 +110,19 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
         // unAccessible: <div>unAccessible</div>,
         ...initialState?.settings
     }
+}
+
+const apiInterceptor = (url: string, options: RequestOptionsInit) => {
+    return {
+        url: `/api${url}`,
+        options: { ...options, interceptors: true }
+    }
+}
+
+export const request: RequestConfig = {
+    timeout: 5000,
+    errorConfig: {},
+    middlewares: [],
+    requestInterceptors: [apiInterceptor],
+    responseInterceptors: []
 }

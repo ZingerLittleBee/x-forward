@@ -1,14 +1,14 @@
 # nginx + executable
 
 
-FROM node:latest as builder
+# FROM node:latest as builder
 
-WORKDIR /usr/src/app
+# WORKDIR /usr/src/app
 
-# change apt source
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+# # change apt source
+# RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
-RUN apt-get -y update && apk-get install -y git
+# RUN apt-get -y update && apt-get install -y git
 
 
 FROM nginx
@@ -19,10 +19,9 @@ WORKDIR /usr/src/app
 # change apt source
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
-RUN apt-get install -y wget gpg
-RUN apt-get install -y goaccess
+# install goaccess to manage nginx logs 
+RUN apt-get -y update && apt-get install -y wget gpg goaccess
 
-# manage nginx logs with goaccess
 RUN wget -O - https://deb.goaccess.io/gnugpg.key | gpg --dearmor \
     | tee /usr/share/keyrings/goaccess.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/goaccess.gpg] https://deb.goaccess.io/ $(lsb_release -cs) main" \
@@ -32,6 +31,6 @@ COPY x-forward-backend .
 
 RUN chmod +x x-forward-backend
 
-EXPOSE 9000
+EXPOSE 3000
 
 CMD service nginx start && ./x-forward-backend
