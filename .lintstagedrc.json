@@ -1,5 +1,9 @@
 {
     "*.{js,jsx,ts,tsx,vue,md,html,css}": "prettier --write",
     "*.{css, vue}": "stylelint",
-    "*.scss": "stylelint --syntax=scss"
+    "*.scss": "stylelint --syntax scss",
+    "*.less": "stylelint --syntax less",
+    "*.{js,jsx,tsx,ts,less,md,json}": [
+        "prettier --write"
+    ]
 }
