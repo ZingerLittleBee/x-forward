@@ -1,0 +1,4 @@
+packages/app/*
+dist/*
+public/*
+font/*

@@ -18,19 +18,19 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-  - [Feature](#feature)
-- [Table of Contents](#table-of-contents)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Snapshot](#snapshot)
-  - [模块管理](#模块管理)
-  - [本地终端](#本地终端)
-  - [Stream 模块](#stream-模块)
-- [Roadmap](#roadmap)
-- [Thanks](#thanks)
-- [Change Logs](#change-logs)
+-   [Introduction](#introduction)
+    -   [Feature](#feature)
+-   [Table of Contents](#table-of-contents)
+-   [Getting Started](#getting-started)
+    -   [Prerequisites](#prerequisites)
+    -   [Installation](#installation)
+-   [Snapshot](#snapshot)
+    -   [模块管理](#模块管理)
+    -   [本地终端](#本地终端)
+    -   [Stream 模块](#stream-模块)
+-   [Roadmap](#roadmap)
+-   [Thanks](#thanks)
+-   [Change Logs](#change-logs)
 
 ## Getting Started
 

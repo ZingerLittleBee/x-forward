@@ -1,9 +1,31 @@
 {
-  "collection": "@nestjs/schematics",
-  "sourceRoot": "src",
-  "compilerOptions": {
-    "plugins": [
-      "@nestjs/swagger"
-    ]
-  }
+    "collection": "@nestjs/schematics",
+    "sourceRoot": "apps/x-forward-app/src",
+    "compilerOptions": {
+        "plugins": ["@nestjs/swagger"],
+        "webpack": true,
+        "tsConfigPath": "apps/x-forward-app/tsconfig.app.json"
+    },
+    "monorepo": true,
+    "root": "apps/x-forward-app",
+    "projects": {
+        "x-forward-app": {
+            "type": "application",
+            "root": "apps/x-forward-app",
+            "entryFile": "main",
+            "sourceRoot": "apps/x-forward-app/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/x-forward-app/tsconfig.app.json"
+            }
+        },
+        "executor": {
+            "type": "application",
+            "root": "apps/executor",
+            "entryFile": "main",
+            "sourceRoot": "apps/executor/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/executor/tsconfig.app.json"
+            }
+        }
+    }
 }

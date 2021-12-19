@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { PageContainer } from '@ant-design/pro-layout'
-import ProCard, { StatisticCard } from '@ant-design/pro-card'
-import RcResizeObserver from 'rc-resize-observer'
-import ProList from '@ant-design/pro-list'
-import { useModel } from '@@/plugin-model/useModel'
+import { CommonEnum } from '@/enums/CommonEnum'
 import EnvEnum from '@/enums/EnvEnum'
 import { StatusEnum } from '@/enums/StatusEnum'
+import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
+import ProCard, { StatisticCard } from '@ant-design/pro-card'
+import { PageContainer } from '@ant-design/pro-layout'
+import ProList from '@ant-design/pro-list'
 import type { BadgeProps } from 'antd/lib/badge'
+import RcResizeObserver from 'rc-resize-observer'
+import { useState } from 'react'
 import defaultSettings from '../../../config/defaultSettings'
-import { CommonEnum } from '@/enums/CommonEnum'
 
 const Module = () => {
     // const { data, error, loading, run } = useRequest(username => ({
@@ -67,7 +67,12 @@ const Module = () => {
         return <img style={imgStyle} src={url} alt="icon" />
     }
 
-    type StatisticProps = { title: EnvEnum; value: string; status?: () => { value: string; status?: BadgeProps['status'] }; icon: JSX.Element }[]
+    type StatisticProps = {
+        title: EnvEnum
+        value: string
+        status?: () => { value: string; status?: BadgeProps['status'] }
+        icon: JSX.Element
+    }[]
 
     const statisticProps: StatisticProps = [
         {
@@ -122,7 +127,6 @@ const Module = () => {
             >
                 <StatisticCard.Group title="概览" direction={responsive ? 'column' : 'row'}>
                     {statisticProps.map(s => {
-                        // @ts-ignore
                         return (
                             <StatisticCard
                                 statistic={{
