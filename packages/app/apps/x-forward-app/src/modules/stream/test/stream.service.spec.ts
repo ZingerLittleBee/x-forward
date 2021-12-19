@@ -1,7 +1,6 @@
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
-import { ProtocolEnum, RetriesEnum } from 'apps/x-forward-app/src/enums/NginxEnum'
 import { Repository } from 'typeorm'
 import { v4, validate } from 'uuid'
 import { EventModule } from '../../event/event.module'
@@ -9,6 +8,7 @@ import { ServerEntity } from '../../upstream/server/entities/server.entity'
 import { UpstreamEntity } from '../../upstream/upstream.entity'
 import { StreamEntity } from '../stream.entity'
 import { StreamService } from '../stream.service'
+import { ProtocolEnum, RetriesEnum } from '../../../enums/NginxEnum'
 
 describe('StreamService', () => {
     let streamService: StreamService

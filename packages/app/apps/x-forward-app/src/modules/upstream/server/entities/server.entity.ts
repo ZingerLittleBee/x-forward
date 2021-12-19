@@ -1,8 +1,8 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { CommonEntity } from 'apps/x-forward-app/src/common/common.entity'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { UpstreamEntity } from '../../upstream.entity'
+import { CommonEntity } from '../../../../common/common.entity'
 
 @Entity('server')
 export class ServerEntity extends CommonEntity {

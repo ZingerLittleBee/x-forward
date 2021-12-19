@@ -3,7 +3,6 @@ import { AutomapperModule } from '@automapper/nestjs'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
-import { ProtocolEnum, RetriesEnum } from 'apps/x-forward-app/src/enums/NginxEnum'
 import { Repository } from 'typeorm'
 import { EventModule } from '../../event/event.module'
 import { StreamModule } from '../../stream/stream.module'
@@ -13,6 +12,7 @@ import { UpstreamController } from '../upstream.controller'
 import { UpstreamEntity } from '../upstream.entity'
 import { UpstreamProfile } from '../upstream.profile'
 import { UpstreamService } from '../upstream.service'
+import { ProtocolEnum, RetriesEnum } from '../../../enums/NginxEnum'
 
 describe('UpstreamService', () => {
     let upstreamService: UpstreamService

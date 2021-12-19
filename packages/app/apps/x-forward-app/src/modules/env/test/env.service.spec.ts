@@ -4,6 +4,8 @@ import { EOL } from 'os'
 import { GatewayModule } from '../../gateway/gateway.module'
 import { ServerModule } from '../../upstream/server/server.module'
 import { EnvService } from '../env.service'
+import { AutomapperModule } from '@automapper/nestjs'
+import { classes } from '@automapper/classes'
 
 describe('EnvService', () => {
     let envService: EnvService
@@ -27,6 +29,10 @@ describe('EnvService', () => {
                     verboseMemoryLeak: false,
                     // disable throwing uncaughtException if an error event is emitted and it has no listeners
                     ignoreErrors: false
+                }),
+                AutomapperModule.forRoot({
+                    options: [{ name: 'blah', pluginInitializer: classes }],
+                    singular: true
                 })
             ],
             providers: [EnvService]

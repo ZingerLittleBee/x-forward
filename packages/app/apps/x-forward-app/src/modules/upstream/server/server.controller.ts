@@ -1,11 +1,11 @@
 import { MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Param, Patch } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { ApiResultResponse } from 'apps/x-forward-app/src/decorators/response.api'
-import { Result } from 'apps/x-forward-app/src/utils/Result'
 import { UpdateServerDto } from './dto/update-server.dto'
 import { ServerEntity } from './entities/server.entity'
 import { ServerService } from './server.service'
+import { ApiResultResponse } from '../../../decorators/response.api'
+import { Result } from '../../../utils/Result'
 
 @ApiTags('server')
 @Controller('server')

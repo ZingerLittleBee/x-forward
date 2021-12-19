@@ -3,7 +3,6 @@ import { AutomapperModule } from '@automapper/nestjs'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
-import { ProtocolEnum, RetriesEnum } from 'apps/x-forward-app/src/enums/NginxEnum'
 import { Repository } from 'typeorm'
 import { ExecutorModule } from '../../executor/executor.module'
 import { RenderModule } from '../../render/render.module'
@@ -14,6 +13,7 @@ import { UpstreamEntity } from '../../upstream/upstream.entity'
 import { UpstreamModule } from '../../upstream/upstream.module'
 import { UpstreamService } from '../../upstream/upstream.service'
 import { ModelGatewayService } from '../model-gateway.service'
+import { ProtocolEnum, RetriesEnum } from '../../../enums/NginxEnum'
 
 describe('GatewayService', () => {
     describe('ModelGatewayService', () => {

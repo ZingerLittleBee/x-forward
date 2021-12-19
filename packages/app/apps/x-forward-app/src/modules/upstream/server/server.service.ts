@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Optimized, Preprocess } from 'apps/x-forward-app/src/decorators/args.decorator'
 import { Repository } from 'typeorm'
 import { EventService } from '../../event/event.service'
 import { ServerEntity } from './entities/server.entity'
+import { Optimized, Preprocess } from '../../../decorators/args.decorator'
 
 @Injectable()
 export class ServerService {
