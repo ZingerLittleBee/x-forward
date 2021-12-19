@@ -1,0 +1,67 @@
+@url = http://localhost:3000/upstream
+
+### create upstream
+POST {{url}}/
+Content-Type: application/json
+
+{
+    "name": "test2",
+    "server": [
+        {
+            "upstreamHost": "baidu.com",
+            "upstreamPort": "2222"
+        }
+    ],
+    "stream": [{
+        "transitHost": "aereqbv.com",
+        "transitPort": 3333,
+        "remoteHost": "baidu.com",
+        "remotePort": 3333,
+        "loadBalancing": 1,
+        "protocol": "udp",
+        "isRetries": "on",
+        "tries": "5",
+        "retriesTimeout": "5s",
+        "connectTimeout": "2s",
+        "uploadRate": "100",
+        "downloadRate": "100",
+        "proxyTimeout": "2s"
+    },{
+        "transitHost": "aereqbv.com",
+        "transitPort": 4444,
+        "remoteHost": "baidu.com",
+        "remotePort": 4444,
+        "loadBalancing": 1,
+        "isRetries": "on",
+        "tries": "5",
+        "retriesTimeout": "5s",
+        "connectTimeout": "2s",
+        "uploadRate": "100",
+        "downloadRate": "100",
+        "proxyTimeout": "2s"
+    }]
+}
+
+### findAll
+GET {{url}}/
+
+### findOne
+GET {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+
+### update
+PATCH {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+Content-Type: application/json
+
+{
+    "name": "patch-test",
+    "server": [
+        {
+            "id": "afbbc262-9897-45df-8731-33d7d126299c",
+            "upstreamHost": "upstream.patch",
+            "upstreamPort": "11312"
+        }
+    ]
+}
+
+### remove
+DELETE {{url}}/6d523016-be2e-4209-89d9-5306cdec9921

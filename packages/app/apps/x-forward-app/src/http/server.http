@@ -1,0 +1,13 @@
+@url = http://localhost:3000/server
+
+### update
+PATCH {{url}}/afbbc262-9897-45df-8731-33d7d126299c
+Content-Type: application/json
+
+{
+    "upstreamHost": "upstream.patch",
+    "upstreamPort": "1113"
+}
+
+### remove
+DELETE {{url}}/afbbc262-9897-45df-8731-33d7d126299c
