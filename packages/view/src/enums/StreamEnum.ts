@@ -26,6 +26,7 @@ export enum StreamItemEnum {
     remoteHost = '远程地址',
     // 远程端口号
     remotePort = '远程端口',
+    remoteRule = '转发规则',
     // 上游服务
     upstream = '上游服务',
     // 启用状态

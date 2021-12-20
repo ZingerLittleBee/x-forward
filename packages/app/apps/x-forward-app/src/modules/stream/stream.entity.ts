@@ -10,12 +10,12 @@ import { UpstreamEntity } from '../upstream/upstream.entity'
 export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: '中转地址' })
-    @Column({ name: 'transit_host', type: 'varchar' })
+    @Column({ name: 'transit_host', type: 'varchar', nullable: true })
     transitHost?: string
 
     @AutoMap()
     @ApiProperty({ description: '中转端口' })
-    @Column({ name: 'transit_port', type: 'int' })
+    @Column({ name: 'transit_port', type: 'int', nullable: true })
     transitPort?: number
 
     @AutoMap()
