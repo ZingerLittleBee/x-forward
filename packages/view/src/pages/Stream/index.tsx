@@ -171,7 +171,7 @@ export default () => {
                             hoverable
                             bordered
                             bodyStyle={{ paddingBottom: 0 }}
-                            colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 6 }}
+                            colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
                             actions={[
                                 <Popconfirm
                                     title="确定删除?"
