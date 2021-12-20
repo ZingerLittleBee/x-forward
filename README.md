@@ -50,17 +50,17 @@ TODO
 
 ### 模块管理
 
-![module](https://github.com/ZingerLittleBee/x-forward-frontend/blob/master/snapshot/module.png?raw=true)
+![module](https://raw.githubusercontent.com/ZingerLittleBee/x-forward/main/snapshot/module.png)
 
 ### 本地终端
 
-![local terminal](https://github.com/ZingerLittleBee/x-forward-frontend/blob/master/snapshot/terminal.png?raw=true)
+![local terminal](https://github.com/ZingerLittleBee/x-forward/blob/main/snapshot/terminal.png?raw=true)
 
 ### Stream 模块
 
-![stream-list](https://github.com/ZingerLittleBee/x-forward-frontend/blob/master/snapshot/stream.png?raw=true)
-![stream-modify](https://github.com/ZingerLittleBee/x-forward-frontend/blob/master/snapshot/modify-stream.png?raw=true)
-![stream-upstream](https://github.com/ZingerLittleBee/x-forward-frontend/blob/master/snapshot/modify-upstream.png?raw=true)
+![stream-list](https://github.com/ZingerLittleBee/x-forward/blob/main/snapshot/stream.png?raw=true)
+![stream-modify](https://github.com/ZingerLittleBee/x-forward/blob/main/snapshot/modify-stream.png?raw=true)
+![stream-upstream](https://github.com/ZingerLittleBee/x-forward/blob/main/snapshot/modify-upstream.png?raw=true)
 
 ## Roadmap
 
