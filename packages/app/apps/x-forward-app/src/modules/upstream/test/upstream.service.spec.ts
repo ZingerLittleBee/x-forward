@@ -13,6 +13,7 @@ import { UpstreamEntity } from '../upstream.entity'
 import { UpstreamProfile } from '../upstream.profile'
 import { UpstreamService } from '../upstream.service'
 import { ProtocolEnum, RetriesEnum } from '../../../enums/NginxEnum'
+import { omit } from 'lodash'
 
 describe('UpstreamService', () => {
     let upstreamService: UpstreamService
@@ -187,11 +188,24 @@ describe('UpstreamService', () => {
             expect(await upstreamService.findByNames([upstreamEntity1.name, upstreamEntity2.name])).toHaveLength(2)
         })
     })
+
     describe('findOne', () => {
         it('UpstreamService.findByNames fault', async () => {
-            await repository.save(upstreamEntity1)
+            const { id } = await repository.save(upstreamEntity1)
             await repository.save(upstreamEntity2)
-            expect(await upstreamService.findByNames([upstreamEntity1.name, upstreamEntity2.name])).toHaveLength(2)
+            const upstream = await upstreamService.findOne(id)
+            const upstreamEntity = omit(upstreamEntity1, ['server', 'stream'])
+            expect(upstream).toEqual({ ...upstream, ...upstreamEntity })
         })
     })
+
+    // describe('update', () => {
+    //     it('UpstreamService.update fault', async () => {
+    //         const { id } = await repository.save(upstreamEntity1)
+    //         const { affected } = await upstreamService.update(id, upstreamEntity2)
+    //         expect(affected).toEqual(1)
+    //         const upstream = await upstreamService.findOne({ id })
+    //         expect(upstream).toEqual({ ...upstream, ...upstreamEntity2 })
+    //     })
+    // })
 })
