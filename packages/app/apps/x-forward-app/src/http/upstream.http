@@ -1,7 +1,5 @@
-@url = http://localhost:3000/upstream
-
 ### create upstream
-POST {{url}}/
+POST {{baseUrl}}{{upstream}}/
 Content-Type: application/json
 
 {
@@ -43,13 +41,13 @@ Content-Type: application/json
 }
 
 ### findAll
-GET {{url}}/
+GET {{baseUrl}}{{upstream}}/
 
 ### findOne
-GET {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+GET {{baseUrl}}{{upstream}}/ab30b04e-c359-46d5-8a2e-c96e230497fd
 
 ### update
-PATCH {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+PATCH {{baseUrl}}{{upstream}}/6d523016-be2e-4209-89d9-5306cdec9921
 Content-Type: application/json
 
 {
@@ -64,4 +62,4 @@ Content-Type: application/json
 }
 
 ### remove
-DELETE {{url}}/6d523016-be2e-4209-89d9-5306cdec9921
+DELETE {{baseUrl}}{{upstream}}/6d523016-be2e-4209-89d9-5306cdec9921

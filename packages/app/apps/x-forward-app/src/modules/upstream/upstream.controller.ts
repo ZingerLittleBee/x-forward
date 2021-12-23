@@ -39,7 +39,7 @@ export class UpstreamController {
 
     @Get(':id')
     @ApiResultResponse(UpstreamVo)
-    @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity), optimizeFieldInterceptor)
+    @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
     async findOne(@Param('id') id: string) {
         return Result.okData(await this.upstreamService.findOne(id))
     }

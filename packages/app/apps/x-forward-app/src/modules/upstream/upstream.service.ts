@@ -36,7 +36,7 @@ export class UpstreamService {
     }
 
     async createAll(upstreams: UpstreamEntity[]) {
-        // if use `Pormise.all` like next line, i will get a error that QueryFailedError: SqliteError: cannot start a transaction within a transaction from sqlite
+        // if I use `Promise.all` like next line, will get an error that QueryFailedError: SqliteError: cannot start a transaction within a transaction from sqlite
         // return Promise.all(upstreams.map(upstream => this.create(upstream)))
         const res = []
         for (let i = 0; i < upstreams.length; i++) {
@@ -46,11 +46,11 @@ export class UpstreamService {
         return res
     }
 
-    findAll() {
+    async findAll() {
         return this.upstreamRepository.find()
     }
 
-    findAllWithoutEager() {
+    async findAllWithoutEager() {
         return this.upstreamRepository
             .createQueryBuilder()
             .select('upstream')
@@ -59,29 +59,29 @@ export class UpstreamService {
             .getMany()
     }
 
-    findEffect() {
+    async findEffect() {
         return this.upstreamRepository.find({ state: StateEnum.Able })
     }
 
-    findByName(name: string) {
+    async findByName(name: string) {
         return this.upstreamRepository.findOne({ name })
     }
 
-    findByNames(names: string[]) {
+    async findByNames(names: string[]) {
         return names.map(n => this.findByName(n)).filter(n => n)
     }
 
-    findOne(id: string) {
+    async findOne(id: string) {
         return this.upstreamRepository.findOne(id)
     }
 
     @Preprocess()
     async update(id: string, @Optimized() updateUpstream: UpstreamEntity) {
         if (updateUpstream.server) {
-            this.serverService.updateAll(updateUpstream.server)
+            await this.serverService.updateAll(updateUpstream.server)
         }
         if (updateUpstream.stream) {
-            this.streamService.updateAll(updateUpstream.stream)
+            await this.streamService.updateAll(updateUpstream.stream)
         }
         const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
         this.eventService.triggerUpdateEvent()
@@ -90,7 +90,7 @@ export class UpstreamService {
     }
 
     async remove(id: string) {
-        this.serverService.removeByFK(id)
+        await this.serverService.removeByFK(id)
         const res = await this.upstreamRepository.softDelete(id)
         this.eventService.triggerDeleteEvent()
         Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)

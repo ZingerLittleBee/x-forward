@@ -11,6 +11,8 @@
   "scripts": {
     "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev",
     "app:start": "pnpm -C ./packages/app start",
+    "app:dev": "pnpm -C ./packages/app dev",
+    "app:debug": "pnpm -C ./packages/app start:debug",
     "view:start": "pnpm -C ./packages/view start:dev",
     "cz": "pnpm exec git-cz",
     "format": "prettier --write .",
