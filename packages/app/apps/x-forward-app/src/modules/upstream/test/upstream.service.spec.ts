@@ -24,7 +24,7 @@ describe('UpstreamService', () => {
             imports: [
                 TypeOrmModule.forRoot({
                     type: 'better-sqlite3',
-                    database: '../../../../x-forward.db',
+                    database: `${process.cwd()}/x-forward.db`,
                     entities: [UpstreamEntity, ServerEntity],
                     autoLoadEntities: true,
                     synchronize: true,

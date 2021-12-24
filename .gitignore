@@ -424,3 +424,9 @@ pkg
 ormconfig.json
 *.db-shm
 *.db-wal
+
+# win
+pnpm
+pnpx
+pnpm.CMD
+pnpx.CMD
