@@ -25,8 +25,16 @@ export class ServerService {
         return res
     }
 
-    updateAll(servers: ServerEntity[]) {
-        return Promise.all(servers.map(s => this.update(s.id, s)))
+    async updateAll(servers: ServerEntity[]) {
+        return Promise.all(
+            servers.map(s => {
+                if (s.id) {
+                    return this.update(s.id, s)
+                } else {
+                    Promise.reject('id can not empty')
+                }
+            })
+        )
     }
 
     async remove(id: string) {

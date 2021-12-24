@@ -90,7 +90,15 @@ export class StreamService {
     }
 
     async updateAll(streamEntities: StreamEntity[]) {
-        return Promise.all(streamEntities.map(s => this.update(s.id, s)))
+        return Promise.all(
+            streamEntities.map(s => {
+                if (s.id) {
+                    return this.update(s.id, s)
+                } else {
+                    Promise.reject('id can not empty')
+                }
+            })
+        )
     }
 
     /**
