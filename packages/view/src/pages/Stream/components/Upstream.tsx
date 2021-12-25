@@ -34,7 +34,7 @@ const initialValues: DataSourceType = {
     /** 设置服务器的权重，默认情况下为 1 */
     weight: 1,
     /** 限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效 */
-    maxConns: 5,
+    maxCons: 5,
     /** 设置在 fail_timeout 参数设置的时间内与服务器通信的失败尝试次数，以便认定服务器在 fail_timeout 参数设置的时间内不可用。默认情况下，失败尝试的次数设置为 1。零值将禁用尝试记录。在这里，当与服务器正在建立连接中，失败尝试将是一个错误或超时 */
     maxFails: 5,
     /** 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10 秒 */
@@ -144,7 +144,7 @@ const Upstream: React.FC<UpstreamProps> = ({
                                         />
                                         <ProFormDigit
                                             width={100}
-                                            name="maxConns"
+                                            name="maxCons"
                                             label={ServerEnum.MAX_CONN}
                                             tooltip={ServerTipsEnum.MAX_CONN}
                                         />

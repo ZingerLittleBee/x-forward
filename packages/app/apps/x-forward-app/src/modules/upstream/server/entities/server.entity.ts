@@ -26,8 +26,8 @@ export class ServerEntity extends CommonEntity {
         description:
             '限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效'
     })
-    @Column({ name: 'max_conns', type: 'smallint', nullable: true })
-    maxConns?: number
+    @Column({ name: 'max_cons', type: 'smallint', nullable: true })
+    maxCons?: number
 
     @AutoMap()
     @ApiProperty({
@@ -65,5 +65,5 @@ export class ServerEntity extends CommonEntity {
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })
-    upstream?: UpstreamEntity
+    upstreamId?: string
 }

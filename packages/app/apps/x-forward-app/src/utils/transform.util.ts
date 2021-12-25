@@ -75,7 +75,7 @@ export function upstreamEntities2StreamUpstream(upstreamEntities: UpstreamEntity
             if (s.upstreamHost) temp['upstream_host'] = s.upstreamHost
             if (s.upstreamPort) temp['upstream_port'] = s.upstreamPort
             if (s.weight) temp['weight'] = s.weight
-            if (s.maxConns) temp['max_conns'] = s.maxConns
+            if (s.maxCons) temp['max_conns'] = s.maxCons
             if (s.maxFails) temp['max_fails'] = s.maxFails
             if (s.failTimeout) temp['fail_timeout'] = s.failTimeout
             return temp

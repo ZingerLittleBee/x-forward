@@ -6,7 +6,7 @@ import { ServerEntity } from '../entities/server.entity'
 //     'upstreamHost',
 //     'upstreamPort',
 //     'weight',
-//     'maxConns',
+//     'maxCons',
 //     'maxFails',
 //     'failTimeout',
 //     'backup',
@@ -19,7 +19,7 @@ import { ServerEntity } from '../entities/server.entity'
 //     // @AutoMap()
 //     // weight?: number
 //     // @AutoMap()
-//     // maxConns?: number
+//     // maxCons?: number
 //     // @AutoMap()
 //     // maxFails?: number
 //     // @AutoMap()
@@ -34,7 +34,7 @@ export class CreateServerDto extends PickType(ServerEntity, [
     'upstreamHost',
     'upstreamPort',
     'weight',
-    'maxConns',
+    'maxCons',
     'maxFails',
     'failTimeout',
     'backup',
@@ -47,7 +47,7 @@ export class CreateServerDto extends PickType(ServerEntity, [
     @AutoMap()
     weight?: number
     @AutoMap()
-    maxConns?: number
+    maxCons?: number
     @AutoMap()
     maxFails?: number
     @AutoMap()
