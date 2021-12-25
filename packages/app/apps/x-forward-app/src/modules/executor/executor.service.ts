@@ -120,7 +120,7 @@ export class ExecutorService implements OnModuleInit {
      * 获取 nginx 配置
      * @returns Promise<NginxConfig>
      */
-    async getNginxConfigAargs() {
+    async getNginxConfigArgs() {
         return this.executor.getNginxConfigArgs()
     }
 

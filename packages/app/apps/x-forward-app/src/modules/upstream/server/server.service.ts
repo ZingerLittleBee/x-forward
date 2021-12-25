@@ -4,6 +4,7 @@ import { Repository } from 'typeorm'
 import { EventService } from '../../event/event.service'
 import { ServerEntity } from './entities/server.entity'
 import { Optimized, Preprocess } from '../../../decorators/args.decorator'
+import { omit } from 'lodash'
 
 @Injectable()
 export class ServerService {
@@ -20,13 +21,16 @@ export class ServerService {
 
     @Preprocess()
     async update(id: string, @Optimized() server: ServerEntity) {
+        if (server.id) {
+            server = omit(server, 'id')
+        }
         const res = await this.serverRepository.update(id, server)
         this.eventService.triggerUpdateEvent()
         return res
     }
 
     async updateAll(servers: ServerEntity[]) {
-        return Promise.all(
+        const updateResults = await Promise.all(
             servers.map(s => {
                 if (s.id) {
                     return this.update(s.id, s)
@@ -35,6 +39,11 @@ export class ServerService {
                 }
             })
         )
+        let affectCount = 0
+        updateResults.forEach(u => {
+            affectCount += u.affected
+        })
+        return affectCount
     }
 
     async remove(id: string) {
@@ -44,12 +53,13 @@ export class ServerService {
     }
 
     async removeByFK(id: string) {
-        await this.serverRepository
+        const removeResult = await this.serverRepository
             .createQueryBuilder()
             .softDelete()
             .from(ServerEntity)
             .where('upstream_id = :id', { id })
             .execute()
         this.eventService.triggerDeleteEvent()
+        return removeResult
     }
 }

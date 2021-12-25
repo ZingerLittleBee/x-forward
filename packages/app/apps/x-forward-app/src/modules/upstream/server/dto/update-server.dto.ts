@@ -12,7 +12,7 @@ export class UpdateServerDto extends PartialType(CreateServerDto) {
     @AutoMap()
     weight?: number
     @AutoMap()
-    maxConns?: number
+    maxCons?: number
     @AutoMap()
     maxFails?: number
     @AutoMap()

@@ -963,7 +963,7 @@
                         "type": "number",
                         "description": "设置服务器的权重，默认情况下为 1"
                     },
-                    "maxConns": {
+                    "maxCons": {
                         "type": "number",
                         "description": "限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效"
                     },
@@ -1053,7 +1053,7 @@
                         "type": "number",
                         "description": "设置服务器的权重，默认情况下为 1"
                     },
-                    "maxConns": {
+                    "maxCons": {
                         "type": "number",
                         "description": "限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效"
                     },
@@ -1093,7 +1093,7 @@
                         "type": "number",
                         "description": "设置服务器的权重，默认情况下为 1"
                     },
-                    "maxConns": {
+                    "maxCons": {
                         "type": "number",
                         "description": "限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效"
                     },

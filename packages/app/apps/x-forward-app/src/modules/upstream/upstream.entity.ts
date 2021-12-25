@@ -28,6 +28,6 @@ export class UpstreamEntity extends CommonEntity {
 
     @AutoMap({ typeFn: () => ServerEntity })
     @ApiProperty()
-    @OneToMany(() => ServerEntity, server => server.upstream, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => ServerEntity, server => server.upstreamId, { eager: true, createForeignKeyConstraints: false })
     server: ServerEntity[]
 }

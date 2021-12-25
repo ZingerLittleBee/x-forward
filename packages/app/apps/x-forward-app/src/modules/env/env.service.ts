@@ -7,7 +7,7 @@ import { Overview } from './env.interface'
 export class EnvService {
     constructor(private queryGatewayService: QueryGatewayService) {}
 
-    async fetchNginxConfigAargs(): Promise<NginxConfig> {
+    async fetchNginxConfigArgs(): Promise<NginxConfig> {
         return this.queryGatewayService.fetchNginxConfigArgs()
     }
 
@@ -15,7 +15,7 @@ export class EnvService {
      * if there is a nginx
      * @returns
      */
-    getNginxPath() {
+    async getNginxPath() {
         return this.queryGatewayService.getNginxBin()
     }
 
@@ -53,7 +53,7 @@ export class EnvService {
     /**
      * 获取 nginx stream 文件
      */
-    fetchNginxStreamFile() {
-        this.queryGatewayService.fetchNginxStreamConfigContent()
+    async fetchNginxStreamFile() {
+        return this.queryGatewayService.fetchNginxStreamConfigContent()
     }
 }

@@ -1,12 +1,8 @@
-import { classes } from '@automapper/classes'
-import { AutomapperModule } from '@automapper/nestjs'
-import { EventEmitterModule } from '@nestjs/event-emitter'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
 import { EventModule } from '../../event/event.module'
 import { StreamModule } from '../../stream/stream.module'
-import { ServerEntity } from '../server/entities/server.entity'
 import { ServerModule } from '../server/server.module'
 import { UpstreamController } from '../upstream.controller'
 import { UpstreamEntity } from '../upstream.entity'
@@ -14,6 +10,7 @@ import { UpstreamProfile } from '../upstream.profile'
 import { UpstreamService } from '../upstream.service'
 import { ProtocolEnum, RetriesEnum } from '../../../enums/NginxEnum'
 import { StateEnum } from '../../../enums/StatusEnum'
+import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from '../../../config/Registers'
 
 describe('UpstreamService', () => {
     let upstreamService: UpstreamService
@@ -22,36 +19,10 @@ describe('UpstreamService', () => {
     beforeAll(async () => {
         const moduleRef = await Test.createTestingModule({
             imports: [
-                TypeOrmModule.forRoot({
-                    type: 'better-sqlite3',
-                    database: `${process.cwd()}/x-forward.db`,
-                    entities: [UpstreamEntity, ServerEntity],
-                    autoLoadEntities: true,
-                    synchronize: true,
-                    logging: true,
-                    keepConnectionAlive: true
-                }),
+                TypeOrmRegister(),
+                EventEmitterRegister(),
+                AutomapperRegister(),
                 TypeOrmModule.forFeature([UpstreamEntity]),
-                AutomapperModule.forRoot({
-                    options: [{ name: 'blah', pluginInitializer: classes }],
-                    singular: true
-                }),
-                EventEmitterModule.forRoot({
-                    // set this to `true` to use wildcards
-                    wildcard: false,
-                    // the delimiter used to segment namespaces
-                    delimiter: '.',
-                    // set this to `true` if you want to emit the newListener event
-                    newListener: false,
-                    // set this to `true` if you want to emit the removeListener event
-                    removeListener: false,
-                    // the maximum amount of listeners that can be assigned to an event
-                    maxListeners: 10,
-                    // show event name in memory leak message when more than maximum amount of listeners is assigned
-                    verboseMemoryLeak: false,
-                    // disable throwing uncaughtException if an error event is emitted and it has no listeners
-                    ignoreErrors: false
-                }),
                 ServerModule,
                 StreamModule,
                 EventModule

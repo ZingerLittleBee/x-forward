@@ -6,7 +6,7 @@ export class ServerVo extends PickType(ServerEntity, [
     'upstreamHost',
     'upstreamPort',
     'weight',
-    'maxConns',
+    'maxCons',
     'maxFails',
     'failTimeout',
     'backup',
@@ -19,7 +19,7 @@ export class ServerVo extends PickType(ServerEntity, [
     @AutoMap()
     weight?: number
     @AutoMap()
-    maxConns?: number
+    maxCons?: number
     @AutoMap()
     maxFails?: number
     @AutoMap()
