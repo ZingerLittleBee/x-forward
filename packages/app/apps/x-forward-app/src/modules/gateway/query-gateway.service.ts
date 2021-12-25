@@ -7,7 +7,7 @@ export class QueryGatewayService implements QueryGatewayApi {
     constructor(private executorService: ExecutorService) {}
 
     async fetchNginxConfigArgs() {
-        return this.executorService.getNginxConfigAargs()
+        return this.executorService.getNginxConfigArgs()
     }
 
     async fetchNginxStreamConfigContent() {

@@ -18,7 +18,7 @@ export class EnvController {
     @ApiExtraModels(NginxConfigVo, OverviewVo, SystemInfoVo)
     @ApiResultResponse(NginxConfigVo)
     async getNginxConfig() {
-        return Result.okData(await this.envService.fetchNginxConfigAargs())
+        return Result.okData(await this.envService.fetchNginxConfigArgs())
     }
 
     // @Get('nginx/config/staream')
