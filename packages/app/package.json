@@ -8,10 +8,12 @@
     "pkg": "pkg . -d",
     "prebuild": "rimraf dist",
     "build": "nest build",
+    "build:lib": "nest build x-forward-common",
     "gen": "nest g resource",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
     "dev": "nest start --watch",
+    "client:dev": "nest start x-forward-client --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
@@ -87,10 +89,12 @@
     "coverageDirectory": "./coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
+      "^src/(.*)$": "<rootDir>/$1",
+      "^@app/x-forward-common(|/.*)$": "<rootDir>/libs/x-forward-common/src/$1"
     },
     "roots": [
-      "<rootDir>/apps/"
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
     ]
   },
   "bin": "dist/main.js",

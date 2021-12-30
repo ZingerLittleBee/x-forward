@@ -9,14 +9,15 @@
 
 ### Features
 
--   Friendly UI
--   Easier Setup
--   Docker Support
--   Rich Configuration Tips
--   Flexible Choice of Scenarios
--   Make Set the Stream Module More Easy
--   Local Web Terminal
--   Visual Log
+- Friendly UI
+- Easier Setup
+- Docker Support
+- Nginx Cluster Support 
+- Rich Configuration Tips
+- Flexible Choice of Scenarios
+- Make Set the Stream Module More Easy
+- Local Web Terminal
+- Visual Log
 
 ## Table of Contents
 
