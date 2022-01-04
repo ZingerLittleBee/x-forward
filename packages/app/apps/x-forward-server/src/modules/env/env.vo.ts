@@ -1,7 +1,6 @@
-import { StatusEnum } from '@app/x-forward-common'
 import { ApiProperty } from '@nestjs/swagger'
-import { NginxConfig } from '../executor/interfaces/nginx-config.interface'
-import { SystemInfo } from '../executor/interfaces/system.interface'
+import { StatusEnum } from '@x-forward/common'
+import { NginxConfig, SystemInfo } from '@x-forward/executor'
 import { Overview } from './env.interface'
 
 export class SystemInfoVo implements SystemInfo {

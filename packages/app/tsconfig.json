@@ -14,11 +14,17 @@
     "incremental": true,
     "skipLibCheck": true,
     "paths": {
-      "@app/x-forward-common": [
-        "libs/x-forward-common/src"
+      "@x-forward/common": [
+        "libs/common/src"
       ],
-      "@app/x-forward-common/*": [
-        "libs/x-forward-common/src/*"
+      "@x-forward/common/*": [
+        "libs/common/src/*"
+      ],
+      "@x-forward/executor": [
+        "libs/executor/src"
+      ],
+      "@x-forward/executor/*": [
+        "libs/executor/src/*"
       ]
     }
   }

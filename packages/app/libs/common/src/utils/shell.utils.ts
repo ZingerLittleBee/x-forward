@@ -1,5 +1,5 @@
 import { $, cd, nothrow } from 'zx'
-import { ShellEnum } from '@app/x-forward-common/enums/shell.enum'
+import { ShellEnum } from '..'
 
 export const ShellExec = async (cmd: ShellEnum | string, ...args: any[]) => {
     $.quote = input => {

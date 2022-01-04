@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common'
-import { ExecutorModule } from '../executor/executor.module'
+import { ExecutorModule } from '@x-forward/executor'
 import { RenderModule } from '../render/render.module'
 import { StreamModule } from '../stream/stream.module'
 import { UpstreamModule } from '../upstream/upstream.module'

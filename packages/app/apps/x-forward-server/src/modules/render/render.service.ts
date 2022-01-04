@@ -1,5 +1,5 @@
-import { EnvEnum, getEnvSetting, NginxLoadBalancingEnum } from '@app/x-forward-common'
 import { Injectable } from '@nestjs/common'
+import { EnvEnum, getEnvSetting, NginxLoadBalancingEnum } from '@x-forward/common'
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { configure, renderString } from 'nunjucks'
 import { join } from 'path'

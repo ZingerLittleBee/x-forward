@@ -1,6 +1,6 @@
-import { ProtocolEnum, RetriesEnum, StateEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { PickType } from '@nestjs/swagger'
+import { ProtocolEnum, RetriesEnum, StateEnum } from '@x-forward/common'
 import { Entity } from 'typeorm'
 import { StreamEntity } from './stream.entity'
 

@@ -1,7 +1,6 @@
-import { NginxConfig } from 'apps/x-forward-client/src/module/executor/interfaces/nginx-config.interface'
+import { NginxConfig } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { EnvEnum } from '@app/x-forward-common/enums/env.enum'
-import { NginxConfigArgsReflectEnum } from '@app/x-forward-common/enums/nginx.enum'
+import { EnvEnum, NginxConfigArgsReflectEnum } from '..'
 
 /**
  * 获取 cache 中的 nginxConfig

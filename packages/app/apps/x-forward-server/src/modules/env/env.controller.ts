@@ -1,7 +1,6 @@
-import { Result } from '@app/x-forward-common'
 import { Controller, Get, Query } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
-import { ApiResultResponse } from '../../decorators/response.api'
+import { ApiResultResponse, Result } from '@x-forward/common'
 import { EnvService } from './env.service'
 import { NginxConfigVo, OverviewVo, SystemInfoVo } from './env.vo'
 

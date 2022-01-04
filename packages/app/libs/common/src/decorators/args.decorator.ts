@@ -1,4 +1,4 @@
-import { removeInvalidField } from '@app/x-forward-common'
+import { removeInvalidField } from '@x-forward/common'
 
 const optimizedMetadataKey = Symbol('optimized')
 

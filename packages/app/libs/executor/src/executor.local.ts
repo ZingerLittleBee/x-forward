@@ -1,32 +1,30 @@
+import { Logger } from '@nestjs/common'
 import {
     EnvEnum,
+    fetchNginxConfigArgs,
+    findSomething,
     getEnvSetting,
+    getNginxCache,
     NginxConfigArgsEnum,
-    NginxConfigArgsReflectEnum,
     ServiceEnum,
-    ShellEnum
-} from '@app/x-forward-common'
-import { Logger } from '@nestjs/common'
+    ShellEnum,
+    ShellExec
+} from '@x-forward/common'
 import { Cache } from 'cache-manager'
+import { appendFile, readdir, readFile } from 'fs/promises'
 import { EOL } from 'os'
-import { join } from 'path/posix'
+import { join } from 'path'
 import { v4, validate } from 'uuid'
-import { MakesureDirectoryExists } from '../../decorators/file.decorator'
-import { RemoveEndOfLine } from '../../decorators/string.decorator'
 import { IExecutor } from './interfaces/executor.interface'
-import { NginxConfig } from './interfaces/nginx-config.interface'
 import { NginxStatus } from './interfaces/nginx-status.interface'
-import { fetchNginxConfigArgs, getNginxCache } from './utils/cache.util'
-import { dockerExec } from './utils/docker.util'
 
-export class ExecutorDocker implements IExecutor {
-    constructor(private containerName: string, private cacheManager: Cache) {
-        this.containerName = containerName
+export class ExecutorLocal implements IExecutor {
+    constructor(private bin: string, private cacheManager: Cache) {
+        this.bin = bin
         this.cacheManager = cacheManager
     }
     async getSystemInfo() {
-        const { res } = await dockerExec(
-            this.containerName,
+        const { res } = await ShellExec(
             ShellEnum.UNAME,
             '-n;',
             ShellEnum.UNAME,
@@ -54,17 +52,18 @@ export class ExecutorDocker implements IExecutor {
             codename
         }
     }
+
     async queryNginxStatus() {
         const status: NginxStatus = {}
-        let cmd = (await dockerExec(this.containerName, ShellEnum.WHICH, ShellEnum.SERVICE))?.res?.trim()
+        let cmd = (await findSomething(ShellEnum.SERVICE)).trim()
         if (!cmd) {
-            cmd = (await dockerExec(this.containerName, ShellEnum.SYSTEMCTL))?.res?.trim()
+            cmd = (await findSomething(ShellEnum.SYSTEMCTL)).trim()
         }
         if (!cmd) {
             Logger.warn(`系统不存在, ${ShellEnum.SERVICE}, ${ShellEnum.SYSTEMCTL}`)
             return {}
         }
-        const { res: serviceStatus } = await dockerExec(this.containerName, cmd, 'nginx', ServiceEnum.STATUS)
+        const { res: serviceStatus } = await ShellExec(cmd, 'nginx', ServiceEnum.STATUS)
         console.log('serviceStatus', serviceStatus)
         const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
         active && (status.active = active)
@@ -84,67 +83,46 @@ export class ExecutorDocker implements IExecutor {
         tasksLimit && (status.tasksLimit = tasksLimit)
         return status
     }
+
+    nginxReload() {
+        ShellExec(this.bin, '-s', 'reload')
+    }
+
+    nginxRestart() {
+        ShellExec(ShellEnum.SERVICE, 'nginx', 'restart')
+    }
     async fetchDirectory(url: string) {
+        // add "/" automatic if url no "/" at the beginning
         if (!url.match(/^\//)) {
             url = '/' + url
         }
         // ls -F ${url} | grep "/$"
-        return (await dockerExec(this.containerName, ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
+        return (await ShellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
-
     async getNginxVersion() {
-        const nginxBin = await this.getNginxBin()
-        // why return value of `nginx -V` in the stderr
-        return (await dockerExec(this.containerName, nginxBin, '-V')).res
+        return (await ShellExec(this.bin, '-V')).res
     }
-
-    @RemoveEndOfLine()
     async getNginxBin() {
-        const nginxBinInCache = (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.SBIN_PATH]?.value
-        if (nginxBinInCache) return nginxBinInCache
-        const nginxBinInEnv = getEnvSetting[EnvEnum.NGINX_BIN]
-        if (nginxBinInEnv) return nginxBinInEnv
-        const { res } = await dockerExec(this.containerName, ShellEnum.WHICH, 'nginx')
-        if (!res) throw new Error('找不到 nginx 执行目录')
-        return res
+        return this.bin
     }
-
     async getNginxConfigArgs() {
-        const nginxConfigAtgsInCache = await getNginxCache(this.cacheManager)
-        if (nginxConfigAtgsInCache) return nginxConfigAtgsInCache
         return fetchNginxConfigArgs(await this.getNginxVersion(), this.cacheManager)
     }
-
     async mainConfigAppend(appendString: string) {
-        dockerExec(
-            this.containerName,
-            ShellEnum.BASH,
-            '-c',
-            `"${ShellEnum.CAT}>>${await this.getMainConfigPath()}<<EOF\n${appendString}\nEOF"`
-        )
+        appendFile(await this.getMainConfigPath(), appendString)
     }
-
     async getMainConfigContent() {
-        return (await dockerExec(this.containerName, ShellEnum.CAT, await this.getMainConfigPath())).res
+        return readFile(await this.getMainConfigPath(), 'utf-8')
     }
-
-    private async getNginxConfArgs(): Promise<NginxConfig> {
-        return getNginxCache(this.cacheManager)
+    async getStreamDirectory() {
+        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
     }
-
     async getPrefix() {
-        return (await this.getNginxConfArgs())?.args[NginxConfigArgsEnum.PREFIX]?.value
+        return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.PREFIX]?.value
     }
     async getMainConfigPath() {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.CONF_PATH].value
     }
-
-    @MakesureDirectoryExists(true)
-    async getStreamDirectory() {
-        Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${getEnvSetting(EnvEnum.STREAM_DIR)}`)
-        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
-    }
-
     async getStreamConfigPath() {
         // 先查找缓存
         const nginxConfigArgs = await getNginxCache(this.cacheManager)
@@ -152,9 +130,7 @@ export class ExecutorDocker implements IExecutor {
             return nginxConfigArgs?.args[NginxConfigArgsEnum.STREAM_PATH].value
         const streamDir = await this.getStreamDirectory()
         // 获取目录下文件列表
-        const { res } = await dockerExec(this.containerName, ShellEnum.LS, streamDir)
-        let fileList = []
-        if (res !== '') fileList = res.split(EOL)
+        const fileList = await readdir(streamDir)
         for (let i = 0; i < fileList.length; i++) {
             const fileName = fileList[i].split('.')[0]
             // 如果文件名是 uuid, 则直接返回
@@ -164,32 +140,13 @@ export class ExecutorDocker implements IExecutor {
         }
         // 不存在, 则创建文件
         const newStreamPath = join(streamDir, `${v4()}.conf`)
-        dockerExec(this.containerName, ShellEnum.TOUCH, newStreamPath)
-        nginxConfigArgs.args[NginxConfigArgsEnum.STREAM_PATH] = {
-            label: NginxConfigArgsReflectEnum[NginxConfigArgsEnum.STREAM_PATH],
-            value: newStreamPath
-        }
+        ShellExec(ShellEnum.TOUCH, [newStreamPath])
         return newStreamPath
     }
-    getHTTPConfigPath: () => Promise<string>
-
     async getStreamFileContent() {
-        return (await dockerExec(this.containerName, ShellEnum.CAT, await this.getStreamConfigPath())).res
+        return readFile(await this.getStreamConfigPath(), { encoding: 'utf-8' })
     }
-
-    async nginxReload() {
-        const nginxReloadRes = await dockerExec(this.containerName, await this.getNginxBin(), '-s', 'reload')
-        nginxReloadRes.exitCode === 0
-            ? Logger.verbose(`nginx reload 成功`)
-            : Logger.error(`nginx reload 失败, ${nginxReloadRes.res}`)
-    }
-
-    async nginxRestart() {
-        const nginxRestartRes = await dockerExec(this.containerName, ShellEnum.SERVICE, 'nginx', 'restart')
-        nginxRestartRes.exitCode === 0
-            ? Logger.verbose(`nginx restart 成功`)
-            : Logger.error(`nginx restart 失败, ${nginxRestartRes.res}`)
-    }
+    getHTTPConfigPath: () => Promise<string>
 
     /**
      * 1. 先备份一份原配置文件, 名为 stream.conf.bak
@@ -200,25 +157,19 @@ export class ExecutorDocker implements IExecutor {
      */
     async streamPatch(content: string) {
         const streamPath = await this.getStreamConfigPath()
-        const backupRes = await dockerExec(this.containerName, ShellEnum.CP, streamPath, `${streamPath}.bak`)
+        const backupRes = await ShellExec(ShellEnum.CP, streamPath, `${streamPath}.bak`)
         if (backupRes.exitCode === 0) {
             Logger.verbose(`${streamPath} 备份成功`)
         } else {
             Logger.error(`${streamPath} 备份失败, ${backupRes.res}`)
             throw new Error(`${streamPath} 备份失败, ${backupRes.res}`)
         }
-        dockerExec(this.containerName, ShellEnum.BASH, '-c', `"${ShellEnum.CAT}>${streamPath}<<EOF\n${content}\nEOF"`)
-        const { res, exitCode } = await dockerExec(
-            this.containerName,
-            await this.getNginxBin(),
-            '-t',
-            '-c',
-            await this.getMainConfigPath()
-        )
+        ShellExec(ShellEnum.CAT, '>', `${streamPath}<<EOF\n${content}\nEOF`)
+        const { res, exitCode } = await ShellExec(await this.getNginxBin(), '-t', '-c', await this.getMainConfigPath())
         if (exitCode) {
             Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
             // rollback
-            const rollbackRes = await dockerExec(this.containerName, ShellEnum.MV, `${streamPath}.bak`, streamPath)
+            const rollbackRes = await ShellExec(ShellEnum.MV, `${streamPath}.bak`, streamPath)
             rollbackRes.exitCode === 0
                 ? Logger.verbose(`${streamPath} 回滚成功`)
                 : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)

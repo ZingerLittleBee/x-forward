@@ -1,5 +1,6 @@
-import { EnvEnum, getEnvSetting } from '@app/x-forward-common'
 import { Logger } from '@nestjs/common'
+import { EnvEnum } from '@x-forward/common/enums'
+import { getEnvSetting } from '@x-forward/common/utils'
 import { setServers } from 'dns'
 import { lookup } from 'dns/promises'
 import { inspect } from 'util'

@@ -1,6 +1,6 @@
-import { NginxLoadBalancingEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
+import { NginxLoadBalancingEnum } from '@x-forward/common'
 import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
 import { StreamEntity } from '../stream/stream.entity'

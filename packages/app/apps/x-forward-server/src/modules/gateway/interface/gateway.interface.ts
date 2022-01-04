@@ -1,5 +1,4 @@
-import { NginxConfig } from '../../executor/interfaces/nginx-config.interface'
-import { NginxStatus } from '../../executor/interfaces/nginx-status.interface'
+import { NginxConfig, NginxStatus } from '@x-forward/executor'
 import { RenderModel } from '../../render/render.interface'
 import { StreamEntity } from '../../stream/stream.entity'
 import { UpstreamEntity } from '../../upstream/upstream.entity'

@@ -1,6 +1,6 @@
-import { StateEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty, PartialType } from '@nestjs/swagger'
+import { StateEnum } from '@x-forward/common'
 import { UserEntity } from './user.entity'
 
 export class UserVo extends PartialType(UserEntity) {

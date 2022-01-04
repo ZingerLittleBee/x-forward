@@ -1,6 +1,6 @@
-import { NginxLoadBalancingEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { PickType } from '@nestjs/swagger'
+import { NginxLoadBalancingEnum } from '@x-forward/common'
 import { UpdateStreamDto } from '../stream/update-stream.dto'
 import { UpdateServerDto } from './server/dto/update-server.dto'
 import { UpstreamEntity } from './upstream.entity'

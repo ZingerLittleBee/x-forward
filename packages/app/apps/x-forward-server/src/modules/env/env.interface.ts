@@ -1,5 +1,4 @@
-import { StatusEnum } from '@app/x-forward-common'
-
+import { StatusEnum } from '@x-forward/common'
 export class Overview {
     os?: string
 

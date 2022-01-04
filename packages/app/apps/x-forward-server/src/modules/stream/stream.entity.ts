@@ -1,6 +1,6 @@
-import { NginxLoadBalancingEnum, ProtocolEnum, RetriesEnum, StatusEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
+import { NginxLoadBalancingEnum, ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
 import { UpstreamEntity } from '../upstream/upstream.entity'

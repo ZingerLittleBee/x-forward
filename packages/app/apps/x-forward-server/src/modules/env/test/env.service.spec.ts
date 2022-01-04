@@ -1,15 +1,15 @@
 import { Test } from '@nestjs/testing'
-import { GatewayModule } from '../../gateway/gateway.module'
-import { ServerModule } from '../../upstream/server/server.module'
-import { EnvService } from '../env.service'
-import { ExecutorModule } from '../../executor/executor.module'
-import { EventModule } from '../../event/event.module'
+import { ExecutorModule } from '@x-forward/executor'
 import {
     AutomapperRegister,
     CacheRegister,
     EventEmitterRegister,
     TypeOrmRegister
 } from 'apps/x-forward-server/src/config/register.config'
+import { EventModule } from '../../event/event.module'
+import { GatewayModule } from '../../gateway/gateway.module'
+import { ServerModule } from '../../upstream/server/server.module'
+import { EnvService } from '../env.service'
 
 describe('EnvService', () => {
     let envService: EnvService

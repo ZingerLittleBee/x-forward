@@ -29,13 +29,22 @@
         "tsConfigPath": "apps/x-forward-client/tsconfig.app.json"
       }
     },
-    "x-forward-common": {
+    "common": {
       "type": "library",
-      "root": "libs/x-forward-common",
+      "root": "libs/common",
       "entryFile": "index",
-      "sourceRoot": "libs/x-forward-common/src",
+      "sourceRoot": "libs/common/src",
       "compilerOptions": {
-        "tsConfigPath": "libs/x-forward-common/tsconfig.lib.json"
+        "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "executor": {
+      "type": "library",
+      "root": "libs/executor",
+      "entryFile": "index",
+      "sourceRoot": "libs/executor/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/executor/tsconfig.lib.json"
       }
     }
   }

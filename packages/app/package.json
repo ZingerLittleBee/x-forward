@@ -90,7 +90,8 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^src/(.*)$": "<rootDir>/$1",
-      "^@app/x-forward-common(|/.*)$": "<rootDir>/libs/x-forward-common/src/$1"
+      "^@app/x-forward-common(|/.*)$": "<rootDir>/libs/x-forward-common/src/$1",
+      "^@x-forward/executor(|/.*)$": "<rootDir>/libs/executor/src/$1"
     },
     "roots": [
       "<rootDir>/apps/",

@@ -1,5 +1,5 @@
-import { removeInvalidField } from '@app/x-forward-common'
 import { CallHandler, ExecutionContext, Injectable, NestInterceptor } from '@nestjs/common'
+import { removeInvalidField } from '@x-forward/common'
 import { map, Observable } from 'rxjs'
 
 /**

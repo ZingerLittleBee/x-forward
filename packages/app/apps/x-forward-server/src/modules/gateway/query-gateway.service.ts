@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { ExecutorService } from '../executor/executor.service'
+import { ExecutorService } from '@x-forward/executor'
 import { QueryGatewayApi } from './interface/gateway.interface'
 
 @Injectable()

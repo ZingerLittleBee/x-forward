@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing'
-import { ExecutorModule } from '../../executor/executor.module'
-import { QueryGatewayService } from '../query-gateway.service'
+import { ExecutorModule } from '@x-forward/executor'
 import { CacheRegister } from '../../../config/register.config'
+import { QueryGatewayService } from '../query-gateway.service'
 
 describe('GatewayService', () => {
     describe('QueryGatewayService', () => {

@@ -1,4 +1,3 @@
-import { WSEnum } from '@app/x-forward-common'
 import {
     MessageBody,
     OnGatewayConnection,
@@ -8,6 +7,7 @@ import {
     WebSocketGateway,
     WebSocketServer
 } from '@nestjs/websockets'
+import { WSEnum } from '@x-forward/common'
 import { IPty, spawn } from 'node-pty'
 import { Server } from 'socket.io'
 import { installNginx } from '../../utils/Shell'

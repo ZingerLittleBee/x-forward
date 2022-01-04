@@ -1,8 +1,7 @@
-import { StateEnum } from '@app/x-forward-common'
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
+import { StateEnum } from '@x-forward/common'
 import { Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
-
 export abstract class CommonEntity {
     @AutoMap()
     @ApiProperty()

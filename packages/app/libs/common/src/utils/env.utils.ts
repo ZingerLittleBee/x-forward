@@ -1,4 +1,4 @@
-import { DefaultEnum } from '@app/x-forward-common'
+import { DefaultEnum } from '..'
 import { isUndef } from './common.utils'
 
 // process.env util

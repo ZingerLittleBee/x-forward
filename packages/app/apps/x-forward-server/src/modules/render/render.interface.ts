@@ -1,4 +1,4 @@
-import { NginxLoadBalancingEnum, ProtocolEnum } from '@app/x-forward-common'
+import { NginxLoadBalancingEnum, ProtocolEnum } from '@x-forward/common'
 
 // 为了配置项的一目了然, 这里还是遵循 nginx 的下划线写法吧
 export interface StreamServer {

@@ -1,6 +1,6 @@
-import { EventEnum } from '@app/x-forward-common'
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
+import { EventEnum } from '@x-forward/common'
 import { inspect } from 'util'
 import { ExecutorGatewayService } from '../../modules/gateway/executor-gateway.service'
 import { ModelGatewayService } from '../../modules/gateway/model-gateway.service'

@@ -1,6 +1,6 @@
-import { EventEnum, eventThrottle } from '@app/x-forward-common'
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
+import { EventEnum, eventThrottle } from '@x-forward/common'
 
 @Injectable()
 export class EventService implements OnModuleInit {
