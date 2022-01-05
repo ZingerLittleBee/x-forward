@@ -126,3 +126,7 @@ The following are the features I want to achieve or are under development:
 - 2021-11-21: change some controller
 - 2021-12-06: filling @AutoMap on Dto
 - 2021-12-19: use pnpm workspace
+- 2021-12-25: unit test
+- 2021-12-30: stripping common components
+- 2022-01-04: create executor lib
+- 2022-01-05: create lib render
