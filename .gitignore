@@ -430,3 +430,6 @@ pnpm
 pnpx
 pnpm.CMD
 pnpx.CMD
+
+# pnpm
+.pnpm-debug.log
