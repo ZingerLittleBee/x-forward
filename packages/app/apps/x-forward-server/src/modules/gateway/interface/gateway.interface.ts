@@ -1,7 +1,7 @@
 import { NginxConfig, NginxStatus } from '@x-forward/executor'
-import { RenderModel } from '../../render/render.interface'
 import { StreamEntity } from '../../stream/stream.entity'
 import { UpstreamEntity } from '../../upstream/upstream.entity'
+import { RenderModel } from '@x-forward/render/render.interface'
 
 export interface ExecutorGatewayApi {
     /**

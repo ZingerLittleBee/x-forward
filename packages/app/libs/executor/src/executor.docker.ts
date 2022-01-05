@@ -9,16 +9,16 @@ import {
     NginxConfigArgsEnum,
     NginxConfigArgsReflectEnum,
     RemoveEndOfLine,
-    ServiceEnum
+    ServiceEnum,
+    ShellEnum
 } from '@x-forward/common'
 import { Cache } from 'cache-manager'
-import { ShellEnum } from 'libs/common/src'
 import { EOL } from 'os'
 import { join } from 'path/posix'
 import { v4, validate } from 'uuid'
-import { IExecutor } from './interfaces/executor.interface'
-import { NginxConfig } from './interfaces/nginx-config.interface'
-import { NginxStatus } from './interfaces/nginx-status.interface'
+import { IExecutor } from '@x-forward/executor/interfaces'
+import { NginxConfig } from '@x-forward/executor/interfaces'
+import { NginxStatus } from '@x-forward/executor/interfaces'
 
 export class ExecutorDocker implements IExecutor {
     constructor(private containerName: string, private cacheManager: Cache) {
@@ -111,8 +111,8 @@ export class ExecutorDocker implements IExecutor {
     }
 
     async getNginxConfigArgs() {
-        const nginxConfigAtgsInCache = await getNginxCache(this.cacheManager)
-        if (nginxConfigAtgsInCache) return nginxConfigAtgsInCache
+        const nginxConfigArgsInCache = await getNginxCache(this.cacheManager)
+        if (nginxConfigArgsInCache) return nginxConfigArgsInCache
         return fetchNginxConfigArgs(await this.getNginxVersion(), this.cacheManager)
     }
 
@@ -208,7 +208,12 @@ export class ExecutorDocker implements IExecutor {
             Logger.error(`${streamPath} 备份失败, ${backupRes.res}`)
             throw new Error(`${streamPath} 备份失败, ${backupRes.res}`)
         }
-        dockerExec(this.containerName, ShellEnum.BASH, '-c', `"${ShellEnum.CAT}>${streamPath}<<EOF\n${content}\nEOF"`)
+        await dockerExec(
+            this.containerName,
+            ShellEnum.BASH,
+            '-c',
+            `"${ShellEnum.CAT}>${streamPath}<<EOF\n${content}\nEOF"`
+        )
         const { res, exitCode } = await dockerExec(
             this.containerName,
             await this.getNginxBin(),
@@ -224,6 +229,6 @@ export class ExecutorDocker implements IExecutor {
                 ? Logger.verbose(`${streamPath} 回滚成功`)
                 : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
         }
-        this.nginxReload()
+        await this.nginxReload()
     }
 }

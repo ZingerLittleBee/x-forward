@@ -183,7 +183,7 @@ describe('UpstreamService', () => {
     })
 
     describe('findOne', () => {
-        it('UpstreamService.findByNames fault', async () => {
+        it('UpstreamService.findOne fault', async () => {
             const { id } = await upstreamService.create(upstreamEntity1)
             await repository.save(upstreamEntity2)
             const upstream = await upstreamService.findOne(id)

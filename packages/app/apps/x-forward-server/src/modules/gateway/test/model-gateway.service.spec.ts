@@ -5,7 +5,6 @@ import { ExecutorModule } from '@x-forward/executor'
 import { Repository } from 'typeorm'
 import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from '../../../config/register.config'
 import { EventModule } from '../../event/event.module'
-import { RenderModule } from '../../render/render.module'
 import { StreamEntity } from '../../stream/stream.entity'
 import { StreamModule } from '../../stream/stream.module'
 import { ServerEntity } from '../../upstream/server/entities/server.entity'
@@ -13,6 +12,7 @@ import { UpstreamEntity } from '../../upstream/upstream.entity'
 import { UpstreamModule } from '../../upstream/upstream.module'
 import { UpstreamService } from '../../upstream/upstream.service'
 import { ModelGatewayService } from '../model-gateway.service'
+import { RenderModule } from '@x-forward/render'
 
 describe('GatewayService', () => {
     describe('ModelGatewayService', () => {

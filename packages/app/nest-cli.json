@@ -46,6 +46,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/executor/tsconfig.lib.json"
       }
+    },
+    "render": {
+      "type": "library",
+      "root": "libs/render",
+      "entryFile": "index",
+      "sourceRoot": "libs/render/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/render/tsconfig.lib.json"
+      }
     }
   }
 }

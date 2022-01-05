@@ -1,15 +1,15 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvEnum } from '@x-forward/common/enums'
 import { findSomething, getEnvSetting } from '@x-forward/common/utils'
-import { streamBlock } from 'apps/x-forward-server/src/modules/render/template/nginxMainConfig'
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { inspect } from 'util'
 import { $ } from 'zx'
 import { ExecutorDocker } from './executor.docker'
 import { ExecutorLocal } from './executor.local'
-import { IExecutor } from './interfaces/executor.interface'
-import { NginxConfig } from './interfaces/nginx-config.interface'
+import { IExecutor } from '@x-forward/executor/interfaces'
+import { NginxConfig } from '@x-forward/executor/interfaces'
+import { streamBlock } from '@x-forward/render/template/nginxMainConfig'
 
 @Injectable()
 export class ExecutorService implements OnModuleInit {

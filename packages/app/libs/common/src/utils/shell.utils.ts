@@ -1,7 +1,7 @@
 import { $, cd, nothrow } from 'zx'
 import { ShellEnum } from '..'
 
-export const ShellExec = async (cmd: ShellEnum | string, ...args: any[]) => {
+export const shellExec = async (cmd: ShellEnum | string, ...args: any[]) => {
     $.quote = input => {
         return input === '>>' ? '>>' : input
     }

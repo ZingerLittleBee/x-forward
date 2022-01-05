@@ -25,6 +25,12 @@
       ],
       "@x-forward/executor/*": [
         "libs/executor/src/*"
+      ],
+      "@x-forward/render": [
+        "libs/render/src"
+      ],
+      "@x-forward/render/*": [
+        "libs/render/src/*"
       ]
     }
   }

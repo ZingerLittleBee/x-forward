@@ -1,15 +1,16 @@
 import { Test } from '@nestjs/testing'
 import { ExecutorModule } from '@x-forward/executor'
-import { CacheRegister } from '../../../config/register.config'
+import { AutomapperRegister, CacheRegister, TypeOrmRegister } from '../../../config/register.config'
 import { ExecutorGatewayService } from '../executor-gateway.service'
 import { QueryGatewayService } from '../query-gateway.service'
+import { GatewayModule } from '../gateway.module'
 
 describe('GatewayService', () => {
     describe('ExecutorGatewayService', () => {
         let executorGatewayService: ExecutorGatewayService
         beforeAll(async () => {
             const moduleRef = await Test.createTestingModule({
-                imports: [ExecutorModule, CacheRegister()],
+                imports: [TypeOrmRegister(), AutomapperRegister(), GatewayModule, ExecutorModule, CacheRegister()],
                 providers: [QueryGatewayService]
             }).compile()
             await moduleRef.init()

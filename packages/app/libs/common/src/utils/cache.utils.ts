@@ -12,7 +12,8 @@ export const getNginxCache = async (cacheManager: Cache) => {
 
 /**
  * 匹配 nginx -V 结果
- * @param info nginx -V 结果
+ * @param nginxInfo nginx -V
+ * @param cacheManager Cache
  */
 export const fetchNginxConfigArgs = (nginxInfo: string, cacheManager: Cache): NginxConfig => {
     // 获取 nginx 版本号

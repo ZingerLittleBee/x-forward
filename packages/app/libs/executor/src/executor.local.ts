@@ -5,26 +5,26 @@ import {
     findSomething,
     getEnvSetting,
     getNginxCache,
+    shellExec,
     NginxConfigArgsEnum,
     ServiceEnum,
-    ShellEnum,
-    ShellExec
+    ShellEnum
 } from '@x-forward/common'
 import { Cache } from 'cache-manager'
 import { appendFile, readdir, readFile } from 'fs/promises'
 import { EOL } from 'os'
 import { join } from 'path'
 import { v4, validate } from 'uuid'
-import { IExecutor } from './interfaces/executor.interface'
-import { NginxStatus } from './interfaces/nginx-status.interface'
+import { IExecutor } from '@x-forward/executor/interfaces'
+import { NginxStatus } from '@x-forward/executor/interfaces'
 
 export class ExecutorLocal implements IExecutor {
-    constructor(private bin: string, private cacheManager: Cache) {
+    constructor(private readonly bin: string, private readonly cacheManager: Cache) {
         this.bin = bin
         this.cacheManager = cacheManager
     }
     async getSystemInfo() {
-        const { res } = await ShellExec(
+        const { res } = await shellExec(
             ShellEnum.UNAME,
             '-n;',
             ShellEnum.UNAME,
@@ -63,7 +63,7 @@ export class ExecutorLocal implements IExecutor {
             Logger.warn(`系统不存在, ${ShellEnum.SERVICE}, ${ShellEnum.SYSTEMCTL}`)
             return {}
         }
-        const { res: serviceStatus } = await ShellExec(cmd, 'nginx', ServiceEnum.STATUS)
+        const { res: serviceStatus } = await shellExec(cmd, 'nginx', ServiceEnum.STATUS)
         console.log('serviceStatus', serviceStatus)
         const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
         active && (status.active = active)
@@ -85,11 +85,11 @@ export class ExecutorLocal implements IExecutor {
     }
 
     nginxReload() {
-        ShellExec(this.bin, '-s', 'reload')
+        shellExec(this.bin, '-s', 'reload')
     }
 
     nginxRestart() {
-        ShellExec(ShellEnum.SERVICE, 'nginx', 'restart')
+        shellExec(ShellEnum.SERVICE, 'nginx', 'restart')
     }
     async fetchDirectory(url: string) {
         // add "/" automatic if url no "/" at the beginning
@@ -97,10 +97,10 @@ export class ExecutorLocal implements IExecutor {
             url = '/' + url
         }
         // ls -F ${url} | grep "/$"
-        return (await ShellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
+        return (await shellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
     async getNginxVersion() {
-        return (await ShellExec(this.bin, '-V')).res
+        return (await shellExec(this.bin, '-V')).res
     }
     async getNginxBin() {
         return this.bin
@@ -140,7 +140,7 @@ export class ExecutorLocal implements IExecutor {
         }
         // 不存在, 则创建文件
         const newStreamPath = join(streamDir, `${v4()}.conf`)
-        ShellExec(ShellEnum.TOUCH, [newStreamPath])
+        shellExec(ShellEnum.TOUCH, [newStreamPath])
         return newStreamPath
     }
     async getStreamFileContent() {
@@ -157,19 +157,19 @@ export class ExecutorLocal implements IExecutor {
      */
     async streamPatch(content: string) {
         const streamPath = await this.getStreamConfigPath()
-        const backupRes = await ShellExec(ShellEnum.CP, streamPath, `${streamPath}.bak`)
+        const backupRes = await shellExec(ShellEnum.CP, streamPath, `${streamPath}.bak`)
         if (backupRes.exitCode === 0) {
             Logger.verbose(`${streamPath} 备份成功`)
         } else {
             Logger.error(`${streamPath} 备份失败, ${backupRes.res}`)
             throw new Error(`${streamPath} 备份失败, ${backupRes.res}`)
         }
-        ShellExec(ShellEnum.CAT, '>', `${streamPath}<<EOF\n${content}\nEOF`)
-        const { res, exitCode } = await ShellExec(await this.getNginxBin(), '-t', '-c', await this.getMainConfigPath())
+        shellExec(ShellEnum.CAT, '>', `${streamPath}<<EOF\n${content}\nEOF`)
+        const { res, exitCode } = await shellExec(await this.getNginxBin(), '-t', '-c', await this.getMainConfigPath())
         if (exitCode) {
             Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
             // rollback
-            const rollbackRes = await ShellExec(ShellEnum.MV, `${streamPath}.bak`, streamPath)
+            const rollbackRes = await shellExec(ShellEnum.MV, `${streamPath}.bak`, streamPath)
             rollbackRes.exitCode === 0
                 ? Logger.verbose(`${streamPath} 回滚成功`)
                 : Logger.error(`${streamPath} 回滚失败, ${rollbackRes.res}`)
