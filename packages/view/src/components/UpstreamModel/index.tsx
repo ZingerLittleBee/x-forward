@@ -8,54 +8,53 @@ import ProForm, {
     ProFormSwitch,
     ProFormText
 } from '@ant-design/pro-form'
-import { Form, message } from 'antd'
+import { Form } from 'antd'
 import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
-import './upstream.less'
-import { CommonEnum } from '@/enums/CommonEnum'
-import { UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
-import { getKeyByValue } from '@/utils/objectUtil'
+import './index.less'
 import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
 import { StreamItemEnum } from '@/enums/StreamEnum'
+import { isString } from 'lodash'
+import { isUndef } from '@/utils/commonUtils'
 
-type DataSourceType = API.ServerEntity
-
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const initialValues: DataSourceType = {
-    id: '123123',
-    /** 是否生效; 0: able, 1: disable */
-    state: 0,
-    createTime: 'cratetime',
-    /** 上游地址 */
-    upstreamHost: 'baidu.com',
-    /** 上游端口 */
-    upstreamPort: 1111,
-    /** 设置服务器的权重，默认情况下为 1 */
-    weight: 1,
-    /** 限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效 */
-    maxCons: 5,
-    /** 设置在 fail_timeout 参数设置的时间内与服务器通信的失败尝试次数，以便认定服务器在 fail_timeout 参数设置的时间内不可用。默认情况下，失败尝试的次数设置为 1。零值将禁用尝试记录。在这里，当与服务器正在建立连接中，失败尝试将是一个错误或超时 */
-    maxFails: 5,
-    /** 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10 秒 */
-    failTimeout: '5s',
-    /** 将服务器标记为备用服务器。当主服务器不可用时，连接将传递到备用服务器; 该参数不能与 hash 和 random 负载均衡算法一起使用; 0: false, 1: true */
-    backup: 0,
-    /** 将服务器标记为永久不可用; 0: false, 1: true */
-    down: 0
-}
+// const initialValues: DataSourceType = {
+//     id: '123123',
+//     /** 是否生效; 0: able, 1: disable */
+//     state: 0,
+//     createTime: 'cratetime',
+//     /** 上游地址 */
+//     upstreamHost: 'baidu.com',
+//     /** 上游端口 */
+//     upstreamPort: 1111,
+//     /** 设置服务器的权重，默认情况下为 1 */
+//     weight: 1,
+//     /** 限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效 */
+//     maxCons: 5,
+//     /** 设置在 fail_timeout 参数设置的时间内与服务器通信的失败尝试次数，以便认定服务器在 fail_timeout 参数设置的时间内不可用。默认情况下，失败尝试的次数设置为 1。零值将禁用尝试记录。在这里，当与服务器正在建立连接中，失败尝试将是一个错误或超时 */
+//     maxFails: 5,
+//     /** 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10 秒 */
+//     failTimeout: '5s',
+//     /** 将服务器标记为备用服务器。当主服务器不可用时，连接将传递到备用服务器; 该参数不能与 hash 和 random 负载均衡算法一起使用; 0: false, 1: true */
+//     backup: 0,
+//     /** 将服务器标记为永久不可用; 0: false, 1: true */
+//     down: 0
+// }
 
 type UpstreamProps = {
-    upstream: API.UpstreamVo | undefined
-    upstreamNameSelectEnum: Record<string, string>
-    onUpstreamSelectChange: (id: string) => void
-    onUpstreamSubmit: (data: API.UpdateUpstreamDto) => void
+    title?: string
+    trigger: JSX.Element
+    onUpstreamSubmit: (data: API.UpdateUpstreamDto | API.CreateUpstreamDto) => void
     onUpstreamRest: () => void
+    upstream?: API.UpstreamVo | undefined
+    upstreamName?: Record<string, string> | string
+    onUpstreamSelectChange?: (id: string) => void
 }
 
-const Upstream: React.FC<UpstreamProps> = ({
+const UpstreamModel: React.FC<UpstreamProps> = ({
+    title = '上游服务',
+    trigger,
     upstream,
-    upstreamNameSelectEnum,
+    upstreamName,
     onUpstreamSelectChange,
     onUpstreamSubmit,
     onUpstreamRest
@@ -69,13 +68,11 @@ const Upstream: React.FC<UpstreamProps> = ({
     }, [form, upstream])
     return (
         <DrawerForm
-            title="上游服务"
+            title={title}
             form={form}
-            trigger={<span>{upstream?.name || CommonEnum.PLACEHOLDER}</span>}
+            trigger={trigger}
             onFinish={async (e: API.UpdateUpstreamDto) => {
                 onUpstreamSubmit(e)
-                await UpstreamControllerUpdate({ id: getKeyByValue(upstreamNameSelectEnum, e.name)! }, e)
-                message.success('提交成功')
                 return true
             }}
             drawerProps={{
@@ -85,17 +82,26 @@ const Upstream: React.FC<UpstreamProps> = ({
                 }
             }}
         >
-            <ProFormSelect
-                name="name"
-                label={ServerEnum.UPSTREAM_NAME}
-                initialValue={upstream?.name}
-                valueEnum={upstreamNameSelectEnum}
-                fieldProps={{
-                    onChange(value) {
-                        onUpstreamSelectChange(value)
-                    }
-                }}
-            />
+            {isString(upstreamName) || isUndef(upstreamName) ? (
+                <ProFormText
+                    name="name"
+                    label={ServerEnum.UPSTREAM_NAME}
+                    placeholder={`请输入${ServerEnum.UPSTREAM_NAME}`}
+                />
+            ) : (
+                <ProFormSelect
+                    name="name"
+                    label={ServerEnum.UPSTREAM_NAME}
+                    initialValue={upstream?.name}
+                    valueEnum={upstreamName}
+                    fieldProps={{
+                        onChange(value) {
+                            if (onUpstreamSelectChange) onUpstreamSelectChange(value)
+                        }
+                    }}
+                />
+            )}
+
             <ProFormSelect
                 name="loadBalancing"
                 label={ServerEnum.LOAD_BALANCING}
@@ -181,4 +187,4 @@ const Upstream: React.FC<UpstreamProps> = ({
     )
 }
 
-export default Upstream
+export default UpstreamModel
