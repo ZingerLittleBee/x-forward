@@ -16,6 +16,7 @@ import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
 import { StreamItemEnum } from '@/enums/StreamEnum'
 import { isString } from 'lodash'
 import { isUndef } from '@/utils/commonUtils'
+import { FormInstance } from 'antd/es'
 
 // const initialValues: DataSourceType = {
 //     id: '123123',
@@ -44,10 +45,10 @@ type UpstreamProps = {
     title?: string
     trigger: JSX.Element
     onUpstreamSubmit: (data: API.UpdateUpstreamDto | API.CreateUpstreamDto) => void
-    onUpstreamRest: () => void
     upstream?: API.UpstreamVo | undefined
     upstreamName?: Record<string, string> | string
     onUpstreamSelectChange?: (id: string) => void
+    onClose?: (form: FormInstance) => void
 }
 
 const UpstreamModel: React.FC<UpstreamProps> = ({
@@ -57,7 +58,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
     upstreamName,
     onUpstreamSelectChange,
     onUpstreamSubmit,
-    onUpstreamRest
+    onClose
 }) => {
     const [form] = Form.useForm()
     useEffect(() => {
@@ -77,8 +78,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             }}
             drawerProps={{
                 onClose() {
-                    onUpstreamRest()
-                    form.resetFields()
+                    onClose?.(form)
                 }
             }}
         >

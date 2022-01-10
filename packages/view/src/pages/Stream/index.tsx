@@ -298,11 +298,12 @@ export default () => {
                                                         onUpstreamSelectChange={e => {
                                                             setCurrUpstream(upstreamData?.find(u => u.id === e))
                                                         }}
-                                                        onUpstreamRest={() =>
+                                                        onClose={form => {
                                                             setCurrUpstream(
                                                                 upstreamData?.find(u => u.id === upstreamId)
                                                             )
-                                                        }
+                                                            form.resetFields()
+                                                        }}
                                                         onUpstreamSubmit={async e => {
                                                             const { name } = e
                                                             const selectUpstreamId = getKeyByValue(
