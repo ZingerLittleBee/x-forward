@@ -13,6 +13,7 @@ export default {
     'menu.dashboard.workplace': '工作台',
     'menu.module': '模块',
     'menu.stream': '转发',
+    'menu.upstream': '上游',
     'menu.terminal': '终端',
     'menu.exception.403': '403',
     'menu.exception.404': '404',

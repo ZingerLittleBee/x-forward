@@ -11,8 +11,8 @@ const useTerminal = (terminalProps: TerminalProps) => {
         fitAddon.fit()
         terminalProps.socket?.emit('terminal-resize', {
             dimensions: {
-                cols: fitAddon.proposeDimensions().cols,
-                rows: fitAddon.proposeDimensions().rows
+                cols: fitAddon.proposeDimensions()?.cols,
+                rows: fitAddon.proposeDimensions()?.rows
             }
         })
     }

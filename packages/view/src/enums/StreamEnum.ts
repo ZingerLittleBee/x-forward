@@ -4,18 +4,15 @@ export enum StreamStatusEnum {
     Stop
 }
 
-// 负载均衡算法 https://juejin.cn/post/6844904144667590670#heading-11
 export enum LoadBalancingEnum {
     // 轮询
-    poll,
+    Random,
     // 加权
-    weight,
-    // ip_hash
-    ip_hash,
-    // 动态调度
-    fair,
-    // url_hash
-    url_hash
+    Weight,
+    // hash
+    Hash,
+    // least_conn
+    Least_conn
 }
 
 export enum StreamItemEnum {

@@ -32,6 +32,12 @@
         component: './Stream'
     },
     {
+        path: '/upstream',
+        name: 'upstream',
+        icon: 'CloudServerOutlined',
+        component: './Upstream'
+    },
+    {
         path: '/terminal',
         name: 'terminal',
         icon: 'CodeOutlined',

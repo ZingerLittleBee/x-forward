@@ -14,10 +14,10 @@ import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from '
 import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
-import { UpstreamControllerFindAll } from '@/services/x-forward-frontend/upstream'
+import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
 import { utc2local } from '@/utils/timeUtil'
 import { CommonEnum } from '@/enums/CommonEnum'
-import Upstream from '@/pages/Stream/components/Upstream'
+import UpstreamModel from '@/components/UpstreamModel/index'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
 import { requiredRuleUtil } from '@/utils/ruleUtil'
@@ -165,7 +165,7 @@ export default () => {
                 ghost
                 loading={streamLoading || upstreamLoading}
             >
-                {streamData ? (
+                {streamData && streamData.length !== 0 ? (
                     streamData?.map(d => (
                         <ProCard
                             hoverable
@@ -289,28 +289,47 @@ export default () => {
                                                     API.UpstreamVo | undefined
                                                 >(upstreamData?.find(u => u.id === upstreamId))
                                                 return (
-                                                    <Upstream
+                                                    <UpstreamModel
+                                                        trigger={
+                                                            <span>{currUpstream?.name || CommonEnum.PLACEHOLDER}</span>
+                                                        }
                                                         upstream={currUpstream}
-                                                        upstreamNameSelectEnum={upstreamNameSelectEnum}
+                                                        upstreamName={upstreamNameSelectEnum}
                                                         onUpstreamSelectChange={e => {
                                                             setCurrUpstream(upstreamData?.find(u => u.id === e))
                                                         }}
-                                                        onUpstreamRest={() =>
+                                                        onClose={form => {
                                                             setCurrUpstream(
                                                                 upstreamData?.find(u => u.id === upstreamId)
                                                             )
-                                                        }
+                                                            form.resetFields()
+                                                        }}
                                                         onUpstreamSubmit={async e => {
                                                             const { name } = e
                                                             const selectUpstreamId = getKeyByValue(
                                                                 upstreamNameSelectEnum,
                                                                 name
                                                             )
-                                                            if (selectUpstreamId !== upstreamId) {
-                                                                await StreamControllerUpdateUpstreamIdById(
-                                                                    { id: id! },
-                                                                    { data: { upstreamId: selectUpstreamId } }
+                                                            if (id && selectUpstreamId) {
+                                                                const { data } = await UpstreamControllerUpdate(
+                                                                    {
+                                                                        id: selectUpstreamId
+                                                                    },
+                                                                    e as API.UpdateUpstreamDto
                                                                 )
+                                                                data && data > 0
+                                                                    ? message.success('upstream 更新成功')
+                                                                    : message.error('upstream 更新失败')
+                                                                if (selectUpstreamId !== upstreamId) {
+                                                                    const { data } =
+                                                                        await StreamControllerUpdateUpstreamIdById(
+                                                                            { id },
+                                                                            { data: { upstreamId: selectUpstreamId } }
+                                                                        )
+                                                                    if (!(data && data > 0)) {
+                                                                        message.error('stream 更新失败')
+                                                                    }
+                                                                }
                                                             }
                                                             // may be can optimize
                                                             setTimeout(streamRefresh, 100)
