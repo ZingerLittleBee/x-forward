@@ -16,8 +16,8 @@ export default () => {
             copyright={`${currentYear} ${defaultMessage}`}
             links={[
                 {
-                    key: 'X Forward',
-                    title: 'X-Forward',
+                    key: 'x-forward',
+                    title: 'x-forward',
                     href: 'https://github.com/ZingerLittleBee/x-forward-frontend',
                     blankTarget: true
                 },
