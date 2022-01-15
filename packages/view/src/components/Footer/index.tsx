@@ -18,13 +18,13 @@ export default () => {
                 {
                     key: 'x-forward',
                     title: 'x-forward',
-                    href: 'https://github.com/ZingerLittleBee/x-forward-frontend',
+                    href: 'https://github.com/ZingerLittleBee/x-forward',
                     blankTarget: true
                 },
                 {
                     key: 'github',
                     title: <GithubOutlined />,
-                    href: 'https://github.com/ZingerLittleBee/x-forward-frontend',
+                    href: 'https://github.com/ZingerLittleBee/x-forward',
                     blankTarget: true
                 }
             ]}

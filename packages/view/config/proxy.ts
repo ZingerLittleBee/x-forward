@@ -16,16 +16,16 @@ export default {
     },
     test: {
         '/api/': {
-            target: 'https://preview.pro.ant.design',
+            target: 'http://localhost:3000',
             changeOrigin: true,
-            pathRewrite: { '^': '' }
+            pathRewrite: { '^/api': '' }
         }
     },
     pre: {
         '/api/': {
-            target: 'your pre url',
+            target: 'http://localhost:3000',
             changeOrigin: true,
-            pathRewrite: { '^': '' }
+            pathRewrite: { '^/api': '' }
         }
     }
 }

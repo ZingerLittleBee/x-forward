@@ -156,6 +156,7 @@ export default () => {
             <ProCard
                 gutter={[16, 16]}
                 title="转发规则"
+                headStyle={{ paddingTop: 0 }}
                 extra={
                     <Button type="primary" icon={<PlusCircleOutlined />} onClick={() => setModalVisible(true)}>
                         添加规则

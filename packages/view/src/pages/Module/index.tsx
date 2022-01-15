@@ -4,7 +4,6 @@ import { StatusEnum } from '@/enums/StatusEnum'
 import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
-import { PageContainer } from '@ant-design/pro-layout'
 import ProList from '@ant-design/pro-list'
 import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
@@ -118,7 +117,7 @@ const Module = () => {
     const [moduleDataSource, setModuleDataSource] = useState(nginxModuleDataSource)
 
     return (
-        <PageContainer>
+        <>
             <RcResizeObserver
                 key="resize-observer"
                 onResize={offset => {
@@ -193,7 +192,7 @@ const Module = () => {
                     />
                 </ProCard>
             </ProCard>
-        </PageContainer>
+        </>
     )
 }
 
