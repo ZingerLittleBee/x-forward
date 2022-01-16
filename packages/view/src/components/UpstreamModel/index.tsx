@@ -10,7 +10,7 @@ import ProForm, {
 } from '@ant-design/pro-form'
 import { Form } from 'antd'
 import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
-import { requiredRuleUtil } from '@/utils/ruleUtil'
+import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
 import './index.less'
 import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
 import { StreamItemEnum } from '@/enums/StreamEnum'
@@ -133,16 +133,16 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                                 width="md"
                                                 name="upstreamHost"
                                                 label={ServerEnum.UPSTREAM_HOST}
-                                                rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
+                                                rules={[requiredRule(ServerEnum.UPSTREAM_HOST), hostRule()]}
                                             />
                                             <ProFormText
                                                 width="md"
                                                 name="upstreamPort"
                                                 label={ServerEnum.UPSTREAM_PORT}
-                                                rules={requiredRuleUtil(ServerEnum.UPSTREAM_HOST)}
+                                                rules={[requiredRule(ServerEnum.UPSTREAM_HOST), portRule()]}
                                             />
                                         </ProForm.Group>
-                                        <ProFormText
+                                        <ProFormDigit
                                             width={100}
                                             name="weight"
                                             label={ServerEnum.WEIGHT}
@@ -164,6 +164,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                             width={100}
                                             name="failTimeout"
                                             label={ServerEnum.FAIL_TIMEOUT}
+                                            rules={[timeRule()]}
                                             tooltip={ServerTipsEnum.FAIL_TIMEOUT}
                                         />
                                         <ProFormSwitch
