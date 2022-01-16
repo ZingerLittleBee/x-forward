@@ -1,4 +1,4 @@
-import { Space } from 'antd'
+import { Space, Tooltip } from 'antd'
 import { QuestionCircleOutlined } from '@ant-design/icons'
 import React from 'react'
 import { useModel, SelectLang } from 'umi'
@@ -22,14 +22,16 @@ const GlobalHeaderRight: React.FC = () => {
     }
     return (
         <Space className={className}>
-            <span
-                className={styles.action}
-                onClick={() => {
-                    window.open('https://github.com/ZingerLittleBee/x-forward')
-                }}
-            >
-                <QuestionCircleOutlined />
-            </span>
+            <Tooltip placement="bottom" title="文档">
+                <span
+                    className={styles.action}
+                    onClick={() => {
+                        window.open('https://github.com/ZingerLittleBee/x-forward')
+                    }}
+                >
+                    <QuestionCircleOutlined />
+                </span>
+            </Tooltip>
             <Avatar />
             <SelectLang className={styles.action} />
         </Space>
