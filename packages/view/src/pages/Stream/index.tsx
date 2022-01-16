@@ -20,7 +20,7 @@ import { CommonEnum } from '@/enums/CommonEnum'
 import UpstreamModel from '@/components/UpstreamModel/index'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
-import { requiredRuleUtil } from '@/utils/ruleUtil'
+import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import { state2Boolean } from '@/utils/statusUtils'
 import { ServerEnum } from '@/enums/UpstreamEnum'
 import { omit } from 'lodash-es'
@@ -454,7 +454,7 @@ export default () => {
                     width="sm"
                     name="transitPort"
                     label={StreamItemEnum.transitPort}
-                    rules={requiredRuleUtil(StreamItemEnum.transitPort)}
+                    rules={[requiredRule(StreamItemEnum.transitPort), portRule()]}
                     placeholder={`请输入${StreamItemEnum.transitPort}`}
                 />
 
@@ -468,14 +468,14 @@ export default () => {
                                     width="md"
                                     name={`remoteHost_${currIndex}`}
                                     label={`${StreamItemEnum.remoteHost}_${currIndex}`}
-                                    rules={requiredRuleUtil(StreamItemEnum.remoteHost)}
+                                    rules={[requiredRule(StreamItemEnum.remoteHost), hostRule()]}
                                     placeholder={`请输入${StreamItemEnum.remoteHost}`}
                                 />
                                 <ProFormText
                                     disabled={true}
                                     name={`remotePort_${currIndex}`}
                                     label={`${StreamItemEnum.remotePort}_${currIndex}`}
-                                    rules={requiredRuleUtil(StreamItemEnum.remotePort)}
+                                    rules={[requiredRule(StreamItemEnum.remotePort), portRule()]}
                                     placeholder={`请输入${StreamItemEnum.remotePort}`}
                                 />
                             </ProForm.Group>
@@ -487,13 +487,13 @@ export default () => {
                             width="md"
                             name="remoteHost"
                             label={StreamItemEnum.remoteHost}
-                            rules={requiredRuleUtil(StreamItemEnum.remoteHost)}
+                            rules={[requiredRule(StreamItemEnum.remoteHost), hostRule()]}
                             placeholder={`请输入${StreamItemEnum.remoteHost}`}
                         />
                         <ProFormText
                             name="remotePort"
                             label={StreamItemEnum.remotePort}
-                            rules={requiredRuleUtil(StreamItemEnum.remotePort)}
+                            rules={[requiredRule(StreamItemEnum.remotePort), portRule()]}
                             placeholder={`请输入${StreamItemEnum.remotePort}`}
                         />
                     </ProForm.Group>
