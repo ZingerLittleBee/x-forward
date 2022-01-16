@@ -59,7 +59,10 @@ TODO
 
 ![stream-list](./snapshot/stream.png)
 ![stream-modify](./snapshot/modify-stream.png)
-![stream-upstream](./snapshot/modify-upstream.png)
+
+### Upstream 模块
+![upstream](./snapshot/upstream.png)
+![upstream-modify](./snapshot/modify-upstream.png)
 
 ## Roadmap
 
