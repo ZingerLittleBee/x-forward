@@ -90,6 +90,9 @@ export class UpstreamService {
     async remove(id: string) {
         await this.serverService.removeByFK(id)
         const res = await this.upstreamRepository.softDelete(id)
+        // need delete associated fk
+        await this.streamService.removeByFK(id)
+        await this.serverService.removeByFK(id)
         this.eventService.triggerDeleteEvent()
         Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)
         return res
