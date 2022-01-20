@@ -22,6 +22,7 @@
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
     "release": "standard-version",
+    "postinstall": "pnpm -C ./packages/shared build",
     "preinstall": "npx only-allow pnpm -y"
   },
   "repository": {

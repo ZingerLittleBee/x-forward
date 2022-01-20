@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { EnvEnum, getEnvSetting, NginxLoadBalancingEnum } from '@x-forward/common'
+import { EnvEnum, getEnvSetting } from '@x-forward/common'
+import { LoadBalancingEnum } from '@x-forward/shared'
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { configure, renderString } from 'nunjucks'
 import { join } from 'path'
@@ -19,8 +20,8 @@ export class RenderService {
         return renderString(nginxStreamConfig, {
             upstreams,
             servers,
-            generateLoadBalancing: this.generateLoadBalancing,
-            generateUpstreamServer: this.generateUpstreamServer
+            generateLoadBalancing: RenderService.generateLoadBalancing,
+            generateUpstreamServer: RenderService.generateUpstreamServer
         })
         // writeFile(this.generatorTempPath('stream'), streamFileContent, 'utf-8', err => {
         //     if (!err) return
@@ -35,7 +36,7 @@ export class RenderService {
      * 3. 存在则返回, 不存在则新生成
      * @returns temp/stream/uuid.conf | temp/http/uuid.conf | temp/main/uuid.conf
      */
-    private generatorTempPath(dir: 'stream' | 'http' | 'main') {
+    private static generatorTempPath(dir: 'stream' | 'http' | 'main') {
         const tempDir = join(getEnvSetting(EnvEnum.TEMP_FILE_NAME), dir)
         // 判断文件夹是否存在, 不存在则创建
         if (!existsSync(tempDir)) {
@@ -55,26 +56,23 @@ export class RenderService {
     }
 
     // 生成负载均衡算法
-    private generateLoadBalancing({ load_balancing }: StreamUpstream) {
-        if (load_balancing === NginxLoadBalancingEnum.poll) {
+    private static generateLoadBalancing({ load_balancing }: StreamUpstream) {
+        if (load_balancing === LoadBalancingEnum.Random) {
             return
         }
-        if (load_balancing === NginxLoadBalancingEnum.weight) {
+        if (load_balancing === LoadBalancingEnum.Weight) {
             return
         }
-        if (load_balancing === NginxLoadBalancingEnum.ip_hash) {
-            return 'ip_hash'
+        if (load_balancing === LoadBalancingEnum.Least_conn) {
+            return 'least_conn'
         }
-        if (load_balancing === NginxLoadBalancingEnum.fair) {
-            return 'fair'
-        }
-        if (load_balancing === NginxLoadBalancingEnum.url_hash) {
-            return 'url_hash'
+        if (load_balancing === LoadBalancingEnum.Hash) {
+            return 'hash $remote_addr consistent;'
         }
     }
 
     // 生成 upstream 模块下的 server, 直接放在模版中太冗余
-    private generateUpstreamServer(upstreamServer: UpstreamServer) {
+    private static generateUpstreamServer(upstreamServer: UpstreamServer) {
         if (upstreamServer == null) return ''
         const { upstream_host, upstream_port, weight, max_conns, max_fails, fail_timeout, backup, down } =
             upstreamServer
