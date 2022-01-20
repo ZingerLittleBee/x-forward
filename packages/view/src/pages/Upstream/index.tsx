@@ -1,16 +1,16 @@
-import ProTable, { ProColumns } from '@ant-design/pro-table'
-import { Button, Popconfirm } from 'antd'
-import { useRequest } from 'umi'
+import UpstreamModel from '@/components/UpstreamModel'
+import { StateEnum } from '@/enums/StatusEnum'
+import { ServerEnum } from '@/enums/UpstreamEnum'
 import {
     UpstreamControllerCreate,
     UpstreamControllerFindAll,
     UpstreamControllerRemove
 } from '@/services/x-forward-frontend/upstream'
-import { StateEnum } from '@/enums/StatusEnum'
-import { LoadBalancingEnum } from '@/enums/StreamEnum'
-import { ServerEnum } from '@/enums/UpstreamEnum'
-import UpstreamModel from '@/components/UpstreamModel'
 import { PlusCircleOutlined } from '@ant-design/icons'
+import ProTable, { ProColumns } from '@ant-design/pro-table'
+import { LoadBalancingEnum } from '@x-forward/shared'
+import { Button, Popconfirm } from 'antd'
+import { useRequest } from 'umi'
 
 export type UpstreamListItem = API.UpstreamVo
 

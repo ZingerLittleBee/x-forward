@@ -4,17 +4,6 @@ export enum StreamStatusEnum {
     Stop
 }
 
-export enum LoadBalancingEnum {
-    // 轮询
-    Random,
-    // 加权
-    Weight,
-    // hash
-    Hash,
-    // least_conn
-    Least_conn
-}
-
 export enum StreamItemEnum {
     transitHost = '中转地址',
     // 中转端口号

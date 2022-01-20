@@ -1,0 +1,35 @@
+{
+  "name": "@x-forward/shared",
+  "version": "0.0.1",
+  "description": "shared for x-forward",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup"
+  },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZingerLittleBee/x-forward.git"
+  },
+  "keywords": [
+    "x-forward",
+    "lib",
+    "common"
+  ],
+  "author": "ZingerLittleBee",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ZingerLittleBee/x-forward/issues"
+  },
+  "homepage": "https://github.com/ZingerLittleBee/x-forward#readme",
+  "devDependencies": {
+    "tsup": "^5.11.11"
+  }
+}

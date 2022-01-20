@@ -100,6 +100,7 @@ export class ExecutorLocal implements IExecutor {
         return (await shellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
     async getNginxVersion() {
+
         return (await shellExec(this.bin, '-V')).res
     }
     async getNginxBin() {

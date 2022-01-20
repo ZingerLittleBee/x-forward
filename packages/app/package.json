@@ -1,6 +1,5 @@
 {
     "name": "@x-forward/app",
-    "private": true,
     "version": "0.0.1",
     "description": "ui for nginx stream",
     "license": "MIT",
@@ -24,6 +23,7 @@
         "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
     },
     "dependencies": {
+        "@x-forward/shared": "workspace:*",
         "@automapper/classes": "^6.2.1",
         "@automapper/core": "^6.2.1",
         "@automapper/nestjs": "^6.2.1",
