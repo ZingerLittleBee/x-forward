@@ -1,4 +1,4 @@
-import { LoadBalancingEnum } from '@/enums/StreamEnum'
+import { LoadBalancingEnum } from '@x-forward/shared'
 
 // 将 loadBalancingEnum 组装成 [{ value: xxx, label: xxx }]
 export const loadBalancingSelectProp = () => {

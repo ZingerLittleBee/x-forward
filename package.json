@@ -1,7 +1,7 @@
 {
   "name": "root",
   "private": true,
-  "packageManager": "pnpm@6.24.0",
+  "packageManager": "pnpm@6.27.1",
   "workspaces": [
     "packages/*"
   ],
@@ -22,6 +22,7 @@
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
     "release": "standard-version",
+    "postinstall": "pnpm -C ./packages/shared build",
     "preinstall": "npx only-allow pnpm -y"
   },
   "repository": {

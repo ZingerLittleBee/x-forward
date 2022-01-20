@@ -1,9 +1,10 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { NginxLoadBalancingEnum, ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
+import { ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
 import { UpstreamEntity } from '../upstream/upstream.entity'
+import { LoadBalancingEnum } from '@x-forward/shared'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
@@ -40,8 +41,8 @@ export class StreamEntity extends CommonEntity {
         enum: [0, 1, 2, 3, 4],
         description: '负载均衡算法, 0: poll, 1: weight, 2: ip_hash, 3: fair, 4: url_hash'
     })
-    @Column({ name: 'load_balancing', type: 'int', default: () => NginxLoadBalancingEnum.poll })
-    loadBalancing?: NginxLoadBalancingEnum
+    @Column({ name: 'load_balancing', type: 'int', default: () => LoadBalancingEnum.Random })
+    loadBalancing?: LoadBalancingEnum
 
     @AutoMap()
     @ApiProperty({ enum: ['tcp', 'udp'], description: '转发协议' })
