@@ -23,7 +23,7 @@ Content-Type: application/json
     "transitHost": "aereqbv.com",
     "transitPort": 1111,
     "remoteHost": "baidu.com",
-    "remotePort": 4653,
+    "remotePort": 46530,
     "loadBalancing": 1,
     "protocol": "udp",
     "isRetries": "on",

@@ -1,4 +1,12 @@
-import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus, Logger } from '@nestjs/common'
+import {
+    ArgumentsHost,
+    BadRequestException,
+    Catch,
+    ExceptionFilter,
+    HttpException,
+    HttpStatus,
+    Logger
+} from '@nestjs/common'
 import { Request, Response } from 'express'
 import { CannotCreateEntityIdMapError, EntityNotFoundError, QueryFailedError } from 'typeorm'
 
@@ -16,8 +24,19 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         let status = HttpStatus.INTERNAL_SERVER_ERROR
 
         switch (exception.constructor) {
+            case BadRequestException:
+                status = (exception as BadRequestException).getStatus()
+                const response = (exception as BadRequestException).getResponse()
+                if (response) {
+                    const msg = (response as any)?.message
+                    message = Array.isArray(msg) ? msg.join('\n') : msg
+                } else {
+                    message = exception
+                }
+                break
             case HttpException:
                 status = (exception as HttpException).getStatus()
+                message = exception
                 break
             case QueryFailedError: // this is a TypeOrm error
                 status = HttpStatus.UNPROCESSABLE_ENTITY
@@ -36,6 +55,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
                 break
             default:
                 status = HttpStatus.INTERNAL_SERVER_ERROR
+                message = exception
         }
         response.status(status).json(GlobalResponseError(status, message, code, request))
     }

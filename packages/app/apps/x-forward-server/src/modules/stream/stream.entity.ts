@@ -1,10 +1,11 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
+import { LoadBalancingEnum } from '@x-forward/shared'
+import { IsInt, IsNumber, Max, Min } from 'class-validator'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
 import { UpstreamEntity } from '../upstream/upstream.entity'
-import { LoadBalancingEnum } from '@x-forward/shared'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
@@ -13,6 +14,9 @@ export class StreamEntity extends CommonEntity {
     @Column({ name: 'transit_host', type: 'varchar', nullable: true })
     transitHost?: string
 
+    @IsInt()
+    @Min(0)
+    @Max(65535)
     @AutoMap()
     @ApiProperty({ description: '中转端口' })
     @Column({ name: 'transit_port', type: 'int', nullable: true })
@@ -23,6 +27,9 @@ export class StreamEntity extends CommonEntity {
     @Column({ name: 'remote_host', type: 'varchar', nullable: true })
     remoteHost?: string
 
+    @IsInt()
+    @Min(0)
+    @Max(65535)
     @AutoMap()
     @ApiProperty({ description: '上游端口' })
     @Column({ name: 'remote_port', type: 'int', nullable: true })
@@ -54,6 +61,7 @@ export class StreamEntity extends CommonEntity {
     @Column({ name: 'is_retries', type: 'varchar', nullable: true })
     isRetries?: RetriesEnum
 
+    @IsNumber()
     @AutoMap()
     @ApiProperty({ description: '重试次数' })
     @Column({ name: 'tries', type: 'int', nullable: true })
