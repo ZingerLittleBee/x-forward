@@ -85,6 +85,7 @@ importers:
       '@typescript-eslint/eslint-plugin': ^4.29.2
       '@typescript-eslint/parser': ^4.29.2
       '@x-forward/shared': workspace:*
+      '@x-forward/view': workspace:^0.0.1
       better-sqlite3: ^7.4.4
       cache-manager: ^3.4.4
       class-transformer: ^0.4.0
@@ -119,6 +120,7 @@ importers:
       '@nestjs/typeorm': 8.0.2_36e9063c59d19edae9546536be24a95f
       '@nestjs/websockets': 8.2.4_50e7e83b94c92b6b4879bcfe891e22ac
       '@x-forward/shared': link:../shared
+      '@x-forward/view': link:../view
       better-sqlite3: 7.4.5
       cache-manager: 3.6.0
       class-transformer: 0.4.0

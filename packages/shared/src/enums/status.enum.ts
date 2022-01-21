@@ -12,6 +12,6 @@ export enum StatusEnum {
 }
 
 export enum StateEnum {
-    ABLE,
-    DISABLE
+    Able,
+    Disable
 }

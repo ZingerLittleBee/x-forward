@@ -9,11 +9,11 @@ import ProForm, {
     ProFormText
 } from '@ant-design/pro-form'
 import { Form } from 'antd'
-import { ServerEnum, ServerTipsEnum } from '@/enums/UpstreamEnum'
+import { ServerEnum, ServerTipsEnum } from '@x-forward/shared'
 import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
 import './index.less'
 import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
-import { StreamItemEnum } from '@/enums/StreamEnum'
+import { StreamItemEnum } from '@x-forward/shared'
 import { isString } from 'lodash'
 import { isUndef } from '@/utils/commonUtils'
 import { FormInstance } from 'antd/es'
@@ -85,13 +85,13 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             {isString(upstreamName) || isUndef(upstreamName) ? (
                 <ProFormText
                     name="name"
-                    label={ServerEnum.UPSTREAM_NAME}
-                    placeholder={`请输入${ServerEnum.UPSTREAM_NAME}`}
+                    label={ServerEnum.UpstreamName}
+                    placeholder={`请输入${ServerEnum.UpstreamName}`}
                 />
             ) : (
                 <ProFormSelect
                     name="name"
-                    label={ServerEnum.UPSTREAM_NAME}
+                    label={ServerEnum.UpstreamName}
                     initialValue={upstream?.name}
                     valueEnum={upstreamName}
                     fieldProps={{
@@ -104,10 +104,10 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
 
             <ProFormSelect
                 name="loadBalancing"
-                label={ServerEnum.LOAD_BALANCING}
+                label={ServerEnum.LoadBalancing}
                 options={loadBalancingSelectProp()}
                 initialValue={getEnumKeyByValue(upstream?.loadBalancing)}
-                placeholder={`请选择${StreamItemEnum.loadBalancing}`}
+                placeholder={`请选择${StreamItemEnum.LoadBalancing}`}
             />
             <ProFormDependency name={['name']} ignoreFormListField>
                 {({ name }) => {
@@ -132,50 +132,50 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                             <ProFormText
                                                 width="md"
                                                 name="upstreamHost"
-                                                label={ServerEnum.UPSTREAM_HOST}
-                                                rules={[requiredRule(ServerEnum.UPSTREAM_HOST), hostRule()]}
+                                                label={ServerEnum.UpstreamHost}
+                                                rules={[requiredRule(ServerEnum.UpstreamHost), hostRule()]}
                                             />
                                             <ProFormText
                                                 width="md"
                                                 name="upstreamPort"
-                                                label={ServerEnum.UPSTREAM_PORT}
-                                                rules={[requiredRule(ServerEnum.UPSTREAM_HOST), portRule()]}
+                                                label={ServerEnum.UpstreamPort}
+                                                rules={[requiredRule(ServerEnum.UpstreamPort), portRule()]}
                                             />
                                         </ProForm.Group>
                                         <ProFormDigit
                                             width={100}
                                             name="weight"
-                                            label={ServerEnum.WEIGHT}
-                                            tooltip={ServerTipsEnum.WEIGHT}
+                                            label={ServerEnum.Weight}
+                                            tooltip={ServerTipsEnum.Weight}
                                         />
                                         <ProFormDigit
                                             width={100}
                                             name="maxCons"
-                                            label={ServerEnum.MAX_CONN}
-                                            tooltip={ServerTipsEnum.MAX_CONN}
+                                            label={ServerEnum.MaxCons}
+                                            tooltip={ServerTipsEnum.MaxCons}
                                         />
                                         <ProFormDigit
                                             width={100}
                                             name="maxFails"
-                                            label={ServerEnum.MAX_FAILS}
-                                            tooltip={ServerTipsEnum.MAX_FAILS}
+                                            label={ServerEnum.MaxFails}
+                                            tooltip={ServerTipsEnum.MaxFails}
                                         />
                                         <ProFormText
                                             width={100}
                                             name="failTimeout"
-                                            label={ServerEnum.FAIL_TIMEOUT}
+                                            label={ServerEnum.FailTimeout}
                                             rules={[timeRule()]}
-                                            tooltip={ServerTipsEnum.FAIL_TIMEOUT}
+                                            tooltip={ServerTipsEnum.FailTimeout}
                                         />
                                         <ProFormSwitch
                                             name="backup"
-                                            label={ServerEnum.BACKUP}
-                                            tooltip={ServerTipsEnum.BACKUP}
+                                            label={ServerEnum.Backup}
+                                            tooltip={ServerTipsEnum.Backup}
                                         />
                                         <ProFormSwitch
                                             name="down"
-                                            label={ServerEnum.DOWN}
-                                            tooltip={ServerTipsEnum.DOWN}
+                                            label={ServerEnum.Down}
+                                            tooltip={ServerTipsEnum.Down}
                                         />
                                     </>
                                 )

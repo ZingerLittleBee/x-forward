@@ -23,7 +23,6 @@
         "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
     },
     "dependencies": {
-        "@x-forward/shared": "workspace:*",
         "@automapper/classes": "^6.2.1",
         "@automapper/core": "^6.2.1",
         "@automapper/nestjs": "^6.2.1",
@@ -33,9 +32,11 @@
         "@nestjs/event-emitter": "^1.0.0",
         "@nestjs/platform-express": "^8.2.0",
         "@nestjs/platform-socket.io": "^8.2.0",
+        "@nestjs/swagger": "^5.1.4",
         "@nestjs/typeorm": "^8.0.2",
         "@nestjs/websockets": "^8.2.0",
-        "@nestjs/swagger": "^5.1.4",
+        "@x-forward/shared": "workspace:*",
+        "@x-forward/view": "workspace:^0.0.1",
         "better-sqlite3": "^7.4.4",
         "cache-manager": "^3.4.4",
         "class-transformer": "^0.4.0",
