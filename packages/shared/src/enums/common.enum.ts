@@ -4,3 +4,8 @@ export enum CommonEnum {
     UpdateTime = '更新时间',
     DeleteTime = '删除时间'
 }
+
+export enum IsOrNot {
+    False,
+    True
+}

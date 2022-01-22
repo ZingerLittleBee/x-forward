@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { LoadBalancingEnum } from '@x-forward/shared'
+import { LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
 import { StreamEntity } from '../stream/stream.entity'
@@ -16,7 +16,7 @@ export class UpstreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({
         enum: [0, 1, 2, 3, 4],
-        description: '负载均衡算法; 0: poll, 1: weight, 2: ip_hash, 3: fair, 4: url_hash'
+        description: `${UpstreamEnum.LoadBalancing}, ${LoadBalancingEnum}`
     })
     @Column({ name: 'load_balancing', type: 'tinyint', nullable: true, default: () => LoadBalancingEnum.Random })
     loadBalancing?: LoadBalancingEnum

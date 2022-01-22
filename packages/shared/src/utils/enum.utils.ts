@@ -14,3 +14,13 @@ export const enumToString = (enums: any) => {
         })
         .map(e => `${enums[e]}: ${e}`)
 }
+
+export const getValuesOfEnum = (enums: any) => {
+    return Object.keys(enums).filter(key => {
+        return enums[key] !== undefined
+    })
+}
+
+export const getKeysOfEnum = (enums: any) => {
+    return getValuesOfEnum(enums)?.map(e => enums[e])
+}

@@ -36,3 +36,9 @@ export enum StreamItemEnum {
     // 备注
     Comment = '备注说明'
 }
+
+export enum StreamTipsEnum {
+    UploadRate = '从客户端读数据的速率，单位为每秒字节数，默认为0，不限速',
+    DownloadRate = '从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速',
+    ProxyTimeout = '配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟'
+}

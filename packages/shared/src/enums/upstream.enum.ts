@@ -1,8 +1,11 @@
-export enum ServerEnum {
+export enum UpstreamEnum {
     UpstreamName = '上游名称',
+    LoadBalancing = '负载算法',
+}
+
+export enum ServerEnum {
     UpstreamHost = '上游地址',
     UpstreamPort = '上游端口',
-    LoadBalancing = '负载算法',
     Weight = '权重',
     MaxCons = '最大连接数',
     MaxFails = '最大尝试次数',
