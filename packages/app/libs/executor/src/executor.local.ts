@@ -5,18 +5,17 @@ import {
     findSomething,
     getEnvSetting,
     getNginxCache,
-    shellExec,
     NginxConfigArgsEnum,
     ServiceEnum,
-    ShellEnum
+    ShellEnum,
+    shellExec
 } from '@x-forward/common'
+import { IExecutor, NginxStatus } from '@x-forward/executor/interfaces'
 import { Cache } from 'cache-manager'
 import { appendFile, readdir, readFile } from 'fs/promises'
 import { EOL } from 'os'
 import { join } from 'path'
 import { v4, validate } from 'uuid'
-import { IExecutor } from '@x-forward/executor/interfaces'
-import { NginxStatus } from '@x-forward/executor/interfaces'
 
 export class ExecutorLocal implements IExecutor {
     constructor(private readonly bin: string, private readonly cacheManager: Cache) {
@@ -64,7 +63,6 @@ export class ExecutorLocal implements IExecutor {
             return {}
         }
         const { res: serviceStatus } = await shellExec(cmd, 'nginx', ServiceEnum.STATUS)
-        console.log('serviceStatus', serviceStatus)
         const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
         active && (status.active = active)
         const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
@@ -100,7 +98,6 @@ export class ExecutorLocal implements IExecutor {
         return (await shellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
     async getNginxVersion() {
-
         return (await shellExec(this.bin, '-V')).res
     }
     async getNginxBin() {

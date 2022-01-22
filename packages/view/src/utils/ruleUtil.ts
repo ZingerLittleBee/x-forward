@@ -1,6 +1,7 @@
+import { domainRegExp, ipRegExp } from '@x-forward/shared';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import type { RuleType } from 'rc-field-form/lib/interface'
+import type { RuleType } from 'rc-field-form/lib/interface';
 
 export const requiredRule = (description: string) => {
     const rule: { required: boolean; message?: string } = { required: true }
@@ -16,22 +17,16 @@ export const portRule = (min = 0, max = 65535) => {
     })
 }
 
-const ipCheck =
-    /^(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])\.(\d{1,2}|1\d\d|2[0-4]\d|25[0-5])$/
-
-const domainCheck =
-    /^(?:(?:(?:[a-zA-z\-]+)\:\/{1,3})?(?:[a-zA-Z0-9])(?:[a-zA-Z0-9\-\.]){1,61}(?:\.[a-zA-Z]{2,})+|\[(?:(?:(?:[a-fA-F0-9]){1,4})(?::(?:[a-fA-F0-9]){1,4}){7}|::1|::)\]|(?:(?:[0-9]{1,3})(?:\.[0-9]{1,3}){3}))(?:\:[0-9]{1,5})?$/
-
 export const hostRule = () => {
     return () => ({
         validator(_: any, value: any) {
             if (!value) {
                 return Promise.resolve()
             }
-            if (!domainCheck.test(value) && ipCheck.test(value)) {
+            if (!domainRegExp.test(value) && ipRegExp.test(value)) {
                 return Promise.resolve()
             }
-            if (!ipCheck.test(value) && domainCheck.test(value)) {
+            if (!ipRegExp.test(value) && domainRegExp.test(value)) {
                 return Promise.resolve()
             }
             return Promise.reject(new Error('Please input valid domain or ip'))
