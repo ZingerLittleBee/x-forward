@@ -3,7 +3,7 @@ import { Body, Controller, Delete, Param, Patch } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { UpdateServerDto } from './dto/update-server.dto'
-import { ServerEntity } from './entities/server.entity'
+import { ServerEntity } from './entity/server.entity'
 import { ServerService } from './server.service'
 
 @ApiTags('server')

@@ -3,8 +3,8 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess } from '@x-forward/common'
 import { omit } from 'lodash'
 import { Repository } from 'typeorm'
-import { EventService } from '../../event/event.service'
-import { ServerEntity } from './entities/server.entity'
+import { EventService } from '../event/event.service'
+import { ServerEntity } from './entity/server.entity'
 
 @Injectable()
 export class ServerService {

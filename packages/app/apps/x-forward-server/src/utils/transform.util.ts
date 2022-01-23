@@ -1,6 +1,6 @@
-import { StreamEntity } from '../modules/stream/stream.entity'
-import { UpstreamEntity } from '../modules/upstream/upstream.entity'
 import { StreamServer, StreamUpstream, UpstreamServer } from '@x-forward/render/render.interface'
+import { StreamEntity } from '../modules/stream/entity/stream.entity'
+import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
 
 /**
  * StreamEntity -> StreamServer

@@ -4,8 +4,8 @@ import { ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
 import { enumToString, getValuesOfEnum, LoadBalancingEnum, StreamItemEnum, StreamTipsEnum } from '@x-forward/shared'
 import { IsInt, IsNumber, Max, Min } from 'class-validator'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
-import { CommonEntity } from '../../common/common.entity'
-import { UpstreamEntity } from '../upstream/upstream.entity'
+import { CommonEntity } from '../../../common/common.entity'
+import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {

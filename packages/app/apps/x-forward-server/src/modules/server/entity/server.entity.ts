@@ -2,8 +2,8 @@ import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { enumToString, IsOrNot, ServerEnum, ServerTipsEnum } from '@x-forward/shared'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
-import { CommonEntity } from '../../../../common/common.entity'
-import { UpstreamEntity } from '../../upstream.entity'
+import { CommonEntity } from '../../../common/common.entity'
+import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
 
 @Entity('server')
 export class ServerEntity extends CommonEntity {

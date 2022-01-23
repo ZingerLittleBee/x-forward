@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes'
 import { PickType } from '@nestjs/swagger'
-import { ServerEntity } from '../entities/server.entity'
+import { ServerEntity } from '../entity/server.entity'
 
 // export class CreateServerDto extends PickType(ServerEntity, [
 //     'upstreamHost',

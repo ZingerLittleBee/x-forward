@@ -1,14 +1,14 @@
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
-import { ServerService } from '../server.service'
-import { ServerEntity } from '../entities/server.entity'
-import { ServerProfile } from '../server.profile'
-import { EventModule } from '../../../event/event.module'
-import { StreamModule } from '../../../stream/stream.module'
-import { ServerModule } from '../server.module'
-import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from '../../../../config/register.config'
 import { v4 } from 'uuid'
+import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from '../../../config/register.config'
+import { EventModule } from '../../event/event.module'
+import { StreamModule } from '../../stream/stream.module'
+import { ServerEntity } from '../entity/server.entity'
+import { ServerModule } from '../server.module'
+import { ServerProfile } from '../server.profile'
+import { ServerService } from '../server.service'
 
 describe('UpstreamService', () => {
     let serverService: ServerService

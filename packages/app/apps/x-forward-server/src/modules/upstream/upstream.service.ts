@@ -5,8 +5,8 @@ import { omit } from 'lodash'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
 import { StreamService } from '../stream/stream.service'
-import { ServerService } from './server/server.service'
-import { UpstreamEntity } from './upstream.entity'
+import { ServerService } from '../server/server.service'
+import { UpstreamEntity } from './entity/upstream.entity'
 
 @Injectable()
 export class UpstreamService {

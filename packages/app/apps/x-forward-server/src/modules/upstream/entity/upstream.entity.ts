@@ -2,9 +2,9 @@ import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Column, Entity, OneToMany } from 'typeorm'
-import { CommonEntity } from '../../common/common.entity'
-import { StreamEntity } from '../stream/stream.entity'
-import { ServerEntity } from './server/entities/server.entity'
+import { CommonEntity } from '../../../common/common.entity'
+import { StreamEntity } from '../../stream/entity/stream.entity'
+import { ServerEntity } from '../../server/entity/server.entity'
 
 @Entity('upstream')
 export class UpstreamEntity extends CommonEntity {

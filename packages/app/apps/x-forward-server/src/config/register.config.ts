@@ -1,12 +1,12 @@
+import { classes } from '@automapper/classes'
+import { AutomapperModule } from '@automapper/nestjs'
+import { CacheModule } from '@nestjs/common'
 import { EventEmitterModule } from '@nestjs/event-emitter'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { StreamEntity } from '../modules/stream/entity/stream.entity'
+import { ServerEntity } from '../modules/server/entity/server.entity'
+import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
 import { UserEntity } from '../modules/user/user.entity'
-import { StreamEntity } from '../modules/stream/stream.entity'
-import { UpstreamEntity } from '../modules/upstream/upstream.entity'
-import { ServerEntity } from '../modules/upstream/server/entities/server.entity'
-import { AutomapperModule } from '@automapper/nestjs'
-import { classes } from '@automapper/classes'
-import { CacheModule } from '@nestjs/common'
 
 export const EventEmitterRegister = () =>
     EventEmitterModule.forRoot({

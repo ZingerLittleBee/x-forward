@@ -1,5 +1,5 @@
 import { PickType } from '@nestjs/swagger'
-import { StreamEntity } from './stream.entity'
+import { StreamEntity } from '../entity/stream.entity'
 
 export class StreamVo extends PickType(StreamEntity, [
     'id',

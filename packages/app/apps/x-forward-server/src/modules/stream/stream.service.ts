@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm'
 import { Optimized, Preprocess, StateEnum } from '@x-forward/common'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
-import { StreamEntity } from './stream.entity'
+import { StreamEntity } from './entity/stream.entity'
 
 @Injectable()
 export class StreamService {

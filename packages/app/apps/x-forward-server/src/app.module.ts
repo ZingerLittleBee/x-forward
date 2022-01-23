@@ -6,7 +6,7 @@ import { EnvModule } from './modules/env/env.module'
 import { GatewayModule } from './modules/gateway/gateway.module'
 import { ShellModule } from './modules/shell/shell.module'
 import { StreamModule } from './modules/stream/stream.module'
-import { ServerModule } from './modules/upstream/server/server.module'
+import { ServerModule } from './modules/server/server.module'
 import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UserModule } from './modules/user/user.module'
 

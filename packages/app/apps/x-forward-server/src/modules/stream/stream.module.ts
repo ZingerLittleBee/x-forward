@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common'
 import { TypeOrmModule } from '@nestjs/typeorm'
+import { RenderModule } from '@x-forward/render'
 import { EventModule } from '../event/event.module'
+import { StreamEntity } from './entity/stream.entity'
 import { StreamController } from './stream.controller'
-import { StreamEntity } from './stream.entity'
 import { StreamProfile } from './stream.profile'
 import { StreamService } from './stream.service'
-import { RenderModule } from '@x-forward/render'
 
 @Module({
     imports: [TypeOrmModule.forFeature([StreamEntity]), RenderModule, EventModule],
