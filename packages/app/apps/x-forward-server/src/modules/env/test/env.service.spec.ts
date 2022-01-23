@@ -2,7 +2,7 @@ import { Test } from '@nestjs/testing'
 import { ExecutorModule } from '@x-forward/executor'
 import { EventModule } from '../../event/event.module'
 import { GatewayModule } from '../../gateway/gateway.module'
-import { ServerModule } from '../../upstream/server/server.module'
+import { ServerModule } from '../../server/server.module'
 import { EnvService } from '../env.service'
 import {
     AutomapperRegister,

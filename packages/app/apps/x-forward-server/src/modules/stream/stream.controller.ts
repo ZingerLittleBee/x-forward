@@ -2,11 +2,11 @@ import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
-import { CreateStreamDto } from './create-stream.dto'
-import { StreamDto } from './stream.dto'
-import { StreamEntity } from './stream.entity'
+import { CreateStreamDto } from './dto/create-stream.dto'
+import { StreamDto } from './dto/stream.dto'
+import { StreamEntity } from './entity/stream.entity'
 import { StreamService } from './stream.service'
-import { StreamVo } from './stream.vo'
+import { StreamVo } from './vo/stream.vo'
 
 @ApiTags('stream')
 @Controller('stream')

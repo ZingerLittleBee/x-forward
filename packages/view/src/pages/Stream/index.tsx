@@ -8,7 +8,7 @@ import {
     PlayCircleOutlined,
     PlusCircleOutlined
 } from '@ant-design/icons'
-import { StreamItemEnum, StreamStatusEnum } from '@/enums/StreamEnum'
+import { StreamItemEnum, StreamStatusEnum } from '@x-forward/shared'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from 'antd'
 import { useRequest } from 'umi'
@@ -16,13 +16,13 @@ import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
 import { utc2local } from '@/utils/timeUtil'
-import { CommonEnum } from '@/enums/CommonEnum'
+import { CommonEnum } from '@x-forward/shared'
 import UpstreamModel from '@/components/UpstreamModel/index'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
 import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import { state2Boolean } from '@/utils/statusUtils'
-import { ServerEnum } from '@/enums/UpstreamEnum'
+import { ServerEnum } from '@x-forward/shared'
 import { omit } from 'lodash-es'
 import {
     StreamControllerCreateOne,
@@ -215,7 +215,7 @@ export default () => {
                                     //     dataIndex: 'transitHost'
                                     // },
                                     {
-                                        title: StreamItemEnum.transitPort,
+                                        title: StreamItemEnum.TransitPort,
                                         dataIndex: 'transitPort'
                                     },
                                     // render `${StreamItemEnum.remoteHost}: xxx`, if it doesn't have upstream
@@ -229,8 +229,8 @@ export default () => {
                                                         style={{ color: 'rgb(107, 114, 128)' }}
                                                     >
                                                         {upstreamId
-                                                            ? StreamItemEnum.remoteRule
-                                                            : StreamItemEnum.remoteHost}
+                                                            ? StreamItemEnum.RemoteRule
+                                                            : StreamItemEnum.RemoteHost}
                                                     </span>
                                                     <span
                                                         className="ant-descriptions-item-content"
@@ -268,8 +268,8 @@ export default () => {
                                                         style={{ color: 'rgb(107, 114, 128)' }}
                                                     >
                                                         {upstreamId
-                                                            ? StreamItemEnum.loadBalancing
-                                                            : StreamItemEnum.remotePort}
+                                                            ? StreamItemEnum.LoadBalancing
+                                                            : StreamItemEnum.RemotePort}
                                                     </span>
                                                     <span
                                                         className="ant-descriptions-item-content"
@@ -282,7 +282,7 @@ export default () => {
                                         }
                                     },
                                     {
-                                        title: StreamItemEnum.upstream,
+                                        title: StreamItemEnum.Upstream,
                                         render: (_, entity) => {
                                             const { upstreamId, id } = entity
                                             return (() => {
@@ -292,7 +292,7 @@ export default () => {
                                                 return (
                                                     <UpstreamModel
                                                         trigger={
-                                                            <span>{currUpstream?.name || CommonEnum.PLACEHOLDER}</span>
+                                                            <span>{currUpstream?.name || CommonEnum.PlaceHolder}</span>
                                                         }
                                                         upstream={currUpstream}
                                                         upstreamName={upstreamNameSelectEnum}
@@ -342,7 +342,7 @@ export default () => {
                                         }
                                     },
                                     {
-                                        title: StreamItemEnum.state,
+                                        title: StreamItemEnum.State,
                                         dataIndex: 'state',
                                         valueEnum: StreamStatusEnum,
                                         render: (_, entity) => {
@@ -358,13 +358,13 @@ export default () => {
                                         }
                                     },
                                     {
-                                        title: StreamItemEnum.createTime,
+                                        title: StreamItemEnum.CreateTime,
                                         renderText: (text, { createTime }) => {
-                                            return createTime ? utc2local(createTime) : CommonEnum.PLACEHOLDER
+                                            return createTime ? utc2local(createTime) : CommonEnum.PlaceHolder
                                         }
                                     },
                                     {
-                                        title: StreamItemEnum.comment,
+                                        title: StreamItemEnum.Comment,
                                         dataIndex: 'comment'
                                     }
                                 ]}
@@ -442,7 +442,7 @@ export default () => {
             >
                 <ProFormSelect
                     name="name"
-                    label={ServerEnum.UPSTREAM_NAME}
+                    label={ServerEnum.UpstreamName}
                     valueEnum={upstreamNameSelectEnum}
                     fieldProps={{
                         onChange(value) {
@@ -453,9 +453,9 @@ export default () => {
                 <ProFormText
                     width="sm"
                     name="transitPort"
-                    label={StreamItemEnum.transitPort}
-                    rules={[requiredRule(StreamItemEnum.transitPort), portRule()]}
-                    placeholder={`请输入${StreamItemEnum.transitPort}`}
+                    label={StreamItemEnum.TransitPort}
+                    rules={[requiredRule(StreamItemEnum.TransitPort), portRule()]}
+                    placeholder={`请输入${StreamItemEnum.TransitPort}`}
                 />
 
                 {servers.length !== 0 ? (
@@ -467,16 +467,16 @@ export default () => {
                                     disabled={true}
                                     width="md"
                                     name={`remoteHost_${currIndex}`}
-                                    label={`${StreamItemEnum.remoteHost}_${currIndex}`}
-                                    rules={[requiredRule(StreamItemEnum.remoteHost), hostRule()]}
-                                    placeholder={`请输入${StreamItemEnum.remoteHost}`}
+                                    label={`${StreamItemEnum.RemoteHost}_${currIndex}`}
+                                    rules={[requiredRule(StreamItemEnum.RemoteHost), hostRule()]}
+                                    placeholder={`请输入${StreamItemEnum.RemoteHost}`}
                                 />
                                 <ProFormText
                                     disabled={true}
                                     name={`remotePort_${currIndex}`}
-                                    label={`${StreamItemEnum.remotePort}_${currIndex}`}
-                                    rules={[requiredRule(StreamItemEnum.remotePort), portRule()]}
-                                    placeholder={`请输入${StreamItemEnum.remotePort}`}
+                                    label={`${StreamItemEnum.RemotePort}_${currIndex}`}
+                                    rules={[requiredRule(StreamItemEnum.RemotePort), portRule()]}
+                                    placeholder={`请输入${StreamItemEnum.RemotePort}`}
                                 />
                             </ProForm.Group>
                         )
@@ -486,15 +486,15 @@ export default () => {
                         <ProFormText
                             width="md"
                             name="remoteHost"
-                            label={StreamItemEnum.remoteHost}
-                            rules={[requiredRule(StreamItemEnum.remoteHost), hostRule()]}
-                            placeholder={`请输入${StreamItemEnum.remoteHost}`}
+                            label={StreamItemEnum.RemoteHost}
+                            rules={[requiredRule(StreamItemEnum.RemoteHost), hostRule()]}
+                            placeholder={`请输入${StreamItemEnum.RemoteHost}`}
                         />
                         <ProFormText
                             name="remotePort"
-                            label={StreamItemEnum.remotePort}
-                            rules={[requiredRule(StreamItemEnum.remotePort), portRule()]}
-                            placeholder={`请输入${StreamItemEnum.remotePort}`}
+                            label={StreamItemEnum.RemotePort}
+                            rules={[requiredRule(StreamItemEnum.RemotePort), portRule()]}
+                            placeholder={`请输入${StreamItemEnum.RemotePort}`}
                         />
                     </ProForm.Group>
                 )}
@@ -502,8 +502,8 @@ export default () => {
                 <ProFormSwitch name="state" label="是否启用" initialValue={turnState2Boolean(currStreamData?.state)} />
                 <ProFormTextArea
                     name="comment"
-                    label={StreamItemEnum.comment}
-                    placeholder={`请输入${StreamItemEnum.comment}`}
+                    label={StreamItemEnum.Comment}
+                    placeholder={`请输入${StreamItemEnum.Comment}`}
                 />
             </ModalForm>
         </>

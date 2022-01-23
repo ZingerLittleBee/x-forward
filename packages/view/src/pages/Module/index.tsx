@@ -1,6 +1,6 @@
-import { CommonEnum } from '@/enums/CommonEnum'
-import EnvEnum from '@/enums/EnvEnum'
-import { StatusEnum } from '@/enums/StatusEnum'
+import { CommonEnum } from '@x-forward/shared'
+import { EnvEnum } from '@x-forward/shared'
+import { StatusEnum } from '@x-forward/shared'
 import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
@@ -75,18 +75,18 @@ const Module = () => {
 
     const statisticProps: StatisticProps = [
         {
-            title: EnvEnum.os,
-            value: overview?.os ? overview.os : CommonEnum.PLACEHOLDER,
+            title: EnvEnum.OS,
+            value: overview?.os ? overview.os : CommonEnum.PlaceHolder,
             icon: genIcon('https://iconfont.alicdn.com/s/66342523-5218-4c48-8213-453811e13cef_origin.svg')
         },
         {
-            title: EnvEnum.nginxPath,
-            value: overview?.nginxPath ? overview.nginxPath : CommonEnum.PLACEHOLDER,
+            title: EnvEnum.NginxPath,
+            value: overview?.nginxPath ? overview.nginxPath : CommonEnum.PlaceHolder,
             icon: genIcon('https://iconfont.alicdn.com/s/142b06ff-0e37-43ce-9211-6e15034272d6_origin.svg')
         },
         {
-            title: EnvEnum.nginxStatus,
-            value: nginxStatus !== undefined ? nginxStatus : CommonEnum.PLACEHOLDER,
+            title: EnvEnum.NginxStatus,
+            value: nginxStatus !== undefined ? nginxStatus : CommonEnum.PlaceHolder,
             status: () => {
                 switch (nginxStatus as unknown) {
                     case StatusEnum.Running:
@@ -106,8 +106,8 @@ const Module = () => {
             icon: genIcon('https://iconfont.alicdn.com/s/c48d932d-f0b4-46c2-b5fe-0f05c630310a_origin.svg')
         },
         {
-            title: EnvEnum.nginxUptime,
-            value: overview?.nginxUptime ? overview.nginxUptime : CommonEnum.PLACEHOLDER,
+            title: EnvEnum.NginxUptime,
+            value: overview?.nginxUptime ? overview.nginxUptime : CommonEnum.PlaceHolder,
             icon: genIcon('https://iconfont.alicdn.com/s/3d98ca59-a5ac-4462-945e-72cec8e6c11d_origin.svg')
         }
     ]

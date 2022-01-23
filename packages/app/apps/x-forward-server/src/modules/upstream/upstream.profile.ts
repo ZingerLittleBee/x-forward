@@ -1,9 +1,9 @@
 import { AutomapperProfile, InjectMapper } from '@automapper/nestjs'
 import type { Mapper } from '@automapper/types'
-import { CreateUpstreamDto } from './create-upstream.dto'
-import { UpdateUpstreamDto } from './update-upstream.dto'
-import { UpstreamEntity } from './upstream.entity'
-import { UpstreamVo } from './upstream.vo'
+import { CreateUpstreamDto } from './dto/create-upstream.dto'
+import { UpdateUpstreamDto } from './dto/update-upstream.dto'
+import { UpstreamEntity } from './entity/upstream.entity'
+import { UpstreamVo } from './vo/upstream.vo'
 
 export class UpstreamProfile extends AutomapperProfile {
     constructor(@InjectMapper() mapper: Mapper) {

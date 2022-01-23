@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import * as helmet from 'helmet'
@@ -11,6 +12,14 @@ async function bootstrap() {
     app.enableCors()
     app.use(helmet())
     app.useGlobalFilters(new GlobalExceptionFilter())
+    app.useGlobalPipes(
+        new ValidationPipe({
+            transform: true
+            // transformOptions: {
+            //     enableImplicitConversion: true
+            // }
+        })
+    )
 
     const options = new DocumentBuilder()
         .setTitle('XForward API')

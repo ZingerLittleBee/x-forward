@@ -1,6 +1,6 @@
 import UpstreamModel from '@/components/UpstreamModel'
-import { StateEnum } from '@/enums/StatusEnum'
-import { ServerEnum } from '@/enums/UpstreamEnum'
+import { StateEnum } from '@x-forward/shared'
+import { ServerEnum } from '@x-forward/shared'
 import {
     UpstreamControllerCreate,
     UpstreamControllerFindAll,
@@ -19,14 +19,14 @@ const expandedRowRender = ({ server }: UpstreamListItem) => {
         <ProTable
             rowKey="id"
             columns={[
-                { title: ServerEnum.UPSTREAM_HOST, dataIndex: 'upstreamHost' },
-                { title: ServerEnum.UPSTREAM_PORT, dataIndex: 'upstreamPort' },
-                { title: ServerEnum.WEIGHT, dataIndex: 'weight' },
-                { title: ServerEnum.MAX_CONN, dataIndex: 'maxCons', ellipsis: true },
-                { title: ServerEnum.MAX_FAILS, dataIndex: 'maxFails', ellipsis: true },
-                { title: ServerEnum.FAIL_TIMEOUT, dataIndex: 'failTimeout', ellipsis: true },
-                { title: ServerEnum.BACKUP, dataIndex: 'backup', ellipsis: true },
-                { title: ServerEnum.DOWN, dataIndex: 'down', ellipsis: true }
+                { title: ServerEnum.UpstreamHost, dataIndex: 'upstreamHost' },
+                { title: ServerEnum.UpstreamPort, dataIndex: 'upstreamPort' },
+                { title: ServerEnum.Weight, dataIndex: 'weight' },
+                { title: ServerEnum.MaxCons, dataIndex: 'maxCons', ellipsis: true },
+                { title: ServerEnum.MaxFails, dataIndex: 'maxFails', ellipsis: true },
+                { title: ServerEnum.FailTimeout, dataIndex: 'failTimeout', ellipsis: true },
+                { title: ServerEnum.Backup, dataIndex: 'backup', ellipsis: true },
+                { title: ServerEnum.Down, dataIndex: 'down', ellipsis: true }
             ]}
             headerTitle={false}
             search={false}

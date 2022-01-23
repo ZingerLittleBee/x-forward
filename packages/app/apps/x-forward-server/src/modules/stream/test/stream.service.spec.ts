@@ -5,7 +5,7 @@ import { Repository } from 'typeorm'
 import { v4, validate } from 'uuid'
 import { EventEmitterRegister, TypeOrmRegister } from '../../../config/register.config'
 import { EventModule } from '../../event/event.module'
-import { StreamEntity } from '../stream.entity'
+import { StreamEntity } from '../entity/stream.entity'
 import { StreamService } from '../stream.service'
 
 describe('StreamService', () => {

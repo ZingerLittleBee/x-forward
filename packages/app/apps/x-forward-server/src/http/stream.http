@@ -1,14 +1,8 @@
-@url = http://localhost:3000/stream
-
-### Test
-GET {{url}}/test
-
-
 ### 获取所有 stream 规则
-GET {{url}}
+GET {{baseUrl}}{{stream}}
 
 ### update UpstreamId by StreamId
-PATCH {{url}}/1163c139-e2b1-4df2-b255-7dc37718e188/name
+PATCH {{baseUrl}}{{stream}}/1163c139-e2b1-4df2-b255-7dc37718e188/name
 Content-Type: application/json
 
 {
@@ -16,27 +10,27 @@ Content-Type: application/json
 }
 
 ### 添加单个 stream
-POST {{url}}
+POST {{baseUrl}}{{stream}}
 Content-Type: application/json
 
 {
-    "transitHost": "aereqbv.com",
+    "transitHost": "baidu.com",
     "transitPort": 1111,
     "remoteHost": "baidu.com",
-    "remotePort": 4653,
+    "remotePort": 46530,
     "loadBalancing": 1,
     "protocol": "udp",
     "isRetries": "on",
-    "tries": "5",
+    "tries": 5,
     "retriesTimeout": "5s",
     "connectTimeout": "2s",
-    "uploadRate": "100",
-    "downloadRate": "100",
+    "uploadRate": "100k",
+    "downloadRate": "100k",
     "proxyTimeout": "2s"
 }
 
 ### 添加 stream[] 规则
-POST {{url}}
+POST {{baseUrl}}{{stream}}
 Content-Type: application/json
 
 [{
@@ -69,7 +63,7 @@ Content-Type: application/json
 }]
 
 ### 更新 stream 可用状态
-POST {{url}}/1/state
+POST {{baseUrl}}{{stream}}/1/state
 Content-Type: application/json
 
 {
@@ -77,7 +71,7 @@ Content-Type: application/json
 }
 
 ### patch stream
-PATCH {{url}}/1
+PATCH {{baseUrl}}{{stream}}/1
 Content-Type: application/json
 
 {
@@ -85,7 +79,7 @@ Content-Type: application/json
 }
 
 ### patch all stream
-PATCH {{url}}
+PATCH {{baseUrl}}{{stream}}
 Content-Type: application/json
 
 [
@@ -101,8 +95,8 @@ Content-Type: application/json
 
 
 ### 删除单条记录(软删除)
-DELETE {{url}}/23712df8-5c86-44fc-bada-8f67949d690b
+DELETE {{baseUrl}}{{stream}}/23712df8-5c86-44fc-bada-8f67949d690b
 
 
 ### 删除所有 stream (软删除)
-DELETE {{url}}/
+DELETE {{baseUrl}}{{stream}}/

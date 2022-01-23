@@ -1,13 +1,13 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EventEnum } from '@x-forward/common'
+import { StreamServer, StreamUpstream } from '@x-forward/render/render.interface'
 import { inspect } from 'util'
 import { ExecutorGatewayService } from '../../modules/gateway/executor-gateway.service'
 import { ModelGatewayService } from '../../modules/gateway/model-gateway.service'
-import { StreamEntity } from '../../modules/stream/stream.entity'
-import { UpstreamEntity } from '../../modules/upstream/upstream.entity'
+import { StreamEntity } from '../../modules/stream/entity/stream.entity'
+import { UpstreamEntity } from '../../modules/upstream/entity/upstream.entity'
 import { streamEntities2StreamServer, upstreamEntities2StreamUpstream } from '../../utils/transform.util'
-import { StreamServer, StreamUpstream } from '@x-forward/render/render.interface'
 
 @Injectable()
 export class ConfigChangeListener {
