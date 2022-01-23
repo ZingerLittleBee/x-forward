@@ -1,27 +1,40 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { enumToString, IsOrNot, ServerEnum, ServerTipsEnum } from '@x-forward/shared'
+import { enumToString, getValuesOfEnum, IsOrNotEnum, ServerEnum, ServerTipsEnum, TimeUnitEnum } from '@x-forward/shared'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
+import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, Min } from 'class-validator'
+import { IsPort } from '@x-forward/common'
 
 @Entity('server')
 export class ServerEntity extends CommonEntity {
+    @IsNotEmpty()
+    @IsHost()
     @AutoMap()
     @ApiProperty({ description: ServerEnum.UpstreamHost })
     @Column({ name: 'upstream_host', type: 'varchar' })
     upstreamHost: string
 
+    @IsNotEmpty()
+    @IsPort()
     @AutoMap()
     @ApiProperty({ description: ServerEnum.UpstreamPort })
     @Column({ name: 'upstream_port', type: 'smallint' })
     upstreamPort: number
 
+    @IsOptional()
+    @IsNumber()
+    @IsPositive()
     @AutoMap()
     @ApiProperty({ description: `${ServerEnum.Weight}, ${ServerTipsEnum.Weight}` })
     @Column({ type: 'tinyint', nullable: true })
     weight?: number
 
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
     @AutoMap()
     @ApiProperty({
         description: `${ServerEnum.MaxCons}, ${ServerTipsEnum.MaxCons}`
@@ -29,6 +42,9 @@ export class ServerEntity extends CommonEntity {
     @Column({ name: 'max_cons', type: 'smallint', nullable: true })
     maxCons?: number
 
+    @IsOptional()
+    @IsNumber()
+    @Min(0)
     @AutoMap()
     @ApiProperty({
         description: `${ServerEnum.MaxFails}, ${ServerTipsEnum.MaxFails}`
@@ -36,6 +52,8 @@ export class ServerEntity extends CommonEntity {
     @Column({ name: 'max_fails', type: 'int', nullable: true })
     maxFails?: number
 
+    @IsOptional()
+    @IsNginxUnit(TimeUnitEnum)
     @AutoMap()
     @ApiProperty({
         description: `${ServerEnum.FailTimeout}, ${ServerTipsEnum.FailTimeout}`
@@ -43,21 +61,25 @@ export class ServerEntity extends CommonEntity {
     @Column({ name: 'fail_timeout', type: 'varchar', nullable: true })
     failTimeout?: string
 
-    // 。
-    // 。
+    @IsOptional()
+    @IsEnum(IsOrNotEnum)
     @AutoMap()
     @ApiProperty({
-        enum: [0, 1],
-        description: `${ServerEnum.FailTimeout}, ${ServerTipsEnum.FailTimeout}, ${enumToString(IsOrNot)}`
+        enum: getValuesOfEnum(IsOrNotEnum),
+        description: `${ServerEnum.FailTimeout}, ${ServerTipsEnum.FailTimeout}, ${enumToString(IsOrNotEnum)}`
     })
     @Column({ type: 'tinyint', nullable: true })
-    backup?: 0 | 1
+    backup?: IsOrNotEnum
 
-    // 。
+    @IsOptional()
+    @IsEnum(IsOrNotEnum)
     @AutoMap()
-    @ApiProperty({ enum: [0, 1], description: `${ServerEnum.Down}, ${ServerTipsEnum.Down}, ${enumToString(IsOrNot)}` })
+    @ApiProperty({
+        enum: getValuesOfEnum(IsOrNotEnum),
+        description: `${ServerEnum.Down}, ${ServerTipsEnum.Down}, ${enumToString(IsOrNotEnum)}`
+    })
     @Column({ type: 'tinyint', nullable: true })
-    down?: 0 | 1
+    down?: IsOrNotEnum
 
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })

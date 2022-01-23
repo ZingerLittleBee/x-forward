@@ -15,12 +15,12 @@ export const enumToString = (enums: any) => {
         .map(e => `${enums[e]}: ${e}`)
 }
 
-export const getValuesOfEnum = (enums: any) => {
-    return Object.keys(enums).filter(key => {
-        return enums[key] !== undefined
-    })
+export const getValuesOfEnum = (enums: Record<string, string | number>) => {
+    return Object.keys(enums)
+        .filter(key => enums[key] !== undefined)
+        .map(e => enums[e])
 }
 
 export const getKeysOfEnum = (enums: any) => {
-    return getValuesOfEnum(enums)?.map(e => enums[e])
+    return Object.keys(enums).filter(key => enums[key] !== undefined)
 }

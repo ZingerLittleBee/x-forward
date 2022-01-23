@@ -6,23 +6,24 @@ Content-Type: application/json
     "name": "test2",
     "server": [
         {
-            "upstreamHost": "baidu.com",
-            "upstreamPort": "2222"
+            "upstreamHost": "bai.com",
+            "upstreamPort": 2222
         }
     ],
+    "loadBalancing": 1,
     "stream": [{
-        "transitHost": "aereqbv.com",
+        "transitHost": "du.com",
         "transitPort": 3333,
         "remoteHost": "baidu.com",
         "remotePort": 3333,
         "loadBalancing": 1,
         "protocol": "udp",
         "isRetries": "on",
-        "tries": "5",
+        "tries": 5,
         "retriesTimeout": "5s",
         "connectTimeout": "2s",
-        "uploadRate": "100",
-        "downloadRate": "100",
+        "uploadRate": "100k",
+        "downloadRate": "100k",
         "proxyTimeout": "2s"
     },{
         "transitHost": "aereqbv.com",
@@ -31,11 +32,11 @@ Content-Type: application/json
         "remotePort": 4444,
         "loadBalancing": 1,
         "isRetries": "on",
-        "tries": "5",
+        "tries": 5,
         "retriesTimeout": "5s",
         "connectTimeout": "2s",
-        "uploadRate": "100",
-        "downloadRate": "100",
+        "uploadRate": "100k",
+        "downloadRate": "100k",
         "proxyTimeout": "2s"
     }]
 }

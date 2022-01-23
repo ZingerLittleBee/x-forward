@@ -5,7 +5,7 @@ export enum CommonEnum {
     DeleteTime = '删除时间'
 }
 
-export enum IsOrNot {
+export enum IsOrNotEnum {
     False,
     True
 }
