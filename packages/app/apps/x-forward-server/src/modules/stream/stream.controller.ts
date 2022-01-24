@@ -50,10 +50,10 @@ export class StreamController {
     }
 
     /**
-     * update UpstreamName by StreamId
-     * @param name name
+     * update upstreamId by StreamId
+     * @param upstreamId upstreamId
      */
-    @Patch(':id/name')
+    @Patch(':id/upstream_id')
     @ApiResultResponse('number')
     async updateUpstreamIdById(@Param('id') id: string, @Body() { upstreamId }: { upstreamId: string }) {
         return Result.okData((await this.streamService.upstreamIdUpdate(id, upstreamId)).affected)

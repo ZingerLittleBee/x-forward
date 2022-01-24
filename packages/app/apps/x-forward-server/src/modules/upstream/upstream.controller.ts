@@ -3,10 +3,10 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } fr
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
-import { CreateUpstreamDto } from './dto/create-upstream.dto'
 import { CreateServerDto } from '../server/dto/create-server.dto'
 import { UpdateServerDto } from '../server/dto/update-server.dto'
 import { ServerEntity } from '../server/entity/server.entity'
+import { CreateUpstreamDto } from './dto/create-upstream.dto'
 import { UpdateUpstreamDto } from './dto/update-upstream.dto'
 import { UpstreamEntity } from './entity/upstream.entity'
 import { UpstreamService } from './upstream.service'
@@ -16,7 +16,7 @@ import { UpstreamVo } from './vo/upstream.vo'
 export class UpstreamController {
     constructor(private readonly upstreamService: UpstreamService) {}
     @Post()
-    @ApiExtraModels(ServerEntity, CreateServerDto, UpdateServerDto, UpstreamVo)
+    @ApiExtraModels(UpstreamEntity, ServerEntity, CreateServerDto, UpdateServerDto, UpstreamVo)
     @ApiResultResponse(UpstreamEntity)
     async create(@Body(MapPipe(UpstreamEntity, CreateUpstreamDto)) createUpstream: CreateUpstreamDto) {
         return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))

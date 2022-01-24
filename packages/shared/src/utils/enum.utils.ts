@@ -17,10 +17,10 @@ export const enumToString = (enums: any) => {
 
 export const getValuesOfEnum = (enums: Record<string, string | number>) => {
     return Object.keys(enums)
-        .filter(key => enums[key] !== undefined)
+        .filter(key => !(parseInt(key) >= 0))
         .map(e => enums[e])
 }
 
 export const getKeysOfEnum = (enums: any) => {
-    return Object.keys(enums).filter(key => enums[key] !== undefined)
+    return Object.keys(enums).filter(key => !(parseInt(key) >= 0))
 }
