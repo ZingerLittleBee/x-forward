@@ -309,6 +309,18 @@ export default () => {
                                                                 upstreamNameSelectEnum,
                                                                 name
                                                             )
+                                                            // remove upstream
+                                                            if (id && selectUpstreamId !== upstreamId) {
+                                                                const { data } =
+                                                                    await StreamControllerUpdateUpstreamIdById(
+                                                                        { id },
+                                                                        { data: { upstreamId: selectUpstreamId } }
+                                                                    )
+                                                                if (!(data && data > 0)) {
+                                                                    message.error('stream 更新失败')
+                                                                }
+                                                            }
+                                                            // update upstream
                                                             if (id && selectUpstreamId) {
                                                                 const { data } = await UpstreamControllerUpdate(
                                                                     {
@@ -319,16 +331,6 @@ export default () => {
                                                                 data && data > 0
                                                                     ? message.success('upstream 更新成功')
                                                                     : message.error('upstream 更新失败')
-                                                                if (selectUpstreamId !== upstreamId) {
-                                                                    const { data } =
-                                                                        await StreamControllerUpdateUpstreamIdById(
-                                                                            { id },
-                                                                            { data: { upstreamId: selectUpstreamId } }
-                                                                        )
-                                                                    if (!(data && data > 0)) {
-                                                                        message.error('stream 更新失败')
-                                                                    }
-                                                                }
                                                             }
                                                             // may be can optimize
                                                             setTimeout(streamRefresh, 100)
