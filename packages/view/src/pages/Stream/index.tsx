@@ -8,7 +8,7 @@ import {
     PlayCircleOutlined,
     PlusCircleOutlined
 } from '@ant-design/icons'
-import { StreamItemEnum, StreamStatusEnum } from '@x-forward/shared'
+import { CommonEnum, StreamItemEnum, StreamStatusEnum, UpstreamEnum } from '@x-forward/shared'
 import ProDescriptions from '@ant-design/pro-descriptions'
 import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from 'antd'
 import { useRequest } from 'umi'
@@ -16,13 +16,11 @@ import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
 import { utc2local } from '@/utils/timeUtil'
-import { CommonEnum } from '@x-forward/shared'
 import UpstreamModel from '@/components/UpstreamModel/index'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
 import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import { state2Boolean } from '@/utils/statusUtils'
-import { ServerEnum } from '@x-forward/shared'
 import { omit } from 'lodash-es'
 import {
     StreamControllerCreateOne,
@@ -442,7 +440,7 @@ export default () => {
             >
                 <ProFormSelect
                     name="name"
-                    label={ServerEnum.UpstreamName}
+                    label={UpstreamEnum.Name}
                     valueEnum={upstreamNameSelectEnum}
                     fieldProps={{
                         onChange(value) {
