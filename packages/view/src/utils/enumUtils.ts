@@ -7,7 +7,7 @@ export const loadBalancingSelectProp = () => {
         .map(l => {
             return {
                 label: LoadBalancingEnum[l],
-                value: l
+                value: Number(l)
             }
         })
 }

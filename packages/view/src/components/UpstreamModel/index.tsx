@@ -9,11 +9,10 @@ import ProForm, {
     ProFormText
 } from '@ant-design/pro-form'
 import { Form } from 'antd'
-import { ServerEnum, ServerTipsEnum } from '@x-forward/shared'
+import { ServerEnum, ServerTipsEnum, UpstreamEnum } from '@x-forward/shared'
 import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
 import './index.less'
 import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
-import { StreamItemEnum } from '@x-forward/shared'
 import { isString } from 'lodash'
 import { isUndef } from '@/utils/commonUtils'
 import { FormInstance } from 'antd/es'
@@ -64,7 +63,8 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
     useEffect(() => {
         form.setFieldsValue({
             name: upstream?.name,
-            server: upstream?.server
+            server: upstream?.server,
+            loadBalancing: upstream?.loadBalancing
         })
     }, [form, upstream])
     return (
@@ -83,15 +83,11 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             }}
         >
             {isString(upstreamName) || isUndef(upstreamName) ? (
-                <ProFormText
-                    name="name"
-                    label={ServerEnum.UpstreamName}
-                    placeholder={`请输入${ServerEnum.UpstreamName}`}
-                />
+                <ProFormText name="name" label={UpstreamEnum.Name} placeholder={`请输入${UpstreamEnum.Name}`} />
             ) : (
                 <ProFormSelect
                     name="name"
-                    label={ServerEnum.UpstreamName}
+                    label={UpstreamEnum.Name}
                     initialValue={upstream?.name}
                     valueEnum={upstreamName}
                     fieldProps={{
@@ -104,10 +100,10 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
 
             <ProFormSelect
                 name="loadBalancing"
-                label={ServerEnum.LoadBalancing}
+                label={UpstreamEnum.LoadBalancing}
                 options={loadBalancingSelectProp()}
                 initialValue={getEnumKeyByValue(upstream?.loadBalancing)}
-                placeholder={`请选择${StreamItemEnum.LoadBalancing}`}
+                placeholder={`请选择${UpstreamEnum.LoadBalancing}`}
             />
             <ProFormDependency name={['name']} ignoreFormListField>
                 {({ name }) => {
@@ -135,7 +131,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                                 label={ServerEnum.UpstreamHost}
                                                 rules={[requiredRule(ServerEnum.UpstreamHost), hostRule()]}
                                             />
-                                            <ProFormText
+                                            <ProFormDigit
                                                 width="md"
                                                 name="upstreamPort"
                                                 label={ServerEnum.UpstreamPort}
@@ -144,6 +140,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                         </ProForm.Group>
                                         <ProFormDigit
                                             width={100}
+                                            min={1}
                                             name="weight"
                                             label={ServerEnum.Weight}
                                             tooltip={ServerTipsEnum.Weight}
