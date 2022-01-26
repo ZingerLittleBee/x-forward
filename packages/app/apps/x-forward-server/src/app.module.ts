@@ -1,6 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
-import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from './config/register.config'
+import { AutomapperRegister, EventEmitterRegister, MongoRegister, TypeOrmRegister } from './config/register.config'
 import { ConfigChangeModule } from './event/config/config-change.module'
 import { EnvModule } from './modules/env/env.module'
 import { GatewayModule } from './modules/gateway/gateway.module'
@@ -9,10 +9,13 @@ import { StreamModule } from './modules/stream/stream.module'
 import { ServerModule } from './modules/server/server.module'
 import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UserModule } from './modules/user/user.module'
+import { LogModule } from './modules/log/log.module'
+import { MongooseModule } from '@nestjs/mongoose'
 
 @Module({
     imports: [
         TypeOrmRegister(),
+        MongoRegister(),
         AutomapperRegister(),
         EventEmitterRegister(),
         ConfigModule.forRoot(),
@@ -25,7 +28,8 @@ import { UserModule } from './modules/user/user.module'
         StreamModule,
         GatewayModule,
         UpstreamModule,
-        ServerModule
+        ServerModule,
+        LogModule
     ]
 })
 export class AppModule {}
