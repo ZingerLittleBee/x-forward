@@ -7,6 +7,8 @@ import { StreamEntity } from '../modules/stream/entity/stream.entity'
 import { ServerEntity } from '../modules/server/entity/server.entity'
 import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
 import { UserEntity } from '../modules/user/user.entity'
+import { MongooseModule } from '@nestjs/mongoose'
+import { getEnvSetting } from '@x-forward/common'
 
 export const EventEmitterRegister = () =>
     EventEmitterModule.forRoot({
@@ -42,5 +44,13 @@ export const AutomapperRegister = () =>
         options: [{ name: 'blah', pluginInitializer: classes }],
         singular: true
     })
+
+export const MongoRegister = () => {
+    return MongooseModule.forRootAsync({
+        useFactory: () => ({
+            uri: getEnvSetting('MongoUri')
+        })
+    })
+}
 
 export const CacheRegister = () => CacheModule.register({ ttl: 0 })

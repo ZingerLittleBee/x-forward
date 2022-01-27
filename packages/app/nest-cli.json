@@ -55,6 +55,15 @@
       "compilerOptions": {
         "tsConfigPath": "libs/render/tsconfig.lib.json"
       }
+    },
+    "bucket": {
+      "type": "library",
+      "root": "libs/bucket",
+      "entryFile": "index",
+      "sourceRoot": "libs/bucket/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/bucket/tsconfig.lib.json"
+      }
     }
   }
 }

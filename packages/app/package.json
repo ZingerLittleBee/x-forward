@@ -1,117 +1,120 @@
 {
-    "name": "@x-forward/app",
-    "version": "0.0.1",
-    "description": "ui for nginx stream",
-    "license": "MIT",
-    "scripts": {
-        "pkg": "pkg . -d",
-        "prebuild": "rimraf dist",
-        "build": "nest build",
-        "build:lib": "nest build common",
-        "gen": "nest g resource",
-        "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-        "start": "nest start",
-        "dev": "nest start --watch",
-        "client:dev": "nest start x-forward-client --watch",
-        "start:debug": "nest start --debug --watch",
-        "start:prod": "node dist/main",
-        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-        "test": "jest",
-        "test:watch": "jest --watch",
-        "test:cov": "jest --coverage",
-        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-        "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
+  "name": "@x-forward/app",
+  "version": "0.0.1",
+  "description": "ui for nginx stream",
+  "license": "MIT",
+  "scripts": {
+    "pkg": "pkg . -d",
+    "prebuild": "rimraf dist",
+    "build": "nest build",
+    "build:lib": "nest build common",
+    "gen": "nest g resource",
+    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+    "start": "nest start",
+    "dev": "nest start --watch",
+    "client:dev": "nest start x-forward-client --watch",
+    "start:debug": "nest start --debug --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
+  },
+  "dependencies": {
+    "@automapper/classes": "^6.2.1",
+    "@automapper/core": "^6.2.1",
+    "@automapper/nestjs": "^6.2.1",
+    "@nestjs/common": "^8.2.0",
+    "@nestjs/config": "^1.1.0",
+    "@nestjs/core": "^8.2.0",
+    "@nestjs/event-emitter": "^1.0.0",
+    "@nestjs/mongoose": "^9.0.2",
+    "@nestjs/platform-express": "^8.2.0",
+    "@nestjs/platform-socket.io": "^8.2.0",
+    "@nestjs/swagger": "^5.1.4",
+    "@nestjs/typeorm": "^8.0.2",
+    "@nestjs/websockets": "^8.2.0",
+    "@x-forward/shared": "workspace:*",
+    "@x-forward/view": "workspace:^0.0.1",
+    "better-sqlite3": "^7.4.4",
+    "cache-manager": "^3.4.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.13.2",
+    "helmet": "^4.6.0",
+    "moment": "^2.29.1",
+    "mongoose": "^6.1.8",
+    "node-pty": "^0.10.1",
+    "nunjucks": "^3.2.3",
+    "reflect-metadata": "^0.1.13",
+    "rimraf": "^3.0.2",
+    "rxjs": "^7.4.0",
+    "swagger-ui-express": "^4.1.6",
+    "typeorm": "^0.2.38",
+    "uuid": "^8.3.2",
+    "zx": "^4.0.0"
+  },
+  "devDependencies": {
+    "@automapper/types": "^6.2.1",
+    "@nestjs/cli": "^8.1.6",
+    "@nestjs/schematics": "^8.0.5",
+    "@nestjs/testing": "^8.2.0",
+    "@types/cache-manager": "^3.4.2",
+    "@types/express": "^4.17.13",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.1",
+    "@types/nunjucks": "^3.2.0",
+    "@types/supertest": "^2.0.11",
+    "@types/uuid": "^8.3.1",
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "socket.io": "^4.4.0",
+    "supertest": "^6.1.6",
+    "ts-loader": "^9.2.5",
+    "ts-node": "^10.2.1",
+    "tsconfig-paths": "^3.10.1"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "js",
+      "json",
+      "ts"
+    ],
+    "rootDir": ".",
+    "testRegex": ".*\\.spec\\.ts$",
+    "transform": {
+      "^.+\\.(t|j)s$": "ts-jest"
     },
-    "dependencies": {
-        "@automapper/classes": "^6.2.1",
-        "@automapper/core": "^6.2.1",
-        "@automapper/nestjs": "^6.2.1",
-        "@nestjs/common": "^8.2.0",
-        "@nestjs/config": "^1.1.0",
-        "@nestjs/core": "^8.2.0",
-        "@nestjs/event-emitter": "^1.0.0",
-        "@nestjs/platform-express": "^8.2.0",
-        "@nestjs/platform-socket.io": "^8.2.0",
-        "@nestjs/swagger": "^5.1.4",
-        "@nestjs/typeorm": "^8.0.2",
-        "@nestjs/websockets": "^8.2.0",
-        "@x-forward/shared": "workspace:*",
-        "@x-forward/view": "workspace:^0.0.1",
-        "better-sqlite3": "^7.4.4",
-        "cache-manager": "^3.4.4",
-        "class-transformer": "^0.5.1",
-        "class-validator": "^0.13.2",
-        "helmet": "^4.6.0",
-        "moment": "^2.29.1",
-        "node-pty": "^0.10.1",
-        "nunjucks": "^3.2.3",
-        "reflect-metadata": "^0.1.13",
-        "rimraf": "^3.0.2",
-        "rxjs": "^7.4.0",
-        "swagger-ui-express": "^4.1.6",
-        "typeorm": "^0.2.38",
-        "uuid": "^8.3.2",
-        "zx": "^4.0.0"
+    "collectCoverageFrom": [
+      "**/*.(t|j)s"
+    ],
+    "coverageDirectory": "./coverage",
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@x-forward/common": "<rootDir>/libs/common/src",
+      "^@x-forward/executor": "<rootDir>/libs/executor/src",
+      "^@x-forward/render": "<rootDir>/libs/render/src",
+      "^@x-forward/bucket(|/.*)$": "<rootDir>/libs/bucket/src/$1"
     },
-    "devDependencies": {
-        "@automapper/types": "^6.2.1",
-        "@nestjs/cli": "^8.1.6",
-        "@nestjs/schematics": "^8.0.5",
-        "@nestjs/testing": "^8.2.0",
-        "@types/cache-manager": "^3.4.2",
-        "@types/express": "^4.17.13",
-        "@types/jest": "^27.0.1",
-        "@types/node": "^16.7.1",
-        "@types/nunjucks": "^3.2.0",
-        "@types/supertest": "^2.0.11",
-        "@types/uuid": "^8.3.1",
-        "@typescript-eslint/eslint-plugin": "^4.29.2",
-        "@typescript-eslint/parser": "^4.29.2",
-        "socket.io": "^4.4.0",
-        "supertest": "^6.1.6",
-        "ts-loader": "^9.2.5",
-        "ts-node": "^10.2.1",
-        "tsconfig-paths": "^3.10.1"
-    },
-    "jest": {
-        "moduleFileExtensions": [
-            "js",
-            "json",
-            "ts"
-        ],
-        "rootDir": ".",
-        "testRegex": ".*\\.spec\\.ts$",
-        "transform": {
-            "^.+\\.(t|j)s$": "ts-jest"
-        },
-        "collectCoverageFrom": [
-            "**/*.(t|j)s"
-        ],
-        "coverageDirectory": "./coverage",
-        "testEnvironment": "node",
-        "moduleNameMapper": {
-            "^@x-forward/common": "<rootDir>/libs/common/src",
-            "^@x-forward/executor": "<rootDir>/libs/executor/src",
-            "^@x-forward/render": "<rootDir>/libs/render/src"
-        },
-        "roots": [
-            "<rootDir>/apps/",
-            "<rootDir>/libs/"
-        ]
-    },
-    "bin": "dist/main.js",
-    "pkg": {
-        "scripts": [
-            "dist/**/*.js",
-            "node_modules/lodash/cloneDeep.js"
-        ],
-        "assets": [
-            "temp/**",
-            "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
-        ],
-        "targets": [
-            "node16-linux-x64"
-        ],
-        "outputPath": "pkg"
-    }
+    "roots": [
+      "<rootDir>/apps/",
+      "<rootDir>/libs/"
+    ]
+  },
+  "bin": "dist/main.js",
+  "pkg": {
+    "scripts": [
+      "dist/**/*.js",
+      "node_modules/lodash/cloneDeep.js"
+    ],
+    "assets": [
+      "temp/**",
+      "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+    ],
+    "targets": [
+      "node16-linux-x64"
+    ],
+    "outputPath": "pkg"
+  }
 }

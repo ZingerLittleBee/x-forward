@@ -31,6 +31,12 @@
       ],
       "@x-forward/render/*": [
         "libs/render/src/*"
+      ],
+      "@x-forward/bucket": [
+        "libs/bucket/src"
+      ],
+      "@x-forward/bucket/*": [
+        "libs/bucket/src/*"
       ]
     }
   }
