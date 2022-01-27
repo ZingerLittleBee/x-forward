@@ -2,15 +2,15 @@ import { Test, TestingModule } from '@nestjs/testing'
 import { getModelToken } from '@nestjs/mongoose'
 import { Model } from 'mongoose'
 import { Log } from '@x-forward/bucket/schemas/log.schema'
-import { BucketService } from '@x-forward/bucket'
+import { BucketService } from '../bucket.service'
 
 const mockLog = {
-    serverId: 'qwe123',
-    useId: 'user1',
-    serverAddr: '12.324.1.3',
-    serverPort: '1234',
-    remoteAddr: '134.4.41.1',
-    remotePort: '12345',
+    server_id: 'qwe123',
+    use_id: 'user1',
+    server_addr: '12.324.1.3',
+    server_port: '1234',
+    remote_addr: '134.4.41.1',
+    remote_port: '12345',
     protocol: 'tcp',
     status: '1',
     bytes_sent: '123',

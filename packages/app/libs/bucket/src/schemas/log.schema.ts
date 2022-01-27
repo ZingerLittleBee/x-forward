@@ -6,22 +6,22 @@ export type LogDocument = Log & Document
 @Schema()
 export class Log extends Document {
     @Prop()
-    serverId: string
+    server_id: string
 
     @Prop()
-    useId: string
+    user_id: string
 
     @Prop()
-    serverAddr: string
+    server_addr: string
 
     @Prop()
-    serverPort: string
+    server_port: string
 
     @Prop()
-    remoteAddr: string
+    remote_addr: string
 
     @Prop()
-    remotePort: string
+    remote_port: string
 
     @Prop()
     protocol: string

@@ -8,12 +8,17 @@ import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
 export class BucketService {
     constructor(@InjectModel('Log') private logModel: Model<LogDocument>) {}
 
-    async create(createLogDto: CreateLogDto): Promise<Log> {
-        const createdCat = new this.logModel(createLogDto)
-        return createdCat.save()
+    async create(createLogDto: CreateLogDto | CreateLogDto[]): Promise<Log> {
+        return this.logModel.create(createLogDto)
     }
 
     async findAll(): Promise<Log[]> {
         return this.logModel.find().exec()
+    }
+
+    async findByTimeRange(startTime: Date, endTime: Date) {
+        return this.logModel.find({
+            time: { $gte: startTime, $lte: endTime }
+        })
     }
 }

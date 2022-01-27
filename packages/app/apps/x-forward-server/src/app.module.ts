@@ -10,7 +10,6 @@ import { ServerModule } from './modules/server/server.module'
 import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UserModule } from './modules/user/user.module'
 import { LogModule } from './modules/log/log.module'
-import { MongooseModule } from '@nestjs/mongoose'
 
 @Module({
     imports: [
