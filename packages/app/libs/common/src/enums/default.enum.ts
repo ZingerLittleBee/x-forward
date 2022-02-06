@@ -6,3 +6,7 @@ export enum DefaultEnum {
     // 项目的临时目录文件夹名
     TEMP_FILE_NAME = 'temp'
 }
+
+export enum TimeEnum {
+    NumberDaysOfMonth = 30
+}

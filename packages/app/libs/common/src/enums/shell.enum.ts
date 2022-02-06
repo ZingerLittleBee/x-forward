@@ -17,6 +17,6 @@ export enum ShellEnum {
 export enum ServiceEnum {
     STATUS = 'status',
     START = 'start',
-    RESTARt = 'restart',
+    RESTART = 'restart',
     STOP = 'stop'
 }
