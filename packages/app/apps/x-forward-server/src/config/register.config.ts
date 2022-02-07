@@ -46,6 +46,7 @@ export const AutomapperRegister = () =>
     })
 
 export const MongoRegister = () => {
+    console.log('mongouri', getEnvSetting('MongoUri'))
     return MongooseModule.forRootAsync({
         useFactory: () => ({
             uri: getEnvSetting('MongoUri')

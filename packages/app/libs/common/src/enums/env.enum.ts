@@ -1,4 +1,4 @@
-enum EnvEnum {
+export enum EnvEnum {
     NGINX_CONFIG_ARGS = 'nginx_config_args',
     // nginx 容器
     DOCKER_CONTAINER_NAME = 'DOCKER_CONTAINER_NAME',
@@ -19,5 +19,3 @@ enum EnvEnum {
     NGINX_MAIN_CONFIG_NAME = 'NGINX_MAIN_CONFIG_NAME',
     DNS_SERVERS = 'DNS_SERVERS'
 }
-
-export { EnvEnum }

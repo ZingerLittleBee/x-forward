@@ -9,6 +9,7 @@
     "node": ">= 16"
   },
   "scripts": {
+    "app-client:start": "pnpm -C ./packages/app start-client",
     "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev",
     "app:start": "pnpm -C ./packages/app start",
     "app:dev": "pnpm -C ./packages/app dev",

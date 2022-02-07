@@ -6,7 +6,7 @@ import { $, nothrow } from 'zx'
  * @param isDocker 是否为外部 docker 容器
  * @returns Function
  */
-export const MakesureDirectoryExists = (isDocker?: boolean) => {
+export const MakeSureDirectoryExists = (isDocker?: boolean) => {
     return function (_target: any, _propertyKey: string, descriptor: PropertyDescriptor) {
         const originalMethod = descriptor.value
         descriptor.value = async function (...args: any[]) {

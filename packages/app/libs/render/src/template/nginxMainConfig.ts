@@ -41,7 +41,13 @@ stream {
       '"upstream_connect_time": "$upstream_connect_time",'
       '"upstream_session_time": "$upstream_session_time"'
     '}';
-    access_log /var/log/nginx/stream/stream-access.log stream_json;
+
+    map $time_iso8601 $logdate {
+        '~^(?<ymd>\\d{4}-\\d{2}-\\d{2})' $ymd;
+        default                       'date-not-found';
+    }
+
+    access_log {{logPrefix}}/stream/{{logFilePrefix}}-$logdate.log stream_json;
     include {{streamDir}}/*.conf;
 }`
 

@@ -1,15 +1,8 @@
 import { Logger } from '@nestjs/common'
-import {
-    EnvEnum,
-    fetchNginxConfigArgs,
-    findSomething,
-    getEnvSetting,
-    getNginxCache,
-    NginxConfigArgsEnum,
-    ServiceEnum,
-    ShellEnum,
-    shellExec
-} from '@x-forward/common'
+import { EnvEnum, NginxConfigArgsEnum, ServiceEnum, ShellEnum } from '@x-forward/common'
+import { shellExec, findSomething } from '@x-forward/common/utils/shell.utils'
+import { fetchNginxConfigArgs, getNginxCache } from '@x-forward/common/utils/cache.utils'
+import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { IExecutor, NginxStatus } from '@x-forward/executor/interfaces'
 import { Cache } from 'cache-manager'
 import { appendFile, readdir, readFile } from 'fs/promises'
@@ -98,7 +91,7 @@ export class ExecutorLocal implements IExecutor {
         return (await shellExec(ShellEnum.LS, '-F', url, '|', ShellEnum.GREP, '"/$"')).res
     }
     async getNginxVersion() {
-        return (await shellExec(this.bin, '-V')).res
+        return (await shellExec(this.bin, '-V'))?.res
     }
     async getNginxBin() {
         return this.bin

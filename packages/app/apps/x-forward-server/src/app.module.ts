@@ -10,6 +10,7 @@ import { ServerModule } from './modules/server/server.module'
 import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UserModule } from './modules/user/user.module'
 import { LogModule } from './modules/log/log.module'
+import { UsageModule } from './modules/usage/usage.module'
 
 @Module({
     imports: [
@@ -17,7 +18,9 @@ import { LogModule } from './modules/log/log.module'
         MongoRegister(),
         AutomapperRegister(),
         EventEmitterRegister(),
-        ConfigModule.forRoot(),
+        ConfigModule.forRoot({
+            isGlobal: true
+        }),
         CacheModule.register(),
         ConfigChangeModule,
         ShellModule,
@@ -28,7 +31,8 @@ import { LogModule } from './modules/log/log.module'
         GatewayModule,
         UpstreamModule,
         ServerModule,
-        LogModule
+        LogModule,
+        UsageModule
     ]
 })
 export class AppModule {}

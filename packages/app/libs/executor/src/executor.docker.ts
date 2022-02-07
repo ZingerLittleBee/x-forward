@@ -5,7 +5,7 @@ import {
     fetchNginxConfigArgs,
     getEnvSetting,
     getNginxCache,
-    MakesureDirectoryExists,
+    MakeSureDirectoryExists,
     NginxConfigArgsEnum,
     NginxConfigArgsReflectEnum,
     RemoveEndOfLine,
@@ -140,7 +140,7 @@ export class ExecutorDocker implements IExecutor {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.CONF_PATH].value
     }
 
-    @MakesureDirectoryExists(true)
+    @MakeSureDirectoryExists(true)
     async getStreamDirectory() {
         Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${getEnvSetting(EnvEnum.STREAM_DIR)}`)
         return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))

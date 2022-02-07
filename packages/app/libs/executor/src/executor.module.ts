@@ -2,7 +2,7 @@ import { CacheModule, Module } from '@nestjs/common'
 import { ExecutorService } from './executor.service'
 
 @Module({
-    imports: [CacheModule.register({ ttl: 0 })],
+    imports: [CacheModule.register({ ttl: 0, isGlobal: true })],
     providers: [ExecutorService],
     exports: [ExecutorService]
 })

@@ -4,7 +4,11 @@ export enum DefaultEnum {
     STREAM_DIR = 'stream',
 
     // 项目的临时目录文件夹名
-    TEMP_FILE_NAME = 'temp'
+    TEMP_FILE_NAME = 'temp',
+
+    LOG_PREFIX = '/var/log/nginx',
+
+    LOG_FILE_PREFIX = 'stream-access'
 }
 
 export enum TimeEnum {

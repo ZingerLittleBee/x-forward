@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { EnvEnum } from '@x-forward/common/enums'
-import { findSomething, getEnvSetting } from '@x-forward/common/utils'
+import { DefaultEnum, EnvEnum } from '@x-forward/common/enums'
+import { findSomething, getEnvSetting, makeSureDirectoryExists } from '@x-forward/common/utils'
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { inspect } from 'util'
@@ -42,6 +42,8 @@ export class ExecutorService implements OnModuleInit {
         const nginxMainConfigContent = await this.executor.getMainConfigContent()
         Logger.debug(`nginx 主配置文件初始内容: ${nginxMainConfigContent}`)
         const streamDir = await this.executor.getStreamDirectory()
+        // 判断目录是否存在, 不存在则创建
+        makeSureDirectoryExists(streamDir)
         Logger.debug(`nginx stream 目录: ${streamDir}`)
         // 检索 includes ${streamDir}/*.conf
         const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
@@ -49,7 +51,11 @@ export class ExecutorService implements OnModuleInit {
             // 未找到, 则检查是否存在 stream {} 块
             // 未找到 stream {} 块
             if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
-                const streamBlockString = renderString(streamBlock, { streamDir })
+                const streamBlockString = renderString(streamBlock, {
+                    streamDir,
+                    logPrefix: DefaultEnum.LOG_PREFIX,
+                    logFilePrefix: DefaultEnum.LOG_FILE_PREFIX
+                })
                 Logger.debug(`未找到 stream 模块, 将自动在文件尾部添加\n${streamBlockString}`)
                 await this.executor.mainConfigAppend(streamBlockString)
             }
@@ -131,6 +137,13 @@ export class ExecutorService implements OnModuleInit {
     }
 
     /**
+     * 获取 stream 配置文件路径
+     */
+    async getNginxStreamPath() {
+        return this.executor.getStreamConfigPath()
+    }
+
+    /**
      * 获取 stream 配置文件内容
      * @returns Promise<string>
      */
@@ -157,5 +170,9 @@ export class ExecutorService implements OnModuleInit {
 
     async getNginxBin() {
         return this.executor.getNginxBin()
+    }
+
+    async getNginxStreamAccessLogPath() {
+        return `${await this.executor.getPrefix}`
     }
 }
