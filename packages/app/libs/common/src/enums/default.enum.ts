@@ -8,7 +8,10 @@ export enum DefaultEnum {
 
     LOG_PREFIX = '/var/log/nginx',
 
-    LOG_FILE_PREFIX = 'stream-access'
+    LOG_FILE_PREFIX = 'stream-access',
+
+    // log format
+    LOG_FORMAT = 'stream_json'
 }
 
 export enum TimeEnum {

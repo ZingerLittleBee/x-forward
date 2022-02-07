@@ -17,5 +17,8 @@ export enum EnvEnum {
 
     // nginx 主 config 文件名, 完整路径为: prefix/${NGINX_MAIN_CONFIG_NAME}
     NGINX_MAIN_CONFIG_NAME = 'NGINX_MAIN_CONFIG_NAME',
-    DNS_SERVERS = 'DNS_SERVERS'
+    DNS_SERVERS = 'DNS_SERVERS',
+
+    // stream 日志文件路径
+    STREAM_LOG_PATH = 'STREAM_LOG_PATH'
 }

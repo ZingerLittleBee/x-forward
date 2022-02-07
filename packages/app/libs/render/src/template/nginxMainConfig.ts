@@ -24,7 +24,7 @@ http {
 
 export const streamBlock = `
 stream {
-    log_format stream_json escape=json
+    log_format {{logFormat}} escape=json
     '{'
       '"time_local":"$time_local",'
       '"server_port":"$server_port",'
@@ -42,12 +42,7 @@ stream {
       '"upstream_session_time": "$upstream_session_time"'
     '}';
 
-    map $time_iso8601 $logdate {
-        '~^(?<ymd>\\d{4}-\\d{2}-\\d{2})' $ymd;
-        default                       'date-not-found';
-    }
-
-    access_log {{logPrefix}}/stream/{{logFilePrefix}}-$logdate.log stream_json;
+    access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
     include {{streamDir}}/*.conf;
 }`
 
