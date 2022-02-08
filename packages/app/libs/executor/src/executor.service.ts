@@ -53,11 +53,13 @@ export class ExecutorService implements OnModuleInit {
             // 未找到 stream {} 块
             const logPrefix = getEnvSetting('LOG_PREFIX')
             const logFilePrefix = getEnvSetting('LOG_FILE_PREFIX')
+            const logFormat = getEnvSetting('LOG_FORMAT')
             if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
                 const streamBlockString = renderString(streamBlock, {
                     streamDir,
                     logPrefix,
-                    logFilePrefix
+                    logFilePrefix,
+                    logFormat
                 })
                 Logger.debug(`未找到 stream 模块, 将自动在文件尾部添加\n${streamBlockString}`)
                 await this.executor.mainConfigAppend(streamBlockString)
@@ -68,7 +70,7 @@ export class ExecutorService implements OnModuleInit {
                 Logger.warn(
                     `请自行在 ${await this.executor.getMainConfigPath()} 文件添加 stream 模块\n${renderString(
                         streamBlock,
-                        { streamDir, logPrefix, logFilePrefix }
+                        { streamDir, logPrefix, logFilePrefix, logFormat }
                     )}`
                 )
             }
