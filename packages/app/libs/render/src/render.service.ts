@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common'
-import { EnvEnum, getEnvSetting } from '@x-forward/common'
+import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 import { LoadBalancingEnum } from '@x-forward/shared'
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { configure, renderString } from 'nunjucks'
@@ -37,7 +37,7 @@ export class RenderService {
      * @returns temp/stream/uuid.conf | temp/http/uuid.conf | temp/main/uuid.conf
      */
     private static generatorTempPath(dir: 'stream' | 'http' | 'main') {
-        const tempDir = join(getEnvSetting(EnvEnum.TEMP_FILE_NAME), dir)
+        const tempDir = join(getEnvSetting(EnvKeyEnum.TempFileName), dir)
         // 判断文件夹是否存在, 不存在则创建
         if (!existsSync(tempDir)) {
             mkdirSync(tempDir, { recursive: true })
@@ -84,6 +84,7 @@ export class RenderService {
         fail_timeout && (resStr += ` fail_timeout=${fail_timeout}`)
         backup && (resStr += ` backup`)
         down && (resStr += ` down`)
-        return (resStr += ';')
+        resStr += ';'
+        return resStr
     }
 }

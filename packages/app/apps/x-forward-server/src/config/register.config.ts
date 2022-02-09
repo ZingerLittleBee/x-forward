@@ -8,7 +8,7 @@ import { ServerEntity } from '../modules/server/entity/server.entity'
 import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
 import { UserEntity } from '../modules/user/user.entity'
 import { MongooseModule } from '@nestjs/mongoose'
-import { getEnvSetting } from '@x-forward/common'
+import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 
 export const EventEmitterRegister = () =>
     EventEmitterModule.forRoot({
@@ -46,10 +46,9 @@ export const AutomapperRegister = () =>
     })
 
 export const MongoRegister = () => {
-    console.log('mongouri', getEnvSetting('MongoUri'))
     return MongooseModule.forRootAsync({
         useFactory: () => ({
-            uri: getEnvSetting('MongoUri')
+            uri: getEnvSetting(EnvKeyEnum.MongoUri)
         })
     })
 }

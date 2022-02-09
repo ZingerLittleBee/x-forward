@@ -14,7 +14,7 @@ export class ExecutorModule {}
 //         providers.push({
 //             provide: ENV_EXECUTOR,
 //             useClass:
-//                 options === EnvEnum.DOCKER_CONTAINER_NAME
+//                 options === EnvEnum.DockerContainerName
 //                     ? ExecutorDocker
 //                     : ExecutorLocal
 //         })

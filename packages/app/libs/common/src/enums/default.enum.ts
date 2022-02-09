@@ -10,10 +10,12 @@ export enum DefaultEnum {
 
     LOG_FILE_PREFIX = 'stream-access',
 
-    // log format
-    LOG_FORMAT = 'stream_json'
+    // log format name
+    LOG_FORMAT_NAME = 'stream_json',
+
+    ONLINE_CHECK_CRON = '*/5 * * * *'
 }
 
-export enum TimeEnum {
+export enum DefaultTimeEnum {
     NumberDaysOfMonth = 30
 }

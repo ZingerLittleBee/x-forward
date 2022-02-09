@@ -7,6 +7,7 @@ import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { ServerEntity } from '../../server/entity/server.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
+import { getValuesOfEnum } from '@x-forward/shared'
 
 @Entity('upstream')
 export class UpstreamEntity extends CommonEntity {
@@ -19,7 +20,7 @@ export class UpstreamEntity extends CommonEntity {
     @IsEnum(LoadBalancingEnum)
     @AutoMap()
     @ApiProperty({
-        enum: [0, 1, 2, 3, 4],
+        enum: getValuesOfEnum(LoadBalancingEnum),
         description: `${UpstreamEnum.LoadBalancing}, ${enumToString(LoadBalancingEnum)}`
     })
     @Column({ name: 'load_balancing', type: 'tinyint', nullable: true, default: () => LoadBalancingEnum.Random })

@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common'
-import { EnvEnum, NginxConfigArgsEnum, ServiceEnum, ShellEnum } from '@x-forward/common'
+import { EnvKeyEnum, NginxConfigArgsEnum, ServiceEnum, ShellEnum } from '@x-forward/common'
 import { shellExec, findSomething } from '@x-forward/common/utils/shell.utils'
 import { fetchNginxConfigArgs, getNginxCache } from '@x-forward/common/utils/cache.utils'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
@@ -56,7 +56,7 @@ export class ExecutorLocal implements IExecutor {
             return {}
         }
         const { res: serviceStatus } = await shellExec(cmd, 'nginx', ServiceEnum.STATUS)
-        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
+        const active = serviceStatus.match(/(?<=Active:\s)(.*\))/)?.[0]
         active && (status.active = active)
         const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
         uptime && (status.uptime = uptime)
@@ -97,7 +97,7 @@ export class ExecutorLocal implements IExecutor {
         return this.bin
     }
     async getNginxConfigArgs() {
-        return fetchNginxConfigArgs(await this.getNginxVersion(), this.cacheManager)
+        return fetchNginxConfigArgs(await this.getNginxVersion())
     }
     async mainConfigAppend(appendString: string) {
         appendFile(await this.getMainConfigPath(), appendString)
@@ -106,7 +106,7 @@ export class ExecutorLocal implements IExecutor {
         return readFile(await this.getMainConfigPath(), 'utf-8')
     }
     async getStreamDirectory() {
-        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
+        return join(await this.getPrefix(), getEnvSetting(EnvKeyEnum.StreamDir))
     }
     async getPrefix() {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.PREFIX]?.value

@@ -11,6 +11,7 @@ import { StreamModule } from './modules/stream/stream.module'
 import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UsageModule } from './modules/usage/usage.module'
 import { UserModule } from './modules/user/user.module'
+import { ScheduleModule } from '@nestjs/schedule'
 
 @Module({
     imports: [
@@ -18,10 +19,11 @@ import { UserModule } from './modules/user/user.module'
         MongoRegister(),
         AutomapperRegister(),
         EventEmitterRegister(),
+        CacheModule.register(),
         ConfigModule.forRoot({
             isGlobal: true
         }),
-        CacheModule.register(),
+        ScheduleModule.forRoot(),
         ConfigChangeModule,
         ShellModule,
         UserModule,

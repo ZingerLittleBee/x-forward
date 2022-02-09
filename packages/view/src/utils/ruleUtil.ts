@@ -1,7 +1,7 @@
-import { domainRegExp, ipRegExp } from '@x-forward/shared';
+import { domainRegExp, ipRegExp } from '@x-forward/shared'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import type { RuleType } from 'rc-field-form/lib/interface';
+import type { RuleType } from 'rc-field-form/lib/interface'
 
 export const requiredRule = (description: string) => {
     const rule: { required: boolean; message?: string } = { required: true }
@@ -45,7 +45,7 @@ export const typeRule = (type: RuleType, message?: string) => {
 export const timeRule = () => {
     return () => ({
         validator(_: any, value: any) {
-            if (!value || /[0-9]+(s|m|h|d)$/.test(value)) return Promise.resolve()
+            if (!value || /[0-9]+([smhd])$/.test(value)) return Promise.resolve()
             return Promise.reject(new Error('The time must end with an s|m|h|d'))
         }
     })

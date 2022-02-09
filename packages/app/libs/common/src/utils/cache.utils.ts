@@ -1,21 +1,20 @@
 import { NginxConfig } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { EnvEnum, NginxConfigArgsReflectEnum } from '..'
+import { EnvKeyEnum, NginxConfigArgsReflectEnum } from '..'
 
 /**
  * 获取 cache 中的 nginxConfig
  * @returns NginxConfig
  */
 export const getNginxCache = async (cacheManager: Cache) => {
-    return cacheManager.get<NginxConfig>(EnvEnum.NGINX_CONFIG_ARGS)
+    return cacheManager.get<NginxConfig>(EnvKeyEnum.NginxConfigArgs)
 }
 
 /**
  * 匹配 nginx -V 结果
  * @param nginxInfo nginx -V
- * @param cacheManager Cache
  */
-export const fetchNginxConfigArgs = (nginxInfo: string, cacheManager: Cache): NginxConfig => {
+export const fetchNginxConfigArgs = (nginxInfo: string): NginxConfig => {
     // 获取 nginx 版本号
     const version = nginxInfo.match(/nginx\/\d.*/)[0]
 
@@ -43,7 +42,7 @@ export const fetchNginxConfigArgs = (nginxInfo: string, cacheManager: Cache): Ng
     // 3. [ 'prefix=/etc/nginx' ] 键值对分离
     const argsConfigObj = {}
     argsConfig.forEach(p => {
-        const matchTemp = p.match(/([-_a-z]+)(?:=)(.*)/i)
+        const matchTemp = p.match(/([-_a-z]+)=(.*)/i)
         argsConfigObj[matchTemp[1]] = {
             label: NginxConfigArgsReflectEnum[matchTemp[1]],
             value: matchTemp[2]
