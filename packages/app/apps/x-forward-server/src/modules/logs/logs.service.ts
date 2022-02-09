@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { BucketService } from '@x-forward/bucket'
 import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
 import * as moment from 'moment'
-import { TimeEnum } from '@x-forward/common'
+import { DefaultTimeEnum } from '@x-forward/common'
 
 @Injectable()
 export class LogsService {
@@ -41,7 +41,7 @@ export class LogsService {
     }
 
     async getBeforeMonths(endTime: Date) {
-        return this.getBeforeSomeDays(endTime, TimeEnum.NumberDaysOfMonth)
+        return this.getBeforeSomeDays(endTime, DefaultTimeEnum.NumberDaysOfMonth)
     }
 
     async getLastSomeDay(some: number) {

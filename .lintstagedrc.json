@@ -3,7 +3,5 @@
     "*.{css, vue}": "stylelint",
     "*.scss": "stylelint --syntax scss",
     "*.less": "stylelint --syntax less",
-    "*.{js,jsx,tsx,ts,less,md,json}": [
-        "prettier --write"
-    ]
+    "*.{js,jsx,tsx,ts,less,md,json}": ["prettier --write"]
 }

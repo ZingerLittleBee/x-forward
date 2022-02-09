@@ -14,7 +14,7 @@ import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from '
 import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
-import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/x-forward-frontend/upstream'
+import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/view/upstream'
 import { utc2local } from '@/utils/timeUtil'
 import UpstreamModel from '@/components/UpstreamModel/index'
 import { getKeyByValue } from '@/utils/objectUtil'
@@ -28,7 +28,7 @@ import {
     StreamControllerGetAllStream,
     StreamControllerUpdateStreamById,
     StreamControllerUpdateUpstreamIdById
-} from '@/services/x-forward-frontend/stream'
+} from '@/services/view/stream'
 import Paragraph from 'antd/es/typography/Paragraph'
 
 export default () => {

@@ -10,7 +10,7 @@ import {
 import { WSEnum } from '@x-forward/common'
 import { IPty, spawn } from 'node-pty'
 import { Server } from 'socket.io'
-import { installNginx } from '../../utils/Shell'
+import { installNginx } from '../../utils/shell.util'
 
 @WebSocketGateway(1234, {
     cors: {
@@ -33,7 +33,7 @@ export class ShellGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
      * @param server server
      */
     afterInit(server: any): any {
-        console.log('server')
+        console.log('server', server)
     }
 
     /**
@@ -42,7 +42,7 @@ export class ShellGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
      * @param args args
      */
     handleConnection(client: any, ...args: any[]): any {
-        console.log('handleConnection')
+        console.log('handleConnection', client, args)
     }
 
     /**
@@ -50,7 +50,7 @@ export class ShellGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
      * @param client client
      */
     handleDisconnect(client: any): any {
-        console.log('handleDisconnect')
+        console.log('handleDisconnect', client)
     }
 
     /**

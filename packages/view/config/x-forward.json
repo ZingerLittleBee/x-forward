@@ -40,9 +40,7 @@
                         "description": ""
                     }
                 },
-                "tags": [
-                    "upstream"
-                ]
+                "tags": ["upstream"]
             },
             "get": {
                 "operationId": "UpstreamController_findAll",
@@ -69,9 +67,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "upstream"
-                ]
+                "tags": ["upstream"]
             }
         },
         "/upstream/{id}": {
@@ -109,9 +105,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "upstream"
-                ]
+                "tags": ["upstream"]
             },
             "patch": {
                 "operationId": "UpstreamController_update",
@@ -157,9 +151,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "upstream"
-                ]
+                "tags": ["upstream"]
             },
             "delete": {
                 "operationId": "UpstreamController_remove",
@@ -195,15 +187,22 @@
                         }
                     }
                 },
-                "tags": [
-                    "upstream"
-                ]
+                "tags": ["upstream"]
             }
         },
         "/server/{id}": {
             "patch": {
                 "operationId": "ServerController_patch",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -236,13 +235,20 @@
                         }
                     }
                 },
-                "tags": [
-                    "server"
-                ]
+                "tags": ["server"]
             },
             "delete": {
                 "operationId": "ServerController_remove",
-                "parameters": [],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -265,9 +271,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "server"
-                ]
+                "tags": ["server"]
             }
         },
         "/stream": {
@@ -296,9 +300,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             },
             "post": {
                 "operationId": "StreamController_createOne",
@@ -338,9 +340,7 @@
                         "description": ""
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             },
             "patch": {
                 "operationId": "StreamController_updateAllStream",
@@ -377,9 +377,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             },
             "delete": {
                 "operationId": "StreamController_deleteAllStream",
@@ -406,9 +404,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             }
         },
         "/stream/{id}/state": {
@@ -446,9 +442,7 @@
                         "description": ""
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             }
         },
         "/stream/{id}/upstream_id": {
@@ -486,9 +480,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             }
         },
         "/stream/{id}": {
@@ -536,9 +528,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             },
             "delete": {
                 "operationId": "StreamController_delete",
@@ -574,9 +564,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "stream"
-                ]
+                "tags": ["stream"]
             }
         },
         "/user": {
@@ -605,9 +593,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "user"
-                ]
+                "tags": ["user"]
             },
             "post": {
                 "operationId": "UserController_createUser",
@@ -647,9 +633,7 @@
                         "description": ""
                     }
                 },
-                "tags": [
-                    "user"
-                ]
+                "tags": ["user"]
             }
         },
         "/user/login": {
@@ -688,9 +672,7 @@
                         "description": ""
                     }
                 },
-                "tags": [
-                    "user"
-                ]
+                "tags": ["user"]
             }
         },
         "/user/{id}": {
@@ -728,9 +710,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "user"
-                ]
+                "tags": ["user"]
             }
         },
         "/env/nginx/config": {
@@ -759,9 +739,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "env"
-                ]
+                "tags": ["env"]
             }
         },
         "/env/nginx": {
@@ -790,9 +768,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "env"
-                ]
+                "tags": ["env"]
             }
         },
         "/env/os": {
@@ -821,9 +797,7 @@
                         }
                     }
                 },
-                "tags": [
-                    "env"
-                ]
+                "tags": ["env"]
             }
         },
         "/env/path": {
@@ -861,9 +835,94 @@
                         }
                     }
                 },
-                "tags": [
-                    "env"
-                ]
+                "tags": ["env"]
+            }
+        },
+        "/client/{id}": {
+            "get": {
+                "operationId": "ClientController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ClientVo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["client"]
+            }
+        },
+        "/client": {
+            "post": {
+                "operationId": "ClientController_register",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateClientDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["client"]
             }
         }
     },
@@ -889,10 +948,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -925,39 +981,22 @@
                         "description": "远程端口"
                     },
                     "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3, 4],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
+                        "enum": ["tcp", "udp"],
                         "type": "string",
                         "description": "转发协议"
                     },
                     "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
+                        "enum": ["on", "off"],
                         "type": "string",
                         "description": "失败重试"
                     },
@@ -1002,10 +1041,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1048,18 +1084,12 @@
                         "description": "失败超时时间, 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10s"
                     },
                     "backup": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "失败超时时间, 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10s, False: 0,True: 1,0: False,1: True"
                     },
                     "down": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "不可用, 将服务器标记为永久不可用, False: 0,True: 1,0: False,1: True"
                     },
@@ -1067,10 +1097,7 @@
                         "type": "string"
                     }
                 },
-                "required": [
-                    "upstreamHost",
-                    "upstreamPort"
-                ]
+                "required": ["upstreamHost", "upstreamPort"]
             },
             "UpstreamEntity": {
                 "type": "object",
@@ -1079,10 +1106,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1103,13 +1127,7 @@
                         "description": "upstream_name"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
@@ -1126,10 +1144,7 @@
                         }
                     }
                 },
-                "required": [
-                    "name",
-                    "server"
-                ]
+                "required": ["name", "server"]
             },
             "CreateServerDto": {
                 "type": "object",
@@ -1161,26 +1176,17 @@
                         "description": "失败超时时间, 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10s"
                     },
                     "backup": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "失败超时时间, 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10s, False: 0,True: 1,0: False,1: True"
                     },
                     "down": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "不可用, 将服务器标记为永久不可用, False: 0,True: 1,0: False,1: True"
                     }
                 },
-                "required": [
-                    "upstreamHost",
-                    "upstreamPort"
-                ]
+                "required": ["upstreamHost", "upstreamPort"]
             },
             "UpdateServerDto": {
                 "type": "object",
@@ -1211,27 +1217,19 @@
                     },
                     "backup": {
                         "type": "number",
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "description": "失败超时时间, 在时间范围内与服务器通信的失败尝试达到指定次数，应将服务器视为不可用,默认情况下，该参数设置为 10s, False: 0,True: 1,0: False,1: True"
                     },
                     "down": {
                         "type": "number",
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "description": "不可用, 将服务器标记为永久不可用, False: 0,True: 1,0: False,1: True"
                     },
                     "id": {
                         "type": "string"
                     }
                 },
-                "required": [
-                    "id"
-                ]
+                "required": ["id"]
             },
             "UpstreamVo": {
                 "type": "object",
@@ -1240,10 +1238,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1264,13 +1259,7 @@
                         "description": "upstream_name"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
@@ -1292,10 +1281,7 @@
                 "type": "object",
                 "properties": {
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1316,39 +1302,22 @@
                         "description": "远程端口"
                     },
                     "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3, 4],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
+                        "enum": ["tcp", "udp"],
                         "type": "string",
                         "description": "转发协议"
                     },
                     "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
+                        "enum": ["on", "off"],
                         "type": "string",
                         "description": "失败重试"
                     },
@@ -1394,13 +1363,7 @@
                         "description": "upstream_name"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
@@ -1417,20 +1380,13 @@
                         }
                     }
                 },
-                "required": [
-                    "name",
-                    "stream",
-                    "server"
-                ]
+                "required": ["name", "stream", "server"]
             },
             "UpdateStreamDto": {
                 "type": "object",
                 "properties": {
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1452,38 +1408,21 @@
                     },
                     "status": {
                         "type": "number",
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3, 4],
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
                     "loadBalancing": {
                         "type": "number",
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
+                        "enum": ["tcp", "udp"],
                         "type": "string",
                         "description": "转发协议"
                     },
                     "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
+                        "enum": ["on", "off"],
                         "type": "string",
                         "description": "失败重试"
                     },
@@ -1528,13 +1467,7 @@
                         "description": "upstream_name"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
@@ -1551,10 +1484,7 @@
                         }
                     }
                 },
-                "required": [
-                    "name",
-                    "server"
-                ]
+                "required": ["name", "server"]
             },
             "StreamVo": {
                 "type": "object",
@@ -1563,10 +1493,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1595,39 +1522,22 @@
                         "description": "远程端口"
                     },
                     "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3, 4],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
+                        "enum": ["tcp", "udp"],
                         "type": "string",
                         "description": "转发协议"
                     },
                     "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
+                        "enum": ["on", "off"],
                         "type": "string",
                         "description": "失败重试"
                     },
@@ -1672,10 +1582,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1696,39 +1603,22 @@
                         "description": "远程端口"
                     },
                     "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
+                        "enum": [0, 1, 2, 3, 4],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
                     "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
+                        "enum": [0, 1, 2, 3],
                         "type": "number",
                         "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
+                        "enum": ["tcp", "udp"],
                         "type": "string",
                         "description": "转发协议"
                     },
                     "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
+                        "enum": ["on", "off"],
                         "type": "string",
                         "description": "失败重试"
                     },
@@ -1773,10 +1663,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1799,6 +1686,11 @@
                     "password": {
                         "type": "string",
                         "description": "密码"
+                    },
+                    "role": {
+                        "enum": ["User", "Admin"],
+                        "type": "number",
+                        "description": "角色, 用户名: Username,密码: Password,角色: Role,备注: Comment"
                     },
                     "comment": {
                         "type": "string",
@@ -1821,11 +1713,7 @@
                         "type": "object"
                     }
                 },
-                "required": [
-                    "success",
-                    "message",
-                    "data"
-                ]
+                "required": ["success", "message", "data"]
             },
             "UserEntity": {
                 "type": "object",
@@ -1834,10 +1722,7 @@
                         "type": "string"
                     },
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1861,15 +1746,17 @@
                         "type": "string",
                         "description": "密码"
                     },
+                    "role": {
+                        "enum": ["User", "Admin"],
+                        "type": "number",
+                        "description": "角色, 用户名: Username,密码: Password,角色: Role,备注: Comment"
+                    },
                     "comment": {
                         "type": "string",
                         "description": "备注"
                     }
                 },
-                "required": [
-                    "username",
-                    "password"
-                ]
+                "required": ["username", "password", "role"]
             },
             "LoginUserDto": {
                 "type": "object",
@@ -1883,19 +1770,13 @@
                         "description": "密码"
                     }
                 },
-                "required": [
-                    "username",
-                    "password"
-                ]
+                "required": ["username", "password"]
             },
             "CreateUserDto": {
                 "type": "object",
                 "properties": {
                     "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
+                        "enum": [0, 1],
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
@@ -1912,10 +1793,7 @@
                         "description": "备注"
                     }
                 },
-                "required": [
-                    "username",
-                    "password"
-                ]
+                "required": ["username", "password"]
             },
             "NginxConfigVo": {
                 "type": "object",
@@ -1936,11 +1814,7 @@
                         }
                     }
                 },
-                "required": [
-                    "version",
-                    "args",
-                    "module"
-                ]
+                "required": ["version", "args", "module"]
             },
             "OverviewVo": {
                 "type": "object",
@@ -1959,18 +1833,11 @@
                     },
                     "nginxStatus": {
                         "type": "string",
-                        "enum": [
-                            "0, 1, 2, 3, 4"
-                        ],
+                        "enum": ["0, 1, 2, 3, 4"],
                         "description": "Nginx 运行状态; 0: Running, 1: Checking, 2: Stop, 3: NotInstall, 4: Error"
                     }
                 },
-                "required": [
-                    "os",
-                    "nginxPath",
-                    "nginxUptime",
-                    "nginxStatus"
-                ]
+                "required": ["os", "nginxPath", "nginxUptime", "nginxStatus"]
             },
             "SystemInfoVo": {
                 "type": "object",
@@ -2018,6 +1885,100 @@
                     "release",
                     "codename"
                 ]
+            },
+            "ClientEntity": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [0, 1],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "isOnline": {
+                        "enum": [0, 1],
+                        "type": "number",
+                        "description": "False: 0,True: 1,0: False,1: True"
+                    },
+                    "lastCommunicationTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                }
+            },
+            "ClientVo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateClientDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [0, 1],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "isOnline": {
+                        "enum": [0, 1],
+                        "type": "number",
+                        "description": "False: 0,True: 1,0: False,1: True"
+                    },
+                    "lastCommunicationTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    }
+                }
             }
         }
     }

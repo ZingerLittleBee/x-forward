@@ -7,10 +7,12 @@ import * as server from './server';
 import * as stream from './stream';
 import * as user from './user';
 import * as env from './env';
+import * as client from './client';
 export default {
   upstream,
   server,
   stream,
   user,
   env,
+  client,
 };

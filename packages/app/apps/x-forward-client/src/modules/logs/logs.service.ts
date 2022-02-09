@@ -42,6 +42,7 @@ export class LogsService implements OnModuleInit {
     }
 
     private handleLogByLine(line: string) {
-        const segment = line.split(' ')
+        console.log(line)
+        // const segment = line.split(' ')
     }
 }

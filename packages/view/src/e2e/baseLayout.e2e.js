@@ -1,4 +1,6 @@
+// eslint-disable-next-line
 const { uniq } = require('lodash')
+// eslint-disable-next-line
 const RouterConfig = require('../../config/config').default.routes
 
 const BASE_URL = `http://localhost:${process.env.PORT || 8001}`

@@ -73,6 +73,7 @@ if (pwa) {
     })
 
     // remove all caches
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (window.caches && window.caches.keys()) {
         caches.keys().then(keys => {

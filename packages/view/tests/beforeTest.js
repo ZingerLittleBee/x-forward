@@ -1,8 +1,11 @@
 /* eslint-disable global-require */
-/* eslint-disable import/no-extraneous-dependencies */
+// eslint-disable-next-line
 const { execSync } = require('child_process')
+// eslint-disable-next-line
 const { join } = require('path')
+// eslint-disable-next-line
 const findChrome = require('carlo/lib/find_chrome')
+// eslint-disable-next-line
 const detectInstaller = require('detect-installer')
 
 const installPuppeteer = () => {
@@ -19,7 +22,7 @@ const installPuppeteer = () => {
 
 const initPuppeteer = async () => {
     try {
-        // eslint-disable-next-line import/no-unresolved
+        // eslint-disable-next-line
         const findChromePath = await findChrome({})
         const { executablePath } = findChromePath
         console.log(`🧲 find you browser in ${executablePath}`)

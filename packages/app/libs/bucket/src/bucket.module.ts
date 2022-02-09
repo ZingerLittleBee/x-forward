@@ -4,7 +4,14 @@ import { MongooseModule } from '@nestjs/mongoose'
 import { Log, LogSchema } from '@x-forward/bucket/schemas/log.schema'
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: Log.name, schema: LogSchema }])],
+    imports: [
+        MongooseModule.forFeatureAsync([
+            {
+                name: Log.name,
+                useFactory: () => LogSchema
+            }
+        ])
+    ],
     providers: [BucketService],
     exports: [BucketService]
 })

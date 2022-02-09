@@ -40,7 +40,7 @@ export const checkOS = async () => {
     }
     const catIssue = await $`cat /etc/issue`
     if (catIssue) {
-        return catIssue.stdout.replace(/\n|\l/, '')
+        return catIssue.stdout.replace(/[\nl]/, '')
     }
     return ''
 }

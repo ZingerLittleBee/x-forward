@@ -45,6 +45,7 @@
     "cache-manager": "^3.4.4",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.13.2",
+    "cron": "^1.8.2",
     "helmet": "^4.6.0",
     "moment": "^2.29.1",
     "mongoose": "^6.1.8",

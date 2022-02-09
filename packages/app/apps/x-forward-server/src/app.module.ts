@@ -12,6 +12,7 @@ import { UpstreamModule } from './modules/upstream/upstream.module'
 import { UsageModule } from './modules/usage/usage.module'
 import { UserModule } from './modules/user/user.module'
 import { ScheduleModule } from '@nestjs/schedule'
+import { ClientModule } from './modules/client/client.module'
 
 @Module({
     imports: [
@@ -34,7 +35,8 @@ import { ScheduleModule } from '@nestjs/schedule'
         UpstreamModule,
         ServerModule,
         LogsModule,
-        UsageModule
+        UsageModule,
+        ClientModule
     ]
 })
 export class AppModule {}

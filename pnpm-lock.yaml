@@ -93,6 +93,7 @@ importers:
       cache-manager: ^3.4.4
       class-transformer: ^0.5.1
       class-validator: ^0.13.2
+      cron: ^1.8.2
       helmet: ^4.6.0
       moment: ^2.29.1
       mongoose: ^6.1.8
@@ -131,6 +132,7 @@ importers:
       cache-manager: 3.6.0
       class-transformer: registry.npmmirror.com/class-transformer/0.5.1
       class-validator: registry.npmmirror.com/class-validator/0.13.2
+      cron: registry.npmmirror.com/cron/1.8.2
       helmet: 4.6.0
       moment: 2.29.1
       mongoose: 6.1.8
@@ -23559,6 +23561,14 @@ packages:
     resolution: {integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/cron/-/cron-1.7.2.tgz}
     name: cron
     version: 1.7.2
+    dependencies:
+      moment-timezone: registry.npmmirror.com/moment-timezone/0.5.34
+    dev: false
+
+  registry.npmmirror.com/cron/1.8.2:
+    resolution: {integrity: sha512-Gk2c4y6xKEO8FSAUTklqtfSr7oTq0CiPQeLBG5Fl0qoXpZyMcj1SG59YL+hqq04bu6/IuEA7lMkYDAplQNKkyg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/cron/-/cron-1.8.2.tgz}
+    name: cron
+    version: 1.8.2
     dependencies:
       moment-timezone: registry.npmmirror.com/moment-timezone/0.5.34
     dev: false

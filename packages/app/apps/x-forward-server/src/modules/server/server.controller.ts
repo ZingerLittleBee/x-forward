@@ -13,13 +13,13 @@ export class ServerController {
 
     @Patch(':id')
     @ApiResultResponse('number')
-    async patch(@Param() id: string, @Body(MapPipe(ServerEntity, UpdateServerDto)) server: UpdateServerDto) {
+    async patch(@Param('id') id: string, @Body(MapPipe(ServerEntity, UpdateServerDto)) server: UpdateServerDto) {
         return Result.okData((await this.serverService.update(id, server as ServerEntity)).affected)
     }
 
     @Delete(':id')
     @ApiResultResponse('number')
-    async remove(@Param() id: string) {
+    async remove(@Param('id') id: string) {
         return Result.okData((await this.serverService.remove(id)).affected)
     }
 }
