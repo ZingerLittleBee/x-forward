@@ -1,10 +1,10 @@
+import { AutoMap } from '@automapper/classes'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsHost } from '@x-forward/common'
+import { enumToString, getValuesOfEnum, IsOrNotEnum } from '@x-forward/shared'
+import { IsDate, IsEnum, IsOptional, IsPort } from 'class-validator'
 import { Column, Entity } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsDate, IsEnum, IsOptional } from 'class-validator'
-import { IsHost } from '@x-forward/common'
-import { AutoMap } from '@automapper/classes'
-import { IsOrNotEnum, getValuesOfEnum, enumToString } from '@x-forward/shared'
 
 @Entity('client')
 export class ClientEntity extends CommonEntity {
@@ -20,6 +20,13 @@ export class ClientEntity extends CommonEntity {
     @ApiProperty()
     @Column({ type: 'varchar', nullable: true })
     domain?: string
+
+    @AutoMap()
+    @IsOptional()
+    @IsPort()
+    @ApiProperty()
+    @Column({ type: 'tinyint', nullable: true, default: () => 3000 })
+    communicationPort?: number
 
     @AutoMap()
     @IsOptional()

@@ -63,6 +63,7 @@ importers:
       '@automapper/core': ^6.2.1
       '@automapper/nestjs': ^6.2.1
       '@automapper/types': ^6.2.1
+      '@nestjs/axios': ^0.0.5
       '@nestjs/cli': ^8.1.6
       '@nestjs/common': ^8.2.0
       '@nestjs/config': ^1.1.0
@@ -115,6 +116,7 @@ importers:
       '@automapper/classes': 6.3.1_f89be27ba6ab16a91605f4d0c469f9e2
       '@automapper/core': 6.3.1_@automapper+types@6.3.1
       '@automapper/nestjs': 6.3.1_cb5f6a89640ceb03c8fd0271a8c9cda2
+      '@nestjs/axios': 0.0.5_20ad946084432ae747ef29916ef515cb
       '@nestjs/common': 8.2.4_ca260b170963d2e65691dcb4611ec7fd
       '@nestjs/config': 1.1.5_20ad946084432ae747ef29916ef515cb
       '@nestjs/core': 8.2.4_dd81811608fc05abd80e5b3bf74d1893
@@ -4797,6 +4799,21 @@ packages:
     engines: {node: '>=6.0.0'}
     dev: false
 
+  /@nestjs/axios/0.0.5_20ad946084432ae747ef29916ef515cb:
+    resolution: {integrity: sha512-kpgCX6JAXcntj+4fk5Sk7Nu6HXvyOKyhRgnuaIQpwbcdthrPfOBVmJo+ZJf2bbSze+YaoodeH9Fe1WkSiN1xrg==}
+    peerDependencies:
+      '@nestjs/common': ^7.0.0 || ^8.0.0
+      reflect-metadata: ^0.1.12
+      rxjs: ^6.0.0 || ^7.0.0
+    dependencies:
+      '@nestjs/common': 8.2.4_ca260b170963d2e65691dcb4611ec7fd
+      axios: 0.25.0
+      reflect-metadata: 0.1.13
+      rxjs: 7.4.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /@nestjs/cli/8.1.6_eslint@8.5.0:
     resolution: {integrity: sha512-SFz/DNjsxNamBEi00ml6+Qx7DmnljI+lYqNzk/+1WZWCfONmvGxQrUaXcUHulkwMXZF/wpD93rgbbnT1CXirqQ==}
     engines: {node: '>= 10.13.0', npm: '>= 6.11.0'}
@@ -7649,7 +7666,15 @@ packages:
   /axios/0.24.0:
     resolution: {integrity: sha512-Q6cWsys88HoPgAaFAVUb0WpPk0O8iTeisR9IMqy9G8AbO4NlpVknrnQS03zzF9PGAWgO3cgletO3VjV/P7VztA==}
     dependencies:
-      follow-redirects: 1.14.6
+      follow-redirects: 1.14.8
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
+  /axios/0.25.0:
+    resolution: {integrity: sha512-cD8FOb0tRH3uuEe6+evtAbgJtfxr7ly3fQjYcMcuPlgkwVS9xboaVIpcDV+cYQe+yGykgwZCs1pzjntcGa6l5g==}
+    dependencies:
+      follow-redirects: 1.14.8
     transitivePeerDependencies:
       - debug
     dev: false
@@ -8566,7 +8591,7 @@ packages:
       normalize-path: 3.0.0
       readdirp: 3.6.0
     optionalDependencies:
-      fsevents: registry.npmmirror.com/fsevents/2.3.2
+      fsevents: 2.3.2
     dev: true
 
   /chownr/1.1.4:
@@ -8692,7 +8717,7 @@ packages:
       object-assign: 4.1.1
       string-width: 4.2.3
     optionalDependencies:
-      colors: registry.npmmirror.com/colors/1.4.0
+      colors: 1.4.0
     dev: true
 
   /cli-truncate/2.1.0:
@@ -8860,6 +8885,13 @@ packages:
     resolution: {integrity: sha1-BDP0TYCWgP3rYO0mDxsMJi6CpAs=}
     engines: {node: '>=0.1.90'}
     dev: false
+
+  /colors/1.4.0:
+    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==}
+    engines: {node: '>=0.1.90'}
+    requiresBuild: true
+    dev: true
+    optional: true
 
   /combined-stream/1.0.8:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
@@ -11749,8 +11781,8 @@ packages:
       uglify-js: 2.8.29
     dev: false
 
-  /follow-redirects/1.14.6:
-    resolution: {integrity: sha512-fhUl5EwSJbbl8AR+uYL2KQDxLkdSjZGR36xy46AO7cOMTrCMON6Sa28FmAnC2tRTDbd/Uuzz3aJBv7EBN7JH8A==}
+  /follow-redirects/1.14.8:
+    resolution: {integrity: sha512-1x0S9UVJHsQprFcEC/qnNzBLcIxsjAV905f/UkQxbclCsoTWlacCNOpQa/anodLl2uaEKFhfWOvM2Qg77+15zA==}
     engines: {node: '>=4.0'}
     peerDependencies:
       debug: '*'
@@ -14865,7 +14897,7 @@ packages:
     dependencies:
       universalify: 2.0.0
     optionalDependencies:
-      graceful-fs: registry.npmmirror.com/graceful-fs/4.2.8
+      graceful-fs: 4.2.8
 
   /jsonparse/1.3.1:
     resolution: {integrity: sha1-P02uSpH6wxX3EGL4UhzCOfE2YoA=}
@@ -16038,7 +16070,7 @@ packages:
       denque: 2.0.1
       mongodb-connection-string-url: 2.4.1
     optionalDependencies:
-      saslprep: registry.npmmirror.com/saslprep/1.0.3
+      saslprep: 1.0.3
     dev: false
 
   /mongoose/6.1.8:
@@ -20105,6 +20137,15 @@ packages:
       walker: 1.0.8
     dev: true
 
+  /saslprep/1.0.3:
+    resolution: {integrity: sha512-/MY/PEMbk2SuY5sScONwhUDsV2p77Znkb/q3nSVstq/yQzYJOH/Azh29p9oJLsl3LnQwSvZDKagDGBsBwSooag==}
+    engines: {node: '>=6'}
+    requiresBuild: true
+    dependencies:
+      sparse-bitfield: 3.0.3
+    dev: false
+    optional: true
+
   /sax/1.2.4:
     resolution: {integrity: sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==}
 
@@ -23548,15 +23589,6 @@ packages:
       validator: registry.npmmirror.com/validator/13.7.0
     dev: false
 
-  registry.npmmirror.com/colors/1.4.0:
-    resolution: {integrity: sha512-a+UqTh4kgZg/SlGvfbzDHpgRu7AAQOmmqRHJnxhRZICKFUT91brVhNNt58CMWU9PsBbv3PDCZUHbVxuDiH2mtA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/colors/-/colors-1.4.0.tgz}
-    name: colors
-    version: 1.4.0
-    engines: {node: '>=0.1.90'}
-    requiresBuild: true
-    dev: true
-    optional: true
-
   registry.npmmirror.com/cron/1.7.2:
     resolution: {integrity: sha512-+SaJ2OfeRvfQqwXQ2kgr0Y5pzBR/lijf5OpnnaruwWnmI799JfWr2jN2ItOV9s3A/+TFOt6mxvKzQq5F0Jp6VQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/cron/-/cron-1.7.2.tgz}
     name: cron
@@ -23573,20 +23605,11 @@ packages:
       moment-timezone: registry.npmmirror.com/moment-timezone/0.5.34
     dev: false
 
-  registry.npmmirror.com/fsevents/2.3.2:
-    resolution: {integrity: sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/fsevents/-/fsevents-2.3.2.tgz}
-    name: fsevents
-    version: 2.3.2
-    engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
-    os: [darwin]
-    requiresBuild: true
-    dev: true
-    optional: true
-
   registry.npmmirror.com/graceful-fs/4.2.8:
     resolution: {integrity: sha512-qkIilPUYcNhJpd33n0GBXTB1MMPp14TxEsEs0pTrsSVucApsYzW5V+Q8Qxhik6KU3evy+qkAAowTByymK0avdg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/graceful-fs/-/graceful-fs-4.2.8.tgz}
     name: graceful-fs
     version: 4.2.8
+    dev: true
 
   registry.npmmirror.com/libphonenumber-js/1.9.44:
     resolution: {integrity: sha512-zhw8nUMJuQf7jG1dZfEOKKOS6M3QYIv3HnvB/vGohNd0QfxIQcObH3a6Y6s350H+9xgBeOXClOJkS0hJ0yvS3g==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/libphonenumber-js/download/libphonenumber-js-1.9.44.tgz}
@@ -23606,17 +23629,6 @@ packages:
     resolution: {integrity: sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/moment/-/moment-2.29.1.tgz}
     name: moment
     version: 2.29.1
-
-  registry.npmmirror.com/saslprep/1.0.3:
-    resolution: {integrity: sha512-/MY/PEMbk2SuY5sScONwhUDsV2p77Znkb/q3nSVstq/yQzYJOH/Azh29p9oJLsl3LnQwSvZDKagDGBsBwSooag==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/saslprep/-/saslprep-1.0.3.tgz}
-    name: saslprep
-    version: 1.0.3
-    engines: {node: '>=6'}
-    requiresBuild: true
-    dependencies:
-      sparse-bitfield: 3.0.3
-    dev: false
-    optional: true
 
   registry.npmmirror.com/uuid/8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==, registry: http://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/uuid/-/uuid-8.3.2.tgz}

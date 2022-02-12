@@ -1,14 +1,15 @@
 import { classes } from '@automapper/classes'
 import { AutomapperModule } from '@automapper/nestjs'
+import { HttpModule } from '@nestjs/axios'
 import { CacheModule } from '@nestjs/common'
 import { EventEmitterModule } from '@nestjs/event-emitter'
+import { MongooseModule } from '@nestjs/mongoose'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { StreamEntity } from '../modules/stream/entity/stream.entity'
+import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 import { ServerEntity } from '../modules/server/entity/server.entity'
+import { StreamEntity } from '../modules/stream/entity/stream.entity'
 import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
 import { UserEntity } from '../modules/user/user.entity'
-import { MongooseModule } from '@nestjs/mongoose'
-import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 
 export const EventEmitterRegister = () =>
     EventEmitterModule.forRoot({
@@ -58,3 +59,10 @@ export const MongoRegister = () => {
 }
 
 export const CacheRegister = () => CacheModule.register({ ttl: 0 })
+
+export const HttpRegister = (args?: Record<string, any>) =>
+    HttpModule.register({
+        ...args,
+        timeout: 5000,
+        maxRedirects: 5
+    })

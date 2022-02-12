@@ -48,7 +48,6 @@ export class ClientService implements OnModuleInit {
 
     private addCronJob(name: string, task: () => void, interval: string) {
         const job = new CronJob(interval, task)
-
         this.schedulerRegistry.addCronJob(name, job)
         job.start()
         Logger.log(`job ${name} added at ${interval}`)

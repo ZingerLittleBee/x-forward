@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
+import { IsPort, ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
+import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
 import {
     enumToString,
     getValuesOfEnum,
@@ -10,15 +11,22 @@ import {
     StreamTipsEnum,
     TimeUnitEnum
 } from '@x-forward/shared'
-import { IsPort } from '@x-forward/common'
-import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator'
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
+import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
+import { ClientEntity } from '../../client/entity/client.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
-import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
+    @IsOptional()
+    @IsString()
+    @AutoMap({ typeFn: () => ClientEntity })
+    @ApiProperty()
+    @OneToOne(() => ClientEntity)
+    @JoinColumn()
+    clinetId?: string
+
     @IsHost()
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.TransitHost })
