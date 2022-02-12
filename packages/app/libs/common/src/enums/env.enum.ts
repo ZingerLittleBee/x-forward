@@ -18,9 +18,6 @@ export enum EnvKeyEnum {
     // stream log path
     StreamLogPath = 'STREAM_LOG_PATH',
 
-    // online check interval
-    OnlineCheckCron = 'ONLINE_CHECK_CRON',
-
     // conf dir of stream, full path: prefix/${STREAM_DIR}
     StreamDir = 'STREAM_DIR',
 
@@ -36,5 +33,10 @@ export enum EnvKeyEnum {
     LogFormat = 'LOG_FORMAT_NAME',
 
     // mongo uri
-    MongoUri = 'MONGO_URI'
+    MongoUri = 'MONGO_URI',
+
+    // online check interval
+    OnlineCheckCron = 'ONLINE_CHECK_CRON',
+
+    MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS'
 }

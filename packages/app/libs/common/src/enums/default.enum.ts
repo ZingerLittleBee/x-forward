@@ -13,7 +13,13 @@ export enum DefaultEnum {
     // log format name
     LOG_FORMAT_NAME = 'stream_json',
 
-    ONLINE_CHECK_CRON = '*/5 * * * *'
+    ONLINE_CHECK_CRON = '*/5 * * * *',
+
+    // if now() > MaximumReportingInterval + lastCommunicationTime
+    // then, the client is thought to be offline
+    // esle the client is thought to be online
+    // unit is seconds
+    MAXIMUM_REPORTING_SECONDS = 300
 }
 
 export enum DefaultTimeEnum {
