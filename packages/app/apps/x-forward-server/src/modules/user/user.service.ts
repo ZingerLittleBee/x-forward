@@ -15,7 +15,11 @@ export class UserService {
         return this.userRepository.findOne({ username, password })
     }
 
-    findAll(): Promise<UserEntity[]> {
+    async findOne(username: string) {
+        return this.userRepository.findOne({ username })
+    }
+
+    async findAll(): Promise<UserEntity[]> {
         return this.userRepository.find()
     }
 

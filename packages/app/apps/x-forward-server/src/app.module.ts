@@ -13,6 +13,7 @@ import { UsageModule } from './modules/usage/usage.module'
 import { UserModule } from './modules/user/user.module'
 import { ScheduleModule } from '@nestjs/schedule'
 import { ClientModule } from './modules/client/client.module'
+import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
@@ -36,7 +37,8 @@ import { ClientModule } from './modules/client/client.module'
         ServerModule,
         LogsModule,
         UsageModule,
-        ClientModule
+        ClientModule,
+        AuthModule
     ]
 })
 export class AppModule {}
