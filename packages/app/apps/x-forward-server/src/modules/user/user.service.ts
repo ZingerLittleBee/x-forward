@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
+import { RoleEnum } from '@x-forward/shared'
 import { Repository } from 'typeorm'
 import { LoginUserDto } from './user.dto'
 import { UserEntity } from './user.entity'
@@ -15,8 +16,27 @@ export class UserService {
         return this.userRepository.findOne({ username, password })
     }
 
-    async findOne(username: string) {
-        return this.userRepository.findOne({ username })
+    // async findOne(username: string) {
+    //     return this.userRepository.findOne({ username })
+    // }
+
+    private readonly users = [
+        {
+            userId: 1,
+            role: RoleEnum.User,
+            username: 'john',
+            password: 'changeme'
+        },
+        {
+            userId: 2,
+            role: RoleEnum.Admin,
+            username: 'maria',
+            password: 'guess'
+        }
+    ]
+
+    async findOne(username: string): Promise<UserEntity | undefined> {
+        return this.users.find(user => user.username === username)
     }
 
     async findAll(): Promise<UserEntity[]> {

@@ -23,7 +23,7 @@ export class EventService implements OnModuleInit {
         this.triggerClientPortAdd = eventThrottle(this.eventEmitter, EventEnum.CLIENT_PORT_ADD, 5000)
         this.triggerClientPortRemove = eventThrottle(this.eventEmitter, EventEnum.CLIENT_PORT_REMOVE, 5000)
         Logger.log(
-            `${EventEnum.CONFIG_CREATE}, ${EventEnum.CONFIG_UPDATE}, ${EventEnum.CONFIG_DELETE}, ${EventEnum.CLIENT_LISTEN_ADD}, ${EventEnum.CLIENT_LISTEN_REMOVE} registered`
+            `${EventEnum.CONFIG_CREATE}, ${EventEnum.CONFIG_UPDATE}, ${EventEnum.CONFIG_DELETE}, ${EventEnum.CLIENT_PORT_ADD}, ${EventEnum.CLIENT_PORT_REMOVE} registered`
         )
     }
 }
