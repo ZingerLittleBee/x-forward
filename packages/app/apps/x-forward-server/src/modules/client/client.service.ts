@@ -18,8 +18,11 @@ export class ClientService implements OnModuleInit {
 
     private async onlineCheck() {
         Logger.verbose('online checking...')
-        console.log('this.findAll()', this.findAll())
         const clients = await this.findAll()
+        if (clients?.length === 0) {
+            Logger.warn(`本次 onlineCheck 结束, 不存在 clients`)
+            return
+        }
         const maximumReportingSeconds = getEnvSetting(EnvKeyEnum.MaximumReportingSeconds)
         const needUpdateOnlineClients = clients.filter(c => {
             const maxReportTime = moment(c.lastCommunicationTime).add(maximumReportingSeconds, 's')
@@ -43,11 +46,11 @@ export class ClientService implements OnModuleInit {
     }
 
     onModuleInit(): any {
-        this.addCronJob('OnlineCheck', this.onlineCheck, getEnvSetting(EnvKeyEnum.OnlineCheckCron))
+        this.addCronJob('OnlineCheck', () => this.onlineCheck(), getEnvSetting(EnvKeyEnum.OnlineCheckCron))
     }
 
     private addCronJob(name: string, task: () => void, interval: string) {
-        const job = new CronJob(interval, task)
+        const job = new CronJob(interval, task, null, null, null, null, true)
         this.schedulerRegistry.addCronJob(name, job)
         job.start()
         Logger.log(`job ${name} added at ${interval}`)
