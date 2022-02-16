@@ -54,3 +54,11 @@ export const fetchNginxConfigArgs = (nginxInfo: string): NginxConfig => {
         module: moduleConfig
     }
 }
+
+export const getOrSet = async (cacheManager: Cache, key: string, fetchFunc?: () => Promise<any>) => {
+    const getFromCache = await cacheManager.get(key)
+    if (getFromCache) return getFromCache
+    const fetchValue = await fetchFunc()
+    await cacheManager.set(key, fetchValue)
+    return fetchValue
+}

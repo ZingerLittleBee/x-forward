@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
-import { RenderModel } from '@x-forward/render/render.interface'
-import { RenderService } from '@x-forward/render'
 import { ExecutorService } from '@x-forward/executor'
-import { ExecutorGatewayApi } from './interface/gateway.interface'
+import { RenderService } from '@x-forward/render'
+import { RenderModel } from '@x-forward/render/render.interface'
+import { ExecutorGatewayApi } from '../interface/gateway.interface'
 
 @Injectable()
 export class ExecutorGatewayService implements ExecutorGatewayApi {

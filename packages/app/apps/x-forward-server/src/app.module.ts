@@ -1,9 +1,15 @@
-import { CacheModule, Module } from '@nestjs/common'
+import { Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
 import { ScheduleModule } from '@nestjs/schedule'
 import { AppController } from './app.controller'
 import { AuthModule } from './auth/auth.module'
-import { AutomapperRegister, EventEmitterRegister, MongoRegister, TypeOrmRegister } from './config/register.config'
+import {
+    AutomapperRegister,
+    CacheRegister,
+    EventEmitterRegister,
+    MongoRegister,
+    TypeOrmRegister
+} from './config/register.config'
 import { ConfigChangeModule } from './event/config/config-change.module'
 import { ClientModule } from './modules/client/client.module'
 import { EnvModule } from './modules/env/env.module'
@@ -22,7 +28,7 @@ import { UserModule } from './modules/user/user.module'
         MongoRegister(),
         AutomapperRegister(),
         EventEmitterRegister(),
-        CacheModule.register(),
+        CacheRegister(),
         ConfigModule.forRoot({
             isGlobal: true
         }),

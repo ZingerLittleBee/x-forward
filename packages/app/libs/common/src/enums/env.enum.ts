@@ -40,3 +40,13 @@ export enum EnvKeyEnum {
 
     MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS'
 }
+
+export enum CommonEnvKeyEnum {
+    CommunicationKey = 'COMMUNICATION_KEY',
+    Port = 'PORT'
+}
+
+export enum ClientEnvKeyEnum {
+    // -------------------- Client default value --------------------
+    ServerUrl = 'SERVER_URL'
+}

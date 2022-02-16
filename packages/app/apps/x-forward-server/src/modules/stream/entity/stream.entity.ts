@@ -16,16 +16,25 @@ import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { ClientEntity } from '../../client/entity/client.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
+import { UserEntity } from '../../user/user.entity'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
+    @IsOptional()
+    @IsString()
+    @AutoMap({ typeFn: () => UserEntity })
+    @ApiProperty()
+    @OneToOne(() => UserEntity)
+    @JoinColumn()
+    userId: string
+
     @IsOptional()
     @IsString()
     @AutoMap({ typeFn: () => ClientEntity })
     @ApiProperty()
     @OneToOne(() => ClientEntity)
     @JoinColumn()
-    clinetId?: string
+    clientId?: string
 
     @IsHost()
     @AutoMap()

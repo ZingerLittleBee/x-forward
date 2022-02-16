@@ -22,6 +22,15 @@ export enum DefaultEnum {
     MAXIMUM_REPORTING_SECONDS = 300
 }
 
+export enum CommonDefauleEnum {
+    COMMUNICATION_KEY = 'sdzxcgewqewq',
+    PORT = '3000'
+}
+
+export enum ClientDefaultEnum {
+    SERVER_URL = 'http://localhost:3000'
+}
+
 export enum DefaultTimeEnum {
     NumberDaysOfMonth = 30
 }

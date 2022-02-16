@@ -64,6 +64,10 @@ export class ClientService implements OnModuleInit {
         return this.clientRepository.findOne(id)
     }
 
+    async getByIp(ip: string) {
+        return this.clientRepository.findOne({ ip })
+    }
+
     async findAll() {
         return this.clientRepository.find()
     }

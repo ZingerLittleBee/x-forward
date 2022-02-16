@@ -9,6 +9,7 @@ import { CommonEntity } from '../../../common/common.entity'
 @Entity('client')
 export class ClientEntity extends CommonEntity {
     @AutoMap()
+    @IsOptional()
     @IsHost()
     @ApiProperty()
     @Column({ type: 'varchar' })

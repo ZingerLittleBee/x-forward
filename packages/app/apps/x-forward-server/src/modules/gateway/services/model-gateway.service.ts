@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { omit } from 'lodash'
-import { StreamService } from '../stream/stream.service'
-import { UpstreamService } from '../upstream/upstream.service'
-import { ModelGatewayApi } from './interface/gateway.interface'
+import { StreamService } from '../../stream/stream.service'
+import { UpstreamService } from '../../upstream/upstream.service'
+import { ModelGatewayApi } from '../interface/gateway.interface'
 
 @Injectable()
 export class ModelGatewayService implements ModelGatewayApi {

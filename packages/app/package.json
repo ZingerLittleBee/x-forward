@@ -44,6 +44,7 @@
     "@nestjs/websockets": "^8.3.0",
     "@x-forward/shared": "workspace:*",
     "@x-forward/view": "workspace:^0.0.1",
+    "axios": "^0.26.0",
     "better-sqlite3": "^7.5.0",
     "cache-manager": "^3.6.0",
     "class-transformer": "^0.5.1",

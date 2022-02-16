@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { ExecutorService } from '@x-forward/executor'
-import { QueryGatewayApi } from './interface/gateway.interface'
+import { QueryGatewayApi } from '../interface/gateway.interface'
 
 @Injectable()
 export class QueryGatewayService implements QueryGatewayApi {
