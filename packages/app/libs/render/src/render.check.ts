@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common'
-import { EnvEnum } from '@x-forward/common/enums'
+import { EnvKeyEnum } from '@x-forward/common/enums'
 import { getEnvSetting } from '@x-forward/common/utils'
 import { setServers } from 'dns'
 import { lookup } from 'dns/promises'
@@ -7,12 +7,12 @@ import { inspect } from 'util'
 import { RenderModel } from './render.interface'
 
 export const dnsCheck = async ({ servers, upstreams }: RenderModel) => {
-    if (getEnvSetting(EnvEnum.DNS_SERVERS)) {
+    if (getEnvSetting(EnvKeyEnum.DnsServers)) {
         try {
-            setServers(JSON.parse(getEnvSetting(EnvEnum.DNS_SERVERS)))
-            Logger.verbose(`DNS Server 设置为: ${JSON.parse(getEnvSetting(EnvEnum.DNS_SERVERS))}`)
+            setServers(JSON.parse(getEnvSetting(EnvKeyEnum.DnsServers)))
+            Logger.verbose(`DNS Server 设置为: ${JSON.parse(getEnvSetting(EnvKeyEnum.DnsServers))}`)
         } catch (e) {
-            Logger.warn(`DNS: ${getEnvSetting(EnvEnum.DNS_SERVERS)}, 设置失败, 请检查是否满足 JSON 格式`)
+            Logger.warn(`DNS: ${getEnvSetting(EnvKeyEnum.DnsServers)}, 设置失败, 请检查是否满足 JSON 格式`)
         }
     }
     const parseMap = new Map()

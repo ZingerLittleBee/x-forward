@@ -5,7 +5,7 @@ import { history } from 'umi'
 import RightContent from '@/components/RightContent'
 import Footer from '@/components/Footer'
 import { io, Socket } from 'socket.io-client'
-import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/x-forward-frontend/env'
+import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/view/env'
 import { message } from 'antd'
 import type { RequestConfig } from '@@/plugin-request/request'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment

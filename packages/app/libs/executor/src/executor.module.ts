@@ -2,7 +2,7 @@ import { CacheModule, Module } from '@nestjs/common'
 import { ExecutorService } from './executor.service'
 
 @Module({
-    imports: [CacheModule.register({ ttl: 0 })],
+    imports: [CacheModule.register({ ttl: 0, isGlobal: true })],
     providers: [ExecutorService],
     exports: [ExecutorService]
 })
@@ -14,7 +14,7 @@ export class ExecutorModule {}
 //         providers.push({
 //             provide: ENV_EXECUTOR,
 //             useClass:
-//                 options === EnvEnum.DOCKER_CONTAINER_NAME
+//                 options === EnvEnum.DockerContainerName
 //                     ? ExecutorDocker
 //                     : ExecutorLocal
 //         })

@@ -24,26 +24,34 @@ http {
 
 export const streamBlock = `
 stream {
-    log_format stream_json escape=json
-    '{'
-      '"time_local":"$time_local",'
-      '"server_port":"$server_port",'
-      '"remote_addr":"$remote_addr",'
-      '"remote_port":"$remote_port",'
-      '"protocol": "$protocol",'
-      '"status": "$status",'
-      '"bytes_sent": "$bytes_sent",'
-      '"bytes_received": "$bytes_received",'
-      '"session_time": "$session_time",'
-      '"upstream_addr": "$upstream_addr",'
-      '"upstream_bytes_sent": "$upstream_bytes_sent",'
-      '"upstream_bytes_received": "$upstream_bytes_received",'
-      '"upstream_connect_time": "$upstream_connect_time",'
-      '"upstream_session_time": "$upstream_session_time"'
-    '}';
-    access_log /var/log/nginx/stream/stream-access.log stream_json;
+    log_format {{logFormat}} '$server_port ' '$remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_local';
+    access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
     include {{streamDir}}/*.conf;
 }`
+
+// export const streamBlock = `
+// stream {
+//     log_format {{logFormat}} escape=json
+//     '{'
+//       '"time_local":"$time_local",'
+//       '"server_port":"$server_port",'
+//       '"remote_addr":"$remote_addr",'
+//       '"remote_port":"$remote_port",'
+//       '"protocol": "$protocol",'
+//       '"status": "$status",'
+//       '"bytes_sent": "$bytes_sent",'
+//       '"bytes_received": "$bytes_received",'
+//       '"session_time": "$session_time",'
+//       '"upstream_addr": "$upstream_addr",'
+//       '"upstream_bytes_sent": "$upstream_bytes_sent",'
+//       '"upstream_bytes_received": "$upstream_bytes_received",'
+//       '"upstream_connect_time": "$upstream_connect_time",'
+//       '"upstream_session_time": "$upstream_session_time"'
+//     '}';
+
+//     access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
+//     include {{streamDir}}/*.conf;
+// }`
 
 export const streamInclude = `
     include {{streamDir}}/*.conf;`

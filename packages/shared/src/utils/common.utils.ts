@@ -16,6 +16,7 @@ export function isFalse(v: any): boolean {
 
 /**
  * Check if value is primitive.
+ * @param value value
  */
 export function isPrimitive(value: any): boolean {
     return (

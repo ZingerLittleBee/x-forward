@@ -387,7 +387,6 @@ _roadhog-api-doc
 **/dist
 
 # misc
-.DS_Store
 npm-debug.log*
 yarn-error.log
 
@@ -400,7 +399,6 @@ package-lock.json
 
 # visual studio code
 .history
-*.log
 functions/*
 .temp/**
 

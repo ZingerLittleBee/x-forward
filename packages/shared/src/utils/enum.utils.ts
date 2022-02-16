@@ -1,3 +1,8 @@
+/**
+ * get key by value in enum
+ * @param value value in enum
+ * @param enums enum
+ */
 export const getEnumKeyByValue = (value: any, enums: any) => {
     return Object.keys(enums)
         .filter(key => {
@@ -6,7 +11,10 @@ export const getEnumKeyByValue = (value: any, enums: any) => {
         .find(l => enums[l] === value)
 }
 
-// enum to ['value: key']
+/**
+ * use for api docs desc
+ * @param enums enum
+ */
 export const enumToString = (enums: any) => {
     return Object.keys(enums)
         .filter(key => {
@@ -15,12 +23,20 @@ export const enumToString = (enums: any) => {
         .map(e => `${enums[e]}: ${e}`)
 }
 
+/**
+ * get enum values
+ * @param enums enum
+ */
 export const getValuesOfEnum = (enums: Record<string, string | number>) => {
     return Object.keys(enums)
         .filter(key => !(parseInt(key) >= 0))
         .map(e => enums[e])
 }
 
+/**
+ * get enum keys
+ * @param enums
+ */
 export const getKeysOfEnum = (enums: any) => {
     return Object.keys(enums).filter(key => !(parseInt(key) >= 0))
 }

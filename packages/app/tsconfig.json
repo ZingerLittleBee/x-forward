@@ -1,43 +1,27 @@
 {
-  "compilerOptions": {
-    "noImplicitAny": false,
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
-    "target": "es2017",
-    "sourceMap": true,
-    "outDir": "./dist",
-    "baseUrl": "./",
-    "incremental": true,
-    "skipLibCheck": true,
-    "paths": {
-      "@x-forward/common": [
-        "libs/common/src"
-      ],
-      "@x-forward/common/*": [
-        "libs/common/src/*"
-      ],
-      "@x-forward/executor": [
-        "libs/executor/src"
-      ],
-      "@x-forward/executor/*": [
-        "libs/executor/src/*"
-      ],
-      "@x-forward/render": [
-        "libs/render/src"
-      ],
-      "@x-forward/render/*": [
-        "libs/render/src/*"
-      ],
-      "@x-forward/bucket": [
-        "libs/bucket/src"
-      ],
-      "@x-forward/bucket/*": [
-        "libs/bucket/src/*"
-      ]
+    "compilerOptions": {
+        "noImplicitAny": false,
+        "module": "commonjs",
+        "declaration": true,
+        "removeComments": true,
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "allowSyntheticDefaultImports": true,
+        "target": "es2017",
+        "sourceMap": true,
+        "outDir": "./dist",
+        "baseUrl": "./",
+        "incremental": true,
+        "skipLibCheck": true,
+        "paths": {
+            "@x-forward/common": ["libs/common/src"],
+            "@x-forward/common/*": ["libs/common/src/*"],
+            "@x-forward/executor": ["libs/executor/src"],
+            "@x-forward/executor/*": ["libs/executor/src/*"],
+            "@x-forward/render": ["libs/render/src"],
+            "@x-forward/render/*": ["libs/render/src/*"],
+            "@x-forward/bucket": ["libs/bucket/src"],
+            "@x-forward/bucket/*": ["libs/bucket/src/*"]
+        }
     }
-  }
 }

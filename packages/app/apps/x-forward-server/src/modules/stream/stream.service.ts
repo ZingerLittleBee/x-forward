@@ -26,6 +26,23 @@ export class StreamService {
         return this.streamRepository.findOne(id, { loadRelationIds: true })
     }
 
+    async findByUserId(userId: string) {
+        return this.streamRepository.find({ userId })
+    }
+
+    async findByClientId(clientId: string) {
+        return this.streamRepository.find({ clientId })
+    }
+
+    async getRelationshipBetweenPortAndUserId(clientId: string) {
+        const streams = await this.findByClientId(clientId)
+        const relations: { [key: string]: number[] } = {}
+        streams?.forEach(s => {
+            relations[s.userId] ? relations[s.userId].push(s.transitPort) : (relations[s.userId] = [s.transitPort])
+        })
+        return relations
+    }
+
     /**
      * find record which fk is null
      * @returns StreamEntity[]

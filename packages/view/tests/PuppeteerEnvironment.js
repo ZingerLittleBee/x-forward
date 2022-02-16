@@ -1,5 +1,6 @@
 // eslint-disable-next-line
 const NodeEnvironment = require('jest-environment-node')
+// eslint-disable-next-line
 const getBrowser = require('./getBrowser')
 
 class PuppeteerEnvironment extends NodeEnvironment {

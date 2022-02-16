@@ -1,11 +1,11 @@
 import { Logger } from '@nestjs/common'
 import {
     dockerExec,
-    EnvEnum,
+    EnvKeyEnum,
     fetchNginxConfigArgs,
     getEnvSetting,
     getNginxCache,
-    MakesureDirectoryExists,
+    MakeSureDirectoryExists,
     NginxConfigArgsEnum,
     NginxConfigArgsReflectEnum,
     RemoveEndOfLine,
@@ -21,7 +21,7 @@ import { NginxConfig } from '@x-forward/executor/interfaces'
 import { NginxStatus } from '@x-forward/executor/interfaces'
 
 export class ExecutorDocker implements IExecutor {
-    constructor(private containerName: string, private cacheManager: Cache) {
+    constructor(private readonly containerName: string, private readonly cacheManager: Cache) {
         this.containerName = containerName
         this.cacheManager = cacheManager
     }
@@ -67,7 +67,7 @@ export class ExecutorDocker implements IExecutor {
         }
         const { res: serviceStatus } = await dockerExec(this.containerName, cmd, 'nginx', ServiceEnum.STATUS)
         console.log('serviceStatus', serviceStatus)
-        const active = serviceStatus.match(/(?<=Active\:\s)(.*\))/)?.[0]
+        const active = serviceStatus.match(/(?<=Active:\s)(.*\))/)?.[0]
         active && (status.active = active)
         const uptime = serviceStatus.match(/(?<=;\s).*ago/)?.[0]
         uptime && (status.uptime = uptime)
@@ -103,7 +103,7 @@ export class ExecutorDocker implements IExecutor {
     async getNginxBin() {
         const nginxBinInCache = (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.SBIN_PATH]?.value
         if (nginxBinInCache) return nginxBinInCache
-        const nginxBinInEnv = getEnvSetting[EnvEnum.NGINX_BIN]
+        const nginxBinInEnv = getEnvSetting[EnvKeyEnum.NginxBin]
         if (nginxBinInEnv) return nginxBinInEnv
         const { res } = await dockerExec(this.containerName, ShellEnum.WHICH, 'nginx')
         if (!res) throw new Error('找不到 nginx 执行目录')
@@ -113,7 +113,7 @@ export class ExecutorDocker implements IExecutor {
     async getNginxConfigArgs() {
         const nginxConfigArgsInCache = await getNginxCache(this.cacheManager)
         if (nginxConfigArgsInCache) return nginxConfigArgsInCache
-        return fetchNginxConfigArgs(await this.getNginxVersion(), this.cacheManager)
+        return fetchNginxConfigArgs(await this.getNginxVersion())
     }
 
     async mainConfigAppend(appendString: string) {
@@ -140,10 +140,10 @@ export class ExecutorDocker implements IExecutor {
         return (await getNginxCache(this.cacheManager))?.args[NginxConfigArgsEnum.CONF_PATH].value
     }
 
-    @MakesureDirectoryExists(true)
+    @MakeSureDirectoryExists(true)
     async getStreamDirectory() {
-        Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${getEnvSetting(EnvEnum.STREAM_DIR)}`)
-        return join(await this.getPrefix(), getEnvSetting(EnvEnum.STREAM_DIR))
+        Logger.verbose(`nginx prefix: ${await this.getPrefix()}, stream_dir: ${getEnvSetting(EnvKeyEnum.StreamDir)}`)
+        return join(await this.getPrefix(), getEnvSetting(EnvKeyEnum.StreamDir))
     }
 
     async getStreamConfigPath() {

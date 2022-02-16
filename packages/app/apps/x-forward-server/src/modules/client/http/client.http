@@ -1,0 +1,8 @@
+### Register
+POST http://localhost:3000/client
+Content-Type: application/json
+
+{
+    "ip": "12.34.123.41",
+    "domain": "abc.com"
+}

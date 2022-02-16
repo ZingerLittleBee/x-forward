@@ -5,11 +5,12 @@ import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form'
 import { useIntl, Link, history, FormattedMessage, SelectLang } from 'umi'
 import Footer from '@/components/Footer'
 import figlet from 'figlet'
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import standard from 'figlet/importable-fonts/Standard.js'
 
 import styles from './index.less'
-import { UserControllerLogin } from '@/services/x-forward-frontend/user'
+import { UserControllerLogin } from '@/services/view/user'
 
 figlet.parseFont('Standard', standard)
 

@@ -3,6 +3,7 @@ import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { Repository } from 'typeorm/repository/Repository'
 import { UserEntity } from '../user.entity'
 import { UserService } from '../user.service'
+import { RoleEnum } from '@x-forward/shared'
 
 describe('UserService', () => {
     let userService: UserService
@@ -34,7 +35,8 @@ describe('UserService', () => {
 
     const user: UserEntity = {
         username: 'zhangsan',
-        password: 'password'
+        password: 'password',
+        role: RoleEnum.User
     }
 
     describe('create', () => {

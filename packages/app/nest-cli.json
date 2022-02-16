@@ -1,69 +1,67 @@
 {
-  "collection": "@nestjs/schematics",
-  "sourceRoot": "apps/x-forward-server/src",
-  "compilerOptions": {
-    "plugins": [
-      "@nestjs/swagger"
-    ],
-    "webpack": true,
-    "tsConfigPath": "apps/x-forward-server/tsconfig.app.json"
-  },
-  "monorepo": true,
-  "root": "apps/x-forward-server",
-  "projects": {
-    "x-forward-server": {
-      "type": "application",
-      "root": "apps/x-forward-server",
-      "entryFile": "main",
-      "sourceRoot": "apps/x-forward-server/src",
-      "compilerOptions": {
+    "collection": "@nestjs/schematics",
+    "sourceRoot": "apps/x-forward-server/src",
+    "compilerOptions": {
+        "plugins": ["@nestjs/swagger"],
+        "webpack": true,
         "tsConfigPath": "apps/x-forward-server/tsconfig.app.json"
-      }
     },
-    "x-forward-client": {
-      "type": "application",
-      "root": "apps/x-forward-client",
-      "entryFile": "main",
-      "sourceRoot": "apps/x-forward-client/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/x-forward-client/tsconfig.app.json"
-      }
-    },
-    "common": {
-      "type": "library",
-      "root": "libs/common",
-      "entryFile": "index",
-      "sourceRoot": "libs/common/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/common/tsconfig.lib.json"
-      }
-    },
-    "executor": {
-      "type": "library",
-      "root": "libs/executor",
-      "entryFile": "index",
-      "sourceRoot": "libs/executor/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/executor/tsconfig.lib.json"
-      }
-    },
-    "render": {
-      "type": "library",
-      "root": "libs/render",
-      "entryFile": "index",
-      "sourceRoot": "libs/render/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/render/tsconfig.lib.json"
-      }
-    },
-    "bucket": {
-      "type": "library",
-      "root": "libs/bucket",
-      "entryFile": "index",
-      "sourceRoot": "libs/bucket/src",
-      "compilerOptions": {
-        "tsConfigPath": "libs/bucket/tsconfig.lib.json"
-      }
+    "monorepo": true,
+    "root": "apps/x-forward-server",
+    "projects": {
+        "x-forward-server": {
+            "type": "application",
+            "root": "apps/x-forward-server",
+            "entryFile": "main",
+            "sourceRoot": "apps/x-forward-server/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/x-forward-server/tsconfig.app.json"
+            }
+        },
+        "x-forward-client": {
+            "type": "application",
+            "root": "apps/x-forward-client",
+            "entryFile": "main",
+            "sourceRoot": "apps/x-forward-client/src",
+            "compilerOptions": {
+                "tsConfigPath": "apps/x-forward-client/tsconfig.app.json"
+            }
+        },
+        "common": {
+            "type": "library",
+            "root": "libs/common",
+            "entryFile": "index",
+            "sourceRoot": "libs/common/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/common/tsconfig.lib.json"
+            }
+        },
+        "executor": {
+            "type": "library",
+            "root": "libs/executor",
+            "entryFile": "index",
+            "sourceRoot": "libs/executor/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/executor/tsconfig.lib.json"
+            }
+        },
+        "render": {
+            "type": "library",
+            "root": "libs/render",
+            "entryFile": "index",
+            "sourceRoot": "libs/render/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/render/tsconfig.lib.json"
+            }
+        },
+        "bucket": {
+            "type": "library",
+            "root": "libs/bucket",
+            "entryFile": "index",
+            "sourceRoot": "libs/bucket/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/bucket/tsconfig.lib.json"
+            }
+        }
     }
-  }
 }

@@ -6,6 +6,7 @@
 </div>
 
 ## Introduction
+
 ### Features
 
 -   Friendly UI
@@ -50,9 +51,11 @@ TODO
 ## Snapshot
 
 ### 模块管理
+
 ![module](./snapshot/module.png)
 
 ### 本地终端
+
 ![local terminal](./snapshot/terminal.png)
 
 ### Stream 模块
@@ -61,6 +64,7 @@ TODO
 ![stream-modify](./snapshot/modify-stream.png)
 
 ### Upstream 模块
+
 ![upstream](./snapshot/upstream.png)
 ![upstream-modify](./snapshot/modify-upstream.png)
 

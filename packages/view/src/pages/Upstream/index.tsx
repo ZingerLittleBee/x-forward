@@ -1,11 +1,7 @@
 import UpstreamModel from '@/components/UpstreamModel'
 import { StateEnum } from '@x-forward/shared'
 import { ServerEnum } from '@x-forward/shared'
-import {
-    UpstreamControllerCreate,
-    UpstreamControllerFindAll,
-    UpstreamControllerRemove
-} from '@/services/x-forward-frontend/upstream'
+import { UpstreamControllerCreate, UpstreamControllerFindAll, UpstreamControllerRemove } from '@/services/view/upstream'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import ProTable, { ProColumns } from '@ant-design/pro-table'
 import { LoadBalancingEnum } from '@x-forward/shared'

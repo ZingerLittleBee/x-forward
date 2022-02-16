@@ -6,13 +6,13 @@ import { RenderModule } from '@x-forward/render'
 import { Repository } from 'typeorm'
 import { AutomapperRegister, EventEmitterRegister, TypeOrmRegister } from '../../../config/register.config'
 import { EventModule } from '../../event/event.module'
+import { ServerEntity } from '../../server/entity/server.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
 import { StreamModule } from '../../stream/stream.module'
-import { ServerEntity } from '../../server/entity/server.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
 import { UpstreamModule } from '../../upstream/upstream.module'
 import { UpstreamService } from '../../upstream/upstream.service'
-import { ModelGatewayService } from '../model-gateway.service'
+import { ModelGatewayService } from '../services/model-gateway.service'
 
 describe('GatewayService', () => {
     describe('ModelGatewayService', () => {
@@ -59,6 +59,7 @@ describe('GatewayService', () => {
                 ],
                 stream: [
                     {
+                        userId: 'userId1',
                         transitHost: 'aereqbv.com',
                         transitPort: 1111,
                         remoteHost: 'baidu.com',
@@ -74,6 +75,7 @@ describe('GatewayService', () => {
                         proxyTimeout: '2s'
                     },
                     {
+                        userId: 'userId1',
                         transitHost: 'aereqbv.com',
                         transitPort: 1111,
                         remoteHost: 'baidu.com',

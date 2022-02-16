@@ -40,6 +40,7 @@ export class StreamController {
 
     /**
      * 更新 stream 规则的可用状态
+     * @param id id
      * @param state state
      */
     @Post(':id/state')
@@ -51,6 +52,7 @@ export class StreamController {
 
     /**
      * update upstreamId by StreamId
+     * @param id id
      * @param upstreamId upstreamId
      */
     @Patch(':id/upstream_id')
@@ -71,7 +73,7 @@ export class StreamController {
 
     /**
      * 根据 stream id 更新所有 stream
-     * @param streamEntity 要更新的内容, 不存在的属性保持默认
+     * @param streams
      */
     @Patch()
     @ApiResultResponse()
