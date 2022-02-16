@@ -21,16 +21,21 @@
 
 ## Table of Contents
 
--   [Introduction](#introduction)
-    -   [Features](#features)
--   [Getting Started](#getting-started)
-    -   [Prerequisites](#prerequisites)
-    -   [Installation](#installation)
--   [Snapshot](#snapshot)
--   [Roadmap](#roadmap)
--   [How to Develop](#how-to-develop)
--   [Thanks](#thanks)
--   [Change Logs](#change-logs)
+- [Introduction](#introduction)
+  - [Features](#features)
+- [Table of Contents](#table-of-contents)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+- [Snapshot](#snapshot)
+  - [模块管理](#模块管理)
+  - [本地终端](#本地终端)
+  - [Stream 模块](#stream-模块)
+  - [Upstream 模块](#upstream-模块)
+- [Roadmap](#roadmap)
+- [How to Develop](#how-to-develop)
+- [Thanks](#thanks)
+- [Change Logs](#change-logs)
 
 ## Getting Started
 
@@ -136,3 +141,12 @@ The following are the features I want to achieve or are under development:
 -   2021-12-30: stripping common components
 -   2022-01-04: create executor lib
 -   2022-01-05: create lib render
+-   2022-01-10: add action of editor and delete on upstream page
+-   2022-01-14: handle possible undefined
+-   2022-01-15: update logo and favicon
+-   2022-01-16: add field validator
+-   2022-01-16: add param verify in api
+-   2022-01-25: use mongo to store nginx logs
+-   2022-02-07: add logs and client module
+-   2022-02-15: use jwt to auth
+-   2022-02-16: add register module on client
