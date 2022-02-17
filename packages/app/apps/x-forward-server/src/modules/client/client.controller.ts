@@ -1,5 +1,5 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
-import { Body, Controller, Get, HostParam, Ip, Logger, Param, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Get, Ip, Param, Post, UseInterceptors } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import * as moment from 'moment'
@@ -30,16 +30,10 @@ export class ClientController {
 
     @Post('register')
     @ApiResultResponse('string')
-    async register(
-        @Body(MapPipe(ClientEntity, CreateClientDto)) client: CreateClientDto,
-        @Ip() ip: string,
-        @HostParam() host: string
-    ) {
+    async register(@Body(MapPipe(ClientEntity, CreateClientDto)) client: CreateClientDto) {
         if (!client.lastCommunicationTime) {
             client.lastCommunicationTime = moment().toDate()
         }
-        Logger.debug(`ip: ${ip}, host: ${host}`)
-        client = { ip, domain: host, ...client }
         return Result.okData({ id: (await this.clientService.register(client as ClientEntity))?.id })
     }
 }

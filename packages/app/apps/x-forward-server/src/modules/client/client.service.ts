@@ -6,6 +6,7 @@ import { IsOrNotEnum } from '@x-forward/shared'
 import { CronJob } from 'cron'
 import * as moment from 'moment'
 import { Repository } from 'typeorm'
+import { inspect } from 'util'
 import { ClientEntity } from './entity/client.entity'
 
 @Injectable()
@@ -38,7 +39,7 @@ export class ClientService implements OnModuleInit {
             isOnline: n.isOnline ? IsOrNotEnum.False : IsOrNotEnum.True
         }))
         if (needUpdateEntity.length > 0) {
-            Logger.verbose(`clients 状态需要更新为: ${needUpdateEntity}`)
+            Logger.verbose(`clients 状态需要更新为: ${inspect(needUpdateEntity)}`)
             this.updateOnlineBatch(needUpdateEntity as ClientEntity[])
         } else {
             Logger.verbose(`clients 状态无需更新`)

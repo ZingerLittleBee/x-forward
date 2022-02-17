@@ -1,5 +1,5 @@
+import { domainRegExp, getValuesOfEnum, ipRegExp, unitRegExp } from '@x-forward/shared'
 import { registerDecorator, ValidationOptions } from 'class-validator'
-import { ipRegExp, domainRegExp, getValuesOfEnum, unitRegExp } from '@x-forward/shared'
 
 export function IsHost(validationOptions?: ValidationOptions) {
     return function (object: unknown, propertyName: string) {
@@ -24,10 +24,13 @@ export function IsPort(validationOptions?: ValidationOptions) {
             name: 'isPort',
             target: object.constructor,
             propertyName: propertyName,
-            options: { message: `${propertyName} must be number and range in 0 to 65535`, ...validationOptions },
+            options: {
+                message: `${propertyName} must be number or string and range in 0 to 65535`,
+                ...validationOptions
+            },
             validator: {
                 validate(value: any) {
-                    if (typeof value !== 'number') return false
+                    if (typeof value !== 'number' && typeof value !== 'string') return false
                     return Number(value) <= 65535 && Number(value) >= 0
                 }
             }

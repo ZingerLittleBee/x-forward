@@ -46,7 +46,7 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.TransitPort })
     @Column({ name: 'transit_port', type: 'int', nullable: true })
-    transitPort?: number
+    transitPort?: string | number
 
     @IsHost()
     @AutoMap()
@@ -59,7 +59,7 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RemotePort })
     @Column({ name: 'remote_port', type: 'int', nullable: true })
-    remotePort?: number
+    remotePort?: string | number
 
     @IsOptional()
     @IsEnum(StatusEnum)

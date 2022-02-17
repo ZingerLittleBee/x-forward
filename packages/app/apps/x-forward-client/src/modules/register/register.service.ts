@@ -8,12 +8,22 @@ import UrlEnum from '../../enums/url.enum'
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
-    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache, private readonly httpService: HttpService) {}
-
-    private client: { id: string }
+    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache, private readonly httpService: HttpService) {
+        this.client = {}
+    }
 
     onModuleInit() {
         this.register()
+    }
+
+    private client: { id?: string; ip?: string; domain?: string }
+
+    private initClient() {}
+
+    getClientIp() {
+        const envIp = getEnvSetting(ClientEnvKeyEnum.ClientIp)
+        if (!envIp) {
+        }
     }
 
     async getPortAndUserRelations() {}
@@ -22,9 +32,10 @@ export class RegisterService implements OnModuleInit {
         const client: CreateClientDto = {
             communicationPort: 3000
         }
-        this.httpService
-            .post<{ id: string }>(UrlEnum.Register, client)
-            .subscribe(axiosResponse => (this.client.id = axiosResponse?.data?.id))
+        this.httpService.post<{ data: { id: string } }>(UrlEnum.Register, { data: client }).subscribe(axiosResponse => {
+            this.client.id = axiosResponse?.data?.data?.id
+            console.log('clientId: ', this.client.id)
+        })
     }
 
     async getClientId() {

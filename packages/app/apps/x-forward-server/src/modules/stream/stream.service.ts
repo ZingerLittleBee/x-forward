@@ -36,7 +36,7 @@ export class StreamService {
 
     async getRelationshipBetweenPortAndUserId(clientId: string) {
         const streams = await this.findByClientId(clientId)
-        const relations: { [key: string]: number[] } = {}
+        const relations: { [key: string]: (string | number)[] } = {}
         streams?.forEach(s => {
             relations[s.userId] ? relations[s.userId].push(s.transitPort) : (relations[s.userId] = [s.transitPort])
         })

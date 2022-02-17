@@ -4,7 +4,7 @@ import { LoadBalancingEnum } from '@x-forward/shared'
 // 为了配置项的一目了然, 这里还是遵循 nginx 的下划线写法吧
 export interface StreamServer {
     protocol?: ProtocolEnum
-    listen_port: number
+    listen_port: string | number
     // 失败重试
     proxy_next_upstream?: 'on' | 'off'
     proxy_next_upstream_timeout?: string
@@ -29,7 +29,7 @@ export interface StreamUpstream {
 
 export interface UpstreamServer {
     upstream_host: string
-    upstream_port: number
+    upstream_port: string | number
     // 设置服务器的权重，默认情况下为 1。
     weight?: number
     // 限制到被代理服务器的最大同时连接数（1.11.5）。默认值为零，表示没有限制。如果服务器组未驻留在共享内存中，则此限制在每个 worker 进程中均有效。
