@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { NginxConfig } from '@x-forward/executor'
-import { QueryGatewayService } from '../gateway/query-gateway.service'
+import { QueryGatewayService } from '../gateway/services/query-gateway.service'
 import { Overview } from './env.interface'
 
 @Injectable()
