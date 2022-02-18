@@ -1,41 +1,49 @@
 import { HttpService } from '@nestjs/axios'
-import { CACHE_MANAGER, Inject, Injectable, OnModuleInit } from '@nestjs/common'
-import { ClientDefaultEnum, ClientEnvKeyEnum, getEnvSetting, getOrSet } from '@x-forward/common'
-import { CreateClientDto } from 'apps/x-forward-server/src/modules/client/dto/create-client.dto'
+import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { ClientDefaultEnum, ClientEnvKeyEnum, getOrSet } from '@x-forward/common'
+import { getEnvSetting } from '@x-forward/common/utils/env.utils'
+import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
 import CacheEnum from '../../enums/cache.enum'
 import UrlEnum from '../../enums/url.enum'
+import { RegisterClientInfo } from './register.interface'
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
-    constructor(@Inject(CACHE_MANAGER) private cacheManager: Cache, private readonly httpService: HttpService) {
+    constructor(
+        @Inject(CACHE_MANAGER) private cacheManager: Cache,
+        private readonly httpService: HttpService,
+        private readonly executorService: ExecutorService
+    ) {
         this.client = {}
     }
 
-    onModuleInit() {
+    async onModuleInit() {
+        await this.initClient()
         this.register()
     }
 
-    private client: { id?: string; ip?: string; domain?: string }
+    private client: RegisterClientInfo
 
-    private initClient() {}
+    private async initClient() {
+        this.client.ip = await this.getClientIp()
+        this.client.domain = getEnvSetting(ClientEnvKeyEnum.ClientDomain)
+        this.client.communicationPort = getEnvSetting(ClientEnvKeyEnum.CommunicationPort)
+    }
 
     getClientIp() {
-        const envIp = getEnvSetting(ClientEnvKeyEnum.ClientIp)
-        if (!envIp) {
-        }
+        return this.executorService.getIp()
     }
 
     async getPortAndUserRelations() {}
 
     register() {
-        const client: CreateClientDto = {
-            communicationPort: 3000
-        }
-        this.httpService.post<{ data: { id: string } }>(UrlEnum.Register, { data: client }).subscribe(axiosResponse => {
-            this.client.id = axiosResponse?.data?.data?.id
-            console.log('clientId: ', this.client.id)
-        })
+        this.httpService
+            .post<{ data: { id: string } }>(UrlEnum.Register, { data: this.client })
+            .subscribe(axiosResponse => {
+                this.client.id = axiosResponse?.data?.data?.id
+                Logger.verbose(`register success! clientId is ${this.client.id}`)
+            })
     }
 
     async getClientId() {

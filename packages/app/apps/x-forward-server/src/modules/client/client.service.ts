@@ -58,7 +58,8 @@ export class ClientService implements OnModuleInit {
     }
 
     async register(client: ClientEntity) {
-        return this.clientRepository.save(client)
+        const registeredClient = await this.clientRepository.findOne({ ip: client.ip })
+        return registeredClient ? registeredClient.id : (await this.clientRepository.save(client)).id
     }
 
     async getById(id: string) {

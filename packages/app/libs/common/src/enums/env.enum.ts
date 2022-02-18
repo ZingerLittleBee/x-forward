@@ -49,5 +49,6 @@ export enum CommonEnvKeyEnum {
 export enum ClientEnvKeyEnum {
     ServerUrl = 'SERVER_URL',
     ClientIp = 'CLIENT_IP',
-    ClientDomain = 'CLIENT_DOMAIN'
+    ClientDomain = 'CLIENT_DOMAIN',
+    CommunicationPort = 'COMMUNICATION_PORT'
 }

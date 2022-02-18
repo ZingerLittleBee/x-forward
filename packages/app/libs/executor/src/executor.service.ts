@@ -199,4 +199,8 @@ export class ExecutorService implements OnModuleInit {
     async getNginxStreamLogPath(): Promise<string> {
         return this.cacheManager.get(EnvKeyEnum.StreamLogPath)
     }
+
+    async getIp() {
+        return this.executor.getIp()
+    }
 }

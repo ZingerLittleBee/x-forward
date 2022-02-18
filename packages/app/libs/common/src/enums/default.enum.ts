@@ -28,7 +28,8 @@ export enum CommonDefauleEnum {
 }
 
 export enum ClientDefaultEnum {
-    SERVER_URL = 'http://localhost:3000'
+    SERVER_URL = 'http://localhost:3000',
+    COMMUNICATION_PORT = 5000
 }
 
 export enum DefaultTimeEnum {

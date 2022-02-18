@@ -1,5 +1,8 @@
-import { ClientEnvKeyEnum, getEnvSetting, ShellEnum, shellExec } from '@x-forward/common'
+import { Logger } from '@nestjs/common'
+import { ClientEnvKeyEnum, ShellEnum } from '@x-forward/common'
 import { IpEnum } from '@x-forward/common/enums/config.enum'
+import { getEnvSetting } from '@x-forward/common/utils/env.utils'
+import { shellExec } from '@x-forward/common/utils/shell.utils'
 import { removeProtocol } from '@x-forward/shared'
 import { lookup } from 'dns/promises'
 import { ISystem, SystemInfo } from './interfaces'
@@ -13,17 +16,23 @@ export abstract class ExecutorAbs implements ISystem {
     async getIp(): Promise<string> {
         const { res, exitCode } = await shellExec(ShellEnum.Curl, IpEnum.IpConfig)
         if (exitCode === 0 && res) {
+            Logger.verbose(`curl ${IpEnum.IpConfig} get ip: ${res}`)
             return res
         }
+        Logger.verbose(`curl ${IpEnum.IpConfig} can not get response`)
         const clientIp = getEnvSetting(ClientEnvKeyEnum.ClientIp)
         if (clientIp) {
             return clientIp
         }
+        Logger.verbose(`can not get ip from env`)
         const clientDomain = removeProtocol(getEnvSetting(ClientEnvKeyEnum.ClientDomain))
         if (clientDomain) {
+            Logger.verbose(`get domain: ${clientDomain} from env`)
             const { address } = await lookup(clientDomain)
             if (address) return address
         }
+        Logger.verbose(`can not get ip from lookup domain: ${clientDomain}`)
+        Logger.error(`eventhing try can not get ip`)
         return undefined
     }
 }

@@ -1,5 +1,6 @@
 import { CacheModule, Module } from '@nestjs/common'
 import { ConfigModule } from '@nestjs/config'
+import { ExecutorModule } from '@x-forward/executor'
 import { LogsModule } from './modules/logs/logs.module'
 import { RegisterModule } from './modules/register/register.module'
 
@@ -9,6 +10,7 @@ import { RegisterModule } from './modules/register/register.module'
         ConfigModule.forRoot({
             isGlobal: true
         }),
+        ExecutorModule,
         RegisterModule,
         LogsModule
     ],

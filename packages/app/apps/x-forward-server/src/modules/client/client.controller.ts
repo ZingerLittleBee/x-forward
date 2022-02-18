@@ -34,6 +34,6 @@ export class ClientController {
         if (!client.lastCommunicationTime) {
             client.lastCommunicationTime = moment().toDate()
         }
-        return Result.okData({ id: (await this.clientService.register(client as ClientEntity))?.id })
+        return Result.okData({ id: await this.clientService.register(client as ClientEntity) })
     }
 }
