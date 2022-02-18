@@ -39,9 +39,8 @@ export class RegisterService implements OnModuleInit {
     }
 
     async getUserAndPortRelations() {
-        this.httpService
-            .get<IResult<UserProperty[]>>(`${EndPoint.RELATION}/${this.client.id}`)
-            .subscribe(axiosResponse => {
+        this.httpService.get<IResult<UserProperty[]>>(`${EndPoint.RELATION}/${this.client.id}`).subscribe({
+            next: axiosResponse => {
                 const { data: res } = axiosResponse
                 if (res?.success) {
                     if (res?.data?.length > 0) {
@@ -52,13 +51,17 @@ export class RegisterService implements OnModuleInit {
                     }
                 }
                 Logger.verbose(`userProperty: ${this.userProperty} updated`)
-            })
+            },
+            error: err => {
+                Logger.error(`fetch ${EndPoint.RELATION}/${this.client.id} occurred error: ${err}`)
+                setTimeout(() => this.getUserAndPortRelations(), 5000)
+            }
+        })
     }
 
     register() {
-        this.httpService
-            .post<IResult<{ id: string }>>(EndPoint.REGISTER, { data: this.client })
-            .subscribe(axiosResponse => {
+        this.httpService.post<IResult<{ id: string }>>(EndPoint.REGISTER, { data: this.client }).subscribe({
+            next: axiosResponse => {
                 const { data: res } = axiosResponse
                 if (res?.success) {
                     this.client.id = res.data?.id
@@ -69,7 +72,12 @@ export class RegisterService implements OnModuleInit {
                     }
                     Logger.error(`register error! can not get clientId`)
                 }
-            })
+            },
+            error: err => {
+                Logger.error(`fetch ${EndPoint.REGISTER} occurred error: ${err}`)
+                setTimeout(() => this.register(), 1000)
+            }
+        })
     }
 
     async getClientId() {
