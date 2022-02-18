@@ -13,20 +13,25 @@ export interface ISystem {
     /**
      * get all directory under url
      */
-    fetchDirectory: (url: string) => Promise<string>
+    fetchDirectory(url: string): Promise<string>
 
     /**
      * nginx reload to make configuartion effect
      */
-    nginxReload: () => void
+    nginxReload(): void
 
     /**
      * nginx restart
      */
-    nginxRestart: () => void
+    nginxRestart(): void
 
     /**
      * get system info
      */
-    getSystemInfo: () => Promise<SystemInfo>
+    getSystemInfo(): Promise<SystemInfo>
+
+    /**
+     * get IP
+     */
+    getIp(): Promise<string>
 }

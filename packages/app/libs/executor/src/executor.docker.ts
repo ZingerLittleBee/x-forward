@@ -12,19 +12,20 @@ import {
     ServiceEnum,
     ShellEnum
 } from '@x-forward/common'
+import { IExecutor, NginxConfig, NginxStatus } from '@x-forward/executor/interfaces'
 import { Cache } from 'cache-manager'
 import { EOL } from 'os'
 import { join } from 'path/posix'
 import { v4, validate } from 'uuid'
-import { IExecutor } from '@x-forward/executor/interfaces'
-import { NginxConfig } from '@x-forward/executor/interfaces'
-import { NginxStatus } from '@x-forward/executor/interfaces'
+import { ExecutorAbs } from './executor.abs'
 
-export class ExecutorDocker implements IExecutor {
+export class ExecutorDocker extends ExecutorAbs implements IExecutor {
     constructor(private readonly containerName: string, private readonly cacheManager: Cache) {
+        super()
         this.containerName = containerName
         this.cacheManager = cacheManager
     }
+
     async getSystemInfo() {
         const { res } = await dockerExec(
             this.containerName,

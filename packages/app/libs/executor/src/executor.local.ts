@@ -1,17 +1,19 @@
 import { Logger } from '@nestjs/common'
 import { EnvKeyEnum, NginxConfigArgsEnum, ServiceEnum, ShellEnum } from '@x-forward/common'
-import { shellExec, findSomething } from '@x-forward/common/utils/shell.utils'
 import { fetchNginxConfigArgs, getNginxCache } from '@x-forward/common/utils/cache.utils'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
+import { findSomething, shellExec } from '@x-forward/common/utils/shell.utils'
 import { IExecutor, NginxStatus } from '@x-forward/executor/interfaces'
 import { Cache } from 'cache-manager'
 import { appendFile, readdir, readFile } from 'fs/promises'
 import { EOL } from 'os'
 import { join } from 'path'
 import { v4, validate } from 'uuid'
+import { ExecutorAbs } from './executor.abs'
 
-export class ExecutorLocal implements IExecutor {
+export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     constructor(private readonly bin: string, private readonly cacheManager: Cache) {
+        super()
         this.bin = bin
         this.cacheManager = cacheManager
     }
