@@ -4,3 +4,8 @@ export interface RegisterClientInfo {
     domain?: string
     communicationPort?: string | number
 }
+
+export interface UserProperty {
+    userId: string
+    ports: (string | number)[]
+}

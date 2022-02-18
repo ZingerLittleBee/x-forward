@@ -1,20 +1,22 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { InjectRepository } from '@nestjs/typeorm'
-import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
+import { EnvKeyEnum, getEnvSetting, UserProperty } from '@x-forward/common'
 import { IsOrNotEnum } from '@x-forward/shared'
 import { CronJob } from 'cron'
 import * as moment from 'moment'
 import { Repository } from 'typeorm'
 import { inspect } from 'util'
+import { StreamService } from '../stream/stream.service'
 import { ClientEntity } from './entity/client.entity'
 
 @Injectable()
 export class ClientService implements OnModuleInit {
     constructor(
         @InjectRepository(ClientEntity)
-        private clientRepository: Repository<ClientEntity>,
-        private schedulerRegistry: SchedulerRegistry
+        private readonly clientRepository: Repository<ClientEntity>,
+        private readonly schedulerRegistry: SchedulerRegistry,
+        private readonly streamService: StreamService
     ) {}
 
     private async onlineCheck() {
@@ -85,5 +87,28 @@ export class ClientService implements OnModuleInit {
 
     updateOnlineBatch(updateEntities: ClientEntity[]) {
         return this.clientRepository.save(updateEntities)
+    }
+
+    async getRelationshipBetweenPortAndUserId(clientId: string) {
+        const streams = await this.streamService.findByClientId(clientId)
+        const relations: UserProperty[] = []
+        streams?.forEach(s => {
+            const relation = relations.find(r => {
+                r.userId === s.userId
+            })
+            if (relation) {
+                if (relation.ports) {
+                    relation.ports.push(s.transitPort)
+                } else {
+                    relation.ports = [s.transitPort]
+                }
+            } else {
+                relations.push({
+                    userId: s.userId,
+                    ports: [s.transitPort]
+                })
+            }
+        })
+        return relations
     }
 }

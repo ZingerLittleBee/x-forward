@@ -1,12 +1,12 @@
 import { HttpService } from '@nestjs/axios'
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { ClientDefaultEnum, ClientEnvKeyEnum, getOrSet } from '@x-forward/common'
+import { ClientDefaultEnum, ClientEnvKeyEnum, getOrSet, IResult } from '@x-forward/common'
+import EndPoint from '@x-forward/common/constants/endpoint.constant'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
+import { RegisterClientInfo, UserProperty } from '../../../../../libs/common/src/interfaces/register.interface'
 import CacheEnum from '../../enums/cache.enum'
-import UrlEnum from '../../enums/url.enum'
-import { RegisterClientInfo } from './register.interface'
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
@@ -16,6 +16,7 @@ export class RegisterService implements OnModuleInit {
         private readonly executorService: ExecutorService
     ) {
         this.client = {}
+        this.userProperty = []
     }
 
     async onModuleInit() {
@@ -24,6 +25,8 @@ export class RegisterService implements OnModuleInit {
     }
 
     private client: RegisterClientInfo
+
+    private userProperty: UserProperty[]
 
     private async initClient() {
         this.client.ip = await this.getClientIp()
@@ -35,14 +38,37 @@ export class RegisterService implements OnModuleInit {
         return this.executorService.getIp()
     }
 
-    async getPortAndUserRelations() {}
+    async getUserAndPortRelations() {
+        this.httpService
+            .get<IResult<UserProperty[]>>(`${EndPoint.RELATION}/${this.client.id}`)
+            .subscribe(axiosResponse => {
+                const { data: res } = axiosResponse
+                if (res?.success) {
+                    if (res?.data?.length > 0) {
+                        res.data.forEach(d => {
+                            const realtion = this.userProperty.find(u => u.userId === d.userId)
+                            if (realtion) realtion.ports = d.ports
+                        })
+                    }
+                }
+                Logger.verbose(`userProperty: ${this.userProperty} updated`)
+            })
+    }
 
     register() {
         this.httpService
-            .post<{ data: { id: string } }>(UrlEnum.Register, { data: this.client })
+            .post<IResult<{ id: string }>>(EndPoint.REGISTER, { data: this.client })
             .subscribe(axiosResponse => {
-                this.client.id = axiosResponse?.data?.data?.id
-                Logger.verbose(`register success! clientId is ${this.client.id}`)
+                const { data: res } = axiosResponse
+                if (res?.success) {
+                    this.client.id = res.data?.id
+                    if (this.client.id) {
+                        Logger.verbose(`register success! clientId is ${this.client.id}`)
+                        this.getUserAndPortRelations()
+                        return
+                    }
+                    Logger.error(`register error! can not get clientId`)
+                }
             })
     }
 
