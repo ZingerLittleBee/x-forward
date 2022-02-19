@@ -11,6 +11,9 @@ import { RegisterService } from './register.service'
             useFactory: () => {
                 return {
                     baseURL: getEnvSetting(EnvKeyEnum.ServerUrl),
+                    headers: {
+                        [EnvKeyEnum.CommunicationKey]: getEnvSetting(EnvKeyEnum.CommunicationKey)
+                    },
                     timeout: 5000,
                     maxRedirects: 5
                 }

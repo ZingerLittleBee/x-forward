@@ -9,10 +9,11 @@ import { ClientGatewayService } from './services/client-gateway.service'
 import { ExecutorGatewayService } from './services/executor-gateway.service'
 import { ModelGatewayService } from './services/model-gateway.service'
 import { QueryGatewayService } from './services/query-gateway.service'
+import { ClientProfile } from '../client/client.profile'
 
 @Module({
     imports: [ExecutorModule, RenderModule, UpstreamModule, StreamModule, ClientModule],
-    providers: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService, ClientGatewayService],
+    providers: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService, ClientGatewayService, ClientProfile],
     controllers: [ClientGatewayController],
     exports: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService, ClientGatewayService]
 })

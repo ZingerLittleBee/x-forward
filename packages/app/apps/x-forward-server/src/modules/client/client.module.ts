@@ -10,6 +10,6 @@ import { ClientEntity } from './entity/client.entity'
     imports: [TypeOrmModule.forFeature([ClientEntity]), StreamModule],
     providers: [ClientProfile, ClientService],
     controllers: [ClientController],
-    exports: [ClientService]
+    exports: [ClientService, ClientProfile]
 })
 export class ClientModule {}

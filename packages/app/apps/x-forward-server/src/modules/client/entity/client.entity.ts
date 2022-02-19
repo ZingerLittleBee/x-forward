@@ -27,7 +27,7 @@ export class ClientEntity extends CommonEntity {
     @IsPort()
     @ApiProperty()
     @Column({ type: 'tinyint', nullable: true, default: () => 3000 })
-    communicationPort?: string | number
+    port?: string | number
 
     @AutoMap()
     @IsOptional()

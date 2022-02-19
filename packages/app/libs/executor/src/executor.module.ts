@@ -1,9 +1,11 @@
 import { CacheModule, Module } from '@nestjs/common'
-import { ExecutorService } from './executor.service'
+import { ExecutorService } from './services/executor.service'
+import { ExecutorController } from '@x-forward/executor/executor.contoller'
 
 @Module({
     imports: [CacheModule.register({ ttl: 0, isGlobal: true })],
     providers: [ExecutorService],
+    controllers: [ExecutorController],
     exports: [ExecutorService]
 })
 export class ExecutorModule {}

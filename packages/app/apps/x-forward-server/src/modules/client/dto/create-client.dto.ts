@@ -11,7 +11,7 @@ export class CreateClientDto extends PartialType(ClientEntity) {
     domain?: string
 
     @AutoMap()
-    communicationPort?: string | number
+    port?: string | number
 
     @AutoMap()
     isOnline?: IsOrNotEnum

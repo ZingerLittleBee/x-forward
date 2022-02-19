@@ -5,7 +5,7 @@ import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { shellExec } from '@x-forward/common/utils/shell.utils'
 import { removeProtocol } from '@x-forward/shared'
 import { lookup } from 'dns/promises'
-import { ISystem, SystemInfo } from './interfaces'
+import { ISystem, SystemInfo } from '../interfaces'
 
 //https://stackoverflow.com/questions/44593961/why-does-abstract-class-have-to-implement-all-methods-from-interface
 export abstract class ExecutorAbs implements ISystem {

@@ -6,6 +6,8 @@ import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
 import CacheEnum from '../../enums/cache.enum'
+import { inspect } from 'util'
+import { removeInvalidField } from '@x-forward/common/utils/object.utils'
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
@@ -23,14 +25,16 @@ export class RegisterService implements OnModuleInit {
         this.register()
     }
 
-    private client: RegisterClientInfo
+    private readonly client: RegisterClientInfo
 
-    private userProperty: UserProperty[]
+    private readonly userProperty: UserProperty[]
 
     private async initClient() {
-        this.client.ip = await this.getClientIp()
-        this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain)
-        this.client.port = getEnvSetting(EnvKeyEnum.ClientPort)
+        const ip = await this.getClientIp()
+        ip && (this.client.ip = await this.getClientIp())
+        getEnvSetting(EnvKeyEnum.ClientDomain) && (this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain))
+        getEnvSetting(EnvKeyEnum.ClientPort) && (this.client.port = getEnvSetting(EnvKeyEnum.ClientPort))
+        Logger.verbose(`client: ${inspect(this.client)} init finished`)
     }
 
     getClientIp() {
@@ -44,12 +48,14 @@ export class RegisterService implements OnModuleInit {
                 if (res?.success) {
                     if (res?.data?.length > 0) {
                         res.data.forEach(d => {
-                            const realtion = this.userProperty.find(u => u.userId === d.userId)
-                            if (realtion) realtion.ports = d.ports
+                            const relation = this.userProperty.find(u => u.userId === d.userId)
+                            if (relation) relation.ports = d.ports
+                            Logger.verbose(`userProperty: ${this.userProperty} updated`)
                         })
                     }
+                    return
                 }
-                Logger.verbose(`userProperty: ${this.userProperty} updated`)
+                Logger.error(`get relation between user and port error: ${res?.message}!`)
             },
             error: err => {
                 Logger.error(`fetch ${EndPoint.RELATION}/${this.client.id} occurred error: ${err}`)
@@ -59,24 +65,29 @@ export class RegisterService implements OnModuleInit {
     }
 
     register() {
-        this.httpService.post<IResult<{ id: string }>>(EndPoint.REGISTER, { data: this.client }).subscribe({
-            next: axiosResponse => {
-                const { data: res } = axiosResponse
-                if (res?.success) {
-                    this.client.id = res.data?.id
-                    if (this.client.id) {
-                        Logger.verbose(`register success! clientId is ${this.client.id}`)
-                        this.getUserAndPortRelations()
-                        return
+        console.log('this.client', removeInvalidField(this.client))
+        this.httpService
+            .post<IResult<{ id: string }>>(EndPoint.REGISTER, {
+                ...removeInvalidField(this.client)
+            })
+            .subscribe({
+                next: axiosResponse => {
+                    const { data: res } = axiosResponse
+                    if (res?.success) {
+                        this.client.id = res.data?.id
+                        if (this.client.id) {
+                            Logger.verbose(`register success! clientId is ${this.client.id}`)
+                            // this.getUserAndPortRelations()
+                            return
+                        }
                     }
-                    Logger.error(`register error! can not get clientId`)
+                    Logger.error(`register error: ${res.message}!`)
+                },
+                error: err => {
+                    Logger.error(`fetch ${EndPoint.REGISTER} occurred error: ${err}`)
+                    setTimeout(() => this.register(), 1000)
                 }
-            },
-            error: err => {
-                Logger.error(`fetch ${EndPoint.REGISTER} occurred error: ${err}`)
-                setTimeout(() => this.register(), 1000)
-            }
-        })
+            })
     }
 
     async getClientId() {
