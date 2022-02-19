@@ -5,7 +5,7 @@ import EndPoint from '@x-forward/common/constants/endpoint.constant'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { RegisterClientInfo, UserProperty } from '../../../../../libs/common/src/interfaces/register.interface'
+import { RegisterClientInfo, UserProperty } from '@x-forward/common'
 import CacheEnum from '../../enums/cache.enum'
 
 @Injectable()

@@ -11,6 +11,7 @@ export class AuthService {
     async validateUser(username: string, pass: string): Promise<UserVo | null> {
         const user = await this.userService.findOne(username)
         if (user && user.password === pass) {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { password, ...result } = user
             // if (isDef(result?.role)) {
             //     return { ...result, role: getEnumKeyByValue(result.role, RoleEnum)?.toLocaleLowerCase() }
