@@ -17,19 +17,17 @@ export enum DefaultEnum {
 
     // if now() > MaximumReportingInterval + lastCommunicationTime
     // then, the client is thought to be offline
-    // esle the client is thought to be online
+    // else the client is thought to be online
     // unit is seconds
-    MAXIMUM_REPORTING_SECONDS = 300
-}
+    MAXIMUM_REPORTING_SECONDS = 300,
 
-export enum CommonDefauleEnum {
+    SERVER_PORT = 3000,
+
     COMMUNICATION_KEY = 'sdzxcgewqewq',
-    PORT = '3000'
-}
 
-export enum ClientDefaultEnum {
     SERVER_URL = 'http://localhost:3000',
-    COMMUNICATION_PORT = 5000
+
+    CLIENT_PORT = 5000
 }
 
 export enum DefaultTimeEnum {

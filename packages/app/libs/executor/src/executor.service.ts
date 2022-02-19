@@ -47,13 +47,16 @@ export class ExecutorService implements OnModuleInit {
         // 检索 includes ${streamDir}/*.conf
         const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
         const nginxIncludeBlock = streamConfigIncludeReg.exec(nginxMainConfigContent)
-        Logger.verbose(`nginxIncludeBolck: ${nginxIncludeBlock}`)
+        Logger.verbose(`nginxIncludeBlock: ${nginxIncludeBlock}`)
         if (!nginxMainConfigContent.match(streamConfigIncludeReg)) {
             // 未找到, 则检查是否存在 stream {} 块
             // 未找到 stream {} 块
-            const logPrefix = getEnvSetting('LOG_PREFIX')
-            const logFilePrefix = getEnvSetting('LOG_FILE_PREFIX')
-            const logFormat = getEnvSetting('LOG_FORMAT_NAME')
+            const logPrefix = getEnvSetting(EnvKeyEnum.LogPrefix)
+            const logFilePrefix = getEnvSetting(EnvKeyEnum.LogFilePrefix)
+            const logFormat = getEnvSetting(EnvKeyEnum.LogFormat)
+            console.log('logPrefix', logPrefix)
+            console.log('logFilePrefix', logFilePrefix)
+            console.log('logFormat', logFormat)
             if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
                 const streamBlockString = renderString(streamBlock, {
                     streamDir,

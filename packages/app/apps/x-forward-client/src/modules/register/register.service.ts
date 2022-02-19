@@ -1,11 +1,10 @@
 import { HttpService } from '@nestjs/axios'
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { ClientDefaultEnum, ClientEnvKeyEnum, getOrSet, IResult } from '@x-forward/common'
+import { EnvKeyEnum, getOrSet, IResult, RegisterClientInfo, UserProperty } from '@x-forward/common'
 import EndPoint from '@x-forward/common/constants/endpoint.constant'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { RegisterClientInfo, UserProperty } from '@x-forward/common'
 import CacheEnum from '../../enums/cache.enum'
 
 @Injectable()
@@ -30,8 +29,8 @@ export class RegisterService implements OnModuleInit {
 
     private async initClient() {
         this.client.ip = await this.getClientIp()
-        this.client.domain = getEnvSetting(ClientEnvKeyEnum.ClientDomain)
-        this.client.communicationPort = getEnvSetting(ClientEnvKeyEnum.CommunicationPort)
+        this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain)
+        this.client.port = getEnvSetting(EnvKeyEnum.ClientPort)
     }
 
     getClientIp() {
@@ -85,6 +84,6 @@ export class RegisterService implements OnModuleInit {
     }
 
     getServerUrl() {
-        return getEnvSetting(ClientEnvKeyEnum.ServerUrl, ClientDefaultEnum)
+        return getEnvSetting(EnvKeyEnum.ServerUrl)
     }
 }

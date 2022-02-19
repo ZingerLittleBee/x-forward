@@ -1,6 +1,6 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
-import { ClientEnvKeyEnum } from '@x-forward/common'
+import { EnvKeyEnum } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ExecutorModule } from '@x-forward/executor'
 import { RegisterService } from './register.service'
@@ -10,7 +10,7 @@ import { RegisterService } from './register.service'
         HttpModule.registerAsync({
             useFactory: () => {
                 return {
-                    baseURL: getEnvSetting(ClientEnvKeyEnum.ServerUrl),
+                    baseURL: getEnvSetting(EnvKeyEnum.ServerUrl),
                     timeout: 5000,
                     maxRedirects: 5
                 }

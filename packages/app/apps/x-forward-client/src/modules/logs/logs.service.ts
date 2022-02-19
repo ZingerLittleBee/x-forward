@@ -37,7 +37,7 @@ export class LogsService implements OnModuleInit {
             rl.on('close', () => console.log('read finished'))
         } else {
             setTimeout(() => this.watchLog(path), 5000)
-            Logger.debug(`${path}, 不存在, 将在 5s 后重试`)
+            Logger.debug(`stream log path: ${path}, 不存在, 将在 5s 后重试`)
         }
     }
 

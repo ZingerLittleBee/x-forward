@@ -1,5 +1,5 @@
 import { isUndef } from '@x-forward/shared'
-import { CommonEnvKeyEnum, DefaultEnum } from '..'
+import { EnvKeyEnum, DefaultEnum } from '..'
 
 /**
  * Firstly, try to get value from ${process.env[key]}
@@ -15,5 +15,5 @@ export const getEnvSetting = (key: string, defaultEnum: Record<any, any> = Defau
  * get communication key from process env
  */
 export const getCommunicationKey = () => {
-    return process.env[CommonEnvKeyEnum.CommunicationKey]
+    return process.env[EnvKeyEnum.CommunicationKey]
 }

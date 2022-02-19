@@ -38,17 +38,17 @@ export enum EnvKeyEnum {
     // online check interval
     OnlineCheckCron = 'ONLINE_CHECK_CRON',
 
-    MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS'
-}
+    MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS',
 
-export enum CommonEnvKeyEnum {
-    CommunicationKey = 'COMMUNICATION_KEY',
-    Port = 'PORT'
-}
+    ServerPort = 'SERVER_PORT',
 
-export enum ClientEnvKeyEnum {
     ServerUrl = 'SERVER_URL',
+
     ClientIp = 'CLIENT_IP',
+
     ClientDomain = 'CLIENT_DOMAIN',
-    CommunicationPort = 'COMMUNICATION_PORT'
+
+    ClientPort = 'CLIENT_PORT',
+
+    CommunicationKey = 'COMMUNICATION_KEY'
 }
