@@ -2,9 +2,6 @@ import { Logger } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { IExecutor } from '@x-forward/executor/interfaces'
-import { Cache } from 'cache-manager'
-import { appendFile, readFile } from 'fs/promises'
-import { ExecutorAbs } from './executor.abs'
 import {
     fetchDirectoryHandler,
     mainConfigPathHandler,
@@ -19,6 +16,9 @@ import {
     systemInfoHandler,
     updateFileContentHandler
 } from '@x-forward/executor/utils/handler.utils'
+import { Cache } from 'cache-manager'
+import { appendFile, readFile } from 'fs/promises'
+import { ExecutorAbs } from './executor.abs'
 
 export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     constructor(private readonly bin: string, private readonly cacheManager: Cache) {
@@ -36,7 +36,11 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     }
 
     async nginxReload() {
-        await nginxReloadHandler(await this.getNginxBin())
+        const code = await nginxReloadHandler(await this.getNginxBin())
+        if (code !== 0) {
+            Logger.warn(`nginx reload failed, try restart`)
+            await this.nginxRestart()
+        }
     }
 
     async nginxRestart() {

@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common'
 import {
     appendFileInDocker,
     backupFile,
@@ -18,19 +19,16 @@ import {
     ServiceEnum,
     ShellEnum
 } from '@x-forward/common'
-import { getValueFromCache } from '@x-forward/common/utils/cache.utils'
-import { getNginxVersion } from '@x-forward/common/utils/shell.utils'
+import { fetchNginxConfigArgs, getValueFromCache } from '@x-forward/common/utils/cache.utils'
 import { dockerExec } from '@x-forward/common/utils/docker.utils'
-import { shellExec } from '@x-forward/common/utils/shell.utils'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
-import { fetchNginxConfigArgs } from '@x-forward/common/utils/cache.utils'
-import { Logger } from '@nestjs/common'
-import { EOL } from 'os'
+import { getNginxVersion, shellExec } from '@x-forward/common/utils/shell.utils'
+import { NginxConfig, NginxStatus } from '@x-forward/executor'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { Cache } from 'cache-manager'
-import { NginxConfig, NginxStatus } from '@x-forward/executor'
-import { join } from 'path'
 import { appendFile, readdir } from 'fs/promises'
+import { EOL } from 'os'
+import { join } from 'path'
 import { v4, validate } from 'uuid'
 
 export const systemInfoHandler = async (
@@ -271,4 +269,5 @@ export const nginxReloadHandler = async (bin: string, options?: { isDocker?: boo
     nginxReloadRes.exitCode === 0
         ? Logger.verbose(`nginx reload 成功`)
         : Logger.error(`nginx reload 失败, ${nginxReloadRes.res}`)
+    return nginxReloadRes.exitCode
 }

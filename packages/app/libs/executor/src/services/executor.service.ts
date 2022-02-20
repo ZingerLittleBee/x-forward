@@ -1,15 +1,15 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common/enums'
-import { findSomething, getEnvSetting, makeSureDirectoryExists } from '@x-forward/common/utils'
-import { IExecutor, NginxConfig } from '@x-forward/executor/interfaces'
-import nginxMainConfig, { streamBlock } from '@x-forward/render/template/nginxMainConfig'
+import { findSomething, getEnvSetting, makeSureDirectoryExists, makeSureFileExists } from '@x-forward/common/utils'
+import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
+import { IExecutor } from '@x-forward/executor/interfaces'
+import nginxMainConfig from '@x-forward/render/template/nginxMainConfig'
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { inspect } from 'util'
 import { $ } from 'zx'
 import { ExecutorDocker } from './executor.docker'
 import { ExecutorLocal } from './executor.local'
-import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 
 @Injectable()
 export class ExecutorService implements OnModuleInit {
@@ -56,18 +56,11 @@ export class ExecutorService implements OnModuleInit {
             logFormat: getEnvSetting(EnvKeyEnum.LogFormat)
         }
         Logger.verbose(`streamBlockValue: ${inspect(streamBlockValue)}`)
-        if (!nginxMainConfigContent.match(streamConfigIncludeReg)) {
-            // 未找到, 则检查是否存在 stream {} 块
-            // 未找到 stream {} 块
-            if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
-                const streamBlockString = renderString(streamBlock, streamBlockValue)
-                Logger.debug(`未找到 stream 模块, 将自动在文件尾部添加\n${streamBlockString}`)
-                await this.executor.mainConfigAppend(streamBlockString)
-            }
-            // 找到 stream {} 块, 但是没有 include
-            else {
-                await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
-            }
+        if (!nginxIncludeBlock || !nginxMainConfigContent.match(/stream\s*{[\s\S]*}/)) {
+            Logger.verbose(
+                `未找到 stream 模块, nginx config 将被重写为:\n${renderString(nginxMainConfig, streamBlockValue)}`
+            )
+            await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
         }
         // 提取 stream log 位置
         const streamLogPathReg = new RegExp(
@@ -79,7 +72,9 @@ export class ExecutorService implements OnModuleInit {
             await this.cacheManager.set(EnvKeyEnum.StreamLogPath, streamLogPath)
             Logger.verbose(`stream log path: ${streamLogPath}`)
         } else {
-            Logger.warn('未提取到 stream log 路径, nginx config 将被重写')
+            Logger.warn(
+                `未提取到 stream log 路径, nginx config 将被重写为\n${renderString(nginxMainConfig, streamBlockValue)}`
+            )
             await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
             await this.initNginxConfig()
         }
@@ -88,6 +83,8 @@ export class ExecutorService implements OnModuleInit {
 
     async rewriteMainConfig(content: string) {
         Logger.log(`nginx config 将被重写为:\n${content}`)
+        Logger.verbose(`stream log dir: ${await this.getStreamLogPath()}`)
+        makeSureFileExists(await this.getStreamLogPath())
         await this.executor.mainConfigRewrite(content)
     }
 
@@ -200,5 +197,16 @@ export class ExecutorService implements OnModuleInit {
 
     async getIp() {
         return this.executor.getIp()
+    }
+
+    async getStreamLogPath() {
+        // {{logPrefix}}/stream/{{logFilePrefix}}.log
+        return `${getEnvSetting(EnvKeyEnum.LogPrefix)}/${getEnvSetting(EnvKeyEnum.StreamDir)}/${getEnvSetting(
+            EnvKeyEnum.LogFilePrefix
+        )}.log`
+    }
+
+    async getStreamLogDir() {
+        return `${getEnvSetting(EnvKeyEnum.LogPrefix)}/${getEnvSetting(EnvKeyEnum.StreamDir)}`
     }
 }
