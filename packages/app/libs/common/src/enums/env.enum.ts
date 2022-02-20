@@ -1,8 +1,5 @@
 // Stored key in actual
 export enum EnvKeyEnum {
-    // nginx conf
-    NginxConfigArgs = 'NGINX_CONFIG_ARGS',
-
     // nginx container name
     DockerContainerName = 'DOCKER_CONTAINER_NAME',
 

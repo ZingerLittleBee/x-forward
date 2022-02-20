@@ -14,11 +14,11 @@ export interface INginxConfig {
      * 1. 先从 cache 中查找
      * 2. 不存在, 则装配配置参数
      */
-    getNginxConfigArgs: () => Promise<NginxConfig>
+    getNginxConfigArgs(): Promise<NginxConfig>
     /**
      * get nginx configuration prefix
      */
-    getPrefix: () => Promise<string>
+    getPrefix(): Promise<string>
 
     /**
      * 获取 nginx 执行目录
@@ -27,49 +27,54 @@ export interface INginxConfig {
      * 3. 最后使用 which nginx
      * 4. 如果都没找到, 抛出异常
      */
-    getNginxBin: () => Promise<string>
+    getNginxBin(): Promise<string>
 
     /**
      * get ${nginx -V} result
      */
-    getNginxVersion: () => Promise<string>
+    getNginxVersion(): Promise<string>
 
     /**
      * get nginx.conf full path
      */
-    getMainConfigPath: () => Promise<string>
+    getMainConfigPath(): Promise<string>
 
     /**
      * get nginx.conf file content
      */
-    getMainConfigContent: () => Promise<string>
+    getMainConfigContent(): Promise<string>
 
     /**
      * 获取 stream 配置文件路径
      * 1. 如果目录下存在 uuid.conf 文件; 则返回, 如果存在多个, 则返回第一个
      * 2. 如果不存在, 则创建 uuid.conf 文件
      */
-    getStreamConfigPath: () => Promise<string>
+    getStreamConfigPath(): Promise<string>
 
     /**
      * get stream.conf directory
      */
-    getStreamDirectory: () => Promise<string>
+    getStreamDirectory(): Promise<string>
 
     /**
      * get HTTP conf file full path
      */
-    getHTTPConfigPath: () => Promise<string>
+    getHTTPConfigPath(): Promise<string>
 
     /**
      * get stream.conf file content
      */
-    getStreamFileContent: () => Promise<string>
+    getStreamFileContent(): Promise<string>
 
     /**
-     * nginx configuartion append ${appendString} in the end of file
+     * rewrite nginx main config
      */
-    mainConfigAppend: (appendString: string) => Promise<void>
+    mainConfigRewrite(content: string): Promise<void>
+
+    /**
+     * nginx's configuration append ${appendString} in the end of file
+     */
+    mainConfigAppend(appendString: string): Promise<void>
 
     /**
      * 1. 先备份一份原配置文件, 名为 stream.conf.bak
@@ -78,5 +83,5 @@ export interface INginxConfig {
      * 4. 不通过则回滚 stream.conf.bak
      * @param content 新 stream 文件内容
      */
-    streamPatch: (content: string) => void
+    streamPatch(content: string): void
 }

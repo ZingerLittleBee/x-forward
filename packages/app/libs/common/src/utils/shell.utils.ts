@@ -5,12 +5,52 @@ export const shellExec = async (cmd: ShellEnum | string, ...args: any[]) => {
     $.quote = input => {
         return input === '>>' ? '>>' : input
     }
-    console.log('cmd', cmd)
     const { stdout, stderr, exitCode } = await nothrow($`${cmd} ${[...args]}`)
     return {
         exitCode,
         res: stdout || stderr
     }
+}
+
+export const getNginxVersion = async (bin: string) => {
+    return shellExec(bin, '-V')
+}
+
+export const getSystemInfoString = async () => {
+    return shellExec(
+        ShellEnum.UNAME,
+        '-n;',
+        ShellEnum.UNAME,
+        '-r;',
+        ShellEnum.UNAME,
+        '-v;',
+        ShellEnum.UNAME,
+        '-m;',
+        ShellEnum.LSB_RELEASE,
+        '-a;'
+    )
+}
+
+export const fetchDirByPath = async (path: string) => shellExec(ShellEnum.LS, '-F', path, '|', ShellEnum.GREP, '"/$"')
+
+export const appendFile = async (filePath: string, content: string) => {
+    return shellExec(ShellEnum.CAT, '>', `${filePath}<<EOF\n${content}\nEOF`)
+}
+
+export const rewriteFile = async (filePath: string, content: string) => {
+    return shellExec(ShellEnum.CAT, '<<', `EOF>${filePath}\n${content}\nEOF`)
+}
+
+export const checkNginxConfigGrammar = async (nginxBin: string, configPath: string) => {
+    return shellExec(nginxBin, '-t', '-c', configPath)
+}
+
+export const backupFile = async (filePath: string) => {
+    return shellExec(ShellEnum.CP, filePath, `${filePath}.bak`)
+}
+
+export const rollbackFile = async (filePath: string) => {
+    return shellExec(ShellEnum.MV, `${filePath}.bak`, filePath)
 }
 
 export const findSomething = async (something: string) => {
@@ -63,10 +103,3 @@ export const checkOS = async () => {
     return ''
 }
 
-/**
- * return fileName by input url
- */
-export const fetchDirectory = async (url: string): Promise<string> => {
-    const res = await nothrow($`ls -F ${url} | grep "/$"`)
-    return res.exitCode === 0 ? res.stdout : ''
-}

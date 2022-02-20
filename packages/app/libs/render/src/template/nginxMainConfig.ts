@@ -6,10 +6,6 @@ events {
     worker_connections 1024;
 }
 
-stream {
-    include /etc/nginx/stream/*.conf;
-}
-
 http {
     include /etc/nginx/mime.types;
     default_type application/octet-stream;
@@ -20,6 +16,12 @@ http {
     keepalive_timeout 65;
     #gzip on;
     include /etc/nginx/conf.d/*.conf;
+}
+
+stream {
+    log_format {{logFormat}} '$server_port ' $remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_local';
+    access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
+    include {{streamDir}}/*.conf;
 }`
 
 export const streamBlock = `

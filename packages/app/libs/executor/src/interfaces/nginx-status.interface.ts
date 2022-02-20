@@ -13,5 +13,5 @@ export interface INginxStatus {
     /**
      * query nginx status from `service nginx status`
      */
-    queryNginxStatus: () => Promise<NginxStatus>
+    queryNginxStatus(): Promise<NginxStatus>
 }

@@ -1,13 +1,18 @@
 import { NginxConfig } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { EnvKeyEnum, NginxConfigArgsReflectEnum } from '..'
+import { NginxConfigArgsReflectEnum } from '..'
+import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
+
+export const getValueFromCache = async <T>(cacheManager: Cache, key: CacheKeyEnum) => {
+    return cacheManager.get<T>(key)
+}
 
 /**
  * 获取 cache 中的 nginxConfig
  * @returns NginxConfig
  */
 export const getNginxCache = async (cacheManager: Cache) => {
-    return cacheManager.get<NginxConfig>(EnvKeyEnum.NginxConfigArgs)
+    return getValueFromCache<NginxConfig>(cacheManager, CacheKeyEnum.NginxConfigArgs)
 }
 
 /**
@@ -16,7 +21,7 @@ export const getNginxCache = async (cacheManager: Cache) => {
  */
 export const fetchNginxConfigArgs = (nginxInfo: string): NginxConfig => {
     // 获取 nginx 版本号
-    const version = nginxInfo.match(/nginx\/\d.*/)[0]
+    const version = nginxInfo.match(/nginx\/\d.*/)?.[0]
 
     // 获取模块配置
     let moduleConfig = nginxInfo.match(/with[-\w]+/g)
