@@ -1,14 +1,15 @@
-import { Injectable } from '@nestjs/common'
-import { ExecutorService } from '@x-forward/executor'
+import { HttpService } from '@nestjs/axios'
+import { Injectable, Logger } from '@nestjs/common'
 import { RenderService } from '@x-forward/render'
-import { RenderModel } from '@x-forward/render/render.interface'
 import { ExecutorGatewayApi } from '../interface/gateway.interface'
 
 @Injectable()
 export class ExecutorGatewayService implements ExecutorGatewayApi {
-    constructor(private executorService: ExecutorService, private renderService: RenderService) {}
+    constructor(private renderService: RenderService, private readonly httpService: HttpService) {}
 
-    async streamPatch(renderModel: RenderModel) {
-        this.executorService.patchStream(await this.renderService.renderStream(renderModel))
+    streamPatch(url: string, content: string) {
+        this.httpService.post(url, content).subscribe({
+            error: err => Logger.warn(`POST ${url} with body:\n${content}\noccurred error: ${err}`)
+        })
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EventEmitter2 } from '@nestjs/event-emitter'
 import { EventEnum, eventThrottle } from '@x-forward/common'
+import { ConfigChangePayload } from './config-change.interface'
 
 @Injectable()
 export class EventService implements OnModuleInit {
@@ -10,9 +11,9 @@ export class EventService implements OnModuleInit {
         this.initEvent()
     }
 
-    triggerCreateEvent: () => void
-    triggerUpdateEvent: () => void
-    triggerDeleteEvent: () => void
+    triggerCreateEvent: (payload: ConfigChangePayload) => void
+    triggerUpdateEvent: (payload: ConfigChangePayload) => void
+    triggerDeleteEvent: (payload: ConfigChangePayload) => void
     triggerClientPortAdd: () => void
     triggerClientPortRemove: () => void
 

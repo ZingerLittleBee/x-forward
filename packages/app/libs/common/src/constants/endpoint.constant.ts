@@ -4,10 +4,17 @@ const REGISTER = `${GATEWAY}/register`
 
 const RELATION = `${GATEWAY}/relation`
 
-const EndPoint = {
+export const GatewayEndPoint = {
     REGISTER,
     RELATION,
     GATEWAY
 }
 
-export default EndPoint
+const EXECUTOR = '/executor'
+
+const STREAM_PATCH = `${EXECUTOR}/stream`
+
+export const ExecutorEndPoint = {
+    EXECUTOR,
+    STREAM_PATCH
+}

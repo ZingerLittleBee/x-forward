@@ -1,13 +1,12 @@
 import { HttpService } from '@nestjs/axios'
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
-import { EnvKeyEnum, getOrSet, IResult, RegisterClientInfo, UserProperty } from '@x-forward/common'
-import EndPoint from '@x-forward/common/constants/endpoint.constant'
+import { EnvKeyEnum, GatewayEndPoint, getOrSet, IResult, RegisterClientInfo, UserProperty } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
+import { removeInvalidField } from '@x-forward/common/utils/object.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import CacheEnum from '../../enums/cache.enum'
 import { inspect } from 'util'
-import { removeInvalidField } from '@x-forward/common/utils/object.utils'
+import CacheEnum from '../../enums/cache.enum'
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
@@ -42,7 +41,7 @@ export class RegisterService implements OnModuleInit {
     }
 
     async getUserAndPortRelations() {
-        this.httpService.get<IResult<UserProperty[]>>(`${EndPoint.RELATION}/${this.client.id}`).subscribe({
+        this.httpService.get<IResult<UserProperty[]>>(`${GatewayEndPoint.RELATION}/${this.client.id}`).subscribe({
             next: axiosResponse => {
                 const { data: res } = axiosResponse
                 if (res?.success) {
@@ -58,16 +57,15 @@ export class RegisterService implements OnModuleInit {
                 Logger.error(`get relation between user and port error: ${res?.message}!`)
             },
             error: err => {
-                Logger.error(`fetch ${EndPoint.RELATION}/${this.client.id} occurred error: ${err}`)
+                Logger.error(`fetch ${GatewayEndPoint.RELATION}/${this.client.id} occurred error: ${err}`)
                 setTimeout(() => this.getUserAndPortRelations(), 5000)
             }
         })
     }
 
     register() {
-        console.log('this.client', removeInvalidField(this.client))
         this.httpService
-            .post<IResult<{ id: string }>>(EndPoint.REGISTER, {
+            .post<IResult<{ id: string }>>(GatewayEndPoint.REGISTER, {
                 ...removeInvalidField(this.client)
             })
             .subscribe({
@@ -84,7 +82,7 @@ export class RegisterService implements OnModuleInit {
                     Logger.error(`register error: ${res.message}!`)
                 },
                 error: err => {
-                    Logger.error(`fetch ${EndPoint.REGISTER} occurred error: ${err}`)
+                    Logger.error(`fetch ${GatewayEndPoint.REGISTER} occurred error: ${err}`)
                     setTimeout(() => this.register(), 1000)
                 }
             })

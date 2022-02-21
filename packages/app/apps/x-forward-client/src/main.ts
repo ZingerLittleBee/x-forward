@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core'
-import { ClientModule } from './client.module'
-import { DefaultEnum, EnvKeyEnum } from '@x-forward/common'
+import { EnvKeyEnum } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
+import { ClientModule } from './client.module'
 
 async function bootstrap() {
     const app = await NestFactory.create(ClientModule, {

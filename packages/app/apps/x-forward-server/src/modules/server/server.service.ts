@@ -15,7 +15,6 @@ export class ServerService {
 
     async createAll(createServer: ServerEntity[]) {
         const res = await this.serverRepository.save(createServer)
-        this.eventService.triggerCreateEvent()
         return res
     }
 
@@ -25,7 +24,6 @@ export class ServerService {
             server = omit(server, 'id')
         }
         const res = await this.serverRepository.update(id, server)
-        this.eventService.triggerUpdateEvent()
         return res
     }
 
@@ -48,7 +46,6 @@ export class ServerService {
 
     async remove(id: string) {
         const res = await this.serverRepository.softDelete(id)
-        this.eventService.triggerDeleteEvent()
         return res
     }
 
@@ -59,7 +56,6 @@ export class ServerService {
             .from(ServerEntity)
             .where('upstream_id = :id', { id })
             .execute()
-        this.eventService.triggerDeleteEvent()
         return removeResult
     }
 }

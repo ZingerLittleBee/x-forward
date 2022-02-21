@@ -1,17 +1,26 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EventEnum } from '@x-forward/common'
+import { RenderService } from '@x-forward/render'
 import { StreamServer, StreamUpstream } from '@x-forward/render/render.interface'
+import { removeProtocol } from '@x-forward/shared'
 import { inspect } from 'util'
+import { ClientService } from '../../modules/client/client.service'
 import { ExecutorGatewayService } from '../../modules/gateway/services/executor-gateway.service'
 import { ModelGatewayService } from '../../modules/gateway/services/model-gateway.service'
 import { StreamEntity } from '../../modules/stream/entity/stream.entity'
 import { UpstreamEntity } from '../../modules/upstream/entity/upstream.entity'
 import { streamEntities2StreamServer, upstreamEntities2StreamUpstream } from '../../utils/transform.util'
+import { ConfigChangePayload } from './config-change.interface'
 
 @Injectable()
 export class ConfigChangeListener {
-    constructor(private executorGateway: ExecutorGatewayService, private modelGatewayService: ModelGatewayService) {}
+    constructor(
+        private executorGateway: ExecutorGatewayService,
+        private modelGatewayService: ModelGatewayService,
+        private readonly renderService: RenderService,
+        private readonly clientService: ClientService
+    ) {}
 
     /**
      * get full stream and data conversion
@@ -50,21 +59,33 @@ export class ConfigChangeListener {
         return res
     }
 
+    private async getUrlByClientId(id: string) {
+        const client = await this.clientService.getById(id)
+        const host = client?.ip ? removeProtocol(client?.ip) : removeProtocol(client?.domain)
+        return `${host}:${client?.port}`
+    }
+
     @OnEvent(EventEnum.CONFIG_CREATE)
-    async handleConfigCreate() {
+    async handleConfigCreate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
-        this.executorGateway.streamPatch(await this.collectModels())
+        const content = await this.renderService.renderStream(await this.collectModels())
+        const url = await this.getUrlByClientId(payload?.clientId)
+        this.executorGateway.streamPatch(url, content)
     }
 
     @OnEvent(EventEnum.CONFIG_UPDATE)
-    async handleConfigUpdate() {
+    async handleConfigUpdate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
-        this.executorGateway.streamPatch(await this.collectModels())
+        const content = await this.renderService.renderStream(await this.collectModels())
+        const url = await this.getUrlByClientId(payload?.clientId)
+        this.executorGateway.streamPatch(url, content)
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
-    async handleConfigDelete() {
+    async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
-        this.executorGateway.streamPatch(await this.collectModels())
+        const content = await this.renderService.renderStream(await this.collectModels())
+        const url = await this.getUrlByClientId(payload?.clientId)
+        this.executorGateway.streamPatch(url, content)
     }
 }
