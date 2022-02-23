@@ -1,0 +1,31 @@
+syntax = "proto3";
+import "google/protobuf/any.proto";
+
+package report;
+
+service ReportService {
+  rpc Register (Client) returns (GrpcResult);
+  rpc GetPortAndUserRelation (ClientById) returns (GrpcResult);
+}
+
+message Client {
+    string ip = 1;
+
+    string domain = 2;
+
+    string port = 3;
+
+    int32 isOnline = 4;
+
+    string lastCommunicationTime = 5;
+}
+
+message ClientById {
+  string id = 1;
+}
+
+message GrpcResult {
+  bool success = 1;
+  string message = 2;
+  google.protobuf.Any data = 3;
+}

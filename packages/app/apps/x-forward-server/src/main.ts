@@ -1,10 +1,11 @@
-import { ValidationPipe } from '@nestjs/common'
+import { Logger, ValidationPipe } from '@nestjs/common'
 import { NestFactory } from '@nestjs/core'
+import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
+import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 import * as helmet from 'helmet'
 import { AppModule } from './app.module'
 import { GlobalExceptionFilter } from './filter/global-exception.filter'
-import { getEnvSetting, EnvKeyEnum } from '@x-forward/common'
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {
@@ -31,6 +32,17 @@ async function bootstrap() {
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup('api', app, document)
 
+    const microservice = app.connectMicroservice<MicroserviceOptions>({
+        transport: Transport.GRPC,
+        options: {
+            package: 'report',
+            protoPath: `${process.cwd()}/protos/report.proto`,
+            url: `localhost:${getEnvSetting(EnvKeyEnum.Server_Grpc_Port)}`
+        }
+    })
+    await app.startAllMicroservices()
     await app.listen(getEnvSetting(EnvKeyEnum.ServerPort))
+
+    Logger.log(`Application is running on: ${await app.getUrl()}`)
 }
 bootstrap()

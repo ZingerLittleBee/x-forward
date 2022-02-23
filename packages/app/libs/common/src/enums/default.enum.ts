@@ -23,11 +23,15 @@ export enum DefaultEnum {
 
     SERVER_PORT = 3000,
 
+    SERVER_GRPC_PORT = 3001,
+
     COMMUNICATION_KEY = 'sdzxcgewqewq',
 
-    SERVER_URL = 'http://localhost:3000',
+    SERVER_URL = 'localhost:3000',
 
-    CLIENT_PORT = 3000
+    CLIENT_PORT = 5000,
+
+    CLIENT_GRPC_PORT = 5001
 }
 
 export enum DefaultTimeEnum {

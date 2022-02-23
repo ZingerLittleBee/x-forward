@@ -1,5 +1,6 @@
 import { HttpModule } from '@nestjs/axios'
 import { Module } from '@nestjs/common'
+import { ExecutorModule } from '@x-forward/executor'
 import { RenderModule } from '@x-forward/render'
 import { ClientModule } from '../client/client.module'
 import { ClientProfile } from '../client/client.profile'
@@ -12,7 +13,7 @@ import { ModelGatewayService } from './services/model-gateway.service'
 import { QueryGatewayService } from './services/query-gateway.service'
 
 @Module({
-    imports: [HttpModule, RenderModule, UpstreamModule, StreamModule, ClientModule],
+    imports: [ExecutorModule, HttpModule, RenderModule, UpstreamModule, StreamModule, ClientModule],
     providers: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService, ClientGatewayService, ClientProfile],
     controllers: [ClientGatewayController],
     exports: [ExecutorGatewayService, ModelGatewayService, QueryGatewayService, ClientGatewayService]

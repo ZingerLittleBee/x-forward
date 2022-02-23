@@ -89,7 +89,7 @@ export class ClientService implements OnModuleInit {
         return this.clientRepository.save(updateEntities)
     }
 
-    async getRelationshipBetweenPortAndUserId(clientId: string) {
+    async getRelationshipBetweenPortAndUserId(clientId: string): Promise<UserProperty[]> {
         const streams = await this.streamService.findByClientId(clientId)
         const relations: UserProperty[] = []
         streams?.forEach(s => {

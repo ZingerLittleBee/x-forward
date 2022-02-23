@@ -1,17 +1,24 @@
 import { HttpService } from '@nestjs/axios'
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { ClientGrpc } from '@nestjs/microservices'
 import { EnvKeyEnum, GatewayEndPoint, getOrSet, IResult, RegisterClientInfo, UserProperty } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { removeInvalidField } from '@x-forward/common/utils/object.utils'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
+import { Observable } from 'rxjs'
 import { inspect } from 'util'
 import CacheEnum from '../../enums/cache.enum'
+
+interface ReportService {
+    register(data: RegisterClientInfo): Observable<IResult<any>>
+}
 
 @Injectable()
 export class RegisterService implements OnModuleInit {
     constructor(
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
+        @Inject('REPORT_PACKAGE') private clientGrpc: ClientGrpc,
         private readonly httpService: HttpService,
         private readonly executorService: ExecutorService
     ) {
@@ -20,9 +27,17 @@ export class RegisterService implements OnModuleInit {
     }
 
     async onModuleInit() {
+        this.reportService = this.clientGrpc.getService<ReportService>('ReportService')
         await this.initClient()
-        this.register()
+        // this.register()
+        console.log('grpc test')
+        this.reportService.register(this.client).subscribe({
+            next: value => console.log('grpc value', inspect(value)),
+            error: err => Logger.error(`register occurred error: ${err}`)
+        })
     }
+
+    private reportService: ReportService
 
     private readonly client: RegisterClientInfo
 

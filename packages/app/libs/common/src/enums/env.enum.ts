@@ -39,6 +39,8 @@ export enum EnvKeyEnum {
 
     ServerPort = 'SERVER_PORT',
 
+    Server_Grpc_Port = 'SERVER_GRPC_PORT',
+
     ServerUrl = 'SERVER_URL',
 
     ClientIp = 'CLIENT_IP',
@@ -46,6 +48,8 @@ export enum EnvKeyEnum {
     ClientDomain = 'CLIENT_DOMAIN',
 
     ClientPort = 'CLIENT_PORT',
+
+    ClientGrpcPort = 'CLIENT_GRPC_PORT',
 
     CommunicationKey = 'COMMUNICATION_KEY'
 }

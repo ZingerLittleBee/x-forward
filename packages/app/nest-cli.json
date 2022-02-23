@@ -2,9 +2,15 @@
     "collection": "@nestjs/schematics",
     "sourceRoot": "apps/x-forward-server/src",
     "compilerOptions": {
-        "plugins": ["@nestjs/swagger"],
+        "plugins": [
+            "@nestjs/swagger"
+        ],
         "webpack": true,
-        "tsConfigPath": "apps/x-forward-server/tsconfig.app.json"
+        "tsConfigPath": "apps/x-forward-server/tsconfig.app.json",
+        "assets": [
+            "**/*.proto"
+        ],
+        "watchAssets": true
     },
     "monorepo": true,
     "root": "apps/x-forward-server",
