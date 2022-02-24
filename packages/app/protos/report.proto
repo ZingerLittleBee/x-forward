@@ -1,39 +1,53 @@
 syntax = "proto3";
 /*
-google.protobuf.Any
+why not google.protobuf.Any
 https://github.com/grpc/grpc-node/issues/375
 https://github.com/nestjs/nest/issues/4621
 https://github.com/protocolbuffers/protobuf/issues/2612
 https://github.com/protobufjs/protobuf.js/issues/435
 https://developers.google.com/protocol-buffers/docs/proto3#any
 */
-import "google/protobuf/any.proto";
+import "google/protobuf/empty.proto";
 
 package report;
 
 service ReportService {
-  rpc Register (Client) returns (GrpcResult);
-  rpc GetPortAndUserRelation (ClientById) returns (GrpcResult);
+  rpc Register (Client) returns (RegisterResult);
+  rpc GetPortAndUserRelation (ClientById) returns (RelationResult);
+  rpc LogReport (google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
 message Client {
-    string ip = 1;
+  string ip = 1;
 
-    string domain = 2;
+  string domain = 2;
 
-    string port = 3;
+  string port = 3;
 
-    int32 isOnline = 4;
+  int32 isOnline = 4;
 
-    string lastCommunicationTime = 5;
+  string lastCommunicationTime = 5;
 }
 
 message ClientById {
   string id = 1;
 }
 
-message GrpcResult {
+message RegisterResult {
   bool success = 1;
   string message = 2;
-  google.protobuf.Any data = 3;
+  message Data {
+      string id = 1;
+  }
+  Data data = 3;
+}
+
+message RelationResult {
+  bool success = 1;
+  string message = 2;
+  message Data {
+    string userId = 1;
+    repeated string ports = 2;
+  }
+  Data data = 3;
 }

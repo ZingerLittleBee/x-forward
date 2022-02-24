@@ -11,7 +11,8 @@ import { inspect } from 'util'
 import CacheEnum from '../../enums/cache.enum'
 
 interface ReportService {
-    register(data: RegisterClientInfo): Observable<IResult<any>>
+    register(data: RegisterClientInfo): Observable<IResult<{ id: string }>>
+    getPortAndUserRelation(data: string): Observable<IResult<UserProperty[]>>
 }
 
 @Injectable()
@@ -30,9 +31,18 @@ export class RegisterService implements OnModuleInit {
         this.reportService = this.clientGrpc.getService<ReportService>('ReportService')
         await this.initClient()
         // this.register()
-        console.log('grpc test')
         this.reportService.register(this.client).subscribe({
-            next: value => console.log('grpc value', inspect(value)),
+            next: value => {
+                console.log('grpc value', inspect(value))
+                if (value?.success) {
+                    this.client.id = value?.data?.id
+                    this.reportService.getPortAndUserRelation(this.client?.id).subscribe({
+                        next: value => console.log('grpc getPortAndUserRelation', inspect(value)),
+                        error: err => Logger.error(`getPortAndUserRelation occurred error: ${err}`)
+                    })
+                }
+                Logger.warn(`register client fault`)
+            },
             error: err => Logger.error(`register occurred error: ${err}`)
         })
     }

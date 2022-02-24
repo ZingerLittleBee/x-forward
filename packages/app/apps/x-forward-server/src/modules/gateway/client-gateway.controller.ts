@@ -18,13 +18,13 @@ export class ClientGatewayController {
 
     @UseInterceptors(CommunicationKeyAuthInterceptor)
     @Get(`${GatewayEndPoint.RELATION}/:clientId`)
-    async getPortAndUserRelation(@Param('clientId') clientId: string) {
+    async __getPortAndUserRelation(@Param('clientId') clientId: string) {
         return Result.okData(await this.clientGatewayService.getPortAndUserRelation(clientId))
     }
 
     @UseInterceptors(CommunicationKeyAuthInterceptor)
     @Post(GatewayEndPoint.REGISTER)
-    async register_(@Body(MapPipe(ClientEntity, CreateClientDto)) client: CreateClientDto) {
+    async __register(@Body(MapPipe(ClientEntity, CreateClientDto)) client: CreateClientDto) {
         Logger.verbose(`${inspect(client)}, 请求注册`)
         if (!client.lastCommunicationTime) {
             client.lastCommunicationTime = moment().toDate()
@@ -37,6 +37,12 @@ export class ClientGatewayController {
     }
 
     @GrpcMethod('ReportService')
+    async getPortAndUserRelation(clientId: string) {
+        Logger.verbose(`clientId: ${clientId}, request getPortAndUserRelation`)
+        return Result.okData(await this.clientGatewayService.getPortAndUserRelation(clientId))
+    }
+
+    @GrpcMethod('ReportService')
     async register(data: ClientEntity): Promise<IResult<any>> {
         Logger.verbose(`${inspect(data)}, 请求注册`)
         if (!data.lastCommunicationTime) {
@@ -45,12 +51,7 @@ export class ClientGatewayController {
         const res = await this.clientGatewayService.register(data as ClientEntity)
         Logger.verbose(`${data.ip} 的 id: ${res}`)
         if (res) {
-            // return Result.okData({ id: res })
-            return {
-                success: true,
-                message: '123',
-                data: '123123123'
-            }
+            return Result.okData({ id: res })
         }
         return Result.noWithMsg('client 注册失败, 请确保 ip 或 domain 正确')
     }
