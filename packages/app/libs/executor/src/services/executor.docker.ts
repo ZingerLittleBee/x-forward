@@ -11,16 +11,15 @@ import {
     ShellEnum
 } from '@x-forward/common'
 import { getValueFromCache } from '@x-forward/common/utils/cache.utils'
-import { IExecutor } from '@x-forward/executor/interfaces'
-import { Cache } from 'cache-manager'
-import { ExecutorAbs } from './executor.abs'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
+import { IExecutor } from '@x-forward/executor/interfaces'
 import {
     fetchDirectoryHandler,
     mainConfigPathHandler,
     nginxConfigArgsHandler,
     nginxPrefixHandler,
     nginxReloadHandler,
+    nginxReopenHandler,
     nginxRestartHandler,
     nginxStatusHandler,
     nginxVersionHandler,
@@ -29,12 +28,45 @@ import {
     systemInfoHandler,
     updateFileContentHandler
 } from '@x-forward/executor/utils/handler.utils'
+import { Cache } from 'cache-manager'
+import * as moment from 'moment'
+import { ExecutorAbs } from './executor.abs'
 
 export class ExecutorDocker extends ExecutorAbs implements IExecutor {
     constructor(private readonly containerName: string, private readonly cacheManager: Cache) {
         super()
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    async nginxReopen() {
+        const code = await nginxReopenHandler(await this.getNginxBin(), {
+            isDocker: true,
+            containerName: this.containerName
+        })
+        if (code !== 0) {
+            Logger.warn(
+                `nginx reopen failed, Is nginx running?, and then try run\n$ ${await this.getNginxBin()} -s reopen`
+            )
+        }
+    }
+
+    async logSegmentation() {
+        const currPath = await this.getStreamConfigPath()
+        const [fileName, suffix] = currPath?.split('.')
+        const { exitCode } = await dockerExec(
+            ShellEnum.MV,
+            currPath,
+            `${fileName}-${moment().format('YYYY-M-DD')}.${suffix}`
+        )
+        if (exitCode !== 0) {
+            Logger.warn(
+                `backup ${currPath} failed, pleace run \n$ ${ShellEnum.MV} ${currPath} ${fileName}-${moment().format(
+                    'YYYY-M-DD'
+                )}.${suffix}\n and then run\n$ ${await this.getNginxBin()} -s reopen`
+            )
+        } else {
+            await this.nginxReopen()
+        }
     }
 
     async getSystemInfo() {

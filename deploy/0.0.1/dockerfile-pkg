@@ -20,12 +20,13 @@ WORKDIR /usr/src/app
 RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
 # install goaccess to manage nginx logs 
-RUN apt-get -y update && apt-get install -y wget gpg goaccess
 
 RUN wget -O - https://deb.goaccess.io/gnugpg.key | gpg --dearmor \
     | tee /usr/share/keyrings/goaccess.gpg >/dev/null
 RUN echo "deb [signed-by=/usr/share/keyrings/goaccess.gpg] https://deb.goaccess.io/ $(lsb_release -cs) main" \
     | tee /etc/apt/sources.list.d/goaccess.list
+
+RUN apt-get -y update && apt-get install -y wget gpg goaccess
 
 COPY x-forward-backend .
 

@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { BucketService } from '@x-forward/bucket'
 import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
-import * as moment from 'moment'
 import { DefaultTimeEnum } from '@x-forward/common'
+import * as moment from 'moment'
 
 @Injectable()
 export class LogsService {
@@ -79,5 +79,9 @@ export class LogsService {
 
     async getLastWeek() {
         return this.getLastSomeWeek(1)
+    }
+
+    async getLastTimeByServerId(serverId: string) {
+        return (await this.bucketService.getLastTimeByServerId(serverId))?.time
     }
 }

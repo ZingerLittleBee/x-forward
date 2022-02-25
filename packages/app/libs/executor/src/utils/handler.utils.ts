@@ -268,6 +268,20 @@ export const nginxReloadHandler = async (bin: string, options?: { isDocker?: boo
         : await shellExec(bin, '-s', 'reload')
     nginxReloadRes.exitCode === 0
         ? Logger.verbose(`nginx reload 成功`)
-        : Logger.error(`nginx reload 失败, ${nginxReloadRes.res}`)
+        : Logger.error(
+              `nginx reopen failed: ${nginxReloadRes?.res}, Is nginx running?, and then try run\n$ ${bin} -s reload`
+          )
     return nginxReloadRes.exitCode
+}
+
+export const nginxReopenHandler = async (bin: string, options?: { isDocker?: boolean; containerName?: string }) => {
+    const nginxReopenRes = options?.isDocker
+        ? await dockerExec(options?.containerName, bin, '-s', 'reopen')
+        : await shellExec(bin, '-s', 'reopen')
+    nginxReopenRes.exitCode === 0
+        ? Logger.verbose(`nginx reopen 成功`)
+        : Logger.error(
+              `nginx reopen failed: ${nginxReopenRes?.res}, Is nginx running?, and then try run\n$ ${bin} -s reopen`
+          )
+    return nginxReopenRes.exitCode
 }

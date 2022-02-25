@@ -1,8 +1,8 @@
-import { Model } from 'mongoose'
 import { Injectable } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
-import { Log, LogDocument } from '@x-forward/bucket/schemas/log.schema'
 import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
+import { Log, LogDocument } from '@x-forward/bucket/schemas/log.schema'
+import { Model } from 'mongoose'
 
 @Injectable()
 export class BucketService {
@@ -20,5 +20,14 @@ export class BucketService {
         return this.logModel.find({
             time: { $gte: startTime, $lte: endTime }
         })
+    }
+
+    async getLastTimeByServerId(serverId: string) {
+        return this.logModel
+            .find({
+                server_id: serverId
+            })
+            .sort({ time: -1 })
+            .limit(1)
     }
 }

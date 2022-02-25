@@ -12,9 +12,6 @@ export class Log extends Document {
     user_id: string
 
     @Prop()
-    server_addr: string
-
-    @Prop()
     server_port: string
 
     @Prop()
@@ -34,6 +31,9 @@ export class Log extends Document {
 
     @Prop()
     bytes_received: string
+
+    @Prop()
+    session_time: string
 
     @Prop()
     upstream_addr: string

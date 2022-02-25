@@ -19,14 +19,14 @@ http {
 }
 
 stream {
-    log_format {{logFormat}} '$server_port '$remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_local';
+    log_format {{logFormat}} '$server_port '$remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_iso8601';
     access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
     include {{streamDir}}/*.conf;
 }`
 
 export const streamBlock = `
 stream {
-    log_format {{logFormat}} '$server_port ' '$remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_local';
+    log_format {{logFormat}} '$server_port ' '$remote_addr ' '$remote_port ' '$protocol ' '$status ' '$bytes_sent ' '$bytes_received ' '$session_time ' '$upstream_addr ' '$upstream_bytes_sent ' '$upstream_bytes_received ' '$upstream_connect_time ' '$upstream_session_time ' '$time_iso8601';
     access_log {{logPrefix}}/stream/{{logFilePrefix}}.log {{logFormat}};
     include {{streamDir}}/*.conf;
 }`

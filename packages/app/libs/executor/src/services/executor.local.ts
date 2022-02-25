@@ -1,5 +1,5 @@
 import { Logger } from '@nestjs/common'
-import { EnvKeyEnum } from '@x-forward/common'
+import { EnvKeyEnum, ShellEnum, shellExec } from '@x-forward/common'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { IExecutor } from '@x-forward/executor/interfaces'
 import {
@@ -8,6 +8,7 @@ import {
     nginxConfigArgsHandler,
     nginxPrefixHandler,
     nginxReloadHandler,
+    nginxReopenHandler,
     nginxRestartHandler,
     nginxStatusHandler,
     nginxVersionHandler,
@@ -18,6 +19,7 @@ import {
 } from '@x-forward/executor/utils/handler.utils'
 import { Cache } from 'cache-manager'
 import { appendFile, readFile } from 'fs/promises'
+import * as moment from 'moment'
 import { ExecutorAbs } from './executor.abs'
 
 export class ExecutorLocal extends ExecutorAbs implements IExecutor {
@@ -25,6 +27,32 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
         super()
         this.bin = bin
         this.cacheManager = cacheManager
+    }
+    async nginxReopen() {
+        const code = await nginxReopenHandler(await this.getNginxBin())
+        if (code !== 0) {
+            Logger.warn(
+                `nginx reopen failed, Is nginx running?, and then try run\n$ ${await this.getNginxBin()} -s reopen`
+            )
+        }
+    }
+    async logSegmentation() {
+        const currPath = await this.getStreamConfigPath()
+        const [fileName, suffix] = currPath?.split('.')
+        const { exitCode } = await shellExec(
+            ShellEnum.MV,
+            currPath,
+            `${fileName}-${moment().format('YYYY-M-DD')}.${suffix}`
+        )
+        if (exitCode !== 0) {
+            Logger.warn(
+                `backup ${currPath} failed, pleace run \n$ ${ShellEnum.MV} ${currPath} ${fileName}-${moment().format(
+                    'YYYY-M-DD'
+                )}.${suffix}\n and then run\n$ ${await this.getNginxBin()} -s reopen`
+            )
+        } else {
+            await this.nginxReopen()
+        }
     }
 
     async getSystemInfo() {
@@ -38,8 +66,9 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     async nginxReload() {
         const code = await nginxReloadHandler(await this.getNginxBin())
         if (code !== 0) {
-            Logger.warn(`nginx reload failed, try restart`)
-            await this.nginxRestart()
+            Logger.warn(
+                `nginx reload failed, Is nginx running?, and then try run\n$ ${await this.getNginxBin()} -s reload`
+            )
         }
     }
 

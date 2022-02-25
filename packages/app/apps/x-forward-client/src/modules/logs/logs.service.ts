@@ -3,19 +3,27 @@ import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
 import { createReadStream, existsSync } from 'fs'
 import { createInterface } from 'readline'
+import { inspect } from 'util'
+import { RegisterService } from '../register/register.service'
+import { LogsDto } from './logs.dto'
 
 @Injectable()
 export class LogsService implements OnModuleInit {
     constructor(
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
-        private readonly executorService: ExecutorService
+        private readonly executorService: ExecutorService,
+        private readonly registerService: RegisterService
     ) {}
 
     async onModuleInit() {
-        console.log('getNginxStreamPath', await this.executorService.getNginxStreamPath())
-        console.log('getNginxStreamLogPath', await this.executorService.getNginxStreamLogPath())
+        this.logQueue = []
+        this.readedLine = 0
         this.watchLog(await this.executorService.getNginxStreamLogPath())
     }
+
+    private logQueue: LogsDto[]
+
+    private readedLine: number
 
     private async watchLog(path: string) {
         if (existsSync(path)) {
@@ -33,7 +41,7 @@ export class LogsService implements OnModuleInit {
                     end: Infinity
                 })
             })
-            rl.on('line', line => console.log('line', line))
+            rl.on('line', line => console.log('line', inspect(this.handleLogByLine(line))))
             rl.on('close', () => console.log('read finished'))
         } else {
             setTimeout(() => this.watchLog(path), 5000)
@@ -42,7 +50,41 @@ export class LogsService implements OnModuleInit {
     }
 
     private handleLogByLine(line: string) {
-        console.log(line)
-        // const segment = line.split(' ')
+        const segment = line.split(' ')
+        const [
+            serverPort,
+            remoteAddr,
+            remotePort,
+            protocol,
+            status,
+            bytesSent,
+            bytesReceived,
+            sessionTime,
+            upstreamAddr,
+            upstreamBytesSent,
+            upstreamBytesReceived,
+            upstreamConnectTime,
+            upstreamSessionTime,
+            time
+        ] = segment
+        return {
+            serverId: this.registerService.getClientId(),
+            userId: this.registerService.getUserAndPortRelations()?.find(r => r.ports?.includes(serverPort))?.[0]
+                ?.userId,
+            serverPort,
+            remoteAddr,
+            remotePort,
+            protocol,
+            status,
+            bytesSent,
+            bytesReceived,
+            sessionTime,
+            upstreamAddr,
+            upstreamBytesSent,
+            upstreamBytesReceived,
+            upstreamConnectTime,
+            upstreamSessionTime,
+            time
+        }
     }
 }

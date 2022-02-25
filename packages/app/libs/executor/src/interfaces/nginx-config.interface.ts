@@ -84,4 +84,8 @@ export interface INginxConfig {
      * @param content 新 stream 文件内容
      */
     streamPatch(content: string): void
+
+    logSegmentation(): void
+
+    nginxReopen(): void
 }

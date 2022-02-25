@@ -33,6 +33,7 @@ import { RegisterService } from './register.service'
         }),
         ExecutorModule
     ],
-    providers: [RegisterService]
+    providers: [RegisterService],
+    exports: [RegisterService]
 })
 export class RegisterModule {}
