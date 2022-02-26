@@ -16,16 +16,16 @@ export class BucketService {
         return this.logModel.find().exec()
     }
 
-    async findByTimeRange(startTime: Date, endTime: Date) {
+    async findByTimeRange(startTime: Date, endTime: Date): Promise<Log[]> {
         return this.logModel.find({
             time: { $gte: startTime, $lte: endTime }
         })
     }
 
-    async getLastTimeByServerId(serverId: string) {
+    async getLastTimeByClientId(clientId: string): Promise<Log> {
         return this.logModel
-            .find({
-                server_id: serverId
+            .findOne({
+                client_id: clientId
             })
             .sort({ time: -1 })
             .limit(1)

@@ -98,14 +98,14 @@ export class ClientService implements OnModuleInit {
             })
             if (relation) {
                 if (relation.ports) {
-                    relation.ports.push(s.transitPort)
+                    relation.ports.push(s.transitPort?.toString())
                 } else {
-                    relation.ports = [s.transitPort]
+                    relation.ports = [s.transitPort?.toString()]
                 }
             } else {
                 relations.push({
                     userId: s.userId,
-                    ports: [s.transitPort]
+                    ports: [s.transitPort?.toString()]
                 })
             }
         })

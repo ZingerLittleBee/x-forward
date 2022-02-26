@@ -1,9 +1,9 @@
 export class LogsDto {
-    serverId: string
+    clientId: string
+
+    clientPort: string
 
     userId: string
-
-    serverPort: string
 
     remoteAddr: string
 

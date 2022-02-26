@@ -1,17 +1,15 @@
 import { MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Get, Logger, Param, Post, UseInterceptors } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
-import { ApiTags } from '@nestjs/swagger'
 import { IResult, Result } from '@x-forward/common'
 import { GatewayEndPoint } from '@x-forward/common/constants/endpoint.constant'
 import { CommunicationKeyAuthInterceptor } from '@x-forward/common/interceptor/auth.interceptor'
 import * as moment from 'moment'
 import { inspect } from 'util'
-import { CreateClientDto } from '../client/dto/create-client.dto'
-import { ClientEntity } from '../client/entity/client.entity'
-import { ClientGatewayService } from './services/client-gateway.service'
+import { CreateClientDto } from '../../client/dto/create-client.dto'
+import { ClientEntity } from '../../client/entity/client.entity'
+import { ClientGatewayService } from '../services/client-gateway.service'
 
-@ApiTags(GatewayEndPoint.REGISTER)
 @Controller()
 export class ClientGatewayController {
     constructor(private readonly clientGatewayService: ClientGatewayService) {}

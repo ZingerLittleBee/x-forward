@@ -81,7 +81,7 @@ export class LogsService {
         return this.getLastSomeWeek(1)
     }
 
-    async getLastTimeByServerId(serverId: string) {
-        return (await this.bucketService.getLastTimeByServerId(serverId))?.time
+    async getLastTimeByClientId(clientId: string) {
+        return (await this.bucketService.getLastTimeByClientId(clientId))?.time
     }
 }

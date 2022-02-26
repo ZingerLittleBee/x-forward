@@ -14,6 +14,7 @@ package report;
 service ReportService {
   rpc Register (Client) returns (RegisterResult);
   rpc GetPortAndUserRelation (ClientById) returns (RelationResult);
+  rpc GetLastTime (ClientById) returns (LastTimeResult);
   rpc LogReport (google.protobuf.Empty) returns (google.protobuf.Empty);
 }
 
@@ -48,6 +49,15 @@ message RelationResult {
   message Data {
     string userId = 1;
     repeated string ports = 2;
+  }
+  Data data = 3;
+}
+
+message LastTimeResult {
+  bool success = 1;
+  string message = 2;
+  message Data {
+    string lastTime = 1;
   }
   Data data = 3;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common'
+import { lookup } from 'dns/promises'
 import { ClientService } from '../../client/client.service'
 import { ClientEntity } from '../../client/entity/client.entity'
-import { lookup } from 'dns/promises'
 
 @Injectable()
 export class ClientGatewayService {
