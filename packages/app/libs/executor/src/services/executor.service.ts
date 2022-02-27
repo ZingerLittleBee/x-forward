@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common/enums'
-import { findSomething, getEnvSetting, makeSureDirectoryExists, makeSureFileExists } from '@x-forward/common/utils'
+import { findSomething, getEnvSetting, makeSureFileExists } from '@x-forward/common/utils'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { IExecutor } from '@x-forward/executor/interfaces'
 import nginxMainConfig from '@x-forward/render/template/nginxMainConfig'
@@ -25,6 +25,19 @@ export class ExecutorService implements OnModuleInit {
         await this.initNginxConfig()
         Logger.debug(`nginx config inited`)
     }
+
+    /**
+     * check path exist, otherwise create path
+     * @param path path
+     */
+    async existOrCreate(path: string) {
+        console.log('await this.executor.checkPath(path)', await this.executor.checkPath(path))
+
+        if (!(await this.executor.checkPath(path))) {
+            this.executor.mkPath(path)
+        }
+    }
+
     /**
      * 初始化
      * 1. 装载 nginx 配置参数
@@ -43,7 +56,7 @@ export class ExecutorService implements OnModuleInit {
         Logger.debug(`nginx 主配置文件初始内容: ${nginxMainConfigContent}`)
         const streamDir = await this.executor.getStreamDirectory()
         // 判断目录是否存在, 不存在则创建
-        makeSureDirectoryExists(streamDir)
+        await this.existOrCreate(streamDir)
         Logger.debug(`nginx stream 目录: ${streamDir}`)
         // 检索 includes ${streamDir}/*.conf
         const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
@@ -71,6 +84,7 @@ export class ExecutorService implements OnModuleInit {
         if (streamLogPath) {
             await this.cacheManager.set(EnvKeyEnum.StreamLogPath, streamLogPath)
             Logger.verbose(`stream log path: ${streamLogPath}`)
+            await this.existOrCreate(streamLogPath)
         } else {
             Logger.warn(
                 `未提取到 stream log 路径, nginx config 将被重写为\n${renderString(nginxMainConfig, streamBlockValue)}`

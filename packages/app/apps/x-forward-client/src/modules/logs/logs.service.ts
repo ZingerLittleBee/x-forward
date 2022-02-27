@@ -2,11 +2,12 @@ import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs
 import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { createReadStream, existsSync } from 'fs'
+import { createReadStream } from 'fs'
+import { watch } from 'fs/promises'
+import { debounce } from 'lodash'
 import * as moment from 'moment'
 import { createInterface } from 'readline'
-import { firstValueFrom } from 'rxjs'
-import { inspect } from 'util'
+import { firstValueFrom, Observable } from 'rxjs'
 import { IReportService } from '../../interfaces/report.interface'
 import { GrpcHelperService } from '../grpc-helper/grpc-helper.service'
 import { RegisterService } from '../register/register.service'
@@ -26,8 +27,9 @@ export class LogsService implements OnModuleInit {
         this.logQueue = []
         this.readedLine = 0
         this.nginxStreamLogPath = await this.executorService.getNginxStreamLogPath()
-        this.getLastTime()
-        // this.watchLog(await this.executorService.getNginxStreamLogPath())
+        this.lastTime = await this.getLastTime()
+        this.judgeStartLine(this.nginxStreamLogPath, this.lastTime)
+        this.watchLog(await this.executorService.getNginxStreamLogPath())
     }
 
     private reportService: IReportService
@@ -36,68 +38,113 @@ export class LogsService implements OnModuleInit {
 
     private readedLine: number
 
+    private startLine: number
+
     private lastTime: string
 
     private nginxStreamLogPath: string
 
+    private logReadObservable: Observable<any>
+
     private async getLastTime() {
-        console.log('this.registerService.getClientId()', this.registerService.getClientId())
-        return await errorHandleWarpper<Date>(() => {
+        return await errorHandleWarpper<string>(() => {
             return firstValueFrom(this.reportService.getLastTime({ id: this.registerService.getClientId() }))
         }, 'getLastTime')
     }
 
     private judgeStartLine(path: string, lastTime: string) {
-        if (existsSync(path)) {
-            Logger.debug(`${path}, 存在, 正在检查文件`)
+        this.logReadObservable = new Observable(subsriber => {
+            if (!lastTime) {
+                this.startLine = 0
+                Logger.verbose(`log read start line is 0`)
+                this.readFileByLine(
+                    path,
+                    line => this.logQueue.push(this.handleLogByLine(line)),
+                    () => subsriber.complete()
+                )
+                return
+            }
+            Logger.debug(`正在检查 ${path}`)
             const rl = createInterface({
                 input: createReadStream(path, {
                     start: 0,
                     end: Infinity
                 })
             })
+            let startNum = 0
             rl.on('line', line => {
                 const { time } = this.handleLogByLine(line)
                 Logger.verbose(`lastTime: ${lastTime} vs time: ${time}`)
                 if (moment(time).isAfter(moment(lastTime))) {
-                    rl.close()
-                    rl.removeAllListeners()
+                    this.logQueue.push(this.handleLogByLine(line))
+                    this.startLine = startNum
                 }
+                startNum++
             })
-            rl.on('close', () => console.log('read finished'))
-        } else {
-            Logger.error(`path: ${path}, 不存在`)
-        }
+            rl.on('close', () => {
+                console.log(`read finished, startLine is ${this.startLine}`)
+                subsriber.complete()
+            })
+        })
     }
 
     // private async initReadedLine() {}
 
-    private async watchLog(path: string) {
-        if (existsSync(path)) {
-            Logger.debug(`${path}, 发现, 正在监听文件变化`)
-            // try {
-            //     const watcher = watch(path)
-            //     for await (const event of watcher) console.log('watcher', event)
-            // } catch (err) {
-            //     if (err.name === 'AbortError') return
-            //     throw err
-            // }
-            const rl = createInterface({
-                input: createReadStream(path, {
-                    start: 0,
-                    end: Infinity
-                })
+    private readFileByLine(path: string, onLine: (line: string) => void, onClose?: () => void) {
+        console.log('readFileByLine this.startLine', this.startLine)
+
+        const rl = createInterface({
+            input: createReadStream(path, {
+                start: this.startLine,
+                end: Infinity
             })
-            rl.on('line', line => console.log('line', inspect(this.handleLogByLine(line))))
-            rl.on('close', () => console.log('read finished'))
-        } else {
-            setTimeout(() => this.watchLog(path), 5000)
-            Logger.debug(`stream log path: ${path}, 不存在, 将在 5s 后重试`)
-        }
+        })
+        rl.on('line', onLine)
+        rl.on(
+            'close',
+            onClose
+                ? onClose
+                : () => {
+                      rl.close()
+                      console.log('read finished')
+                  }
+        )
+    }
+
+    private async watchLog(path: string) {
+        Logger.debug(`${path}, 发现, 正在监听文件变化`)
+        const readFileByLineDe = debounce(() => {
+            this.readFileByLine(path, line => {
+                Logger.verbose(`watch file new line: ${line}`)
+                this.startLine++
+                console.log('this.startLine', this.startLine)
+                this.logQueue.push(this.handleLogByLine(line))
+            })
+        }, 1000)
+        this.logReadObservable.subscribe({
+            complete: async () => {
+                Logger.verbose(`${path} 初始化结束`)
+                Logger.verbose(`正在监听 ${path} 文件变化`)
+                try {
+                    const watcher = watch(path)
+                    for await (const event of watcher) {
+                        console.log('event', event)
+                        if (event.eventType === 'change') {
+                            readFileByLineDe()
+                        }
+                    }
+                } catch (err) {
+                    if (err.name === 'AbortError') return
+                    throw err
+                }
+            }
+        })
     }
 
     private handleLogByLine(line: string) {
+        if (!line) return
         const segment = line.split(' ')
+        if (segment.length !== 14) return
         const [
             clientPort,
             remoteAddr,
@@ -114,6 +161,7 @@ export class LogsService implements OnModuleInit {
             upstreamSessionTime,
             time
         ] = segment
+
         return {
             userId: this.registerService.getUserAndPortRelations()?.find(r => r.ports?.includes(clientPort))?.[0]
                 ?.userId,

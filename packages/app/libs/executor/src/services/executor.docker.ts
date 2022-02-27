@@ -28,6 +28,7 @@ import {
     systemInfoHandler,
     updateFileContentHandler
 } from '@x-forward/executor/utils/handler.utils'
+import { isFile, splitFileName } from '@x-forward/shared'
 import { Cache } from 'cache-manager'
 import * as moment from 'moment'
 import { ExecutorAbs } from './executor.abs'
@@ -37,6 +38,20 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
         super()
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    async checkPath(path: string): Promise<boolean> {
+        return !!!(await dockerExec(ShellEnum.LS, path))?.exitCode
+    }
+
+    async mkPath(path: string): Promise<void> {
+        if (isFile(path)) {
+            const fileName = splitFileName(path)
+            const dirName = path.replace(fileName, '')
+            await dockerExec(ShellEnum.MK_DIR, '-r', dirName)
+            dockerExec(ShellEnum.TOUCH, path)
+        } else {
+            dockerExec(ShellEnum.MK_DIR, '-r', path)
+        }
     }
     async nginxReopen() {
         const code = await nginxReopenHandler(await this.getNginxBin(), {

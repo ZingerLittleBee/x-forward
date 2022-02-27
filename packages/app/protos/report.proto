@@ -50,7 +50,7 @@ message RelationResult {
     string userId = 1;
     repeated string ports = 2;
   }
-  Data data = 3;
+  repeated Data data = 3;
 }
 
 message LastTimeResult {

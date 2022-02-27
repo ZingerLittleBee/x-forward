@@ -17,8 +17,9 @@ import {
     systemInfoHandler,
     updateFileContentHandler
 } from '@x-forward/executor/utils/handler.utils'
+import { isFile, splitFileName } from '@x-forward/shared'
 import { Cache } from 'cache-manager'
-import { appendFile, readFile } from 'fs/promises'
+import { appendFile, mkdir, readFile, writeFile } from 'fs/promises'
 import * as moment from 'moment'
 import { ExecutorAbs } from './executor.abs'
 
@@ -28,6 +29,24 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
         this.bin = bin
         this.cacheManager = cacheManager
     }
+    async checkPath(path: string): Promise<boolean> {
+        return (await shellExec(ShellEnum.LS, path))?.exitCode === 0
+    }
+    async mkPath(path: string): Promise<void> {
+        if (isFile(path)) {
+            const fileName = splitFileName(path)
+            const dirPath = path.replace(fileName, '')
+            await mkdir(dirPath, {
+                recursive: true
+            })
+            await writeFile(path, '')
+        } else {
+            mkdir(path, {
+                recursive: true
+            })
+        }
+    }
+
     async nginxReopen() {
         const code = await nginxReopenHandler(await this.getNginxBin())
         if (code !== 0) {

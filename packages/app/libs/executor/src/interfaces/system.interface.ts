@@ -11,7 +11,7 @@ export interface SystemInfo {
 
 export interface ISystem {
     /**
-     * get all directory under url
+     * get all directory under path
      */
     fetchDirectory(url: string): Promise<string>
 
@@ -34,4 +34,16 @@ export interface ISystem {
      * get IP
      */
     getIp(): Promise<string>
+
+    /**
+     * check path is exist or not
+     * @param path filePath or dirPath
+     */
+    checkPath(path: string): Promise<boolean>
+
+    /**
+     * mkdir or touch file
+     * @param path filePath or dirPath
+     */
+    mkPath(path: string): Promise<void>
 }
