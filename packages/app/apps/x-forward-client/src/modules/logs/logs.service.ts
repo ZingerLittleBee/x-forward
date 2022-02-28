@@ -3,8 +3,6 @@ import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
 import { createReadStream } from 'fs'
-import { watch } from 'fs/promises'
-import { debounce } from 'lodash'
 import * as moment from 'moment'
 import { createInterface } from 'readline'
 import { firstValueFrom, Observable } from 'rxjs'
@@ -29,7 +27,7 @@ export class LogsService implements OnModuleInit {
         this.nginxStreamLogPath = await this.executorService.getNginxStreamLogPath()
         this.lastTime = await this.getLastTime()
         this.judgeStartLine(this.nginxStreamLogPath, this.lastTime)
-        this.watchLog(await this.executorService.getNginxStreamLogPath())
+        this.watchLogs(await this.executorService.getNginxStreamLogPath())
     }
 
     private reportService: IReportService
@@ -111,36 +109,45 @@ export class LogsService implements OnModuleInit {
         )
     }
 
-    private async watchLog(path: string) {
-        Logger.debug(`${path}, 发现, 正在监听文件变化`)
-        const readFileByLineDe = debounce(() => {
-            this.readFileByLine(path, line => {
-                Logger.verbose(`watch file new line: ${line}`)
-                this.startLine++
-                console.log('this.startLine', this.startLine)
-                this.logQueue.push(this.handleLogByLine(line))
-            })
-        }, 1000)
-        this.logReadObservable.subscribe({
-            complete: async () => {
-                Logger.verbose(`${path} 初始化结束`)
-                Logger.verbose(`正在监听 ${path} 文件变化`)
-                try {
-                    const watcher = watch(path)
-                    for await (const event of watcher) {
-                        console.log('event', event)
-                        if (event.eventType === 'change') {
-                            readFileByLineDe()
-                        }
-                    }
-                } catch (err) {
-                    if (err.name === 'AbortError') return
-                    throw err
-                }
-            }
-        })
+    private async watchLogs(path: string) {
+        await this.executorService.existOrCreate(path)
     }
 
+    // private async watchLogs(path: string) {
+    //     Logger.debug(`${path}, 发现, 正在监听文件变化`)
+    //     const readFileByLineDe = debounce(() => {
+    //         this.readFileByLine(path, line => {
+    //             Logger.verbose(`watch file new line: ${line}`)
+    //             this.startLine++
+    //             console.log('this.startLine', this.startLine)
+    //             this.logQueue.push(this.handleLogByLine(line))
+    //         })
+    //     }, 1000)
+    //     this.logReadObservable.subscribe({
+    //         complete: async () => {
+    //             Logger.verbose(`${path} 初始化结束`)
+    //             Logger.verbose(`正在监听 ${path} 文件变化`)
+    //             try {
+    //                 const watcher = watch(path)
+    //                 for await (const event of watcher) {
+    //                     console.log('event', event)
+    //                     if (event.eventType === 'change') {
+    //                         readFileByLineDe()
+    //                     }
+    //                 }
+    //             } catch (err) {
+    //                 if (err.name === 'AbortError') return
+    //                 throw err
+    //             }
+    //         }
+    //     })
+    // }
+
+    /**
+     * parse logs file by line to LogsDto
+     * @param line stream log line
+     * @returns {LogsDto}
+     */
     private handleLogByLine(line: string) {
         if (!line) return
         const segment = line.split(' ')

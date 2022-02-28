@@ -31,8 +31,6 @@ export class ExecutorService implements OnModuleInit {
      * @param path path
      */
     async existOrCreate(path: string) {
-        console.log('await this.executor.checkPath(path)', await this.executor.checkPath(path))
-
         if (!(await this.executor.checkPath(path))) {
             this.executor.mkPath(path)
         }

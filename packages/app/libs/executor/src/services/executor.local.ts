@@ -21,6 +21,7 @@ import { isFile, splitFileName } from '@x-forward/shared'
 import { Cache } from 'cache-manager'
 import { appendFile, mkdir, readFile, writeFile } from 'fs/promises'
 import * as moment from 'moment'
+import { $, ProcessOutput, ProcessPromise } from 'zx'
 import { ExecutorAbs } from './executor.abs'
 
 export class ExecutorLocal extends ExecutorAbs implements IExecutor {
@@ -28,6 +29,9 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
         super()
         this.bin = bin
         this.cacheManager = cacheManager
+    }
+    tailFile(path: string): ProcessPromise<ProcessOutput> {
+        return $`tail -f ${path}`
     }
     async checkPath(path: string): Promise<boolean> {
         return (await shellExec(ShellEnum.LS, path))?.exitCode === 0

@@ -13,7 +13,8 @@ export enum ShellEnum {
     UNAME = 'uname',
     LSB_RELEASE = 'lsb_release',
     Curl = 'curl',
-    MK_DIR = 'mkdir'
+    MK_DIR = 'mkdir',
+    TAIL = 'tail'
 }
 
 export enum ServiceEnum {

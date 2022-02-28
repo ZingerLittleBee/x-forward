@@ -31,6 +31,7 @@ import {
 import { isFile, splitFileName } from '@x-forward/shared'
 import { Cache } from 'cache-manager'
 import * as moment from 'moment'
+import { $, ProcessOutput, ProcessPromise } from 'zx'
 import { ExecutorAbs } from './executor.abs'
 
 export class ExecutorDocker extends ExecutorAbs implements IExecutor {
@@ -38,6 +39,9 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
         super()
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    tailFile(path: string): ProcessPromise<ProcessOutput> {
+        return $`docker exec -it ${this.containerName} ${ShellEnum.TAIL} -f ${path}`
     }
     async checkPath(path: string): Promise<boolean> {
         return !!!(await dockerExec(ShellEnum.LS, path))?.exitCode

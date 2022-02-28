@@ -1,3 +1,5 @@
+import { ProcessOutput, ProcessPromise } from 'zx'
+
 export interface SystemInfo {
     hostname?: string
     kernelRelease?: string
@@ -46,4 +48,6 @@ export interface ISystem {
      * @param path filePath or dirPath
      */
     mkPath(path: string): Promise<void>
+
+    tailFile(path: string): ProcessPromise<ProcessOutput>
 }
