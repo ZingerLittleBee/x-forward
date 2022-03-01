@@ -1,11 +1,16 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { SchedulerRegistry } from '@nestjs/schedule'
 import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
 import { Cache } from 'cache-manager'
-import { createReadStream } from 'fs'
+import { CronJob } from 'cron'
+import { debounce } from 'lodash'
 import * as moment from 'moment'
 import { createInterface } from 'readline'
 import { firstValueFrom, Observable } from 'rxjs'
+import { Readable } from 'stream'
+import { inspect } from 'util'
+import { ProcessOutput, ProcessPromise } from 'zx'
 import { IReportService } from '../../interfaces/report.interface'
 import { GrpcHelperService } from '../grpc-helper/grpc-helper.service'
 import { RegisterService } from '../register/register.service'
@@ -17,7 +22,8 @@ export class LogsService implements OnModuleInit {
         @Inject(CACHE_MANAGER) private cacheManager: Cache,
         private readonly executorService: ExecutorService,
         private readonly registerService: RegisterService,
-        private readonly grpcHelperService: GrpcHelperService
+        private readonly grpcHelperService: GrpcHelperService,
+        private readonly schedulerRegistry: SchedulerRegistry
     ) {}
 
     async onModuleInit() {
@@ -26,8 +32,34 @@ export class LogsService implements OnModuleInit {
         this.readedLine = 0
         this.nginxStreamLogPath = await this.executorService.getNginxStreamLogPath()
         this.lastTime = await this.getLastTime()
-        this.judgeStartLine(this.nginxStreamLogPath, this.lastTime)
         this.watchLogs(await this.executorService.getNginxStreamLogPath())
+        // this.addCronJob('LogsUpload', () => this.logsUpload(), getEnvSetting(EnvKeyEnum.OnlineCheckCron))
+        this.addCronJob('LogsUpload', () => this.logsUpload(), '*/10 * * * * *')
+    }
+
+    async logsUpload() {
+        if (this.logQueue.length > 0) {
+            Logger.verbose(`logs: ${inspect(this.logQueue)} upload`)
+            const { success } = await firstValueFrom(this.reportService.LogReport({ logs: this.logQueue }))
+            if (!success) {
+                if (this.logQueue.length > 50000) {
+                    Logger.warn('logQueue is so big than 5w, please check program, and this logQueue will be discard')
+                    this.logQueue.length = 0
+                }
+                Logger.verbose(`upload failed, try upload again`)
+                this.logsUpload()
+                return
+            }
+            Logger.verbose(`${this.logQueue.length} pieces of logs were uploaded successfully`)
+        }
+        this.logQueue.length = 0
+    }
+
+    private addCronJob(name: string, task: () => void, interval: string) {
+        const job = new CronJob(interval, task, null, null, null, null, true)
+        this.schedulerRegistry.addCronJob(name, job)
+        job.start()
+        Logger.log(`job ${name} added at ${interval}`)
     }
 
     private reportService: IReportService
@@ -50,67 +82,81 @@ export class LogsService implements OnModuleInit {
         }, 'getLastTime')
     }
 
-    private judgeStartLine(path: string, lastTime: string) {
-        this.logReadObservable = new Observable(subsriber => {
-            if (!lastTime) {
-                this.startLine = 0
-                Logger.verbose(`log read start line is 0`)
-                this.readFileByLine(
-                    path,
-                    line => this.logQueue.push(this.handleLogByLine(line)),
-                    () => subsriber.complete()
-                )
-                return
-            }
-            Logger.debug(`正在检查 ${path}`)
-            const rl = createInterface({
-                input: createReadStream(path, {
-                    start: 0,
-                    end: Infinity
-                })
-            })
-            let startNum = 0
-            rl.on('line', line => {
-                const { time } = this.handleLogByLine(line)
-                Logger.verbose(`lastTime: ${lastTime} vs time: ${time}`)
-                if (moment(time).isAfter(moment(lastTime))) {
-                    this.logQueue.push(this.handleLogByLine(line))
-                    this.startLine = startNum
-                }
-                startNum++
-            })
-            rl.on('close', () => {
-                console.log(`read finished, startLine is ${this.startLine}`)
-                subsriber.complete()
-            })
-        })
-    }
+    // private judgeStartLine(path: string, lastTime: string) {
+    //     this.logReadObservable = new Observable(subsriber => {
+    //         if (!lastTime) {
+    //             this.startLine = 0
+    //             Logger.verbose(`log read start line is 0`)
+    //             this.readFileByLine(
+    //                 path,
+    //                 line => this.logQueue.push(this.handleLogByLine(line)),
+    //                 () => subsriber.complete()
+    //             )
+    //             return
+    //         }
+    //         Logger.debug(`正在检查 ${path}`)
+    //         const rl = createInterface({
+    //             input: createReadStream(path, {
+    //                 start: 0,
+    //                 end: Infinity
+    //             })
+    //         })
+    //         let startNum = 0
+    //         rl.on('line', line => {
+    //             const { time } = this.handleLogByLine(line)
+    //             Logger.verbose(`lastTime: ${lastTime} vs time: ${time}`)
+    //             if (moment(time).isAfter(moment(lastTime))) {
+    //                 this.logQueue.push(this.handleLogByLine(line))
+    //                 this.startLine = startNum
+    //             }
+    //             startNum++
+    //         })
+    //         rl.on('close', () => {
+    //             console.log(`read finished, startLine is ${this.startLine}`)
+    //             subsriber.complete()
+    //         })
+    //     })
+    // }
 
     // private async initReadedLine() {}
 
-    private readFileByLine(path: string, onLine: (line: string) => void, onClose?: () => void) {
-        console.log('readFileByLine this.startLine', this.startLine)
-
+    private readFileByLine(readStream: Readable, onLine: (line: string) => void, onClose?: () => void) {
         const rl = createInterface({
-            input: createReadStream(path, {
-                start: this.startLine,
-                end: Infinity
-            })
+            input: readStream
         })
         rl.on('line', onLine)
-        rl.on(
-            'close',
-            onClose
-                ? onClose
-                : () => {
-                      rl.close()
-                      console.log('read finished')
-                  }
-        )
+        rl.on('close', onClose)
     }
+
+    private watchLogsDe = debounce((path: string) => this.watchLogs(path), 2000)
 
     private async watchLogs(path: string) {
         await this.executorService.existOrCreate(path)
+        if (!this.lastTime) {
+            const now = moment().toISOString()
+            this.lastTime = now
+            Logger.warn(`got last time failed, then last time will be set now: ${now}`)
+        }
+        let process: ProcessPromise<ProcessOutput>
+        const { stdout, stderr } = (process = this.executorService.getTailFileProcess(path))
+        process.catch(Logger.error)
+        this.readFileByLine(
+            stdout,
+            line => {
+                const { time } = this.handleLogByLine(line)
+                if (moment(time).isAfter(moment(this.lastTime))) {
+                    this.logQueue.push(this.handleLogByLine(line))
+                }
+            },
+            () => {
+                Logger.error(`readline 关闭`)
+            }
+        )
+        stderr.on('data', chunk => {
+            process.kill()
+            Logger.error(`watch ${path} occur error: ${chunk.toString()}, and then will try watch again`)
+            this.watchLogsDe(path)
+        })
     }
 
     // private async watchLogs(path: string) {

@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { BucketService } from '@x-forward/bucket'
 import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
+import { Log } from '@x-forward/bucket/schemas/log.schema'
 import { DefaultTimeEnum } from '@x-forward/common'
 import * as moment from 'moment'
 
@@ -8,7 +9,7 @@ import * as moment from 'moment'
 export class LogsService {
     constructor(private readonly bucketService: BucketService) {}
 
-    async add(logs: CreateLogDto) {
+    async add(logs: CreateLogDto | CreateLogDto[]): Promise<Log | Log[]> {
         return this.bucketService.create(logs)
     }
 

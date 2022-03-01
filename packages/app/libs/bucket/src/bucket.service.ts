@@ -8,7 +8,7 @@ import { Model } from 'mongoose'
 export class BucketService {
     constructor(@InjectModel('Log') private logModel: Model<LogDocument>) {}
 
-    async create(createLogDto: CreateLogDto | CreateLogDto[]): Promise<Log> {
+    async create(createLogDto: CreateLogDto | CreateLogDto[]) {
         return this.logModel.create(createLogDto)
     }
 

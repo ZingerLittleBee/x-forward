@@ -221,4 +221,8 @@ export class ExecutorService implements OnModuleInit {
     async getStreamLogDir() {
         return `${getEnvSetting(EnvKeyEnum.LogPrefix)}/${getEnvSetting(EnvKeyEnum.StreamDir)}`
     }
+
+    getTailFileProcess(path: string) {
+        return this.executor.tailFile(path)
+    }
 }

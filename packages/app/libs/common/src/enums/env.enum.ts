@@ -51,5 +51,7 @@ export enum EnvKeyEnum {
 
     ClientGrpcPort = 'CLIENT_GRPC_PORT',
 
-    CommunicationKey = 'COMMUNICATION_KEY'
+    CommunicationKey = 'COMMUNICATION_KEY',
+
+    LogsUploadInterval = 'LOGS_UPLOAD_INTERVAL'
 }

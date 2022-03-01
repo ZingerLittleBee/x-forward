@@ -31,7 +31,9 @@ export enum DefaultEnum {
 
     CLIENT_PORT = 5000,
 
-    CLIENT_GRPC_PORT = 5001
+    CLIENT_GRPC_PORT = 5001,
+
+    LOGS_UPLOAD_INTERVAL = '*/1 * * * *'
 }
 
 export enum DefaultTimeEnum {

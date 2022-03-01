@@ -5,10 +5,12 @@ import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { shellExec } from '@x-forward/common/utils/shell.utils'
 import { removeProtocol } from '@x-forward/shared'
 import { lookup } from 'dns/promises'
+import { ProcessOutput, ProcessPromise } from 'zx'
 import { ISystem, SystemInfo } from '../interfaces'
 
 //https://stackoverflow.com/questions/44593961/why-does-abstract-class-have-to-implement-all-methods-from-interface
 export abstract class ExecutorAbs implements ISystem {
+    abstract tailFile(path: string): ProcessPromise<ProcessOutput>
     abstract checkPath(path: string): Promise<boolean>
     abstract mkPath(path: string): Promise<void>
     abstract fetchDirectory(url: string): Promise<string>

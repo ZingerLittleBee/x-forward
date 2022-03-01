@@ -15,7 +15,7 @@ service ReportService {
   rpc Register (Client) returns (RegisterResult);
   rpc GetPortAndUserRelation (ClientById) returns (RelationResult);
   rpc GetLastTime (ClientById) returns (LastTimeResult);
-  rpc LogReport (google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc LogReport (LogsDtos) returns (LogsResult);
 }
 
 message Client {
@@ -60,4 +60,47 @@ message LastTimeResult {
     string lastTime = 1;
   }
   Data data = 3;
+}
+
+message LogsDto {
+  string clientId = 1;
+
+  string clientPort = 2;
+
+  string userId = 3;
+
+  string remoteAddr = 4;
+
+  string remotePort = 5;
+
+  string protocol = 6;
+
+  string status = 7;
+
+  string bytesSent = 8;
+
+  string bytesReceived = 9;
+
+  string sessionTime = 10;
+
+  string upstreamAddr = 11;
+
+  string upstreamBytesSent = 12;
+
+  string upstreamBytesReceived = 13;
+
+  string upstreamConnectTime = 14;
+
+  string upstreamSessionTime = 15;
+
+  string time = 16;
+}
+
+message LogsDtos {
+  repeated LogsDto logs = 1;
+}
+
+message LogsResult {
+  bool success = 1;
+  string message = 2;
 }

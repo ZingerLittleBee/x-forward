@@ -1,6 +1,4 @@
-// export class CreateLogDto extends PartialType(Log) {}
-
-export class CreateLogDto {
+export class LogsDto {
     clientId: string
 
     clientPort: string
