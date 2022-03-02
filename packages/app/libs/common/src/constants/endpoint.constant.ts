@@ -18,3 +18,11 @@ export const ExecutorEndPoint = {
     EXECUTOR,
     STREAM_PATCH
 }
+
+const LOGS = '/logs'
+const TRAFFIC = '/traffic'
+
+export const LogsEndPoint = {
+    LOGS,
+    TRAFFIC
+}

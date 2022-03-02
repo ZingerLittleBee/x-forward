@@ -43,7 +43,7 @@ export class LogsService implements OnModuleInit {
             const { success } = await firstValueFrom(this.reportService.LogReport({ logs: this.logQueue }))
             if (!success) {
                 if (this.logQueue.length > 50000) {
-                    Logger.warn('logQueue is so big than 5w, please check program, and this logQueue will be discard')
+                    Logger.warn('log queue is so big than 5w, please check program, and this log queue will be discard')
                     this.logQueue.length = 0
                 }
                 Logger.verbose(`upload failed, try upload again`)

@@ -22,6 +22,33 @@ export class BucketService {
         })
     }
 
+    async findByUserIdAndTimeRange(userId: string, startTime: Date, endTime: Date): Promise<Log[]> {
+        return this.logModel.find({
+            user_id: userId,
+            time: { $gte: startTime, $lte: endTime }
+        })
+    }
+
+    async findByUserIdAndClientIdAndTimeRange(
+        userId: string,
+        clientId: string,
+        startTime: Date,
+        endTime: Date
+    ): Promise<Log[]> {
+        return this.logModel.find({
+            user_id: userId,
+            client_id: clientId,
+            time: { $gte: startTime, $lte: endTime }
+        })
+    }
+
+    async findByClientIdAndTimeRange(clientId: string, startTime: Date, endTime: Date): Promise<Log[]> {
+        return this.logModel.find({
+            client_id: clientId,
+            time: { $gte: startTime, $lte: endTime }
+        })
+    }
+
     async getLastTimeByClientId(clientId: string): Promise<Log> {
         return this.logModel
             .findOne({
@@ -29,5 +56,16 @@ export class BucketService {
             })
             .sort({ time: -1 })
             .limit(1)
+    }
+
+    async deleteByUserIdAndTimeRange(
+        userId: string,
+        startTime: Date,
+        endTime: Date
+    ): Promise<{ deletedCount: number }> {
+        return this.logModel.deleteMany({
+            user_id: userId,
+            time: { $gte: startTime, $lte: endTime }
+        })
     }
 }
