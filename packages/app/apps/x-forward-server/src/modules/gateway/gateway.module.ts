@@ -14,9 +14,24 @@ import { ExecutorGatewayService } from './services/executor-gateway.service'
 import { LogsGatewayService } from './services/logs-gateway.service'
 import { ModelGatewayService } from './services/model-gateway.service'
 import { QueryGatewayService } from './services/query-gateway.service'
+import { GrpcClientRegisterModule } from '../../../../../libs/grpc-client-register/grpc-client-register.module'
+import { TestGatewayController } from './controllers/test-gateway.controller'
 
 @Module({
-    imports: [ExecutorModule, HttpModule, RenderModule, UpstreamModule, StreamModule, ClientModule, LogsModule],
+    imports: [
+        GrpcClientRegisterModule.register({
+            protoName: 'executor',
+            protoPath: `${process.cwd()}/protos/executor.proto`,
+            serviceName: 'ExecutorService'
+        }),
+        ExecutorModule,
+        HttpModule,
+        RenderModule,
+        UpstreamModule,
+        StreamModule,
+        ClientModule,
+        LogsModule
+    ],
     providers: [
         ExecutorGatewayService,
         ModelGatewayService,
@@ -25,7 +40,7 @@ import { QueryGatewayService } from './services/query-gateway.service'
         ClientProfile,
         LogsGatewayService
     ],
-    controllers: [ClientGatewayController, LogsGatewayController],
+    controllers: [ClientGatewayController, LogsGatewayController, TestGatewayController],
     exports: [
         ExecutorGatewayService,
         ModelGatewayService,

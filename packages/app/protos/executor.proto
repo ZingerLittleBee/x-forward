@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package executor;
+
+import "google/protobuf/empty.proto";
+
+service ExecutorService {
+    rpc GetNginxBin(google.protobuf.Empty) returns(NginxBinResult);
+    rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
+    rpc GetNginxConfigArgs(google.protobuf.Empty) returns(NginxArgsResult);
+}
+
+
+message MainConfigContent {
+    string content = 1;
+}
+
+message noDataResult {
+    string success = 1;
+    string message = 2;
+}
+
+message NginxBinResult {
+    string success = 1;
+    string message = 2;
+    string data = 3;
+}
+
+message NginxArgsResult {
+    string success = 1;
+    string message = 2;
+    message Data {
+        string version = 1;
+        string args = 2;
+        repeated string module = 3;
+    }
+    Data data = 3;
+}

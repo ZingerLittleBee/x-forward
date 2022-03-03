@@ -96,7 +96,7 @@ export class ExecutorService implements OnModuleInit {
     async rewriteMainConfig(content: string) {
         Logger.log(`nginx config 将被重写为:\n${content}`)
         Logger.verbose(`stream log dir: ${await this.getStreamLogPath()}`)
-        makeSureFileExists(await this.getStreamLogPath())
+        await this.executor.mkPath(await this.getStreamLogPath())
         await this.executor.mainConfigRewrite(content)
     }
 

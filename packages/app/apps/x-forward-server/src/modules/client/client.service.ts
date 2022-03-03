@@ -93,9 +93,7 @@ export class ClientService implements OnModuleInit {
         const streams = await this.streamService.findByClientId(clientId)
         const relations: UserProperty[] = []
         streams?.forEach(s => {
-            const relation = relations.find(r => {
-                r.userId === s.userId
-            })
+            const relation = relations.find(r => r.userId === s.userId)
             if (relation) {
                 if (relation.ports) {
                     relation.ports.push(s.transitPort?.toString())

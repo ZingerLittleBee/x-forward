@@ -18,7 +18,7 @@ export interface ISystem {
     fetchDirectory(url: string): Promise<string>
 
     /**
-     * nginx reload to make configuartion effect
+     * nginx reloads to make configuration effect
      */
     nginxReload(): void
 
@@ -38,7 +38,7 @@ export interface ISystem {
     getIp(): Promise<string>
 
     /**
-     * check path is exist or not
+     * check path is existed or not
      * @param path filePath or dirPath
      */
     checkPath(path: string): Promise<boolean>
