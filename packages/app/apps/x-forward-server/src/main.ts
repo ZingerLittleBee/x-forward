@@ -37,7 +37,7 @@ async function bootstrap() {
         options: {
             package: 'report',
             protoPath: `${process.cwd()}/protos/report.proto`,
-            url: `localhost:${getEnvSetting(EnvKeyEnum.Server_Grpc_Port)}`
+            url: `0.0.0.0:${getEnvSetting(EnvKeyEnum.Server_Grpc_Port)}`
         }
     })
     await app.startAllMicroservices()

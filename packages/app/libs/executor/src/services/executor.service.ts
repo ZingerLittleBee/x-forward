@@ -1,6 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common/enums'
-import { findSomething, getEnvSetting, makeSureFileExists } from '@x-forward/common/utils'
+import { findSomething, getEnvSetting } from '@x-forward/common/utils'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { IExecutor } from '@x-forward/executor/interfaces'
 import nginxMainConfig from '@x-forward/render/template/nginxMainConfig'

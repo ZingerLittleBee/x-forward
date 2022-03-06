@@ -1,12 +1,14 @@
 import { Controller, Get } from '@nestjs/common'
-import { ExecutorGatewayService } from '../services/executor-gateway.service'
+import { QueryGatewayService } from '../services/query-gateway.service'
 
 @Controller()
 export class TestGatewayController {
-    constructor(private readonly executorGatewayService: ExecutorGatewayService) {}
+    constructor(private readonly queryGatewayService: QueryGatewayService) {}
 
     @Get('bin')
     getNginxBin() {
-        return this.executorGatewayService.getNginxBin('')
+        console.log('bin test')
+        // return this.queryGatewayService.fetchNginxStreamConfigContent('304cad4d-2018-4860-bae4-20c674df3e47')
+        return this.queryGatewayService.fetchDirectoryByUrl('304cad4d-2018-4860-bae4-20c674df3e47', 'root')
     }
 }

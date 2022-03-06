@@ -4,22 +4,7 @@ import { GrpcHelperModule } from '../grpc-helper/grpc-helper.module'
 import { RegisterService } from './register.service'
 
 @Module({
-    imports: [
-        GrpcHelperModule,
-        // HttpModule.registerAsync({
-        //     useFactory: () => {
-        //         return {
-        //             baseURL: getEnvSetting(EnvKeyEnum.ServerUrl),
-        //             headers: {
-        //                 [EnvKeyEnum.CommunicationKey]: getEnvSetting(EnvKeyEnum.CommunicationKey)
-        //             },
-        //             timeout: 5000,
-        //             maxRedirects: 5
-        //         }
-        //     }
-        // }),
-        ExecutorModule
-    ],
+    imports: [GrpcHelperModule, ExecutorModule],
     providers: [RegisterService],
     exports: [RegisterService]
 })

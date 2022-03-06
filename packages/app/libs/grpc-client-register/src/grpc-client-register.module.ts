@@ -1,13 +1,13 @@
 import { DynamicModule, Module } from '@nestjs/common'
-import { GrpcClientRegisterService } from './grpc-client-register.service'
-import type { Options } from '@grpc/proto-loader'
+import { GrpcOptions } from '@nestjs/microservices'
 import { GRPC_CLIENT_REGISTER_OPTIONS } from './constants'
+import { GrpcClientRegisterService } from './grpc-client-register.service'
 
 export interface GrpcClientRegisterOptions {
     protoName: string
     protoPath: string
     serviceName: string
-    protoOptions?: Options
+    grpcOptions?: GrpcOptions
 }
 
 @Module({})
@@ -26,4 +26,3 @@ export class GrpcClientRegisterModule {
         }
     }
 }
-

@@ -68,6 +68,15 @@
             "compilerOptions": {
                 "tsConfigPath": "libs/bucket/tsconfig.lib.json"
             }
+        },
+        "grpc-client-register": {
+            "type": "library",
+            "root": "libs/grpc-client-register",
+            "entryFile": "index",
+            "sourceRoot": "libs/grpc-client-register/src",
+            "compilerOptions": {
+                "tsConfigPath": "libs/grpc-client-register/tsconfig.lib.json"
+            }
         }
     }
 }

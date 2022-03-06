@@ -5,11 +5,21 @@ package executor;
 import "google/protobuf/empty.proto";
 
 service ExecutorService {
-    rpc GetNginxBin(google.protobuf.Empty) returns(NginxBinResult);
+    rpc GetNginxBin(google.protobuf.Empty) returns(stringResult);
     rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
     rpc GetNginxConfigArgs(google.protobuf.Empty) returns(NginxArgsResult);
+    rpc StreamPatch(StreamContent) returns(noDataResult);
+    rpc GetNginxStreamConfigContent(google.protobuf.Empty) returns(stringResult);
+    rpc FetchDirectory(Directory) returns (stringResult);
 }
 
+message Directory {
+    string url = 1;
+}
+
+message StreamContent {
+    string content = 1;
+}
 
 message MainConfigContent {
     string content = 1;
@@ -20,7 +30,7 @@ message noDataResult {
     string message = 2;
 }
 
-message NginxBinResult {
+message stringResult {
     string success = 1;
     string message = 2;
     string data = 3;
