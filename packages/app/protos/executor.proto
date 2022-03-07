@@ -6,11 +6,56 @@ import "google/protobuf/empty.proto";
 
 service ExecutorService {
     rpc GetNginxBin(google.protobuf.Empty) returns(stringResult);
-    rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
     rpc GetNginxConfigArgs(google.protobuf.Empty) returns(NginxArgsResult);
-    rpc StreamPatch(StreamContent) returns(noDataResult);
     rpc GetNginxStreamConfigContent(google.protobuf.Empty) returns(stringResult);
+    rpc GetNginxStatus(google.protobuf.Empty) returns (NginxStatusResult);
+    rpc GetSystemInfo(google.protobuf.Empty) returns (SystemInfoResult);
     rpc FetchDirectory(Directory) returns (stringResult);
+    rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
+    rpc StreamPatch(StreamContent) returns(noDataResult);
+
+    rpc UpdatePortAndUserRelation(UserProperties) returns(noDataResult);
+}
+
+message UserProperties {
+    repeated UserProperty userProperties = 1;
+    message UserProperty {
+        string userId = 1;
+        repeated string ports = 2;
+    }
+}
+
+
+message SystemInfoResult {
+    string success = 1;
+    string message = 2;
+    message Data {
+        string hostname = 1;
+        string kernelRelease = 2;
+        string kernelVersion = 3;
+        string hardware = 4;
+        string distributorId = 5;
+        string description = 6;
+        string release = 7;
+        string codename = 8;
+    }
+    Data data = 3;
+}
+
+message NginxStatusResult {
+    string success = 1;
+    string message = 2;
+    message Data {
+        string mainPid = 1;
+        repeated string workerPid = 2;
+        string active = 3;
+        string uptime = 4;
+        string since = 5;
+        string memory = 6;
+        string tasks = 7;
+        string tasksLimit = 8;
+    }
+    Data data = 3;
 }
 
 message Directory {

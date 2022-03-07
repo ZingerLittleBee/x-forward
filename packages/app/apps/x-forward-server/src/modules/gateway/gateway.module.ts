@@ -9,7 +9,6 @@ import { StreamModule } from '../stream/stream.module'
 import { UpstreamModule } from '../upstream/upstream.module'
 import { ClientGatewayController } from './controllers/client-gateway.controller'
 import { LogsGatewayController } from './controllers/logs-gateway.controller'
-import { TestGatewayController } from './controllers/test-gateway.controller'
 import { ClientGatewayService } from './services/client-gateway.service'
 import { ExecutorGatewayService } from './services/executor-gateway.service'
 import { LogsGatewayService } from './services/logs-gateway.service'
@@ -26,7 +25,7 @@ import { QueryGatewayService } from './services/query-gateway.service'
         ClientProfile,
         LogsGatewayService
     ],
-    controllers: [ClientGatewayController, LogsGatewayController, TestGatewayController],
+    controllers: [ClientGatewayController, LogsGatewayController],
     exports: [
         ExecutorGatewayService,
         ModelGatewayService,

@@ -69,23 +69,20 @@ export class ConfigChangeListener {
     async handleConfigCreate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
         const content = await this.renderService.renderStream(await this.collectModels())
-        const url = await this.getUrlByClientId(payload?.clientId)
-        this.executorGateway.streamPatch(url, content)
+        this.executorGateway.streamPatch(payload?.clientId, content)
     }
 
     @OnEvent(EventEnum.CONFIG_UPDATE)
     async handleConfigUpdate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
         const content = await this.renderService.renderStream(await this.collectModels())
-        const url = await this.getUrlByClientId(payload?.clientId)
-        this.executorGateway.streamPatch(url, content)
+        this.executorGateway.streamPatch(payload?.clientId, content)
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
     async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
         const content = await this.renderService.renderStream(await this.collectModels())
-        const url = await this.getUrlByClientId(payload?.clientId)
-        this.executorGateway.streamPatch(url, content)
+        this.executorGateway.streamPatch(payload?.clientId, content)
     }
 }

@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common'
+import { Body, Controller, Post } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
 import { Result } from '@x-forward/common'
 import { ExecutorEndPoint } from '@x-forward/common/constants/endpoint.constant'
@@ -41,14 +41,14 @@ export class ExecutorController {
         return Result.okData(await this.executorService.getDirByUrl(args?.url))
     }
 
-    @Get()
+    @GrpcMethod('ExecutorService')
     async getNginxStatus() {
-        return this.executorService.queryNginxStatus()
+        return Result.okData(await this.executorService.queryNginxStatus())
     }
 
-    @Get()
+    @GrpcMethod('ExecutorService')
     async getSystemInfo() {
-        return this.executorService.getSystemInfo()
+        return Result.okData(await this.executorService.getSystemInfo())
     }
 
     @Post(ExecutorEndPoint.STREAM_PATCH)

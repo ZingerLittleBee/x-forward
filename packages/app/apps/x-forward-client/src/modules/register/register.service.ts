@@ -30,6 +30,10 @@ export class RegisterService implements OnModuleInit {
 
     private userProperties: UserProperty[]
 
+    public setUserProperty(userProperties: UserProperty[]) {
+        this.userProperties = userProperties
+    }
+
     private async getPortAndUserRelation(clientId: string) {
         return errorHandleWarpper<UserProperty[]>(
             () => firstValueFrom(this.reportService.getPortAndUserRelation({ id: clientId })),

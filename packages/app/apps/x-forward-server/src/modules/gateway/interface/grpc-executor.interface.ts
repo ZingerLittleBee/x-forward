@@ -1,4 +1,5 @@
-import { IResult } from '@x-forward/common'
+import { IResult, UserProperty } from '@x-forward/common'
+import { NginxStatus, SystemInfo } from '@x-forward/executor'
 import { Observable } from 'rxjs'
 
 export interface GrpcNginxConfig {
@@ -15,4 +16,7 @@ export interface GrpcExecutorService {
     streamPatch(arg: { content: string }): Observable<IResult<any>>
     getNginxStreamConfigContent({}): Observable<IResult<string>>
     fetchDirectory(arg: { url: string }): Observable<IResult<string>>
+    getNginxStatus({}): Observable<IResult<NginxStatus>>
+    getSystemInfo({}): Observable<IResult<SystemInfo>>
+    updatePortAndUserRelation(args: { userProperties: UserProperty[] }): Observable<IResult<any>>
 }

@@ -43,13 +43,10 @@ export class QueryGatewayService {
     async fetchDirectoryByUrl(clientId: string, url: string) {
         return firstValueFrom((await this.getClient(clientId)).fetchDirectory({ url }))
     }
-    //     async queryNginxStatus() {
-    //         return this.executorService.queryNginxStatus()
-    //     }
-    //     async getSystemInfo() {
-    //         return this.executorService.getSystemInfo()
-    //     }
-    //     async getNginxBin() {
-    //         return this.executorService.getNginxBin()
-    //     }
+    async queryNginxStatus(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getNginxStatus({}))
+    }
+    async getSystemInfo(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getSystemInfo({}))
+    }
 }
