@@ -1,8 +1,5 @@
 // Stored key in actual
 export enum EnvKeyEnum {
-    // nginx conf
-    NginxConfigArgs = 'NGINX_CONFIG_ARGS',
-
     // nginx container name
     DockerContainerName = 'DOCKER_CONTAINER_NAME',
 
@@ -38,15 +35,23 @@ export enum EnvKeyEnum {
     // online check interval
     OnlineCheckCron = 'ONLINE_CHECK_CRON',
 
-    MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS'
-}
+    MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS',
 
-export enum CommonEnvKeyEnum {
+    ServerPort = 'SERVER_PORT',
+
+    Server_Grpc_Port = 'SERVER_GRPC_PORT',
+
+    ServerUrl = 'SERVER_URL',
+
+    ClientIp = 'CLIENT_IP',
+
+    ClientDomain = 'CLIENT_DOMAIN',
+
+    ClientPort = 'CLIENT_PORT',
+
+    ClientGrpcPort = 'CLIENT_GRPC_PORT',
+
     CommunicationKey = 'COMMUNICATION_KEY',
-    Port = 'PORT'
-}
 
-export enum ClientEnvKeyEnum {
-    // -------------------- Client default value --------------------
-    ServerUrl = 'SERVER_URL'
+    LogsUploadInterval = 'LOGS_UPLOAD_INTERVAL'
 }

@@ -98,9 +98,9 @@ export class StreamController {
      * 删除所有 stream (软删除)
      * 更新 delete_time 字段
      */
-    @Delete()
+    @Delete(':clientId')
     @ApiResultResponse('number')
-    async deleteAllStream() {
-        return Result.okData((await this.streamService.deleteAll()).affected)
+    async deleteAllStream(@Param('clientId') clientId: string) {
+        return Result.okData((await this.streamService.deleteAll(clientId)).affected)
     }
 }

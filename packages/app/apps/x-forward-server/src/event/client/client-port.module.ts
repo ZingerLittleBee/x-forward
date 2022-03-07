@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common'
-import { HttpRegister } from '../../config/register.config'
+import { GatewayModule } from '../../modules/gateway/gateway.module'
 import { ClientPortListener } from './client-port.listener'
 
 @Module({
-    imports: [HttpRegister()],
+    imports: [GatewayModule],
     providers: [ClientPortListener]
 })
 export class ClientPortModule {}

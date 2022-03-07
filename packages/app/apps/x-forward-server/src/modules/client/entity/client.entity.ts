@@ -12,7 +12,7 @@ export class ClientEntity extends CommonEntity {
     @IsOptional()
     @IsHost()
     @ApiProperty()
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', nullable: true })
     ip?: string
 
     @AutoMap()
@@ -26,8 +26,8 @@ export class ClientEntity extends CommonEntity {
     @IsOptional()
     @IsPort()
     @ApiProperty()
-    @Column({ type: 'tinyint', nullable: true, default: () => 3000 })
-    communicationPort?: number
+    @Column({ type: 'tinyint', nullable: true, default: () => 5000 })
+    port?: string | number
 
     @AutoMap()
     @IsOptional()

@@ -4,8 +4,8 @@ import { EventEnum, Optimized, Preprocess, StateEnum } from '@x-forward/common'
 import { omit } from 'lodash'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
-import { StreamService } from '../stream/stream.service'
 import { ServerService } from '../server/server.service'
+import { StreamService } from '../stream/stream.service'
 import { UpstreamEntity } from './entity/upstream.entity'
 
 @Injectable()
@@ -28,7 +28,6 @@ export class UpstreamService {
         }
         // trigger event
         const upstreamEntity = await this.upstreamRepository.save(upstream)
-        this.eventService.triggerCreateEvent()
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
     }
@@ -82,7 +81,6 @@ export class UpstreamService {
             await this.streamService.updateAll(updateUpstream.stream)
         }
         const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
-        this.eventService.triggerUpdateEvent()
         Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
         return res
     }
@@ -93,7 +91,6 @@ export class UpstreamService {
         // need delete associated fk
         await this.streamService.removeByFK(id)
         await this.serverService.removeByFK(id)
-        this.eventService.triggerDeleteEvent()
         Logger.verbose(`${EventEnum.CONFIG_DELETE} triggered`)
         return res
     }

@@ -32,9 +32,7 @@ export class ShellGateway implements OnGatewayInit, OnGatewayConnection, OnGatew
      * ws 初始化连接钩子事件
      * @param server server
      */
-    afterInit(server: any): any {
-        console.log('server', server)
-    }
+    afterInit(server: any): any {}
 
     /**
      * ws 连接成功钩子事件

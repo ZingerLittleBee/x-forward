@@ -1,134 +1,137 @@
 {
-  "name": "@x-forward/app",
-  "version": "0.0.1",
-  "description": "ui for nginx stream",
-  "license": "MIT",
-  "scripts": {
-    "pkg": "pkg . -d",
-    "prebuild": "rimraf dist",
-    "build": "nest build",
-    "build:lib": "nest build common",
-    "gen": "nest g resource",
-    "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
-    "start": "nest start",
-    "start-client": "nest start x-forward-client",
-    "dev": "nest start --watch",
-    "dev-client": "nest start x-forward-client --watch",
-    "start:debug": "nest start --debug --watch",
-    "start-client:debug": "nest start x-forward-client --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
-  },
-  "dependencies": {
-    "@automapper/classes": "^6.3.1",
-    "@automapper/core": "^6.3.1",
-    "@automapper/nestjs": "^6.3.1",
-    "@nestjs/axios": "^0.0.5",
-    "@nestjs/common": "^8.3.0",
-    "@nestjs/config": "^1.2.0",
-    "@nestjs/core": "^8.3.0",
-    "@nestjs/event-emitter": "^1.0.0",
-    "@nestjs/jwt": "^8.0.0",
-    "@nestjs/mongoose": "^9.0.2",
-    "@nestjs/passport": "^8.1.1",
-    "@nestjs/platform-express": "^8.3.0",
-    "@nestjs/platform-socket.io": "^8.3.0",
-    "@nestjs/schedule": "^1.0.2",
-    "@nestjs/swagger": "^5.2.0",
-    "@nestjs/typeorm": "^8.0.3",
-    "@nestjs/websockets": "^8.3.0",
-    "@x-forward/shared": "workspace:*",
-    "@x-forward/view": "workspace:^0.0.1",
-    "axios": "^0.26.0",
-    "better-sqlite3": "^7.5.0",
-    "cache-manager": "^3.6.0",
-    "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2",
-    "cron": "^1.8.2",
-    "helmet": "^4.6.0",
-    "moment": "^2.29.1",
-    "mongoose": "^6.2.1",
-    "node-pty": "^0.10.1",
-    "nunjucks": "^3.2.3",
-    "passport": "^0.5.2",
-    "passport-jwt": "^4.0.0",
-    "passport-local": "^1.0.0",
-    "reflect-metadata": "^0.1.13",
-    "rimraf": "^3.0.2",
-    "rxjs": "^7.5.4",
-    "swagger-ui-express": "^4.3.0",
-    "typeorm": "^0.2.41",
-    "uuid": "^8.3.2",
-    "zx": "^4.3.0"
-  },
-  "devDependencies": {
-    "@automapper/types": "^6.3.1",
-    "@nestjs/cli": "^8.2.1",
-    "@nestjs/schematics": "^8.0.6",
-    "@nestjs/testing": "^8.3.0",
-    "@types/cache-manager": "^3.4.2",
-    "@types/cron": "^1.7.3",
-    "@types/express": "^4.17.13",
-    "@types/jest": "^27.4.0",
-    "@types/node": "^16.11.25",
-    "@types/nunjucks": "^3.2.1",
-    "@types/passport-jwt": "^3.0.6",
-    "@types/passport-local": "^1.0.34",
-    "@types/supertest": "^2.0.11",
-    "@types/uuid": "^8.3.4",
-    "@typescript-eslint/eslint-plugin": "^4.33.0",
-    "@typescript-eslint/parser": "^4.33.0",
-    "socket.io": "^4.4.1",
-    "supertest": "^6.2.2",
-    "ts-loader": "^9.2.6",
-    "ts-node": "^10.5.0",
-    "tsconfig-paths": "^3.12.0"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": ".",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
+    "name": "@x-forward/app",
+    "version": "0.0.1",
+    "description": "ui for nginx stream",
+    "license": "MIT",
+    "scripts": {
+        "pkg": "pkg . -d",
+        "prebuild": "rimraf dist",
+        "build": "nest build",
+        "build:lib": "nest build common",
+        "gen": "nest g resource",
+        "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
+        "start": "nest start",
+        "dev": "nest start --watch",
+        "debug": "nest start --debug --watch",
+        "client:start": "nest start x-forward-client",
+        "client:dev": "nest start x-forward-client --watch",
+        "client:debug": "nest start x-forward-client --watch",
+        "start:prod": "node dist/main",
+        "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+        "test": "jest",
+        "test:watch": "jest --watch",
+        "test:cov": "jest --coverage",
+        "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+        "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
     },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "./coverage",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "^@x-forward/common": "<rootDir>/libs/common/src",
-      "^@x-forward/executor": "<rootDir>/libs/executor/src",
-      "^@x-forward/render": "<rootDir>/libs/render/src",
-      "^@x-forward/bucket(|/.*)$": "<rootDir>/libs/bucket/src/$1"
+    "dependencies": {
+        "@automapper/classes": "^6.3.1",
+        "@automapper/core": "^6.3.1",
+        "@automapper/nestjs": "^6.3.1",
+        "@grpc/grpc-js": "^1.5.5",
+        "@grpc/proto-loader": "^0.6.9",
+        "@nestjs/axios": "^0.0.5",
+        "@nestjs/common": "^8.3.0",
+        "@nestjs/config": "^1.2.0",
+        "@nestjs/core": "^8.3.0",
+        "@nestjs/event-emitter": "^1.0.0",
+        "@nestjs/jwt": "^8.0.0",
+        "@nestjs/microservices": "^8.3.1",
+        "@nestjs/mongoose": "^9.0.2",
+        "@nestjs/passport": "^8.1.1",
+        "@nestjs/platform-express": "^8.3.0",
+        "@nestjs/platform-socket.io": "^8.3.0",
+        "@nestjs/schedule": "^1.0.2",
+        "@nestjs/swagger": "^5.2.0",
+        "@nestjs/typeorm": "^8.0.3",
+        "@nestjs/websockets": "^8.3.0",
+        "@x-forward/shared": "workspace:*",
+        "@x-forward/view": "workspace:^0.0.1",
+        "axios": "^0.26.0",
+        "better-sqlite3": "^7.5.0",
+        "cache-manager": "^3.6.0",
+        "class-transformer": "^0.5.1",
+        "class-validator": "^0.13.2",
+        "cron": "^1.8.2",
+        "helmet": "^4.6.0",
+        "moment": "^2.29.1",
+        "mongoose": "^6.2.1",
+        "node-pty": "^0.10.1",
+        "nunjucks": "^3.2.3",
+        "passport": "^0.5.2",
+        "passport-jwt": "^4.0.0",
+        "passport-local": "^1.0.0",
+        "reflect-metadata": "^0.1.13",
+        "rimraf": "^3.0.2",
+        "rxjs": "^7.5.4",
+        "swagger-ui-express": "^4.3.0",
+        "typeorm": "^0.2.41",
+        "uuid": "^8.3.2",
+        "zx": "^4.3.0"
     },
-    "roots": [
-      "<rootDir>/apps/",
-      "<rootDir>/libs/"
-    ]
-  },
-  "bin": "dist/main.js",
-  "pkg": {
-    "scripts": [
-      "dist/**/*.js",
-      "node_modules/lodash/cloneDeep.js"
-    ],
-    "assets": [
-      "temp/**",
-      "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
-    ],
-    "targets": [
-      "node16-linux-x64"
-    ],
-    "outputPath": "pkg"
-  }
+    "devDependencies": {
+        "@automapper/types": "^6.3.1",
+        "@nestjs/cli": "^8.2.1",
+        "@nestjs/schematics": "^8.0.6",
+        "@nestjs/testing": "^8.3.0",
+        "@types/cache-manager": "^3.4.2",
+        "@types/cron": "^1.7.3",
+        "@types/express": "^4.17.13",
+        "@types/jest": "^27.4.0",
+        "@types/node": "^16.11.25",
+        "@types/nunjucks": "^3.2.1",
+        "@types/passport-jwt": "^3.0.6",
+        "@types/passport-local": "^1.0.34",
+        "@types/supertest": "^2.0.11",
+        "@types/uuid": "^8.3.4",
+        "@typescript-eslint/eslint-plugin": "^4.33.0",
+        "@typescript-eslint/parser": "^4.33.0",
+        "socket.io": "^4.4.1",
+        "supertest": "^6.2.2",
+        "ts-loader": "^9.2.6",
+        "ts-node": "^10.5.0",
+        "tsconfig-paths": "^3.12.0"
+    },
+    "jest": {
+        "moduleFileExtensions": [
+            "js",
+            "json",
+            "ts"
+        ],
+        "rootDir": ".",
+        "testRegex": ".*\\.spec\\.ts$",
+        "transform": {
+            "^.+\\.(t|j)s$": "ts-jest"
+        },
+        "collectCoverageFrom": [
+            "**/*.(t|j)s"
+        ],
+        "coverageDirectory": "./coverage",
+        "testEnvironment": "node",
+        "moduleNameMapper": {
+            "^@x-forward/common": "<rootDir>/libs/common/src",
+            "^@x-forward/executor": "<rootDir>/libs/executor/src",
+            "^@x-forward/render": "<rootDir>/libs/render/src",
+            "^@x-forward/bucket(|/.*)$": "<rootDir>/libs/bucket/src/$1"
+        },
+        "roots": [
+            "<rootDir>/apps/",
+            "<rootDir>/libs/"
+        ]
+    },
+    "bin": "dist/main.js",
+    "pkg": {
+        "scripts": [
+            "dist/**/*.js",
+            "node_modules/lodash/cloneDeep.js"
+        ],
+        "assets": [
+            "temp/**",
+            "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
+        ],
+        "targets": [
+            "node16-linux-x64"
+        ],
+        "outputPath": "pkg"
+    }
 }

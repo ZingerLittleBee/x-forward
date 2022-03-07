@@ -1,14 +1,27 @@
-import { Injectable } from '@nestjs/common'
-import { ExecutorService } from '@x-forward/executor'
-import { RenderService } from '@x-forward/render'
-import { RenderModel } from '@x-forward/render/render.interface'
+import { Injectable, Logger } from '@nestjs/common'
+import { firstValueFrom } from 'rxjs'
+import { GrpcClientCenterService } from '../../grpc-client-center/grpc-client-center.service'
 import { ExecutorGatewayApi } from '../interface/gateway.interface'
 
 @Injectable()
 export class ExecutorGatewayService implements ExecutorGatewayApi {
-    constructor(private executorService: ExecutorService, private renderService: RenderService) {}
+    constructor(private readonly grpcClientCenterService: GrpcClientCenterService) {}
 
-    async streamPatch(renderModel: RenderModel) {
-        this.executorService.patchStream(await this.renderService.renderStream(renderModel))
+    async getClient(clientId: string) {
+        return this.grpcClientCenterService.getGrpcExecutorClient(clientId)
+    }
+
+    async streamPatch(clientId: string, content: string) {
+        const result = await firstValueFrom((await this.getClient(clientId))?.streamPatch({ content }))
+        if (!result?.success) {
+            Logger.warn(`stream patch failed: ${result?.message}`)
+        }
+    }
+
+    async MainConfigRewrite(clientId: string, content: string) {
+        const result = await firstValueFrom((await this.getClient(clientId))?.rewriteMainConfig({ content }))
+        if (!result?.success) {
+            Logger.warn(`main config patch failed: ${result?.message}`)
+        }
     }
 }

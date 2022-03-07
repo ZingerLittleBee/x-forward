@@ -1,15 +1,14 @@
 import { NginxConfig, NginxStatus } from '@x-forward/executor'
-import { RenderModel } from '@x-forward/render/render.interface'
 import { StreamEntity } from '../../stream/entity/stream.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
 
 export interface ExecutorGatewayApi {
     /**
      * update stream configuration
-     * @param servers StreamServer[]
-     * @param upstreams StreamUpstream[]
+     * @param url url
+     * @param content content
      */
-    streamPatch: (renderModel: RenderModel) => void
+    streamPatch: (url: string, content: string) => void
 }
 
 export interface QueryGatewayApi {

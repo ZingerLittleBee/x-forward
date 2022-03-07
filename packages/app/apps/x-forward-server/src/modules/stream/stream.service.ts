@@ -34,15 +34,6 @@ export class StreamService {
         return this.streamRepository.find({ clientId })
     }
 
-    async getRelationshipBetweenPortAndUserId(clientId: string) {
-        const streams = await this.findByClientId(clientId)
-        const relations: { [key: string]: number[] } = {}
-        streams?.forEach(s => {
-            relations[s.userId] ? relations[s.userId].push(s.transitPort) : (relations[s.userId] = [s.transitPort])
-        })
-        return relations
-    }
-
     /**
      * find record which fk is null
      * @returns StreamEntity[]
@@ -64,7 +55,7 @@ export class StreamService {
      */
     async create(streamEntity: StreamEntity) {
         const res = await this.streamRepository.save(streamEntity)
-        this.eventService.triggerCreateEvent()
+        this.eventService.triggerCreateEvent({ clientId: streamEntity?.clientId })
         return res
     }
 
@@ -75,7 +66,8 @@ export class StreamService {
      */
     async createAll(streamEntities: StreamEntity[]) {
         const res = await this.streamRepository.save(streamEntities)
-        this.eventService.triggerCreateEvent()
+        // create only execute in same client
+        this.eventService.triggerCreateEvent({ clientId: streamEntities?.[0]?.clientId })
         return res
     }
 
@@ -123,7 +115,7 @@ export class StreamService {
      */
     async delete(id: string) {
         const res = await this.streamRepository.softDelete(id)
-        this.eventService.triggerDeleteEvent()
+        this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
         return res
     }
 
@@ -131,14 +123,14 @@ export class StreamService {
      * 更新所有记录的 delete_time
      * @returns affect rows
      */
-    async deleteAll() {
+    async deleteAll(clientId: string) {
         const res = await this.streamRepository
             .createQueryBuilder()
             .update(StreamEntity)
             .set({ deleteTime: new Date() })
             .where('delete_time is NULL')
             .execute()
-        this.eventService.triggerDeleteEvent()
+        this.eventService.triggerDeleteEvent({ clientId })
         return res
     }
 
@@ -149,7 +141,7 @@ export class StreamService {
             .from(StreamEntity)
             .where('upstream_id = :id', { id })
             .execute()
-        this.eventService.triggerDeleteEvent()
+        this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
         return res
     }
 }

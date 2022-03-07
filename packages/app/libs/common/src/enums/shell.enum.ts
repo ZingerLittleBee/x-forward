@@ -11,7 +11,10 @@ export enum ShellEnum {
     SERVICE = 'service',
     SYSTEMCTL = 'systemctl',
     UNAME = 'uname',
-    LSB_RELEASE = 'lsb_release'
+    LSB_RELEASE = 'lsb_release',
+    Curl = 'curl',
+    MK_DIR = 'mkdir',
+    TAIL = 'tail'
 }
 
 export enum ServiceEnum {

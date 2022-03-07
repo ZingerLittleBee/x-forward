@@ -1,12 +1,12 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
+import { IsPort } from '@x-forward/common'
+import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
 import { enumToString, getValuesOfEnum, IsOrNotEnum, ServerEnum, ServerTipsEnum, TimeUnitEnum } from '@x-forward/shared'
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, Min } from 'class-validator'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
-import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
-import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsPositive, Min } from 'class-validator'
-import { IsPort } from '@x-forward/common'
 
 @Entity('server')
 export class ServerEntity extends CommonEntity {
@@ -22,7 +22,7 @@ export class ServerEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: ServerEnum.UpstreamPort })
     @Column({ name: 'upstream_port', type: 'smallint' })
-    upstreamPort: number
+    upstreamPort: string | number
 
     @IsOptional()
     @IsNumber()

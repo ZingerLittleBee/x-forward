@@ -1,14 +1,15 @@
 import { Injectable } from '@nestjs/common'
 import { BucketService } from '@x-forward/bucket'
 import { CreateLogDto } from '@x-forward/bucket/dto/create-log.dto'
-import * as moment from 'moment'
+import { Log } from '@x-forward/bucket/schemas/log.schema'
 import { DefaultTimeEnum } from '@x-forward/common'
+import * as moment from 'moment'
 
 @Injectable()
 export class LogsService {
     constructor(private readonly bucketService: BucketService) {}
 
-    async add(logs: CreateLogDto) {
+    async add(logs: CreateLogDto | CreateLogDto[]): Promise<Log | Log[]> {
         return this.bucketService.create(logs)
     }
 
@@ -79,5 +80,47 @@ export class LogsService {
 
     async getLastWeek() {
         return this.getLastSomeWeek(1)
+    }
+
+    async getLastTimeByClientId(clientId: string) {
+        return (await this.bucketService.getLastTimeByClientId(clientId))?.time
+    }
+
+    /**
+     * traffic = byte_sent + byte_received
+     * @param userId userId
+     * @param startTime startTime
+     * @param endTime endTime
+     * @returns traffic unit bytes
+     */
+    async getTraffic(userId: string, startTime: Date, endTime: Date): Promise<number> {
+        const userData = await this.bucketService.findByUserIdAndTimeRange(userId, startTime, endTime)
+        return this.computedTraffic(userData)
+    }
+
+    /**
+     * get user traffic in clientId
+     * @param userId userId
+     * @param clientId clientId
+     * @param startTime startTime
+     * @param endTime endTime
+     * @returns traffic unit bytes
+     */
+    async getTrafficByClientId(userId: string, clientId: string, startTime: Date, endTime: Date) {
+        const userData = await this.bucketService.findByUserIdAndClientIdAndTimeRange(
+            userId,
+            clientId,
+            startTime,
+            endTime
+        )
+        return this.computedTraffic(userData)
+    }
+
+    private computedTraffic(data: Log[]) {
+        let traffic: number
+        data?.forEach(d => {
+            traffic += Number(d?.bytes_received) + Number(d?.bytes_sent)
+        })
+        return traffic
     }
 }

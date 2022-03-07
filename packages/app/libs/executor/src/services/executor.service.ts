@@ -1,8 +1,9 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common/enums'
-import { findSomething, getEnvSetting, makeSureDirectoryExists } from '@x-forward/common/utils'
-import { IExecutor, NginxConfig } from '@x-forward/executor/interfaces'
-import { streamBlock } from '@x-forward/render/template/nginxMainConfig'
+import { findSomething, getEnvSetting } from '@x-forward/common/utils'
+import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
+import { IExecutor } from '@x-forward/executor/interfaces'
+import nginxMainConfig from '@x-forward/render/template/nginxMainConfig'
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { inspect } from 'util'
@@ -24,6 +25,17 @@ export class ExecutorService implements OnModuleInit {
         await this.initNginxConfig()
         Logger.debug(`nginx config inited`)
     }
+
+    /**
+     * check path exist, otherwise create path
+     * @param path path
+     */
+    async existOrCreate(path: string) {
+        if (!(await this.executor.checkPath(path))) {
+            this.executor.mkPath(path)
+        }
+    }
+
     /**
      * 初始化
      * 1. 装载 nginx 配置参数
@@ -37,60 +49,55 @@ export class ExecutorService implements OnModuleInit {
         // 装载 nginx 配置参数
         const nginxConfigArgs = await this.executor.getNginxConfigArgs()
         Logger.debug(`nginx 配置参数解析成功: ${inspect(nginxConfigArgs)}`)
-        this.cacheManager.set<NginxConfig>(EnvKeyEnum.NginxConfigArgs, nginxConfigArgs)
+        await this.cacheManager.set(CacheKeyEnum.NginxConfigArgs, nginxConfigArgs)
         const nginxMainConfigContent = await this.executor.getMainConfigContent()
         Logger.debug(`nginx 主配置文件初始内容: ${nginxMainConfigContent}`)
         const streamDir = await this.executor.getStreamDirectory()
         // 判断目录是否存在, 不存在则创建
-        makeSureDirectoryExists(streamDir)
+        await this.existOrCreate(streamDir)
         Logger.debug(`nginx stream 目录: ${streamDir}`)
         // 检索 includes ${streamDir}/*.conf
         const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
         const nginxIncludeBlock = streamConfigIncludeReg.exec(nginxMainConfigContent)
-        Logger.verbose(`nginxIncludeBolck: ${nginxIncludeBlock}`)
-        if (!nginxMainConfigContent.match(streamConfigIncludeReg)) {
-            // 未找到, 则检查是否存在 stream {} 块
-            // 未找到 stream {} 块
-            const logPrefix = getEnvSetting('LOG_PREFIX')
-            const logFilePrefix = getEnvSetting('LOG_FILE_PREFIX')
-            const logFormat = getEnvSetting('LOG_FORMAT_NAME')
-            if (!nginxMainConfigContent.match(/stream\s*{[.\n]*}/)) {
-                const streamBlockString = renderString(streamBlock, {
-                    streamDir,
-                    logPrefix,
-                    logFilePrefix,
-                    logFormat
-                })
-                Logger.debug(`未找到 stream 模块, 将自动在文件尾部添加\n${streamBlockString}`)
-                await this.executor.mainConfigAppend(streamBlockString)
-            }
-            // 找到 stream {} 块, 但是没有 include
-            else {
-                // TODO 暂不进行处理
-                Logger.warn(
-                    `请自行在 ${await this.executor.getMainConfigPath()} 文件添加 stream 模块\n${renderString(
-                        streamBlock,
-                        { streamDir, logPrefix, logFilePrefix, logFormat }
-                    )}`
-                )
-            }
-            this.cacheManager.set(EnvKeyEnum.StreamLogPath, `${logPrefix}/stream/${logFilePrefix}.log`)
+        Logger.verbose(`nginxIncludeBlock: ${nginxIncludeBlock}`)
+        const streamBlockValue = {
+            streamDir,
+            logPrefix: getEnvSetting(EnvKeyEnum.LogPrefix),
+            logFilePrefix: getEnvSetting(EnvKeyEnum.LogFilePrefix),
+            logFormat: getEnvSetting(EnvKeyEnum.LogFormat)
+        }
+        Logger.verbose(`streamBlockValue: ${inspect(streamBlockValue)}`)
+        if (!nginxIncludeBlock || !nginxMainConfigContent.match(/stream\s*{[\s\S]*}/)) {
+            Logger.verbose(
+                `未找到 stream 模块, nginx config 将被重写为:\n${renderString(nginxMainConfig, streamBlockValue)}`
+            )
+            await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
         }
         // 提取 stream log 位置
-        else {
-            const streamLogPathReg = new RegExp(
-                `(?<=access_log\\s)[\-a-zA-Z/\.]+(?=\\s${getEnvSetting('LOG_FORMAT_NAME')})`,
-                'g'
+        const streamLogPathReg = new RegExp(
+            `(?<=access_log\\s)[\-a-zA-Z/\.]+(?=\\s${getEnvSetting(EnvKeyEnum.LogFormat)})`,
+            'g'
+        )
+        const streamLogPath = streamLogPathReg.exec(nginxMainConfigContent)?.[0]
+        if (streamLogPath) {
+            await this.cacheManager.set(EnvKeyEnum.StreamLogPath, streamLogPath)
+            Logger.verbose(`stream log path: ${streamLogPath}`)
+            await this.existOrCreate(streamLogPath)
+        } else {
+            Logger.warn(
+                `未提取到 stream log 路径, nginx config 将被重写为\n${renderString(nginxMainConfig, streamBlockValue)}`
             )
-            const streamLogPath = streamLogPathReg.exec(nginxMainConfigContent)?.[0]
-            if (streamLogPath) {
-                this.cacheManager.set(EnvKeyEnum.StreamLogPath, streamLogPath)
-                Logger.verbose(`stream log path: ${streamLogPath}`)
-            } else {
-                Logger.warn('未提取到 stream log 路径, 日志功能无法生效')
-            }
+            await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
+            await this.initNginxConfig()
         }
         Logger.verbose('executor 初始化完毕')
+    }
+
+    async rewriteMainConfig(content: string) {
+        Logger.log(`nginx config 将被重写为:\n${content}`)
+        Logger.verbose(`stream log dir: ${await this.getStreamLogPath()}`)
+        await this.executor.mkPath(await this.getStreamLogPath())
+        await this.executor.mainConfigRewrite(content)
     }
 
     /**
@@ -198,5 +205,24 @@ export class ExecutorService implements OnModuleInit {
 
     async getNginxStreamLogPath(): Promise<string> {
         return this.cacheManager.get(EnvKeyEnum.StreamLogPath)
+    }
+
+    async getIp() {
+        return this.executor.getIp()
+    }
+
+    async getStreamLogPath() {
+        // {{logPrefix}}/stream/{{logFilePrefix}}.log
+        return `${getEnvSetting(EnvKeyEnum.LogPrefix)}/${getEnvSetting(EnvKeyEnum.StreamDir)}/${getEnvSetting(
+            EnvKeyEnum.LogFilePrefix
+        )}.log`
+    }
+
+    async getStreamLogDir() {
+        return `${getEnvSetting(EnvKeyEnum.LogPrefix)}/${getEnvSetting(EnvKeyEnum.StreamDir)}`
+    }
+
+    getTailFileProcess(path: string) {
+        return this.executor.tailFile(path)
     }
 }

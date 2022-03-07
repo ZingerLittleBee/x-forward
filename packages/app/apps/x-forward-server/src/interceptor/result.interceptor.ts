@@ -7,7 +7,7 @@ import { map, Observable } from 'rxjs'
  */
 @Injectable()
 export class optimizeFieldInterceptor implements NestInterceptor {
-    intercept(_context: ExecutionContext, next: CallHandler<any>): Observable<any> | Promise<Observable<any>> {
+    intercept(_context: ExecutionContext, next: CallHandler): Observable<any> | Promise<Observable<any>> {
         return next.handle().pipe(map(next => removeInvalidField(next)))
     }
 }

@@ -5,22 +5,19 @@ export type LogDocument = Log & Document
 
 @Schema()
 export class Log extends Document {
-    @Prop()
-    server_id: string
-
-    @Prop()
+    @Prop({ alias: 'userId' })
     user_id: string
 
-    @Prop()
-    server_addr: string
+    @Prop({ alias: 'clientId' })
+    client_id: string
 
-    @Prop()
-    server_port: string
+    @Prop({ alias: 'clientPort' })
+    client_port: string
 
-    @Prop()
+    @Prop({ alias: 'remoteAddr' })
     remote_addr: string
 
-    @Prop()
+    @Prop({ alias: 'remotePort' })
     remote_port: string
 
     @Prop()
@@ -29,25 +26,28 @@ export class Log extends Document {
     @Prop()
     status: string
 
-    @Prop()
+    @Prop({ alias: 'bytesSent' })
     bytes_sent: string
 
-    @Prop()
+    @Prop({ alias: 'bytesReceived' })
     bytes_received: string
 
-    @Prop()
+    @Prop({ alias: 'sessionTime' })
+    session_time: string
+
+    @Prop({ alias: 'upstreamAddr' })
     upstream_addr: string
 
-    @Prop()
+    @Prop({ alias: 'upstreamBytesSent' })
     upstream_bytes_sent: string
 
-    @Prop()
+    @Prop({ alias: 'upstreamBytesReceived' })
     upstream_bytes_received: string
 
-    @Prop()
+    @Prop({ alias: 'upstreamConnectTime' })
     upstream_connect_time: string
 
-    @Prop()
+    @Prop({ alias: 'upstreamSessionTime' })
     upstream_session_time: string
 
     @Prop()

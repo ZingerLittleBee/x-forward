@@ -1,3 +1,5 @@
+import { ProcessOutput, ProcessPromise } from 'zx'
+
 export interface SystemInfo {
     hostname?: string
     kernelRelease?: string
@@ -11,22 +13,41 @@ export interface SystemInfo {
 
 export interface ISystem {
     /**
-     * get all directory under url
+     * get all directory under path
      */
-    fetchDirectory: (url: string) => Promise<string>
+    fetchDirectory(url: string): Promise<string>
 
     /**
-     * nginx reload to make configuartion effect
+     * nginx reloads to make configuration effect
      */
-    nginxReload: () => void
+    nginxReload(): void
 
     /**
      * nginx restart
      */
-    nginxRestart: () => void
+    nginxRestart(): void
 
     /**
      * get system info
      */
-    getSystemInfo: () => Promise<SystemInfo>
+    getSystemInfo(): Promise<SystemInfo>
+
+    /**
+     * get IP
+     */
+    getIp(): Promise<string>
+
+    /**
+     * check path is existed or not
+     * @param path filePath or dirPath
+     */
+    checkPath(path: string): Promise<boolean>
+
+    /**
+     * mkdir or touch file
+     * @param path filePath or dirPath
+     */
+    mkPath(path: string): Promise<void>
+
+    tailFile(path: string): ProcessPromise<ProcessOutput>
 }

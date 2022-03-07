@@ -1,19 +1,22 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { InjectRepository } from '@nestjs/typeorm'
-import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
+import { EnvKeyEnum, getEnvSetting, UserProperty } from '@x-forward/common'
 import { IsOrNotEnum } from '@x-forward/shared'
 import { CronJob } from 'cron'
 import * as moment from 'moment'
 import { Repository } from 'typeorm'
+import { inspect } from 'util'
+import { StreamService } from '../stream/stream.service'
 import { ClientEntity } from './entity/client.entity'
 
 @Injectable()
 export class ClientService implements OnModuleInit {
     constructor(
         @InjectRepository(ClientEntity)
-        private clientRepository: Repository<ClientEntity>,
-        private schedulerRegistry: SchedulerRegistry
+        private readonly clientRepository: Repository<ClientEntity>,
+        private readonly schedulerRegistry: SchedulerRegistry,
+        private readonly streamService: StreamService
     ) {}
 
     private async onlineCheck() {
@@ -38,7 +41,7 @@ export class ClientService implements OnModuleInit {
             isOnline: n.isOnline ? IsOrNotEnum.False : IsOrNotEnum.True
         }))
         if (needUpdateEntity.length > 0) {
-            Logger.verbose(`clients 状态需要更新为: ${needUpdateEntity}`)
+            Logger.verbose(`clients 状态需要更新为: ${inspect(needUpdateEntity)}`)
             this.updateOnlineBatch(needUpdateEntity as ClientEntity[])
         } else {
             Logger.verbose(`clients 状态无需更新`)
@@ -57,7 +60,8 @@ export class ClientService implements OnModuleInit {
     }
 
     async register(client: ClientEntity) {
-        return this.clientRepository.save(client)
+        const registeredClient = await this.clientRepository.findOne({ ip: client.ip })
+        return registeredClient ? registeredClient.id : (await this.clientRepository.save(client)).id
     }
 
     async getById(id: string) {
@@ -83,5 +87,26 @@ export class ClientService implements OnModuleInit {
 
     updateOnlineBatch(updateEntities: ClientEntity[]) {
         return this.clientRepository.save(updateEntities)
+    }
+
+    async getRelationshipBetweenPortAndUserId(clientId: string): Promise<UserProperty[]> {
+        const streams = await this.streamService.findByClientId(clientId)
+        const relations: UserProperty[] = []
+        streams?.forEach(s => {
+            const relation = relations.find(r => r.userId === s.userId)
+            if (relation) {
+                if (relation.ports) {
+                    relation.ports.push(s.transitPort?.toString())
+                } else {
+                    relation.ports = [s.transitPort?.toString()]
+                }
+            } else {
+                relations.push({
+                    userId: s.userId,
+                    ports: [s.transitPort?.toString()]
+                })
+            }
+        })
+        return relations
     }
 }

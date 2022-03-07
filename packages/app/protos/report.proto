@@ -1,0 +1,106 @@
+syntax = "proto3";
+/*
+why not google.protobuf.Any
+https://github.com/grpc/grpc-node/issues/375
+https://github.com/nestjs/nest/issues/4621
+https://github.com/protocolbuffers/protobuf/issues/2612
+https://github.com/protobufjs/protobuf.js/issues/435
+https://developers.google.com/protocol-buffers/docs/proto3#any
+*/
+import "google/protobuf/empty.proto";
+
+package report;
+
+service ReportService {
+  rpc Register (Client) returns (RegisterResult);
+  rpc GetPortAndUserRelation (ClientById) returns (RelationResult);
+  rpc GetLastTime (ClientById) returns (LastTimeResult);
+  rpc LogReport (LogsDtos) returns (LogsResult);
+}
+
+message Client {
+  string ip = 1;
+
+  string domain = 2;
+
+  string port = 3;
+
+  int32 isOnline = 4;
+
+  string lastCommunicationTime = 5;
+}
+
+message ClientById {
+  string id = 1;
+}
+
+message RegisterResult {
+  bool success = 1;
+  string message = 2;
+  message Data {
+      string id = 1;
+  }
+  Data data = 3;
+}
+
+message RelationResult {
+  bool success = 1;
+  string message = 2;
+  message Data {
+    string userId = 1;
+    repeated string ports = 2;
+  }
+  repeated Data data = 3;
+}
+
+message LastTimeResult {
+  bool success = 1;
+  string message = 2;
+  message Data {
+    string lastTime = 1;
+  }
+  Data data = 3;
+}
+
+message LogsDto {
+  string clientId = 1;
+
+  string clientPort = 2;
+
+  string userId = 3;
+
+  string remoteAddr = 4;
+
+  string remotePort = 5;
+
+  string protocol = 6;
+
+  string status = 7;
+
+  string bytesSent = 8;
+
+  string bytesReceived = 9;
+
+  string sessionTime = 10;
+
+  string upstreamAddr = 11;
+
+  string upstreamBytesSent = 12;
+
+  string upstreamBytesReceived = 13;
+
+  string upstreamConnectTime = 14;
+
+  string upstreamSessionTime = 15;
+
+  string time = 16;
+}
+
+message LogsDtos {
+  repeated LogsDto logs = 1;
+}
+
+message LogsResult {
+  bool success = 1;
+  string message = 2;
+}

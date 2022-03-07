@@ -21,7 +21,9 @@
             "@x-forward/render": ["libs/render/src"],
             "@x-forward/render/*": ["libs/render/src/*"],
             "@x-forward/bucket": ["libs/bucket/src"],
-            "@x-forward/bucket/*": ["libs/bucket/src/*"]
+            "@x-forward/bucket/*": ["libs/bucket/src/*"],
+            "@x-forward/grpc-client-register": ["libs/grpc-client-register/src"],
+            "@x-forward/grpc-client-register/*": ["libs/grpc-client-register/src/*"]
         }
     }
 }

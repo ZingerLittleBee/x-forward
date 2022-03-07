@@ -1,32 +1,52 @@
-import { Injectable } from '@nestjs/common'
-import { ExecutorService } from '@x-forward/executor'
-import { QueryGatewayApi } from '../interface/gateway.interface'
+// import { Injectable } from '@nestjs/common'
+// import { QueryGatewayApi } from '../interface/gateway.interface'
 
+import { Injectable, Logger } from '@nestjs/common'
+import { firstValueFrom } from 'rxjs'
+import { GrpcClientCenterService } from '../../grpc-client-center/grpc-client-center.service'
 @Injectable()
-export class QueryGatewayService implements QueryGatewayApi {
-    constructor(private executorService: ExecutorService) {}
+export class QueryGatewayService {
+    constructor(private readonly grpcClientCenterService: GrpcClientCenterService) {}
 
-    async fetchNginxConfigArgs() {
-        return this.executorService.getNginxConfigArgs()
+    async getClient(clientId: string) {
+        return this.grpcClientCenterService.getGrpcExecutorClient(clientId)
     }
 
-    async fetchNginxStreamConfigContent() {
-        return this.executorService.getNginxStreamConfigContent()
+    async getNginxBin(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getNginxBin({}))
     }
 
-    async fetchDirectoryByUrl(url: string) {
-        return (await this.executorService.getDirByUrl(url))?.split('\n').filter(r => r !== '')
+    async fetchNginxConfigArgs(clientId: string) {
+        const result = await firstValueFrom((await this.getClient(clientId)).getNginxConfigArgs({}))
+        let args = {}
+        try {
+            args = JSON.parse(result.data?.args)
+        } catch (e) {
+            Logger.error(`parse nginx config args failed: ${e}`)
+        }
+        return result?.success
+            ? {
+                  success: result.success,
+                  data: {
+                      module: result?.data?.module,
+                      version: result?.data?.version,
+                      args
+                  }
+              }
+            : {}
     }
 
-    async queryNginxStatus() {
-        return this.executorService.queryNginxStatus()
+    async fetchNginxStreamConfigContent(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getNginxStreamConfigContent({}))
     }
 
-    async getSystemInfo() {
-        return this.executorService.getSystemInfo()
+    async fetchDirectoryByUrl(clientId: string, url: string) {
+        return firstValueFrom((await this.getClient(clientId)).fetchDirectory({ url }))
     }
-
-    async getNginxBin() {
-        return this.executorService.getNginxBin()
+    async queryNginxStatus(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getNginxStatus({}))
+    }
+    async getSystemInfo(clientId: string) {
+        return firstValueFrom((await this.getClient(clientId)).getSystemInfo({}))
     }
 }
