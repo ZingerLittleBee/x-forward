@@ -1,5 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum, RegisterClientInfo, UserProperty } from '@x-forward/common'
+import { UnknownClient } from '@x-forward/common/errors/unknown-client.exception'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
@@ -51,6 +52,7 @@ export class RegisterService implements OnModuleInit {
         getEnvSetting(EnvKeyEnum.ClientDomain) && (this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain))
         getEnvSetting(EnvKeyEnum.ClientPort) && (this.client.port = getEnvSetting(EnvKeyEnum.ClientPort))
         this.client.id = (await this.register(this.client))?.id
+        if (!this.client.id) throw new UnknownClient()
         this.userProperties = await this.getPortAndUserRelation(this.client.id)
         Logger.verbose(`client: ${inspect(this.client)} init finished`)
     }
