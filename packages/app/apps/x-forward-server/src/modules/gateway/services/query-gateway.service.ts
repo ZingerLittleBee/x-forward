@@ -1,7 +1,6 @@
-// import { Injectable } from '@nestjs/common'
-// import { QueryGatewayApi } from '../interface/gateway.interface'
-
 import { Injectable, Logger } from '@nestjs/common'
+import { NotSerializable } from '@x-forward/common/errors/not-serializable.exception'
+import { NginxConfig } from '@x-forward/executor'
 import { firstValueFrom } from 'rxjs'
 import { GrpcClientCenterService } from '../../grpc-client-center/grpc-client-center.service'
 @Injectable()
@@ -13,40 +12,43 @@ export class QueryGatewayService {
     }
 
     async getNginxBin(clientId: string) {
-        return firstValueFrom((await this.getClient(clientId)).getNginxBin({}))
+        const result = await firstValueFrom((await this.getClient(clientId)).getNginxBin({}))
+        return result?.success ? result.data : ''
     }
 
-    async fetchNginxConfigArgs(clientId: string) {
+    async fetchNginxConfigArgs(clientId: string): Promise<NginxConfig> {
         const result = await firstValueFrom((await this.getClient(clientId)).getNginxConfigArgs({}))
         let args = {}
         try {
             args = JSON.parse(result.data?.args)
         } catch (e) {
             Logger.error(`parse nginx config args failed: ${e}`)
+            throw new NotSerializable('Nginx config args')
         }
         return result?.success
             ? {
-                  success: result.success,
-                  data: {
-                      module: result?.data?.module,
-                      version: result?.data?.version,
-                      args
-                  }
+                  module: result?.data?.module,
+                  version: result?.data?.version,
+                  args
               }
             : {}
     }
 
     async fetchNginxStreamConfigContent(clientId: string) {
-        return firstValueFrom((await this.getClient(clientId)).getNginxStreamConfigContent({}))
+        const result = await firstValueFrom((await this.getClient(clientId)).getNginxStreamConfigContent({}))
+        return result?.success ? result.data : ''
     }
 
     async fetchDirectoryByUrl(clientId: string, url: string) {
-        return firstValueFrom((await this.getClient(clientId)).fetchDirectory({ url }))
+        const result = await firstValueFrom((await this.getClient(clientId)).fetchDirectory({ url }))
+        return result?.success ? result.data : ''
     }
     async queryNginxStatus(clientId: string) {
-        return firstValueFrom((await this.getClient(clientId)).getNginxStatus({}))
+        const result = await firstValueFrom((await this.getClient(clientId)).getNginxStatus({}))
+        return result?.success ? result.data : {}
     }
     async getSystemInfo(clientId: string) {
-        return firstValueFrom((await this.getClient(clientId)).getSystemInfo({}))
+        const result = await firstValueFrom((await this.getClient(clientId)).getSystemInfo({}))
+        return result?.success ? result.data : {}
     }
 }
