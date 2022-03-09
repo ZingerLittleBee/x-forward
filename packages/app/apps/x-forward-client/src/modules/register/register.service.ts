@@ -68,8 +68,4 @@ export class RegisterService implements OnModuleInit {
     getUserAndPortRelations() {
         return this.userProperties
     }
-
-    getServerUrl() {
-        return getEnvSetting(EnvKeyEnum.ServerUrl)
-    }
 }

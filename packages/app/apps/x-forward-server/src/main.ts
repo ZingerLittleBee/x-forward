@@ -24,20 +24,20 @@ async function bootstrap() {
     )
 
     const options = new DocumentBuilder()
-        .setTitle('XForward API')
-        .setDescription('The XForward API description')
+        .setTitle('x-forward API')
+        .setDescription('The x-forward API description')
         .setVersion('0.0.1')
         .addTag('API')
         .build()
     const document = SwaggerModule.createDocument(app, options)
     SwaggerModule.setup('api', app, document)
 
-    const microservice = app.connectMicroservice<MicroserviceOptions>({
+    app.connectMicroservice<MicroserviceOptions>({
         transport: Transport.GRPC,
         options: {
             package: 'report',
             protoPath: `${process.cwd()}/protos/report.proto`,
-            url: `0.0.0.0:${getEnvSetting(EnvKeyEnum.Server_Grpc_Port)}`
+            url: `0.0.0.0:${getEnvSetting(EnvKeyEnum.ServerGrpcPort)}`
         }
     })
     await app.startAllMicroservices()
