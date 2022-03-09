@@ -26,3 +26,10 @@ export const LogsEndPoint = {
     LOGS,
     TRAFFIC
 }
+
+const EXECUTOR_SERVICE = 'ExecutorService'
+const REPORT_SERVICE = 'ReportService'
+export const GrpcEndPoint = {
+    EXECUTOR_SERVICE,
+    REPORT_SERVICE
+}

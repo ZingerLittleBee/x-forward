@@ -1,6 +1,6 @@
 import { Controller, Logger } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
-import { Result } from '@x-forward/common'
+import { GrpcEndPoint, Result } from '@x-forward/common'
 import { isArray } from 'lodash'
 import { inspect } from 'util'
 import { LogsDto } from '../dtos/logs.dto'
@@ -10,13 +10,13 @@ import { LogsGatewayService } from '../services/logs-gateway.service'
 export class LogsGatewayController {
     constructor(private readonly logsGatewayService: LogsGatewayService) {}
 
-    @GrpcMethod('ReportService')
+    @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
     async getLastTime({ id }: { id: string }) {
         Logger.verbose(`clientId: ${inspect(id)}, request getLastTime`)
         return Result.okData(await this.logsGatewayService.getLastTimeByClientId(id))
     }
 
-    @GrpcMethod('ReportService')
+    @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
     async LogReport({ logs }: { logs: LogsDto[] }) {
         Logger.verbose(`receive logs: ${inspect(logs)}`)
         const insertLogs = await this.logsGatewayService.addLogs(logs)

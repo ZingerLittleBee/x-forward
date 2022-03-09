@@ -6,10 +6,7 @@ import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { ClientModule } from './client.module'
 
 async function bootstrap() {
-    const app = await NestFactory.create(ClientModule, {
-        logger: ['verbose', 'debug', 'log', 'warn', 'error']
-    })
-    const microservice = app.connectMicroservice<MicroserviceOptions>({
+    const app = await NestFactory.createMicroservice<MicroserviceOptions>(ClientModule, {
         transport: Transport.GRPC,
         options: {
             package: 'executor',
@@ -17,8 +14,7 @@ async function bootstrap() {
             url: `0.0.0.0:${getEnvSetting(EnvKeyEnum.ClientPort)}`
         }
     })
-    await app.startAllMicroservices()
-    await app.listen(5001)
-    Logger.log(`Application is running on: ${getEnvSetting(EnvKeyEnum.ClientPort)}`)
+    app.listen()
+    Logger.log(`Client is running on: ${getEnvSetting(EnvKeyEnum.ClientPort)}`)
 }
 bootstrap()

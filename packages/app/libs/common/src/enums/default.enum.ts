@@ -27,11 +27,9 @@ export enum DefaultEnum {
 
     COMMUNICATION_KEY = 'sdzxcgewqewq',
 
-    SERVER_URL = 'localhost:3000',
+    SERVER_ADDR = 'localhost',
 
     CLIENT_PORT = 5000,
-
-    CLIENT_GRPC_PORT = 5001,
 
     LOGS_UPLOAD_INTERVAL = '*/1 * * * *'
 }

@@ -1,5 +1,6 @@
 import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { EnvKeyEnum } from '@x-forward/common/enums'
+import { SomethingNotFound } from '@x-forward/common/errors/something-not-found.exception'
 import { findSomething, getEnvSetting } from '@x-forward/common/utils'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { IExecutor } from '@x-forward/executor/interfaces'
@@ -140,7 +141,7 @@ export class ExecutorService implements OnModuleInit {
             const { stdout } = await $`docker ps | awk 'tolower($2) ~ /nginx/ {print$NF}'`
             if (!stdout) {
                 Logger.error(`自动获取 nginx 环境失败, 请在 .env 配置`)
-                throw new Error('env of nginx not found')
+                throw new SomethingNotFound('Nginx')
             }
             this.initDockerExecutor(stdout.replace('\n', ''))
         }

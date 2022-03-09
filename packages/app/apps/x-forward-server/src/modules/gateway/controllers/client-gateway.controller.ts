@@ -2,7 +2,7 @@ import { MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Get, Logger, Param, Post, UseInterceptors } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
 import { IResult, Result } from '@x-forward/common'
-import { GatewayEndPoint } from '@x-forward/common/constants/endpoint.constant'
+import { GatewayEndPoint, GrpcEndPoint } from '@x-forward/common/constants/endpoint.constant'
 import { CommunicationKeyAuthInterceptor } from '@x-forward/common/interceptor/auth.interceptor'
 import * as moment from 'moment'
 import { inspect } from 'util'
@@ -34,13 +34,13 @@ export class ClientGatewayController {
         return Result.noWithMsg('client 注册失败, 请确保 ip 或 domain 正确')
     }
 
-    @GrpcMethod('ReportService')
+    @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
     async getPortAndUserRelation(clientId: string) {
         Logger.verbose(`clientId: ${clientId}, request getPortAndUserRelation`)
         return Result.okData(await this.clientGatewayService.getPortAndUserRelation(clientId))
     }
 
-    @GrpcMethod('ReportService')
+    @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
     async register(data: ClientEntity): Promise<IResult<any>> {
         Logger.verbose(`${inspect(data)}, 请求注册`)
         if (!data.lastCommunicationTime) {
