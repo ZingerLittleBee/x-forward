@@ -285,3 +285,15 @@ export const nginxReopenHandler = async (bin: string, options?: { isDocker?: boo
           )
     return nginxReopenRes.exitCode
 }
+
+export const getSystemTimeHandler = async (options?: { isDocker?: boolean; containerName?: string }) => {
+    const result = options?.isDocker
+        ? await dockerExec(options?.containerName, ShellEnum.DATE, '+%Y-%m-%d" "%T')
+        : await shellExec(ShellEnum.DATE, '+%Y-%m-%d" "%T')
+    if (result.exitCode === 0) {
+        Logger.verbose(`get system time success, ${result.res}`)
+        return result.res
+    }
+    Logger.error(`get system time error`)
+    return ''
+}

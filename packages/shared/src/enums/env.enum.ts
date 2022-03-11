@@ -1,4 +1,4 @@
-export enum EnvKeyEnum {
+export enum EnvEnum {
     OS = '操作系统',
     NginxPath = 'Nginx工作路径',
     NginxStatus = 'Nginx状态',

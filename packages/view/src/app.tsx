@@ -1,16 +1,17 @@
+import Footer from '@/components/Footer'
+import RightContent from '@/components/RightContent'
+import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/view/env'
+import type { RequestConfig } from '@@/plugin-request/request'
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'
 import { PageLoading } from '@ant-design/pro-layout'
+import { message } from 'antd'
+import { io, Socket } from 'socket.io-client'
 import type { RunTimeLayoutConfig } from 'umi'
 import { history } from 'umi'
-import RightContent from '@/components/RightContent'
-import Footer from '@/components/Footer'
-import { io, Socket } from 'socket.io-client'
-import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/view/env'
-import { message } from 'antd'
-import type { RequestConfig } from '@@/plugin-request/request'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import { RequestOptionsInit } from 'umi-request'
+import { ClientControllerGetAll } from './services/view/client'
 
 const loginPath = '/user/login'
 
@@ -24,21 +25,30 @@ export const initialStateConfig = {
  * */
 export async function getInitialState(): Promise<{
     settings?: Partial<LayoutSettings>
+    clients?: API.ClientVo[]
     overview?: API.OverviewVo
     nginxConfig?: API.NginxConfigVo
     socket?: Socket
 }> {
-    const fetchOverview = async () => {
+    const fetchAllClient = async () => {
         try {
-            return (await EnvControllerGetOverview()).data
+            return (await ClientControllerGetAll())?.data
         } catch (error) {
             message.warning('获取系统信息失败')
         }
         return undefined
     }
-    const fetchNginxConfig = async () => {
+    const fetchOverview = async (clientId: string) => {
         try {
-            return (await EnvControllerGetNginxConfig()).data
+            return (await EnvControllerGetOverview({ clientId })).data
+        } catch (error) {
+            message.warning('获取系统信息失败')
+        }
+        return undefined
+    }
+    const fetchNginxConfig = async (clientId: string) => {
+        try {
+            return (await EnvControllerGetNginxConfig({ clientId })).data
         } catch (error) {
             message.warning('获取 nginx 参数失败')
         }
@@ -59,14 +69,19 @@ export async function getInitialState(): Promise<{
     }
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
-        const overview = await fetchOverview()
-        const socket = createSocket('localhost:1234')
-        const nginxConfig = await fetchNginxConfig()
-        return {
-            overview,
-            nginxConfig,
-            settings: {},
-            socket
+        const clients = await fetchAllClient()
+        const defaultClientId = clients?.[0]?.id
+        if (defaultClientId) {
+            const overview = await fetchOverview(defaultClientId)
+            const socket = createSocket('localhost:1234')
+            const nginxConfig = await fetchNginxConfig(defaultClientId)
+            return {
+                clients,
+                overview,
+                nginxConfig,
+                settings: {},
+                socket
+            }
         }
     }
     return {

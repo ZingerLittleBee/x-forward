@@ -51,4 +51,8 @@ export class QueryGatewayService {
         const result = await firstValueFrom((await this.getClient(clientId)).getSystemInfo({}))
         return result?.success ? result.data : {}
     }
+    async getSystemTime(clientId: string) {
+        const result = await firstValueFrom((await this.getClient(clientId)).getSystemTime({}))
+        return result?.success ? result.data : ''
+    }
 }

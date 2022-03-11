@@ -28,11 +28,13 @@ export class EnvService {
         const nginxPath = await this.queryGatewayService.getNginxBin(clientId)
         const { description } = await this.queryGatewayService.getSystemInfo(clientId)
         const { uptime, active } = await this.queryGatewayService.queryNginxStatus(clientId)
+        const systemTime = await this.queryGatewayService.getSystemTime(clientId)
         return {
             os: description,
             nginxPath,
             nginxUptime: uptime,
-            nginxStatus: active
+            nginxStatus: active,
+            systemTime
         }
     }
     /**

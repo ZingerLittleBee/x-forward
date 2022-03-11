@@ -17,6 +17,12 @@ export class ClientEntity extends CommonEntity {
 
     @AutoMap()
     @IsOptional()
+    @ApiProperty()
+    @Column({ type: 'varchar', nullable: true })
+    name?: string
+
+    @AutoMap()
+    @IsOptional()
     @IsHost()
     @ApiProperty()
     @Column({ type: 'varchar', nullable: true })
@@ -44,4 +50,9 @@ export class ClientEntity extends CommonEntity {
     @ApiProperty()
     @Column({ nullable: true })
     lastCommunicationTime?: Date
+
+    @AutoMap()
+    @ApiProperty()
+    @Column({ type: 'varchar', nullable: true })
+    comment?: string
 }

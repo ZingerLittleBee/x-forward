@@ -11,12 +11,19 @@ import { ClientVo } from './vo/client.vo'
 export class ClientController {
     constructor(private readonly clientService: ClientService) {}
 
+    @Get('')
+    @ApiResultResponse(ClientVo, { isArray: true })
+    @UseInterceptors(MapInterceptor(ClientVo, ClientEntity, { isArray: true }))
+    async getAll() {
+        return Result.okData(await this.clientService.findAll())
+    }
+
     @Get('/id/:id')
     @ApiResultResponse(ClientVo)
     @ApiExtraModels(ClientEntity, ClientVo)
     @UseInterceptors(MapInterceptor(ClientVo, ClientEntity))
-    async getById(@Param('id') id: string): Promise<ClientVo> {
-        return this.clientService.getById(id)
+    async getById(@Param('id') id: string) {
+        return Result.okData(await this.clientService.getById(id))
     }
 
     @Get('/ip/:ip')

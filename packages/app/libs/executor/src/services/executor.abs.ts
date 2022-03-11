@@ -10,6 +10,7 @@ import { ISystem, SystemInfo } from '../interfaces'
 
 //https://stackoverflow.com/questions/44593961/why-does-abstract-class-have-to-implement-all-methods-from-interface
 export abstract class ExecutorAbs implements ISystem {
+    abstract getSystemTime(): Promise<string>
     abstract tailFile(path: string): ProcessPromise<ProcessOutput>
     abstract checkPath(path: string): Promise<boolean>
     abstract mkPath(path: string): Promise<void>

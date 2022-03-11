@@ -18,5 +18,6 @@ export interface GrpcExecutorService {
     fetchDirectory(arg: { url: string }): Observable<IResult<string>>
     getNginxStatus({}): Observable<IResult<NginxStatus>>
     getSystemInfo({}): Observable<IResult<SystemInfo>>
+    getSystemTime({}): Observable<IResult<string>>
     updatePortAndUserRelation(args: { userProperties: UserProperty[] }): Observable<IResult<any>>
 }

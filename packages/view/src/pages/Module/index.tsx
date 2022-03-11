@@ -1,10 +1,8 @@
-import { CommonEnum } from '@x-forward/shared'
-import { EnvEnum } from '@x-forward/shared'
-import { StatusEnum } from '@x-forward/shared'
 import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
 import ProList from '@ant-design/pro-list'
+import { CommonEnum, EnvEnum, StatusEnum } from '@x-forward/shared'
 import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
 import { useState } from 'react'
@@ -68,7 +66,7 @@ const Module = () => {
 
     type StatisticProps = {
         title: EnvEnum
-        value: string
+        value: string | API.OverviewVo['nginxStatus']
         status?: () => { value: string; status?: BadgeProps['status'] }
         icon: JSX.Element
     }[]
@@ -142,7 +140,7 @@ const Module = () => {
             </RcResizeObserver>
             <ProCard
                 title="Nginx 环境"
-                extra="2019年9月28日"
+                extra={overview?.systemTime}
                 split={responsive ? 'horizontal' : 'vertical'}
                 bordered
                 headerBordered
