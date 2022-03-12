@@ -36,7 +36,7 @@ export class ClientGatewayController {
 
     @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
     async getPortAndUserRelation(clientId: string) {
-        Logger.verbose(`clientId: ${clientId}, request getPortAndUserRelation`)
+        Logger.verbose(`clientId: ${inspect(clientId)}, request getPortAndUserRelation`)
         return Result.okData(await this.clientGatewayService.getPortAndUserRelation(clientId))
     }
 
@@ -52,5 +52,12 @@ export class ClientGatewayController {
             return Result.okData({ id: res })
         }
         return Result.noWithMsg('client 注册失败, 请确保 ip 或 domain 正确')
+    }
+
+    @GrpcMethod(GrpcEndPoint.REPORT_SERVICE)
+    async heartBeat(args: { id: string }): Promise<IResult<any>> {
+        Logger.verbose(`received clientId: ${args?.id} heart beat`)
+        await this.clientGatewayService.updateLastCommunicationTime(args?.id, moment().toDate())
+        return Result.ok()
     }
 }

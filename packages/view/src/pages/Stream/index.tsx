@@ -1,5 +1,17 @@
-import { useEffect, useRef, useState } from 'react'
-import ProCard from '@ant-design/pro-card'
+import UpstreamModel from '@/components/UpstreamModel/index'
+import {
+    StreamControllerCreateOne,
+    StreamControllerDelete,
+    StreamControllerGetAllStream,
+    StreamControllerUpdateStreamById,
+    StreamControllerUpdateUpstreamIdById
+} from '@/services/view/stream'
+import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/view/upstream'
+import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
+import { getKeyByValue } from '@/utils/objectUtil'
+import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
+import { state2Boolean } from '@/utils/statusUtils'
+import { utc2local } from '@/utils/timeUtil'
 import {
     DeleteOutlined,
     DownOutlined,
@@ -8,28 +20,16 @@ import {
     PlayCircleOutlined,
     PlusCircleOutlined
 } from '@ant-design/icons'
-import { CommonEnum, StreamItemEnum, StreamStatusEnum, UpstreamEnum } from '@x-forward/shared'
+import ProCard from '@ant-design/pro-card'
 import ProDescriptions from '@ant-design/pro-descriptions'
-import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from 'antd'
-import { useRequest } from 'umi'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
-import { UpstreamControllerFindAll, UpstreamControllerUpdate } from '@/services/view/upstream'
-import { utc2local } from '@/utils/timeUtil'
-import UpstreamModel from '@/components/UpstreamModel/index'
-import { getKeyByValue } from '@/utils/objectUtil'
-import { getEnumKeyByValue, turnState2Boolean } from '@/utils/enumUtils'
-import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
-import { state2Boolean } from '@/utils/statusUtils'
-import { omit } from 'lodash-es'
-import {
-    StreamControllerCreateOne,
-    StreamControllerDelete,
-    StreamControllerGetAllStream,
-    StreamControllerUpdateStreamById,
-    StreamControllerUpdateUpstreamIdById
-} from '@/services/view/stream'
+import { CommonEnum, StreamItemEnum, StreamStatusEnum, UpstreamEnum } from '@x-forward/shared'
+import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
+import { omit } from 'lodash-es'
+import { useEffect, useRef, useState } from 'react'
+import { useRequest } from 'umi'
 
 export default () => {
     const {

@@ -7,7 +7,8 @@ export interface IReportService {
     register(data: RegisterClientInfo): Observable<IResult<{ id: string }>>
     getPortAndUserRelation(clientId: { id: string }): Observable<IResult<UserProperty[]>>
     getLastTime(clientId: { id: string }): Observable<IResult<string>>
-    LogReport(logs: { logs: LogsDto[] }): Observable<IResult<any>>
+    logReport(logs: { logs: LogsDto[] }): Observable<IResult<any>>
+    heartBeat(clientId: { id: string }): Observable<IResult<any>>
 }
 
 export interface IExecutorService {

@@ -85,6 +85,13 @@ export class ClientService implements OnModuleInit {
         return this.clientRepository.update(id, { isOnline: online })
     }
 
+    async updateLastCommunicationTime(id: string, time: Date) {
+        return this.clientRepository.save({
+            id,
+            lastCommunicationTime: time
+        })
+    }
+
     updateOnlineBatch(updateEntities: ClientEntity[]) {
         return this.clientRepository.save(updateEntities)
     }

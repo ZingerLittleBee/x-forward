@@ -35,6 +35,9 @@ export enum EnvKeyEnum {
     // online check interval
     OnlineCheckCron = 'ONLINE_CHECK_CRON',
 
+    // heart beat interval
+    HeartBeatCron = 'HEART_BEAT_CRON',
+
     MaximumReportingSeconds = 'MAXIMUM_REPORTING_SECONDS',
 
     ServerPort = 'SERVER_PORT',

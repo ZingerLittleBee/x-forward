@@ -12,7 +12,6 @@ export const errorHandleWarpper = async <T>(func: () => Promise<any>, funcName: 
     let res: IResult<T>
     try {
         res = await func()
-        Logger.verbose(`fetch ${funcName}, and got result: ${inspect(res)}`)
         if (res?.success) {
             Logger.verbose(`invoke ${funcName} data: ${inspect(res)}, success`)
         } else {

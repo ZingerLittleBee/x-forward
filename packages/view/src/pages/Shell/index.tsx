@@ -1,9 +1,23 @@
 import WebTerminal from '@/components/WebTerminal'
-import { useModel } from '@@/plugin-model/useModel'
+import { io } from 'socket.io-client'
+
+const createSocket = (url: string) => {
+    const socket = io(url)
+    socket.on('connect', () => {
+        console.log('ws connected success')
+    })
+    socket.on('connect_error', err => {
+        console.log('ws occurred error: ', err)
+    })
+    socket.on('disconnect', reason => {
+        console.log('ws disconnected: ', reason)
+    })
+    return socket
+}
+
+const socket = createSocket('localhost:1234')
 
 const Shell = () => {
-    const { initialState } = useModel('@@initialState')
-    const socket = initialState?.socket
     return <WebTerminal id="web-terminal" socket={socket} />
 }
 

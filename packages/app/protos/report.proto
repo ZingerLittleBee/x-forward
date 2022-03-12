@@ -15,7 +15,8 @@ service ReportService {
   rpc Register (Client) returns (RegisterResult);
   rpc GetPortAndUserRelation (ClientById) returns (RelationResult);
   rpc GetLastTime (ClientById) returns (LastTimeResult);
-  rpc LogReport (LogsDtos) returns (LogsResult);
+  rpc LogReport (LogsDtos) returns (noDataResult);
+  rpc HeartBeat(ClientById) returns (noDataResult);
 }
 
 message Client {
@@ -100,7 +101,7 @@ message LogsDtos {
   repeated LogsDto logs = 1;
 }
 
-message LogsResult {
+message noDataResult {
   bool success = 1;
   string message = 2;
 }

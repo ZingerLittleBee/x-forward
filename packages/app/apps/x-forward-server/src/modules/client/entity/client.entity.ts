@@ -42,6 +42,7 @@ export class ClientEntity extends CommonEntity {
         enum: getValuesOfEnum(IsOrNotEnum),
         description: `${enumToString(IsOrNotEnum)}`
     })
+    @Column({ nullable: true, default: () => IsOrNotEnum.False })
     isOnline?: IsOrNotEnum
 
     @AutoMap()

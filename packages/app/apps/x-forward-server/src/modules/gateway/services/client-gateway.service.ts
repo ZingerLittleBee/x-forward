@@ -39,4 +39,8 @@ export class ClientGatewayService {
         if (!client.ip) return false
         return this.clientService.register(client)
     }
+
+    async updateLastCommunicationTime(id: string, time: Date) {
+        return this.clientService.updateLastCommunicationTime(id, time)
+    }
 }

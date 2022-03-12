@@ -31,7 +31,9 @@ export enum DefaultEnum {
 
     CLIENT_PORT = 5000,
 
-    LOGS_UPLOAD_INTERVAL = '*/1 * * * *'
+    LOGS_UPLOAD_INTERVAL = '*/1 * * * *',
+
+    HEART_BEAT_CRON = '*/2 * * * *'
 }
 
 export enum DefaultTimeEnum {

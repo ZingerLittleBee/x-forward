@@ -195,11 +195,11 @@ export const updateFileContentHandler = async (
         throw new Error(`${path} 备份失败: ${backupRes}`)
     }
     if (options?.isRewrite) {
-        options.isDocker
+        options?.isDocker
             ? await rewriteFileInDocker(options?.containerName, path, content)
             : await rewriteFile(path, content)
     } else {
-        options.isDocker
+        options?.isDocker
             ? await appendFileInDocker(options?.containerName, path, content)
             : await appendFile(path, content)
     }

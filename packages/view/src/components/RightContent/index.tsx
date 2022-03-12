@@ -9,7 +9,7 @@ import styles from './index.less'
 export type SiderTheme = 'light' | 'dark'
 
 const GlobalHeaderRight: React.FC = () => {
-    const { initialState } = useModel('@@initialState')
+    const { initialState, refresh, loading } = useModel('@@initialState')
 
     if (!initialState || !initialState.settings) {
         return null
@@ -26,7 +26,7 @@ const GlobalHeaderRight: React.FC = () => {
     return (
         <>
             <Space className={className}>
-                <ClientSelect clients={clients} />
+                <ClientSelect clients={clients} loading={loading} onChange={() => refresh()} />
                 <Tooltip placement="bottom" title="文档">
                     <span
                         className={styles.action}

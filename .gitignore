@@ -433,4 +433,4 @@ pnpx.CMD
 .pnpm-debug.log
 
 
-packages/view/src/services/*
+packages/view/src/services

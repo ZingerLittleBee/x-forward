@@ -11,6 +11,11 @@ export enum StatusEnum {
     Error = 'failed (Result: exit-code)'
 }
 
+export enum OnlineEnum {
+    Online = '在线',
+    Offline = '离线'
+}
+
 export enum StateEnum {
     Able,
     Disable

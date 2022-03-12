@@ -1,13 +1,13 @@
-import { CACHE_MANAGER, Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
+import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
-import { Cache } from 'cache-manager'
 import { CronJob } from 'cron'
 import { debounce } from 'lodash'
 import * as moment from 'moment'
 import { createInterface } from 'readline'
-import { firstValueFrom, Observable } from 'rxjs'
+import { firstValueFrom } from 'rxjs'
 import { Readable } from 'stream'
 import { inspect } from 'util'
 import { ProcessOutput, ProcessPromise } from 'zx'
@@ -19,7 +19,6 @@ import { LogsDto } from './logs.dto'
 @Injectable()
 export class LogsService implements OnModuleInit {
     constructor(
-        @Inject(CACHE_MANAGER) private cacheManager: Cache,
         private readonly executorService: ExecutorService,
         private readonly registerService: RegisterService,
         private readonly grpcHelperService: GrpcHelperService,
@@ -29,18 +28,15 @@ export class LogsService implements OnModuleInit {
     async onModuleInit() {
         this.reportService = this.grpcHelperService.reportService
         this.logQueue = []
-        this.readedLine = 0
-        this.nginxStreamLogPath = await this.executorService.getNginxStreamLogPath()
         this.lastTime = await this.getLastTime()
         this.watchLogs(await this.executorService.getNginxStreamLogPath())
-        // this.addCronJob('LogsUpload', () => this.logsUpload(), getEnvSetting(EnvKeyEnum.OnlineCheckCron))
-        this.addCronJob('LogsUpload', () => this.logsUpload(), '*/10 * * * * *')
+        this.addCronJob('LogsUpload', () => this.logsUpload(), getEnvSetting(EnvKeyEnum.OnlineCheckCron))
     }
 
     async logsUpload() {
         if (this.logQueue.length > 0) {
             Logger.verbose(`logs: ${inspect(this.logQueue)} upload`)
-            const { success } = await firstValueFrom(this.reportService.LogReport({ logs: this.logQueue }))
+            const { success } = await firstValueFrom(this.reportService.logReport({ logs: this.logQueue }))
             if (!success) {
                 if (this.logQueue.length > 50000) {
                     Logger.warn('log queue is so big than 5w, please check program, and this log queue will be discard')
@@ -66,15 +62,7 @@ export class LogsService implements OnModuleInit {
 
     private logQueue: LogsDto[]
 
-    private readedLine: number
-
-    private startLine: number
-
     private lastTime: string
-
-    private nginxStreamLogPath: string
-
-    private logReadObservable: Observable<any>
 
     private async getLastTime() {
         return await errorHandleWarpper<string>(() => {
@@ -158,36 +146,6 @@ export class LogsService implements OnModuleInit {
             this.watchLogsDe(path)
         })
     }
-
-    // private async watchLogs(path: string) {
-    //     Logger.debug(`${path}, 发现, 正在监听文件变化`)
-    //     const readFileByLineDe = debounce(() => {
-    //         this.readFileByLine(path, line => {
-    //             Logger.verbose(`watch file new line: ${line}`)
-    //             this.startLine++
-    //             console.log('this.startLine', this.startLine)
-    //             this.logQueue.push(this.handleLogByLine(line))
-    //         })
-    //     }, 1000)
-    //     this.logReadObservable.subscribe({
-    //         complete: async () => {
-    //             Logger.verbose(`${path} 初始化结束`)
-    //             Logger.verbose(`正在监听 ${path} 文件变化`)
-    //             try {
-    //                 const watcher = watch(path)
-    //                 for await (const event of watcher) {
-    //                     console.log('event', event)
-    //                     if (event.eventType === 'change') {
-    //                         readFileByLineDe()
-    //                     }
-    //                 }
-    //             } catch (err) {
-    //                 if (err.name === 'AbortError') return
-    //                 throw err
-    //             }
-    //         }
-    //     })
-    // }
 
     /**
      * parse logs file by line to LogsDto

@@ -1,75 +1,94 @@
+import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/view/env'
 import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
 import ProList from '@ant-design/pro-list'
 import { CommonEnum, EnvEnum, StatusEnum } from '@x-forward/shared'
+import { message } from 'antd'
 import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import defaultSettings from '../../../config/defaultSettings'
 
-const Module = () => {
-    // const { data, error, loading, run } = useRequest(username => ({
-    //   url: '/env/nginx?username=123',
-    //   method: 'get',
-    //   data: { username }
-    // }), { manual: true })
+type StatisticProps = {
+    title: EnvEnum
+    value: string | API.OverviewVo['nginxStatus']
+    status?: () => { value: string; status?: BadgeProps['status'] }
+    icon: JSX.Element
+}[]
 
-    // const { data, error, loading, run } = useRequest('/env/nginx?username=123', { manual: true })
-    // console.log('data', data)
-    // console.log('error', error)
-    // console.log('loading', loading)
+type DataItem = { id: string; name: string; image: JSX.Element; desc: string | string[]; subTitle?: string }
 
-    // const { initialState } = useModel('@@initialState')
-    // const currEnv = initialState?.currEnv
+const imgStyle = {
+    display: 'block',
+    width: 42,
+    height: 42
+}
 
-    const imgStyle = {
-        display: 'block',
-        width: 42,
-        height: 42
-    }
+const genIcon = (url: string) => {
+    return <img style={imgStyle} src={url} alt="icon" />
+}
 
-    type DataItem = { id: string; name: string; image: JSX.Element; desc: string | string[]; subTitle?: string }
-
-    const { initialState } = useModel('@@initialState')
-
-    const nginxConfig = initialState?.nginxConfig
-
+const genNginxArgsDataSource = (args: Record<string, any> | undefined) => {
     const nginxArgsDataSource: DataItem[] = []
-    for (const arg in nginxConfig?.args) {
+    for (const arg in args) {
         nginxArgsDataSource.push({
             id: arg,
             name: arg,
             image: <MacCommandOutlined style={{ fontSize: '22px', color: '#52c41a' }} />,
-            desc: nginxConfig?.args[arg].value,
-            subTitle: nginxConfig?.args[arg].label
+            desc: args[arg].value,
+            subTitle: args[arg].label
         })
     }
+    return nginxArgsDataSource
+}
 
-    const nginxModuleDataSource: DataItem[] = []
-    for (const module in nginxConfig?.module) {
-        nginxModuleDataSource.push({
-            id: module,
-            name: module,
-            image: <CheckSquareOutlined style={{ fontSize: '22px', color: defaultSettings.primaryColor }} />,
-            desc: nginxConfig?.module[module]
-        })
-    }
+const genNginxModuleDataSource = (module: string[] | undefined) => {
+    return module?.map(m => ({
+        id: m,
+        name: m,
+        desc: m,
+        image: <CheckSquareOutlined style={{ fontSize: '22px', color: defaultSettings.primaryColor }} />
+    }))
+}
 
-    const overview = initialState?.overview
+const Module = () => {
+    const { initialState } = useModel('@@initialState')
 
-    const nginxStatus = overview?.nginxStatus
+    useEffect(() => {
+        const overviewController = new AbortController()
+        const nginxConfigController = new AbortController()
+        const fetchOverview = async (clientId: string) => {
+            const { success, data } = await EnvControllerGetOverview(
+                { clientId },
+                { signal: overviewController.signal }
+            )
+            success ? setOverview(data) : setOverview(undefined)
+        }
+        const fetchNginxConfig = async (clientId: string) => {
+            const { success, data } = await EnvControllerGetNginxConfig(
+                { clientId },
+                { signal: nginxConfigController.signal }
+            )
+            success ? setNginxConfig(data) : setNginxConfig(undefined)
+        }
+        if (initialState?.curClientId) {
+            fetchOverview(initialState?.curClientId).catch(e => {
+                overviewController.abort()
+                setOverview(undefined)
+                message.warning(`获取系统信息失败: ${e}`)
+            })
+            fetchNginxConfig(initialState?.curClientId).catch(e => {
+                nginxConfigController.abort()
+                setNginxConfig(undefined)
+                message.warning(`获取 nginx 参数失败: ${e}`)
+            })
+        }
+    }, [initialState?.curClientId])
 
-    const genIcon = (url: string) => {
-        return <img style={imgStyle} src={url} alt="icon" />
-    }
-
-    type StatisticProps = {
-        title: EnvEnum
-        value: string | API.OverviewVo['nginxStatus']
-        status?: () => { value: string; status?: BadgeProps['status'] }
-        icon: JSX.Element
-    }[]
+    const [responsive, setResponsive] = useState(false)
+    const [overview, setOverview] = useState<API.OverviewVo | undefined>()
+    const [nginxConfig, setNginxConfig] = useState<API.NginxConfigVo | undefined>()
 
     const statisticProps: StatisticProps = [
         {
@@ -84,9 +103,9 @@ const Module = () => {
         },
         {
             title: EnvEnum.NginxStatus,
-            value: nginxStatus !== undefined ? nginxStatus : CommonEnum.PlaceHolder,
+            value: overview?.nginxStatus !== undefined ? overview?.nginxStatus : CommonEnum.PlaceHolder,
             status: () => {
-                switch (nginxStatus as unknown) {
+                switch (overview?.nginxStatus as unknown) {
                     case StatusEnum.Running:
                         return { value: '正在运行', status: 'processing' }
                     case StatusEnum.NotInstall:
@@ -109,11 +128,6 @@ const Module = () => {
             icon: genIcon('https://iconfont.alicdn.com/s/3d98ca59-a5ac-4462-945e-72cec8e6c11d_origin.svg')
         }
     ]
-
-    const [responsive, setResponsive] = useState(false)
-    const [argsDataSource, setArgsDataSource] = useState(nginxArgsDataSource)
-    const [moduleDataSource, setModuleDataSource] = useState(nginxModuleDataSource)
-
     return (
         <>
             <RcResizeObserver
@@ -150,8 +164,7 @@ const Module = () => {
                     <ProList<DataItem>
                         rowKey="id"
                         headerTitle="Nginx路径"
-                        dataSource={argsDataSource}
-                        onDataSourceChange={setArgsDataSource}
+                        dataSource={genNginxArgsDataSource(nginxConfig?.args)}
                         metas={{
                             title: {
                                 dataIndex: 'name',
@@ -176,8 +189,7 @@ const Module = () => {
                     <ProList<DataItem>
                         rowKey="id"
                         headerTitle="已安装模块"
-                        dataSource={moduleDataSource}
-                        onDataSourceChange={setModuleDataSource}
+                        dataSource={genNginxModuleDataSource(nginxConfig?.module)}
                         metas={{
                             title: {
                                 dataIndex: 'desc'
