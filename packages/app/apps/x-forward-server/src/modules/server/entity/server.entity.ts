@@ -22,7 +22,7 @@ export class ServerEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: ServerEnum.UpstreamPort })
     @Column({ name: 'upstream_port', type: 'smallint' })
-    upstreamPort: string | number
+    upstreamPort: number
 
     @IsOptional()
     @IsNumber()

@@ -2,7 +2,7 @@ import UpstreamModel from '@/components/UpstreamModel/index'
 import {
     StreamControllerCreateOne,
     StreamControllerDelete,
-    StreamControllerGetAllStream,
+    StreamControllerGetStream,
     StreamControllerUpdateStreamById,
     StreamControllerUpdateUpstreamIdById
 } from '@/services/view/stream'
@@ -25,23 +25,36 @@ import ProDescriptions from '@ant-design/pro-descriptions'
 import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { CommonEnum, StreamItemEnum, StreamStatusEnum, UpstreamEnum } from '@x-forward/shared'
+import { useUpdateEffect } from 'ahooks'
 import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Tag } from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
 import { omit } from 'lodash-es'
 import { useEffect, useRef, useState } from 'react'
-import { useRequest } from 'umi'
+import { useModel, useRequest } from 'umi'
 
 export default () => {
+    const { initialState } = useModel('@@initialState')
+    const [curClientId, setCurClientId] = useState<string>(initialState?.curClientId ? initialState?.curClientId : '')
+
+    useEffect(() => {
+        setCurClientId(initialState?.curClientId ? initialState?.curClientId : '')
+    }, [initialState?.curClientId])
+
+    useUpdateEffect(() => {
+        streamRefresh()
+        upstreamRefresh()
+    }, [curClientId])
+
     const {
         loading: upstreamLoading,
         data: upstreamData,
         refresh: upstreamRefresh
-    } = useRequest(UpstreamControllerFindAll)
+    } = useRequest(() => UpstreamControllerFindAll({}))
     const {
         loading: streamLoading,
         data: streamData,
         refresh: streamRefresh
-    } = useRequest(StreamControllerGetAllStream)
+    } = useRequest(() => StreamControllerGetStream({ clientId: curClientId }))
 
     const { run: streamDeleteRun } = useRequest((id: string) => StreamControllerDelete({ id }), {
         manual: true
@@ -83,12 +96,10 @@ export default () => {
     const getServersFromUpstream = (upstreamId: string | undefined): serverType[] => {
         const servers = upstreamData?.find(u => u.id === upstreamId)?.server
         if (servers) {
-            return servers.map(s => {
-                return {
-                    remoteHost: s.upstreamHost,
-                    remotePort: s.upstreamPort
-                }
-            })
+            return servers.map(s => ({
+                remoteHost: s.upstreamHost,
+                remotePort: s.upstreamPort
+            }))
         }
         return []
     }
@@ -429,7 +440,7 @@ export default () => {
                                 createValue[v] = values[v]
                             }
                         })
-                        const streamVo = await addStreamRun({ ...createValue, upstreamId })
+                        const streamVo = await addStreamRun({ ...createValue, upstreamId, clientId: curClientId })
                         if (streamVo?.id) {
                             streamRefresh()
                             message.success('创建成功')

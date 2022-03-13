@@ -5,6 +5,7 @@ import { omit } from 'lodash'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
 import { ServerService } from '../server/server.service'
+import { StreamEntity } from '../stream/entity/stream.entity'
 import { StreamService } from '../stream/stream.service'
 import { UpstreamEntity } from './entity/upstream.entity'
 
@@ -47,13 +48,30 @@ export class UpstreamService {
         return this.upstreamRepository.find()
     }
 
-    async findAllWithoutEager() {
-        return this.upstreamRepository
-            .createQueryBuilder()
-            .select('upstream')
-            .from(UpstreamEntity, 'upstream')
-            .leftJoinAndSelect('upstream.server', 'server')
-            .getMany()
+    async findAllWithoutEager(clientId: string | undefined) {
+        return clientId
+            ? this.upstreamRepository
+                  .createQueryBuilder()
+                  .select('upstream')
+                  .from(UpstreamEntity, 'upstream')
+                  .where(qb => {
+                      const subQuery = qb
+                          .subQuery()
+                          .select('stream.upstream_id')
+                          .from(StreamEntity, 'stream')
+                          .where('stream.client_id = :clientId')
+                          .getQuery()
+                      return 'upstream.id IN' + subQuery
+                  })
+                  .setParameter('clientId', clientId)
+                  .leftJoinAndSelect('upstream.server', 'server')
+                  .getMany()
+            : this.upstreamRepository
+                  .createQueryBuilder()
+                  .select('upstream')
+                  .from(UpstreamEntity, 'upstream')
+                  .leftJoinAndSelect('upstream.server', 'server')
+                  .getMany()
     }
 
     async findEffect() {

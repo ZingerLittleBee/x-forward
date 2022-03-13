@@ -25,6 +25,8 @@ export interface InitialState {
     clients?: API.ClientVo[]
 }
 
+let clients: API.ClientVo[] | undefined
+
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
@@ -41,7 +43,9 @@ export async function getInitialState(): Promise<InitialState> {
     }
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
-        const clients = await fetchAllClient()
+        if (!clients) {
+            clients = await fetchAllClient()
+        }
         const curClientId = computeIfPresent(LsConstant.CurClientId, clients?.[0].id)
         if (curClientId) {
             return {

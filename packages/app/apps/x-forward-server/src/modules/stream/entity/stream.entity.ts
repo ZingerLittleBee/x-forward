@@ -11,8 +11,8 @@ import {
     StreamTipsEnum,
     TimeUnitEnum
 } from '@x-forward/shared'
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator'
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm'
+import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator'
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { ClientEntity } from '../../client/entity/client.entity'
 import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
@@ -22,20 +22,21 @@ import { UserEntity } from '../../user/user.entity'
 export class StreamEntity extends CommonEntity {
     @IsOptional()
     @IsString()
-    @AutoMap({ typeFn: () => UserEntity })
+    @AutoMap()
     @ApiProperty()
-    @OneToOne(() => UserEntity)
-    @JoinColumn()
-    userId: string
+    @ManyToOne(() => UserEntity, user => user.stream, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'user_id' })
+    userId?: string
 
-    @IsOptional()
+    @AutoMap()
     @IsString()
-    @AutoMap({ typeFn: () => ClientEntity })
+    @IsNotEmpty()
     @ApiProperty()
-    @OneToOne(() => ClientEntity)
-    @JoinColumn()
+    @ManyToOne(() => ClientEntity, client => client.stream, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'client_id' })
     clientId?: string
 
+    @IsOptional()
     @IsHost()
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.TransitHost })
@@ -46,20 +47,22 @@ export class StreamEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.TransitPort })
     @Column({ name: 'transit_port', type: 'int', nullable: true })
-    transitPort?: string | number
+    transitPort?: number
 
+    @IsOptional()
     @IsHost()
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RemoteHost })
     @Column({ name: 'remote_host', type: 'varchar', nullable: true })
     remoteHost?: string
 
+    @IsOptional()
     @IsNumber()
     @IsPort()
     @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RemotePort })
     @Column({ name: 'remote_port', type: 'int', nullable: true })
-    remotePort?: string | number
+    remotePort?: number
 
     @IsOptional()
     @IsEnum(StatusEnum)
@@ -151,7 +154,7 @@ export class StreamEntity extends CommonEntity {
 
     @AutoMap({ typeFn: () => UpstreamEntity })
     @ApiProperty()
-    @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
+    @ManyToOne(() => UpstreamEntity, upstream => upstream.stream, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })
     upstreamId?: string
 }

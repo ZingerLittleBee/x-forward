@@ -1,8 +1,11 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { enumToString, RoleEnum, UserEnum } from '@x-forward/shared'
-import { Column, Entity } from 'typeorm'
+import { Type } from 'class-transformer'
+import { ValidateNested } from 'class-validator'
+import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../common/common.entity'
+import { StreamEntity } from '../stream/entity/stream.entity'
 
 @Entity('user')
 export class UserEntity extends CommonEntity {
@@ -25,4 +28,11 @@ export class UserEntity extends CommonEntity {
     @ApiProperty({ description: UserEnum.Comment })
     @Column({ nullable: true })
     comment?: string
+
+    @ValidateNested({ each: true })
+    @Type(() => StreamEntity)
+    @AutoMap({ typeFn: () => StreamEntity })
+    @ApiProperty()
+    @OneToMany(() => StreamEntity, stream => stream.userId, { eager: true, createForeignKeyConstraints: false })
+    stream?: StreamEntity[]
 }

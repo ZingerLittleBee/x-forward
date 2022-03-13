@@ -1,22 +1,23 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { enumToString, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
+import { enumToString, getValuesOfEnum, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
-import { IsEnum, IsString, ValidateNested } from 'class-validator'
+import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { ServerEntity } from '../../server/entity/server.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
-import { getValuesOfEnum } from '@x-forward/shared'
 
 @Entity('upstream')
 export class UpstreamEntity extends CommonEntity {
+    @IsOptional()
     @IsString()
     @AutoMap()
     @ApiProperty({ description: 'upstream_name' })
     @Column({ type: 'varchar' })
     name: string
 
+    @IsOptional()
     @IsEnum(LoadBalancingEnum)
     @AutoMap()
     @ApiProperty({

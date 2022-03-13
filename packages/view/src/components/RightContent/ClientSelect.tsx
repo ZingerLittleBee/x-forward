@@ -20,7 +20,12 @@ const ClientSelect: React.FC<ClientProps> = ({ clients, loading, onChange }) => 
     }
 
     return (
-        <Select defaultValue={clientId ? clientId : clients?.[0]?.id} disabled={loading} onChange={handleSelect}>
+        <Select
+            style={{ minWidth: 280 }}
+            defaultValue={clientId ? clientId : clients?.[0]?.id}
+            disabled={loading}
+            onChange={handleSelect}
+        >
             {clients.map(c => (
                 <Option value={c.id as string} key={c.id}>
                     <Tooltip title={c?.comment}>

@@ -21,7 +21,8 @@ export class StreamVo extends PickType(StreamEntity, [
     'comment',
     'upstreamId',
     'createTime',
-    'updateTime'
+    'updateTime',
+    'upstreamId'
 ]) {
     // @AutoMap()
     // readonly id: string

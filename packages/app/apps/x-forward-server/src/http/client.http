@@ -1,0 +1,2 @@
+### get all client
+GET {{baseUrl}}{{client}} HTTP/1.1

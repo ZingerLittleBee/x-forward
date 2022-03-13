@@ -42,7 +42,7 @@ Content-Type: application/json
 }
 
 ### findAll
-GET {{baseUrl}}{{upstream}}/
+GET {{baseUrl}}{{upstream}}?clientId=ab30b04e-c359-46d5-8a2e-c96e230497fd
 
 ### findOne
 GET {{baseUrl}}{{upstream}}/ab30b04e-c359-46d5-8a2e-c96e230497fd

@@ -24,6 +24,44 @@
             }
         },
         "/upstream": {
+            "get": {
+                "operationId": "UpstreamController_findAll",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/UpstreamVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "upstream"
+                ]
+            },
             "post": {
                 "operationId": "UpstreamController_create",
                 "parameters": [],
@@ -60,35 +98,6 @@
                     },
                     "201": {
                         "description": ""
-                    }
-                },
-                "tags": [
-                    "upstream"
-                ]
-            },
-            "get": {
-                "operationId": "UpstreamController_findAll",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/UpstreamVo"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
                 },
                 "tags": [
@@ -312,8 +321,17 @@
         },
         "/stream": {
             "get": {
-                "operationId": "StreamController_getAllStream",
-                "parameters": [],
+                "operationId": "StreamController_getStream",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "",
@@ -1210,7 +1228,7 @@
                         "description": "中转地址"
                     },
                     "transitPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "中转端口"
                     },
                     "remoteHost": {
@@ -1218,7 +1236,7 @@
                         "description": "远程地址"
                     },
                     "remotePort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "远程端口"
                     },
                     "status": {
@@ -1290,10 +1308,7 @@
                     "upstreamId": {
                         "type": "string"
                     }
-                },
-                "required": [
-                    "userId"
-                ]
+                }
             },
             "ServerEntity": {
                 "type": "object",
@@ -1326,7 +1341,7 @@
                         "description": "上游地址"
                     },
                     "upstreamPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "上游端口"
                     },
                     "weight": {
@@ -1438,7 +1453,7 @@
                         "description": "上游地址"
                     },
                     "upstreamPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "上游端口"
                     },
                     "weight": {
@@ -1489,7 +1504,7 @@
                         "description": "上游地址"
                     },
                     "upstreamPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "上游端口"
                     },
                     "weight": {
@@ -1597,12 +1612,15 @@
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
+                    "clientId": {
+                        "type": "string"
+                    },
                     "transitHost": {
                         "type": "string",
                         "description": "中转地址"
                     },
                     "transitPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "中转端口"
                     },
                     "remoteHost": {
@@ -1610,7 +1628,7 @@
                         "description": "远程地址"
                     },
                     "remotePort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "远程端口"
                     },
                     "status": {
@@ -1682,7 +1700,10 @@
                     "upstreamId": {
                         "type": "string"
                     }
-                }
+                },
+                "required": [
+                    "clientId"
+                ]
             },
             "CreateUpstreamDto": {
                 "type": "object",
@@ -1731,12 +1752,15 @@
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
+                    "clientId": {
+                        "type": "string"
+                    },
                     "transitHost": {
                         "type": "string",
                         "description": "中转地址"
                     },
                     "transitPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "中转端口"
                     },
                     "remoteHost": {
@@ -1744,7 +1768,7 @@
                         "description": "远程地址"
                     },
                     "remotePort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "远程端口"
                     },
                     "status": {
@@ -1879,7 +1903,7 @@
                         "description": "中转地址"
                     },
                     "transitPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "中转端口"
                     },
                     "remoteHost": {
@@ -1887,7 +1911,7 @@
                         "description": "远程地址"
                     },
                     "remotePort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "远程端口"
                     },
                     "status": {
@@ -1980,7 +2004,7 @@
                         "description": "中转地址"
                     },
                     "transitPort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "中转端口"
                     },
                     "remoteHost": {
@@ -1988,7 +2012,7 @@
                         "description": "远程地址"
                     },
                     "remotePort": {
-                        "type": "object",
+                        "type": "number",
                         "description": "远程端口"
                     },
                     "status": {
@@ -2098,7 +2122,7 @@
                         "type": "string"
                     },
                     "port": {
-                        "type": "object"
+                        "type": "number"
                     },
                     "isOnline": {
                         "enum": [
@@ -2114,6 +2138,12 @@
                     },
                     "comment": {
                         "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
                 }
             },
@@ -2153,7 +2183,7 @@
                         "type": "string"
                     },
                     "port": {
-                        "type": "object"
+                        "type": "number"
                     },
                     "isOnline": {
                         "enum": [
@@ -2169,6 +2199,12 @@
                     },
                     "comment": {
                         "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
                 }
             },
@@ -2205,6 +2241,12 @@
                     },
                     "comment": {
                         "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
                 }
             },
@@ -2249,6 +2291,12 @@
                     "comment": {
                         "type": "string",
                         "description": "备注"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
                 },
                 "required": [
@@ -2321,6 +2369,12 @@
                     "comment": {
                         "type": "string",
                         "description": "备注"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
                 },
                 "required": [

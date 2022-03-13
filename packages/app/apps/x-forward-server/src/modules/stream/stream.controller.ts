@@ -1,5 +1,5 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { CreateStreamDto } from './dto/create-stream.dto'
@@ -17,13 +17,15 @@ export class StreamController {
     @ApiResultResponse(StreamVo, { isArray: true })
     @ApiExtraModels(StreamVo)
     @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
-    async getAllStream() {
-        return Result.okData(await this.streamService.findAll())
+    async getStream(@Query('clientId') clientId: string) {
+        const data = await this.streamService.findByClientId(clientId)
+        console.log('data', data)
+        return Result.okData(data)
     }
 
     @Post()
     @ApiResultResponse(StreamVo)
-    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
+    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity))
     async createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
         return Result.okData(await this.streamService.create(stream as StreamEntity))
     }

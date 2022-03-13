@@ -1,10 +1,8 @@
 import UpstreamModel from '@/components/UpstreamModel'
-import { StateEnum } from '@x-forward/shared'
-import { ServerEnum } from '@x-forward/shared'
 import { UpstreamControllerCreate, UpstreamControllerFindAll, UpstreamControllerRemove } from '@/services/view/upstream'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import ProTable, { ProColumns } from '@ant-design/pro-table'
-import { LoadBalancingEnum } from '@x-forward/shared'
+import { LoadBalancingEnum, ServerEnum, StateEnum } from '@x-forward/shared'
 import { Button, Popconfirm } from 'antd'
 import { useRequest } from 'umi'
 
@@ -35,6 +33,12 @@ const expandedRowRender = ({ server }: UpstreamListItem) => {
 }
 
 const Upstream = () => {
+    const {
+        loading: upstreamLoading,
+        data: upstreamData,
+        refresh: upstreamRefresh
+    } = useRequest(() => UpstreamControllerFindAll({}))
+
     const { run: addUpstream } = useRequest(
         (createUpstreamDto: API.CreateUpstreamDto) => UpstreamControllerCreate(createUpstreamDto),
         { manual: true }
@@ -108,16 +112,6 @@ const Upstream = () => {
             ]
         }
     ]
-
-    const {
-        loading: upstreamLoading,
-        data: upstreamData,
-        refresh: upstreamRefresh
-    } = useRequest(UpstreamControllerFindAll)
-
-    // useEffect(() => {
-    //     upstreamRefresh()
-    // })
 
     return (
         <ProTable<UpstreamListItem>

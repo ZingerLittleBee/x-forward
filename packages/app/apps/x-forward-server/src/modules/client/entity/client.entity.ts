@@ -2,9 +2,11 @@ import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsHost } from '@x-forward/common'
 import { enumToString, getValuesOfEnum, IsOrNotEnum } from '@x-forward/shared'
-import { IsDate, IsEnum, IsOptional, IsPort } from 'class-validator'
-import { Column, Entity } from 'typeorm'
+import { Type } from 'class-transformer'
+import { IsDate, IsEnum, IsOptional, IsPort, ValidateNested } from 'class-validator'
+import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
+import { StreamEntity } from '../../stream/entity/stream.entity'
 
 @Entity('client')
 export class ClientEntity extends CommonEntity {
@@ -33,7 +35,7 @@ export class ClientEntity extends CommonEntity {
     @IsPort()
     @ApiProperty()
     @Column({ type: 'tinyint', nullable: true, default: () => 5000 })
-    port?: string | number
+    port?: number
 
     @AutoMap()
     @IsOptional()
@@ -56,4 +58,11 @@ export class ClientEntity extends CommonEntity {
     @ApiProperty()
     @Column({ type: 'varchar', nullable: true })
     comment?: string
+
+    @ValidateNested({ each: true })
+    @Type(() => StreamEntity)
+    @AutoMap({ typeFn: () => StreamEntity })
+    @ApiProperty()
+    @OneToMany(() => StreamEntity, stream => stream.clientId, { eager: true, createForeignKeyConstraints: false })
+    stream?: StreamEntity[]
 }
