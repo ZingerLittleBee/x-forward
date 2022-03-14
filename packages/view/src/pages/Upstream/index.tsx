@@ -1,8 +1,13 @@
 import UpstreamModel from '@/components/UpstreamModel'
-import { UpstreamControllerCreate, UpstreamControllerFindAll, UpstreamControllerRemove } from '@/services/view/upstream'
+import {
+    UpstreamControllerCreate,
+    UpstreamControllerFindAll,
+    UpstreamControllerRemove,
+    UpstreamControllerUpdate
+} from '@/services/view/upstream'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import ProTable, { ProColumns } from '@ant-design/pro-table'
-import { LoadBalancingEnum, ServerEnum, StateEnum } from '@x-forward/shared'
+import { LoadBalancingEnum, OperationEnum, ServerEnum, StateEnum, UpstreamEnum } from '@x-forward/shared'
 import { Button, Popconfirm } from 'antd'
 import { useRequest } from 'umi'
 
@@ -44,35 +49,40 @@ const Upstream = () => {
         { manual: true }
     )
 
+    const { run: updateUpstream } = useRequest(
+        (id: string, updateUpstreamDto: API.UpdateUpstreamDto) => UpstreamControllerUpdate({ id }, updateUpstreamDto),
+        { manual: true }
+    )
+
     const { run: upstreamDeleteById } = useRequest((id: string) => UpstreamControllerRemove({ id }))
 
     const columns: ProColumns<UpstreamListItem>[] = [
         {
-            title: '上游名称',
+            title: UpstreamEnum.Name,
             dataIndex: 'name',
             key: 'upstreamName',
             render: _ => <a>{_}</a>
         },
         {
-            title: '状态',
+            title: UpstreamEnum.State,
             dataIndex: 'state',
             key: 'upstreamState',
             valueEnum: StateEnum
         },
         {
-            title: '负载算法',
+            title: UpstreamEnum.LoadBalancing,
             dataIndex: 'loadBalancing',
             ellipsis: true,
             valueEnum: LoadBalancingEnum
         },
         {
-            title: '上游数量',
+            title: UpstreamEnum.ServerLength,
             key: 'serverLength',
             ellipsis: true,
             render: (_, { server }) => server?.length
         },
         {
-            title: '创建时间',
+            title: UpstreamEnum.CreateTime,
             dataIndex: 'createTime',
             ellipsis: true,
             sorter: (a, b) => {
@@ -83,23 +93,26 @@ const Upstream = () => {
             }
         },
         {
-            title: '操作',
+            title: OperationEnum.Operation,
             key: 'option',
             valueType: 'option',
             render: (dom, entity) => [
                 <UpstreamModel
                     key="upstreamEditor"
-                    title="编辑上游"
-                    trigger={<a key="editor">编辑</a>}
+                    title={OperationEnum.Editor}
+                    trigger={<a key="editor">{OperationEnum.Editor}</a>}
                     upstream={entity}
                     upstreamName={entity.name}
-                    onUpstreamSubmit={(e: API.CreateUpstreamDto | API.UpdateUpstreamDto) => {
+                    onUpstreamSubmit={(e: API.UpdateUpstreamDto) => {
                         console.log('e', e)
+                        if (e?.id) {
+                            updateUpstream(e.id, e)
+                        }
                     }}
                 />,
                 <Popconfirm
                     key="upstreamDelete"
-                    title="确定删除?"
+                    title={`确定${OperationEnum.Delete}?`}
                     onConfirm={async () => {
                         if (entity.id) {
                             await upstreamDeleteById(entity.id)
@@ -107,7 +120,7 @@ const Upstream = () => {
                         }
                     }}
                 >
-                    <a key="delete">删除</a>
+                    <a key="delete">{OperationEnum.Delete}</a>
                 </Popconfirm>
             ]
         }
@@ -136,7 +149,11 @@ const Upstream = () => {
                         </Button>
                     }
                     onUpstreamSubmit={async (e: API.CreateUpstreamDto | API.UpdateUpstreamDto) => {
-                        await addUpstream(e as API.CreateUpstreamDto)
+                        try {
+                            await addUpstream(e as API.CreateUpstreamDto)
+                        } catch {
+                            return
+                        }
                         upstreamRefresh()
                     }}
                 />

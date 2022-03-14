@@ -14,7 +14,7 @@ export class UpstreamEntity extends CommonEntity {
     @IsString()
     @AutoMap()
     @ApiProperty({ description: 'upstream_name' })
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', unique: true })
     name: string
 
     @IsOptional()

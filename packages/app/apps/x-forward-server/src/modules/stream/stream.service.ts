@@ -114,15 +114,22 @@ export class StreamService {
     }
 
     async updateAll(streamEntities: StreamEntity[]) {
-        return Promise.all(
+        let createNum = 0
+        const updateResults = await Promise.all(
             streamEntities.map(s => {
                 if (s.id) {
                     return this.update(s.id, s)
                 } else {
-                    Promise.reject('id can not empty')
+                    this.createAll([s])
+                    createNum++
                 }
             })
         )
+        let affectCount = 0
+        updateResults?.forEach(u => {
+            affectCount += u.affected
+        })
+        return affectCount + createNum
     }
 
     /**

@@ -23,10 +23,16 @@ const GlobalHeaderRight: React.FC = () => {
     }
 
     const clients = initialState?.clients ? initialState?.clients : []
+    const curClientId = initialState?.curClientId ? initialState?.curClientId : ''
     return (
         <>
             <Space className={className}>
-                <ClientSelect clients={clients} loading={loading} onChange={() => refresh()} />
+                <ClientSelect
+                    curClientId={curClientId}
+                    clients={clients}
+                    loading={loading}
+                    onChange={() => refresh()}
+                />
                 <Tooltip placement="bottom" title="文档">
                     <span
                         className={styles.action}

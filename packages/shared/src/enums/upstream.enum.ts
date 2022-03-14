@@ -1,6 +1,9 @@
 export enum UpstreamEnum {
     Name = '上游名称',
-    LoadBalancing = '负载算法'
+    LoadBalancing = '负载算法',
+    State = '状态',
+    ServerLength = '上游数量',
+    CreateTime = '创建时间'
 }
 
 export enum ServerEnum {

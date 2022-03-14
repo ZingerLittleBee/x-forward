@@ -4,11 +4,10 @@ import LsConstant from '@/constants/localstorage.constant'
 import type { RequestConfig } from '@@/plugin-request/request'
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'
 import { PageLoading } from '@ant-design/pro-layout'
-import { message } from 'antd'
 import { history, RunTimeLayoutConfig } from 'umi'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { RequestOptionsInit, ResponseError } from 'umi-request'
+import { RequestOptionsInit } from 'umi-request'
 import { ClientControllerGetAll } from './services/view/client'
 import { computeIfPresent } from './utils/localstorage.util'
 
@@ -37,7 +36,6 @@ export async function getInitialState(): Promise<InitialState> {
             return (await ClientControllerGetAll({ signal: clientController.signal }))?.data
         } catch (error) {
             clientController.abort()
-            message.error(`获取 client 失败: ${error}`)
         }
         return undefined
     }
@@ -46,7 +44,13 @@ export async function getInitialState(): Promise<InitialState> {
         if (!clients) {
             clients = await fetchAllClient()
         }
-        const curClientId = computeIfPresent(LsConstant.CurClientId, clients?.[0].id)
+        const firstClientId = clients?.[0].id
+        let curClientId = computeIfPresent(LsConstant.CurClientId, firstClientId)
+        if (curClientId !== firstClientId) {
+            if (clients && clients.findIndex(c => c?.id === curClientId) < 0) {
+                curClientId = firstClientId
+            }
+        }
         if (curClientId) {
             return {
                 clients,
@@ -89,10 +93,10 @@ const apiInterceptor = (url: string, options: RequestOptionsInit) => {
         url: `/api${url}`,
         options: {
             ...options,
-            interceptors: true,
-            errorHandler: (err: ResponseError) => {
-                throw err
-            }
+            interceptors: true
+            // errorHandler: (err: ResponseError) => {
+            //     throw err
+            // }
         }
     }
 }

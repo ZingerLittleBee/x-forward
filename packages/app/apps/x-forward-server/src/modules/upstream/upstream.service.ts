@@ -28,7 +28,7 @@ export class UpstreamService {
             await this.streamService.createAll(upstream.stream)
         }
         // trigger event
-        const upstreamEntity = await this.upstreamRepository.save(upstream)
+        const upstreamEntity = await this.upstreamRepository.insert(upstream)
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
     }

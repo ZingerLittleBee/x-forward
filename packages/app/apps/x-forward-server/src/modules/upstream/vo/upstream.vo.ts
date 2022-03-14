@@ -1,6 +1,12 @@
-import { PartialType } from '@nestjs/swagger'
-import { Entity } from 'typeorm'
+import { PickType } from '@nestjs/swagger'
 import { UpstreamEntity } from '../entity/upstream.entity'
 
-@Entity('upstream')
-export class UpstreamVo extends PartialType(UpstreamEntity) {}
+export class UpstreamVo extends PickType(UpstreamEntity, [
+    'id',
+    'state',
+    'name',
+    'loadBalancing',
+    'server',
+    'createTime',
+    'updateTime'
+]) {}

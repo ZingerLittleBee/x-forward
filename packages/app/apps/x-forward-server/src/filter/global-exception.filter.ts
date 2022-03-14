@@ -66,11 +66,11 @@ export const GlobalResponseError: (
     message: string,
     code: string,
     request: Request
-) => IResponseError = (statusCode: number, message: string, code: string, request: Request): IResponseError => {
+) => IResponseError = (statusCode: number, errorMessage: string, code: string, request: Request): IResponseError => {
     return {
         success: false,
         statusCode: statusCode,
-        message,
+        errorMessage,
         code,
         timestamp: new Date().toISOString(),
         path: request.url,
@@ -80,7 +80,7 @@ export const GlobalResponseError: (
 
 export interface IResponseError {
     statusCode: number
-    message: string
+    errorMessage: string
     code: string
     timestamp: string
     path: string

@@ -6,14 +6,13 @@ import { Select, Tag, Tooltip } from 'antd'
 const { Option } = Select
 
 export interface ClientProps {
+    curClientId: string
     clients: API.ClientVo[]
     loading: boolean
     onChange: () => void
 }
 
-const clientId = localStorage.getItem(lsConstant.CurClientId)
-
-const ClientSelect: React.FC<ClientProps> = ({ clients, loading, onChange }) => {
+const ClientSelect: React.FC<ClientProps> = ({ curClientId, clients, loading, onChange }) => {
     const handleSelect = (value: string) => {
         localStorage.setItem(lsConstant.CurClientId, value)
         onChange()
@@ -22,7 +21,7 @@ const ClientSelect: React.FC<ClientProps> = ({ clients, loading, onChange }) => 
     return (
         <Select
             style={{ minWidth: 280 }}
-            defaultValue={clientId ? clientId : clients?.[0]?.id}
+            defaultValue={curClientId ? curClientId : clients?.[0]?.id}
             disabled={loading}
             onChange={handleSelect}
         >
