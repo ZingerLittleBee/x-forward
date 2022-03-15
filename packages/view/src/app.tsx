@@ -4,10 +4,11 @@ import LsConstant from '@/constants/localstorage.constant'
 import type { RequestConfig } from '@@/plugin-request/request'
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'
 import { PageLoading } from '@ant-design/pro-layout'
+import { message } from 'antd'
 import { history, RunTimeLayoutConfig } from 'umi'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { RequestOptionsInit } from 'umi-request'
+import { RequestOptionsInit, ResponseError } from 'umi-request'
 import { ClientControllerGetAll } from './services/view/client'
 import { computeIfPresent } from './utils/localstorage.util'
 
@@ -27,18 +28,24 @@ export interface InitialState {
 let clients: API.ClientVo[] | undefined
 
 /**
+ * get all client
+ * @returns clients
+ */
+const fetchAllClient = async () => {
+    const clientController = new AbortController()
+    try {
+        return (await ClientControllerGetAll({ signal: clientController.signal }))?.data
+    } catch (error) {
+        clientController.abort()
+        message.error(`获取 clients 失败, ${error}`)
+    }
+    return undefined
+}
+
+/**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
 export async function getInitialState(): Promise<InitialState> {
-    const fetchAllClient = async () => {
-        const clientController = new AbortController()
-        try {
-            return (await ClientControllerGetAll({ signal: clientController.signal }))?.data
-        } catch (error) {
-            clientController.abort()
-        }
-        return undefined
-    }
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
         if (!clients) {
@@ -93,10 +100,10 @@ const apiInterceptor = (url: string, options: RequestOptionsInit) => {
         url: `/api${url}`,
         options: {
             ...options,
-            interceptors: true
-            // errorHandler: (err: ResponseError) => {
-            //     throw err
-            // }
+            interceptors: true,
+            errorHandler: (err: ResponseError) => {
+                throw err.data.errorMessage
+            }
         }
     }
 }

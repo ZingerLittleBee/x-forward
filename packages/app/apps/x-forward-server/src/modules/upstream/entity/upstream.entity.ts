@@ -31,13 +31,21 @@ export class UpstreamEntity extends CommonEntity {
     @Type(() => StreamEntity)
     @AutoMap({ typeFn: () => StreamEntity })
     @ApiProperty()
-    @OneToMany(() => StreamEntity, stream => stream.upstreamId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => StreamEntity, stream => stream.upstreamId, {
+        cascade: ['insert', 'update'],
+        eager: true,
+        createForeignKeyConstraints: false
+    })
     stream?: StreamEntity[]
 
     @ValidateNested({ each: true })
     @Type(() => ServerEntity)
     @AutoMap({ typeFn: () => ServerEntity })
     @ApiProperty()
-    @OneToMany(() => ServerEntity, server => server.upstreamId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => ServerEntity, server => server.upstreamId, {
+        cascade: true,
+        eager: true,
+        createForeignKeyConstraints: false
+    })
     server: ServerEntity[]
 }

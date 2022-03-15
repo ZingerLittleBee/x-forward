@@ -81,6 +81,7 @@ export class ServerEntity extends CommonEntity {
     @Column({ type: 'tinyint', nullable: true })
     down?: IsOrNotEnum
 
+    @AutoMap({ typeFn: () => UpstreamEntity })
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })

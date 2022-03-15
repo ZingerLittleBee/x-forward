@@ -20,15 +20,16 @@ import { UserEntity } from '../../user/user.entity'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
+    @AutoMap()
     @IsOptional()
     @IsString()
-    @AutoMap()
     @ApiProperty()
     @ManyToOne(() => UserEntity, user => user.stream, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'user_id' })
     userId?: string
 
     @AutoMap()
+    @IsOptional()
     @IsString()
     @IsNotEmpty()
     @ApiProperty()
@@ -36,37 +37,38 @@ export class StreamEntity extends CommonEntity {
     @JoinColumn({ name: 'client_id' })
     clientId?: string
 
+    @AutoMap()
     @IsOptional()
     @IsHost()
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.TransitHost })
     @Column({ name: 'transit_host', type: 'varchar', nullable: true })
     transitHost?: string
 
-    @IsPort()
     @AutoMap()
+    @IsOptional()
+    @IsPort()
     @ApiProperty({ description: StreamItemEnum.TransitPort })
     @Column({ name: 'transit_port', type: 'int', nullable: true })
     transitPort?: number
 
+    @AutoMap()
     @IsOptional()
     @IsHost()
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RemoteHost })
     @Column({ name: 'remote_host', type: 'varchar', nullable: true })
     remoteHost?: string
 
+    @AutoMap()
     @IsOptional()
     @IsNumber()
     @IsPort()
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RemotePort })
     @Column({ name: 'remote_port', type: 'int', nullable: true })
     remotePort?: number
 
+    @AutoMap()
     @IsOptional()
     @IsEnum(StatusEnum)
-    @AutoMap()
     @ApiProperty({
         enum: getValuesOfEnum(StatusEnum),
         description: `${StreamItemEnum.Status}, ${enumToString(StatusEnum)}`
@@ -74,9 +76,9 @@ export class StreamEntity extends CommonEntity {
     @Column({ type: 'int', default: () => StatusEnum.Checking })
     status?: StatusEnum
 
+    @AutoMap()
     @IsOptional()
     @IsEnum(LoadBalancingEnum)
-    @AutoMap()
     @ApiProperty({
         enum: getValuesOfEnum(LoadBalancingEnum),
         description: `${StreamItemEnum.LoadBalancing}, ${enumToString(LoadBalancingEnum)}`
@@ -84,63 +86,63 @@ export class StreamEntity extends CommonEntity {
     @Column({ name: 'load_balancing', type: 'int', default: () => LoadBalancingEnum.Random })
     loadBalancing?: LoadBalancingEnum
 
+    @AutoMap()
     @IsOptional()
     @IsEnum(ProtocolEnum)
-    @AutoMap()
     @ApiProperty({ enum: getValuesOfEnum(ProtocolEnum), description: StreamItemEnum.Protocol })
     @Column({ name: 'protocol', type: 'varchar', nullable: true })
     protocol?: ProtocolEnum
 
+    @AutoMap()
     @IsOptional()
     @IsEnum(RetriesEnum)
-    @AutoMap()
     @ApiProperty({ enum: getValuesOfEnum(RetriesEnum), description: StreamItemEnum.IsRetries })
     @Column({ name: 'is_retries', type: 'varchar', nullable: true })
     isRetries?: RetriesEnum
 
+    @AutoMap()
     @IsOptional()
     @IsNumber()
     @Min(0)
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.Tries })
     @Column({ name: 'tries', type: 'int', nullable: true })
     tries?: number
 
+    @AutoMap()
     @IsOptional()
     @IsNginxUnit(TimeUnitEnum)
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.RetriesTimeout })
     @Column({ name: 'retries_timeout', type: 'varchar', nullable: true })
     retriesTimeout?: string
 
+    @AutoMap()
     @IsOptional()
     @IsNginxUnit(TimeUnitEnum)
-    @AutoMap()
     @ApiProperty({ description: StreamItemEnum.ConnectTimeout })
     @Column({ name: 'connect_timeout', type: 'varchar', nullable: true })
     connectTimeout?: string
 
+    @AutoMap()
     @IsOptional()
     @IsNginxUnit(SpeedUnitEnum)
-    @AutoMap()
     @ApiProperty({
         description: `${StreamItemEnum.UploadRate}, ${StreamTipsEnum.UploadRate}`
     })
     @Column({ name: 'upload_rate', type: 'varchar', nullable: true })
     uploadRate?: string
 
+    @AutoMap()
     @IsOptional()
     @IsNginxUnit(SpeedUnitEnum)
-    @AutoMap()
     @ApiProperty({
         description: `${StreamItemEnum.DownloadRate}, ${StreamTipsEnum.DownloadRate}`
     })
     @Column({ name: 'download_rate', type: 'varchar', nullable: true })
     downloadRate?: string
 
+    @AutoMap()
     @IsOptional()
     @IsNginxUnit(TimeUnitEnum)
-    @AutoMap()
     @ApiProperty({
         description: `${StreamItemEnum.ProxyTimeout}, ${StreamTipsEnum.ProxyTimeout}`
     })
@@ -152,7 +154,7 @@ export class StreamEntity extends CommonEntity {
     @Column({ name: 'comment', type: 'varchar', nullable: true })
     comment?: string
 
-    @AutoMap({ typeFn: () => UpstreamEntity })
+    @AutoMap()
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.stream, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })

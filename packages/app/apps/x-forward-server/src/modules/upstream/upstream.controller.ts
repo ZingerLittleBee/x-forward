@@ -43,13 +43,10 @@ export class UpstreamController {
         return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))
     }
 
-    @Patch(':id')
-    @ApiResultResponse('number')
-    async update(
-        @Param('id') id: string,
-        @Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto
-    ) {
-        return Result.okData((await this.upstreamService.update(id, updateUpstreamDto as UpstreamEntity)).affected)
+    @Patch()
+    @ApiResultResponse(UpstreamEntity)
+    async update(@Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto) {
+        return Result.okData(await this.upstreamService.update(updateUpstreamDto as UpstreamEntity))
     }
 
     @Delete(':id')

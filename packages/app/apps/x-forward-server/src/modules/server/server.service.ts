@@ -26,25 +26,6 @@ export class ServerService {
         return res
     }
 
-    async updateAll(servers: ServerEntity[]) {
-        let createNum = 0
-        const updateResults = await Promise.all(
-            servers.map(s => {
-                if (s.id) {
-                    return this.update(s.id, s)
-                } else {
-                    this.createAll([s])
-                    createNum++
-                }
-            })
-        )
-        let affectCount = 0
-        updateResults?.forEach(u => {
-            affectCount += u.affected
-        })
-        return affectCount + createNum
-    }
-
     async remove(id: string) {
         const res = await this.serverRepository.softDelete(id)
         return res

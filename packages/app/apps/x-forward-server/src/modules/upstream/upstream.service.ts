@@ -1,7 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EventEnum, Optimized, Preprocess, StateEnum } from '@x-forward/common'
-import { omit } from 'lodash'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
 import { ServerService } from '../server/server.service'
@@ -19,16 +18,16 @@ export class UpstreamService {
     ) {}
 
     async create(upstream: UpstreamEntity) {
-        // server - foreign key
-        if (upstream.server) {
-            await this.serverService.createAll(upstream.server)
-        }
-        // stream - foreign key
-        if (upstream.stream) {
-            await this.streamService.createAll(upstream.stream)
-        }
+        // // server - foreign key
+        // if (upstream.server) {
+        //     await this.serverService.createAll(upstream.server)
+        // }
+        // // stream - foreign key
+        // if (upstream.stream) {
+        //     await this.streamService.createAll(upstream.stream)
+        // }
         // trigger event
-        const upstreamEntity = await this.upstreamRepository.insert(upstream)
+        const upstreamEntity = await this.upstreamRepository.save(upstream)
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
         return upstreamEntity
     }
@@ -91,16 +90,17 @@ export class UpstreamService {
     }
 
     @Preprocess()
-    async update(id: string, @Optimized() updateUpstream: UpstreamEntity) {
-        if (updateUpstream.server) {
-            await this.serverService.updateAll(updateUpstream.server)
-        }
-        if (updateUpstream.stream) {
-            await this.streamService.updateAll(updateUpstream.stream)
-        }
-        const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
-        Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
-        return res
+    async update(@Optimized() updateUpstream: UpstreamEntity) {
+        // if (updateUpstream.server) {
+        //     await this.serverService.updateAll(updateUpstream.server)
+        // }
+        // if (updateUpstream.stream) {
+        //     await this.streamService.updateAll(updateUpstream.stream)
+        // }
+        // const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        // Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
+        // return res
+        return this.upstreamRepository.save(updateUpstream)
     }
 
     async remove(id: string) {

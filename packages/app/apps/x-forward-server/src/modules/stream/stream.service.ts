@@ -57,10 +57,7 @@ export class StreamService {
      * @returns StreamEntity
      */
     async create(streamEntity: StreamEntity) {
-        console.log('streamEntity', streamEntity)
-        const stream = await this.streamRepository.save(streamEntity)
-        await this.streamRepository.update(stream.id, { clientId: streamEntity.clientId })
-        return stream
+        return this.streamRepository.save(streamEntity)
         // await this.streamRepository
         //     .createQueryBuilder()
         //     .relation(StreamEntity, 'clientId')
