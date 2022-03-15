@@ -1,7 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { EnvKeyEnum, RegisterClientInfo, UserProperty } from '@x-forward/common'
-import { UnknownClient } from '@x-forward/common/errors/unknown-client.exception'
 import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { errorHandleWarpper } from '@x-forward/common/utils/error.util'
 import { ExecutorService } from '@x-forward/executor'
@@ -24,7 +23,6 @@ export class RegisterService implements OnModuleInit {
     async onModuleInit() {
         this.reportService = this.grpcHelperService.reportService
         await this.initClient()
-        this.addCronJob('HeartBeat', () => this.heartBeat(), getEnvSetting(EnvKeyEnum.HeartBeatCron))
     }
 
     private reportService: IReportService
@@ -56,17 +54,26 @@ export class RegisterService implements OnModuleInit {
     }
 
     private async register(client: RegisterClientInfo) {
-        return errorHandleWarpper<{ id: string }>(() => firstValueFrom(this.reportService.register(client)), 'register')
+        return errorHandleWarpper<{ id: string }>(
+            () => firstValueFrom(this.reportService.register(client)),
+            'register',
+            true
+        )
     }
 
     private async initClient() {
-        const ip = await this.getClientIp()
-        ip && (this.client.ip = await this.getClientIp())
-        getEnvSetting(EnvKeyEnum.ClientDomain) && (this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain))
-        getEnvSetting(EnvKeyEnum.ClientPort) && (this.client.port = getEnvSetting(EnvKeyEnum.ClientPort))
-        this.client.id = (await this.register(this.client))?.id
-        if (!this.client.id) throw new UnknownClient()
+        if (!this.client.ip) this.client.ip = await this.getClientIp()
+        if (!this.client.domain) this.client.domain = getEnvSetting(EnvKeyEnum.ClientDomain)
+        if (!this.client.port) this.client.port = getEnvSetting(EnvKeyEnum.ClientPort)
+        try {
+            this.client.id = (await this.register(this.client))?.id
+        } catch (e) {
+            setTimeout(() => this.initClient(), 2000)
+            Logger.error(`client 注册失败, ${e}`)
+            return
+        }
         this.userProperties = await this.getPortAndUserRelation(this.client.id)
+        this.addCronJob('HeartBeat', () => this.heartBeat(), getEnvSetting(EnvKeyEnum.HeartBeatCron))
         Logger.verbose(`client: ${inspect(this.client)} init finished`)
     }
 

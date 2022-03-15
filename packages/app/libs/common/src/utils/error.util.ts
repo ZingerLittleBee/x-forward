@@ -8,7 +8,7 @@ import { IResult } from '../interfaces'
  * @param funcName to error message
  * @returns T
  */
-export const errorHandleWarpper = async <T>(func: () => Promise<any>, funcName: string) => {
+export const errorHandleWarpper = async <T>(func: () => Promise<any>, funcName: string, onErrorThrow?: boolean) => {
     let res: IResult<T>
     try {
         res = await func()
@@ -18,6 +18,9 @@ export const errorHandleWarpper = async <T>(func: () => Promise<any>, funcName: 
             Logger.error(`invoke ${funcName} occurred fault: ${res?.message}`)
         }
     } catch (e) {
+        if (onErrorThrow) {
+            throw new Error(e)
+        }
         Logger.error(`invoke ${funcName} occurred error: ${(e as Error)?.message ? (e as Error)?.message : inspect(e)}`)
     }
     return res?.data

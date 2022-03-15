@@ -28,6 +28,15 @@ export class LogsService implements OnModuleInit {
     async onModuleInit() {
         this.reportService = this.grpcHelperService.reportService
         this.logQueue = []
+        await this.initLogs()
+    }
+
+    private async initLogs() {
+        if (!this.registerService.getClientId()) {
+            setTimeout(() => this.initLogs(), 4000)
+            Logger.error(`logs 初始化失败, client 未初始化成功`)
+            return
+        }
         this.lastTime = await this.getLastTime()
         this.watchLogs(await this.executorService.getNginxStreamLogPath())
         this.addCronJob('LogsUpload', () => this.logsUpload(), getEnvSetting(EnvKeyEnum.OnlineCheckCron))
@@ -69,44 +78,6 @@ export class LogsService implements OnModuleInit {
             return firstValueFrom(this.reportService.getLastTime({ id: this.registerService.getClientId() }))
         }, 'getLastTime')
     }
-
-    // private judgeStartLine(path: string, lastTime: string) {
-    //     this.logReadObservable = new Observable(subsriber => {
-    //         if (!lastTime) {
-    //             this.startLine = 0
-    //             Logger.verbose(`log read start line is 0`)
-    //             this.readFileByLine(
-    //                 path,
-    //                 line => this.logQueue.push(this.handleLogByLine(line)),
-    //                 () => subsriber.complete()
-    //             )
-    //             return
-    //         }
-    //         Logger.debug(`正在检查 ${path}`)
-    //         const rl = createInterface({
-    //             input: createReadStream(path, {
-    //                 start: 0,
-    //                 end: Infinity
-    //             })
-    //         })
-    //         let startNum = 0
-    //         rl.on('line', line => {
-    //             const { time } = this.handleLogByLine(line)
-    //             Logger.verbose(`lastTime: ${lastTime} vs time: ${time}`)
-    //             if (moment(time).isAfter(moment(lastTime))) {
-    //                 this.logQueue.push(this.handleLogByLine(line))
-    //                 this.startLine = startNum
-    //             }
-    //             startNum++
-    //         })
-    //         rl.on('close', () => {
-    //             console.log(`read finished, startLine is ${this.startLine}`)
-    //             subsriber.complete()
-    //         })
-    //     })
-    // }
-
-    // private async initReadedLine() {}
 
     private readFileByLine(readStream: Readable, onLine: (line: string) => void, onClose?: () => void) {
         const rl = createInterface({
