@@ -42,8 +42,9 @@ import './index.less'
 
 type UpstreamProps = {
     title?: string
-    trigger: JSX.Element
+    trigger?: JSX.Element
     onUpstreamSubmit: (data: API.UpdateUpstreamDto | API.CreateUpstreamDto) => void
+    visible?: boolean
     upstream?: API.UpstreamVo | undefined
     upstreamName?: Record<string, string> | string
     onUpstreamSelectChange?: (id: string) => void
@@ -55,6 +56,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
     trigger,
     upstream,
     upstreamName,
+    visible,
     onUpstreamSelectChange,
     onUpstreamSubmit,
     onClose
@@ -72,6 +74,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             title={title}
             form={form}
             trigger={trigger}
+            visible={visible}
             onFinish={async (e: API.UpdateUpstreamDto | API.CreateUpstreamDto) => {
                 upstream ? onUpstreamSubmit({ ...e, id: upstream?.id }) : onUpstreamSubmit(e)
                 return true

@@ -102,7 +102,7 @@ const apiInterceptor = (url: string, options: RequestOptionsInit) => {
             ...options,
             interceptors: true,
             errorHandler: (err: ResponseError) => {
-                throw err.data.errorMessage
+                throw err?.data?.errorMessage || err
             }
         }
     }

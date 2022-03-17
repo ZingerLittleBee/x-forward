@@ -1,7 +1,8 @@
 import lsConstant from '@/constants/localstorage.constant'
 import { DisconnectOutlined, WifiOutlined } from '@ant-design/icons'
 import { OnlineEnum } from '@x-forward/shared'
-import { Select, Tag, Tooltip } from 'antd'
+import { Select, Tag } from 'antd'
+import React from 'react'
 
 const { Option } = Select
 
@@ -11,6 +12,15 @@ export interface ClientProps {
     loading: boolean
     onChange: () => void
 }
+
+const optionLabel = (c: API.ClientVo) => (
+    <>
+        <Tag icon={c?.isOnline ? <WifiOutlined /> : <DisconnectOutlined />} color={c?.isOnline ? '#722ED1' : '#cd201f'}>
+            {c?.isOnline ? OnlineEnum.Online : OnlineEnum.Offline}
+        </Tag>
+        <span className="font-bold">{c.domain ? c.domain : c.ip}</span>
+    </>
+)
 
 const ClientSelect: React.FC<ClientProps> = ({ curClientId, clients, loading, onChange }) => {
     const handleSelect = (value: string) => {
@@ -23,22 +33,12 @@ const ClientSelect: React.FC<ClientProps> = ({ curClientId, clients, loading, on
             style={{ minWidth: 280 }}
             defaultValue={curClientId ? curClientId : clients?.[0]?.id}
             disabled={loading}
+            optionLabelProp="label"
             onChange={handleSelect}
         >
             {clients.map(c => (
-                <Option value={c.id as string} key={c.id}>
-                    <Tooltip title={c?.comment}>
-                        {c?.isOnline ? (
-                            <Tag icon={<WifiOutlined />} color="#722ED1">
-                                {OnlineEnum.Online}
-                            </Tag>
-                        ) : (
-                            <Tag icon={<DisconnectOutlined />} color="#cd201f">
-                                {OnlineEnum.Offline}
-                            </Tag>
-                        )}
-                        <span className="font-bold">{c.domain ? c.domain : c.ip}</span>
-                    </Tooltip>
+                <Option label={optionLabel(c)} value={c.id as string} key={c.id}>
+                    {optionLabel(c)}
                 </Option>
             ))}
         </Select>
