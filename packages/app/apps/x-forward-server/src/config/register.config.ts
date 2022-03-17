@@ -37,7 +37,7 @@ export const TypeOrmRegister = () =>
         entities: [UserEntity, StreamEntity, UpstreamEntity, ServerEntity],
         autoLoadEntities: true,
         synchronize: true,
-        logging: true
+        logging: false
     })
 
 export const AutomapperRegister = () =>
