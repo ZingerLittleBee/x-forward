@@ -102,9 +102,11 @@ export class LogsService implements OnModuleInit {
         this.readFileByLine(
             stdout,
             line => {
-                const { time } = this.handleLogByLine(line)
-                if (moment(time).isAfter(moment(this.lastTime))) {
-                    this.logQueue.push(this.handleLogByLine(line))
+                const logLine = this.handleLogByLine(line)
+                if (logLine?.time) {
+                    if (moment(logLine.time).isAfter(moment(this.lastTime))) {
+                        this.logQueue.push(this.handleLogByLine(line))
+                    }
                 }
             },
             () => {
