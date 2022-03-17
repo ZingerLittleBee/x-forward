@@ -10,7 +10,6 @@ export class CreateStreamDto extends PickType(StreamEntity, [
     'remoteHost',
     'remotePort',
     'status',
-    'loadBalancing',
     'protocol',
     'isRetries',
     'tries',

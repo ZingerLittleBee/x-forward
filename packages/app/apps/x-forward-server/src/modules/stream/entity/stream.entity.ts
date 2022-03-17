@@ -5,7 +5,6 @@ import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorato
 import {
     enumToString,
     getValuesOfEnum,
-    LoadBalancingEnum,
     SpeedUnitEnum,
     StreamItemEnum,
     StreamTipsEnum,
@@ -75,16 +74,6 @@ export class StreamEntity extends CommonEntity {
     })
     @Column({ type: 'int', default: () => StatusEnum.Checking })
     status?: StatusEnum
-
-    @AutoMap()
-    @IsOptional()
-    @IsEnum(LoadBalancingEnum)
-    @ApiProperty({
-        enum: getValuesOfEnum(LoadBalancingEnum),
-        description: `${StreamItemEnum.LoadBalancing}, ${enumToString(LoadBalancingEnum)}`
-    })
-    @Column({ name: 'load_balancing', type: 'int', default: () => LoadBalancingEnum.Random })
-    loadBalancing?: LoadBalancingEnum
 
     @AutoMap()
     @IsOptional()

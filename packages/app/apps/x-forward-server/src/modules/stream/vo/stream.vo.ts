@@ -14,7 +14,6 @@ export class StreamVo extends PickType(StreamEntity, [
     'remoteHost',
     'remotePort',
     'status',
-    'loadBalancing',
     'protocol',
     'isRetries',
     'tries',
