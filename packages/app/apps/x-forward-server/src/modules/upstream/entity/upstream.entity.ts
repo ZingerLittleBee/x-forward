@@ -13,7 +13,9 @@ import { StreamEntity } from '../../stream/entity/stream.entity'
 export class UpstreamEntity extends CommonEntity {
     @AutoMap({ typeFn: () => ClientEntity })
     @ApiProperty()
-    @ManyToOne(() => ClientEntity, client => client.upstream, { createForeignKeyConstraints: false })
+    @ManyToOne(() => ClientEntity, client => client.upstream, {
+        createForeignKeyConstraints: false
+    })
     @JoinColumn({ name: 'client_id' })
     client?: ClientEntity
 
@@ -21,7 +23,8 @@ export class UpstreamEntity extends CommonEntity {
     @IsOptional()
     @IsString()
     @IsNotEmpty()
-    @ApiProperty({ name: 'client_id', nullable: true })
+    @ApiProperty()
+    @Column({ name: 'client_id', nullable: true })
     clientId?: string
 
     @IsOptional()

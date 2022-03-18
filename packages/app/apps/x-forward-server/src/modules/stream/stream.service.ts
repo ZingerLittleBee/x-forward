@@ -56,7 +56,8 @@ export class StreamService {
      * @param streamEntity Stream
      * @returns StreamEntity
      */
-    async create(streamEntity: StreamEntity) {
+    @Preprocess()
+    async create(@Optimized() streamEntity: StreamEntity) {
         return this.streamRepository.save(streamEntity)
         // await this.streamRepository
         //     .createQueryBuilder()

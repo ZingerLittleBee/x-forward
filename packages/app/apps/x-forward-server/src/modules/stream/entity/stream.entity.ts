@@ -71,7 +71,6 @@ export class StreamEntity extends CommonEntity {
 
     @AutoMap()
     @IsOptional()
-    @IsNumber()
     @IsPort()
     @ApiProperty({ description: StreamItemEnum.RemotePort })
     @Column({ name: 'remote_port', type: 'int', nullable: true })

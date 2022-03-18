@@ -17,7 +17,10 @@ export class UpstreamService {
         private eventService: EventService
     ) {}
 
-    async create(upstream: UpstreamEntity) {
+    @Preprocess()
+    async create(@Optimized() upstream: UpstreamEntity) {
+        console.log('upstream', upstream)
+
         // // server - foreign key
         // if (upstream.server) {
         //     await this.serverService.createAll(upstream.server)

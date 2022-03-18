@@ -23,7 +23,8 @@ export class StreamVo extends PickType(StreamEntity, [
     'downloadRate',
     'proxyTimeout',
     'comment',
-    'upstreamId'
+    'upstreamId',
+    'createTime'
 ]) {
     @AutoMap()
     id: string
@@ -65,4 +66,6 @@ export class StreamVo extends PickType(StreamEntity, [
     comment?: string
     @AutoMap()
     upstreamId?: string
+    @AutoMap()
+    createTime?: Date
 }
