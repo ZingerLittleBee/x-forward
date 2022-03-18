@@ -26,11 +26,12 @@ import type { ProFormInstance } from '@ant-design/pro-form'
 import ProForm, { ModalForm, ProFormSelect, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-form'
 import { CommonEnum, StreamItemEnum, StreamStatusEnum, UpstreamEnum } from '@x-forward/shared'
 import { useUpdateEffect } from 'ahooks'
-import { Button, Dropdown, Form, Menu, message, Popconfirm, Result, Spin, Tag } from 'antd'
+import { Badge, Button, Dropdown, Form, Menu, message, Popconfirm, Result, Spin, Tag } from 'antd'
 import Paragraph from 'antd/es/typography/Paragraph'
 import { omit } from 'lodash-es'
 import { useRef, useState } from 'react'
 import { useModel, useRequest } from 'umi'
+import { inspect } from 'util'
 
 export default () => {
     const { initialState } = useModel('@@initialState')
@@ -49,7 +50,7 @@ export default () => {
         loading: upstreamLoading,
         data: upstreamData,
         refresh: upstreamRefresh
-    } = useRequest(() => UpstreamControllerFindAll({}))
+    } = useRequest(() => UpstreamControllerFindAll({ clientId: curClientId }))
     const {
         loading: streamLoading,
         data: streamData,
@@ -85,6 +86,7 @@ export default () => {
             ...currStreamData,
             state: turnState2Boolean(currStreamData?.state)
         })
+        onUpstreamIdChange(currStreamData?.upstreamId)
     }, [currStreamData])
 
     type serverType = { remoteHost: string; remotePort: number }
@@ -132,7 +134,7 @@ export default () => {
             setServers([])
         }
         form.setFieldsValue({
-            name: upstreamData?.find(u => u.id === upstreamId)?.name
+            name: upstreamId ? upstreamData?.find(u => u.id === upstreamId)?.name : undefined
         })
     }
 
@@ -165,7 +167,7 @@ export default () => {
 
     const [upstreamVisible, setUpstreamVisible] = useState(false)
 
-    const upstreamModuleForm = (trigger: JSX.Element) => (
+    const streamModuleForm = (trigger: JSX.Element) => (
         <ModalForm
             trigger={trigger}
             title={currStreamData?.id ? '修改转发规则' : '创建转发规则'}
@@ -286,7 +288,7 @@ export default () => {
                     />
                 </ProForm.Group>
             )}
-            <ProFormSwitch name="state" label="是否启用" initialValue={turnState2Boolean(currStreamData?.state)} />
+            <ProFormSwitch name="state" label="是否启用" />
             <ProFormTextArea
                 name="comment"
                 label={StreamItemEnum.Comment}
@@ -295,13 +297,16 @@ export default () => {
         </ModalForm>
     )
 
+    // @ts-ignore
+    // https://github.com/ant-design/pro-components/issues/2553
+    Badge.Ribbon.isProCard = true
     return (
         <Spin spinning={!!streamLoading || !!upstreamLoading}>
             <ProCard
                 gutter={[16, 16]}
                 title="转发规则"
                 headStyle={{ paddingTop: 0 }}
-                extra={upstreamModuleForm(
+                extra={streamModuleForm(
                     <Button type="primary" icon={<PlusCircleOutlined />}>
                         添加规则
                     </Button>
@@ -310,178 +315,192 @@ export default () => {
                 ghost
             >
                 {streamData && streamData.length !== 0 ? (
-                    streamData?.map(d => (
-                        <ProCard
-                            hoverable
-                            bordered
-                            bodyStyle={{ paddingBottom: 0 }}
-                            colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
-                            actions={[
-                                <Popconfirm
-                                    title="确定删除?"
-                                    onConfirm={async () => {
-                                        if (d.id) {
-                                            try {
-                                                const data = await streamDeleteRun(d.id)
-                                                if (data && data > 0) {
-                                                    streamRefresh()
+                    streamData?.map(d => {
+                        return (
+                            <Badge.Ribbon
+                                placement="end"
+                                text="100ms"
+                                color={''}
+                                // @ts-ignore
+                                // https://github.com/ant-design/pro-components/issues/2553
+                                colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
+                            >
+                                <ProCard
+                                    hoverable
+                                    bordered
+                                    bodyStyle={{ paddingBottom: 0 }}
+                                    colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
+                                    actions={[
+                                        <Popconfirm
+                                            title="确定删除?"
+                                            onConfirm={async () => {
+                                                if (d.id) {
+                                                    try {
+                                                        const data = await streamDeleteRun(d.id)
+                                                        if (data && data > 0) {
+                                                            streamRefresh()
+                                                        }
+                                                    } catch (e: unknown) {
+                                                        message.error(`规则删除失败, ${inspect(e as string)}`)
+                                                    }
                                                 }
-                                            } catch (e: unknown) {
-                                                message.error(e as string)
-                                            }
-                                        }
-                                    }}
+                                            }}
+                                        >
+                                            <DeleteOutlined key="delete" />
+                                        </Popconfirm>,
+                                        streamModuleForm(
+                                            <EditOutlined
+                                                key="edit"
+                                                onClick={() => {
+                                                    setCurrStreamData(d)
+                                                    setCurrUpstream(upstreamData?.find(u => u.id === currUpstream?.id))
+                                                }}
+                                            />
+                                        ),
+                                        <PlayCircleOutlined key="Play" />
+                                    ]}
+                                    key={d.id}
                                 >
-                                    <DeleteOutlined key="delete" />
-                                </Popconfirm>,
-                                <EditOutlined
-                                    key="edit"
-                                    onClick={() => {
-                                        setCurrStreamData(d)
-                                    }}
-                                />,
-                                <PlayCircleOutlined key="Play" />
-                            ]}
-                            key={d.id}
-                        >
-                            <ProDescriptions
-                                // title={d.title}
-                                column={1}
-                                labelStyle={{ color: '#6B7280' }}
-                                contentStyle={{ fontWeight: 500 }}
-                                dataSource={d}
-                                columns={[
-                                    // Standalone version is not needed for now
-                                    // {
-                                    //     title: StreamItemEnum.transitHost,
-                                    //     dataIndex: 'transitHost'
-                                    // },
-                                    {
-                                        title: StreamItemEnum.TransitPort,
-                                        dataIndex: 'transitPort'
-                                    },
-                                    // render `${StreamItemEnum.remoteHost}: xxx`, if it doesn't have upstream
-                                    // render `${StreamItemEnum.remoteRule}: xxx`, if it has upstream
-                                    {
-                                        render: (_, { upstreamId, remoteHost }) => {
-                                            return (
-                                                <div className="ant-descriptions-item-container">
-                                                    <span
-                                                        className="ant-descriptions-item-label"
-                                                        style={{ color: 'rgb(107, 114, 128)' }}
-                                                    >
-                                                        {upstreamId
-                                                            ? StreamItemEnum.RemoteRule
-                                                            : StreamItemEnum.RemoteHost}
-                                                    </span>
-                                                    <span
-                                                        className="ant-descriptions-item-content"
-                                                        style={{ fontWeight: 500 }}
-                                                    >
-                                                        {upstreamId ? (
-                                                            <Dropdown
-                                                                arrow
-                                                                trigger={['hover', 'click']}
-                                                                overlay={remoteRuleServers(
-                                                                    findUpstreamById(upstreamId)?.server
-                                                                )}
-                                                                placement="bottom"
+                                    <ProDescriptions
+                                        // title={d.title}
+                                        column={1}
+                                        labelStyle={{ color: '#6B7280' }}
+                                        contentStyle={{ fontWeight: 500 }}
+                                        dataSource={d}
+                                        columns={[
+                                            // Standalone version is not needed for now
+                                            // {
+                                            //     title: StreamItemEnum.transitHost,
+                                            //     dataIndex: 'transitHost'
+                                            // },
+                                            {
+                                                title: StreamItemEnum.TransitPort,
+                                                dataIndex: 'transitPort'
+                                            },
+                                            // render `${StreamItemEnum.remoteHost}: xxx`, if it doesn't have upstream
+                                            // render `${StreamItemEnum.remoteRule}: xxx`, if it has upstream
+                                            {
+                                                render: (_, { upstreamId, remoteHost }) => {
+                                                    return (
+                                                        <div className="ant-descriptions-item-container">
+                                                            <span
+                                                                className="ant-descriptions-item-label"
+                                                                style={{ color: 'rgb(107, 114, 128)' }}
                                                             >
-                                                                <Button size="small">
-                                                                    Rules <DownOutlined />
-                                                                </Button>
-                                                            </Dropdown>
-                                                        ) : (
-                                                            remoteHost
-                                                        )}
-                                                    </span>
-                                                </div>
-                                            )
-                                        }
-                                    },
-                                    // render `${StreamItemEnum.remotePort}: xxx`, if it doesn't have upstream
-                                    // render `${StreamItemEnum.loadBalancing}: xxx`, if it has upstream
-                                    {
-                                        render: (_, { upstreamId, remotePort }) => {
-                                            return (
-                                                <div className="ant-descriptions-item-container">
-                                                    <span
-                                                        className="ant-descriptions-item-label"
-                                                        style={{ color: 'rgb(107, 114, 128)' }}
-                                                    >
-                                                        {upstreamId
-                                                            ? StreamItemEnum.LoadBalancing
-                                                            : StreamItemEnum.RemotePort}
-                                                    </span>
-                                                    <span
-                                                        className="ant-descriptions-item-content"
-                                                        style={{ fontWeight: 500 }}
-                                                    >
-                                                        {upstreamId
-                                                            ? getEnumKeyByValue(
-                                                                  upstreamData?.find(u => u.id === upstreamId)
-                                                                      ?.loadBalancing
-                                                              )
-                                                            : remotePort}
-                                                    </span>
-                                                </div>
-                                            )
-                                        }
-                                    },
-                                    {
-                                        title: StreamItemEnum.Upstream,
-                                        render: (_, entity) => {
-                                            const { upstreamId, id } = entity
-                                            const upstream = upstreamData?.find(u => u.id === upstreamId)
-                                            return (
-                                                <span
-                                                    onClick={() => {
-                                                        setId(id)
-                                                        setUpstreamVisible(true)
-                                                        setCurrUpstream(upstream)
-                                                    }}
-                                                >
-                                                    {upstream?.name || CommonEnum.PlaceHolder}
-                                                </span>
-                                            )
-                                        }
-                                    },
-                                    {
-                                        title: StreamItemEnum.State,
-                                        dataIndex: 'state',
-                                        valueEnum: StreamStatusEnum,
-                                        render: (_, entity) => {
-                                            return entity.state ? (
-                                                <Tag icon={<PlayCircleOutlined />} color="#34D399">
-                                                    正在运行
-                                                </Tag>
-                                            ) : (
-                                                <Tag icon={<PauseCircleOutlined />} color="#EF4444">
-                                                    已停止
-                                                </Tag>
-                                            )
-                                        }
-                                    },
-                                    {
-                                        title: StreamItemEnum.CreateTime,
-                                        renderText: (text, { createTime }) => {
-                                            return createTime ? utc2local(createTime) : CommonEnum.PlaceHolder
-                                        }
-                                    },
-                                    {
-                                        title: StreamItemEnum.Comment,
-                                        dataIndex: 'comment'
-                                    }
-                                ]}
-                            />
-                        </ProCard>
-                    ))
+                                                                {upstreamId
+                                                                    ? StreamItemEnum.RemoteRule
+                                                                    : StreamItemEnum.RemoteHost}
+                                                            </span>
+                                                            <span
+                                                                className="ant-descriptions-item-content"
+                                                                style={{ fontWeight: 500 }}
+                                                            >
+                                                                {upstreamId ? (
+                                                                    <Dropdown
+                                                                        arrow
+                                                                        trigger={['hover', 'click']}
+                                                                        overlay={remoteRuleServers(
+                                                                            findUpstreamById(upstreamId)?.server
+                                                                        )}
+                                                                        placement="bottom"
+                                                                    >
+                                                                        <Button size="small">
+                                                                            Rules <DownOutlined />
+                                                                        </Button>
+                                                                    </Dropdown>
+                                                                ) : (
+                                                                    remoteHost
+                                                                )}
+                                                            </span>
+                                                        </div>
+                                                    )
+                                                }
+                                            },
+                                            // render `${StreamItemEnum.remotePort}: xxx`, if it doesn't have upstream
+                                            // render `${StreamItemEnum.loadBalancing}: xxx`, if it has upstream
+                                            {
+                                                render: (_, { upstreamId, remotePort }) => {
+                                                    return (
+                                                        <div className="ant-descriptions-item-container">
+                                                            <span
+                                                                className="ant-descriptions-item-label"
+                                                                style={{ color: 'rgb(107, 114, 128)' }}
+                                                            >
+                                                                {upstreamId
+                                                                    ? StreamItemEnum.LoadBalancing
+                                                                    : StreamItemEnum.RemotePort}
+                                                            </span>
+                                                            <span
+                                                                className="ant-descriptions-item-content"
+                                                                style={{ fontWeight: 500 }}
+                                                            >
+                                                                {upstreamId
+                                                                    ? getEnumKeyByValue(
+                                                                          upstreamData?.find(u => u.id === upstreamId)
+                                                                              ?.loadBalancing
+                                                                      )
+                                                                    : remotePort}
+                                                            </span>
+                                                        </div>
+                                                    )
+                                                }
+                                            },
+                                            {
+                                                title: StreamItemEnum.Upstream,
+                                                render: (_, entity) => {
+                                                    const { upstreamId, id } = entity
+                                                    const upstream = upstreamData?.find(u => u.id === upstreamId)
+                                                    return (
+                                                        <span
+                                                            onClick={() => {
+                                                                setId(id)
+                                                                setUpstreamVisible(true)
+                                                                setCurrUpstream(upstream)
+                                                            }}
+                                                        >
+                                                            {upstream?.name || CommonEnum.PlaceHolder}
+                                                        </span>
+                                                    )
+                                                }
+                                            },
+                                            {
+                                                title: StreamItemEnum.State,
+                                                dataIndex: 'state',
+                                                valueEnum: StreamStatusEnum,
+                                                render: (_, entity) => {
+                                                    return !entity.state ? (
+                                                        <Tag icon={<PlayCircleOutlined />} color="#34D399">
+                                                            正在运行
+                                                        </Tag>
+                                                    ) : (
+                                                        <Tag icon={<PauseCircleOutlined />} color="#EF4444">
+                                                            已停止
+                                                        </Tag>
+                                                    )
+                                                }
+                                            },
+                                            {
+                                                title: StreamItemEnum.CreateTime,
+                                                renderText: (text, { createTime }) => {
+                                                    return createTime ? utc2local(createTime) : CommonEnum.PlaceHolder
+                                                }
+                                            },
+                                            {
+                                                title: StreamItemEnum.Comment,
+                                                dataIndex: 'comment'
+                                            }
+                                        ]}
+                                    />
+                                </ProCard>
+                            </Badge.Ribbon>
+                        )
+                    })
                 ) : (
                     <Result
                         status="404"
                         title="空空如也"
                         subTitle="抱歉, 您还未创建转发规则, 点击按钮开始吧"
-                        extra={upstreamModuleForm(
+                        extra={streamModuleForm(
                             <Button type="primary" icon={<PlusCircleOutlined />}>
                                 添加规则
                             </Button>
@@ -512,7 +531,7 @@ export default () => {
                                 { data: { upstreamId: selectUpstreamId } }
                             )
                         } catch (error) {
-                            message.error(`更新 stream 失败, ${error}`)
+                            message.error(`更新 stream 失败, ${inspect(error)}`)
                         }
                     }
                     // update upstream
@@ -523,7 +542,7 @@ export default () => {
                                 ...(e as API.UpdateUpstreamDto)
                             })
                         } catch (error) {
-                            message.error(`更新 upstream 失败, ${error}`)
+                            message.error(`更新 upstream 失败, ${inspect(error)}`)
                         }
                     }
                     setUpstreamVisible(false)

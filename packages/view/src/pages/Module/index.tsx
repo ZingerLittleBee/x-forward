@@ -9,6 +9,7 @@ import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
 import { useEffect, useState } from 'react'
 import defaultSettings from '../../../config/defaultSettings'
+import { inspect } from 'util'
 
 type StatisticProps = {
     title: EnvEnum
@@ -76,12 +77,12 @@ const Module = () => {
             fetchOverview(initialState?.curClientId).catch(e => {
                 overviewController.abort()
                 setOverview(undefined)
-                message.warning(`获取系统信息失败: ${e}`)
+                message.error(`获取系统信息失败: ${inspect(e)}`)
             })
             fetchNginxConfig(initialState?.curClientId).catch(e => {
                 nginxConfigController.abort()
                 setNginxConfig(undefined)
-                message.warning(`获取 nginx 参数失败: ${e}`)
+                message.error(`获取 nginx 参数失败: ${inspect(e)}`)
             })
         }
     }, [initialState?.curClientId])

@@ -10,7 +10,8 @@ import ProTable, { ProColumns } from '@ant-design/pro-table'
 import { LoadBalancingEnum, OperationEnum, ServerEnum, StateEnum, UpstreamEnum } from '@x-forward/shared'
 import { Badge, Button, message, Popconfirm } from 'antd'
 import { useState } from 'react'
-import { useRequest } from 'umi'
+import { useModel, useRequest } from 'umi'
+import { useUpdateEffect } from 'ahooks'
 
 export type UpstreamListItem = API.UpstreamVo
 
@@ -56,11 +57,22 @@ const expandedRowRender = ({ server }: UpstreamListItem) => {
 }
 
 const Upstream = () => {
+    const { initialState } = useModel('@@initialState')
+    const [curClientId, setCurClientId] = useState<string>(initialState?.curClientId ? initialState?.curClientId : '')
+
+    useUpdateEffect(() => {
+        setCurClientId(initialState?.curClientId ? initialState?.curClientId : '')
+    }, [initialState?.curClientId])
+
+    useUpdateEffect(() => {
+        upstreamRefresh()
+    }, [curClientId])
+
     const {
         loading: upstreamLoading,
         data: upstreamData,
         refresh: upstreamRefresh
-    } = useRequest(() => UpstreamControllerFindAll({}))
+    } = useRequest(() => UpstreamControllerFindAll({ clientId: curClientId }))
 
     const { run: addUpstream } = useRequest(
         (createUpstreamDto: API.CreateUpstreamDto) => UpstreamControllerCreate(createUpstreamDto),
@@ -201,7 +213,7 @@ const Upstream = () => {
                     }
                     onUpstreamSubmit={async (e: API.CreateUpstreamDto | API.UpdateUpstreamDto) => {
                         try {
-                            const res = await addUpstream(e as API.CreateUpstreamDto)
+                            const res = await addUpstream({ clientId: curClientId, ...(e as API.CreateUpstreamDto)})
                             if (res?.id) {
                                 setExpandedRowKeys([...expandedRowKeys, res.id])
                             }
