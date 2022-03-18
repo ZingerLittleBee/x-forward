@@ -17,7 +17,7 @@ export class StreamController {
     @Get()
     @ApiResultResponse(StreamVo, { isArray: true })
     @ApiExtraModels(StreamVo)
-    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
+    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }), optimizeFieldInterceptor)
     async getStream(@Query('clientId') clientId: string) {
         return Result.okData(await this.streamService.findByClientId(clientId))
     }

@@ -85,5 +85,10 @@ export class ServerEntity extends CommonEntity {
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })
+    upstream?: UpstreamEntity
+
+    @AutoMap()
+    @ApiProperty()
+    @Column({ name: 'upstream_id', nullable: true })
     upstreamId?: string
 }

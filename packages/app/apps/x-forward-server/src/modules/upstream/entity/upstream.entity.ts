@@ -2,14 +2,28 @@ import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
 import { enumToString, getValuesOfEnum, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
-import { IsEnum, IsOptional, IsString, ValidateNested } from 'class-validator'
-import { Column, Entity, OneToMany } from 'typeorm'
+import { IsEnum, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
+import { ClientEntity } from '../../client/entity/client.entity'
 import { ServerEntity } from '../../server/entity/server.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
 
 @Entity('upstream')
 export class UpstreamEntity extends CommonEntity {
+    @AutoMap({ typeFn: () => ClientEntity })
+    @ApiProperty()
+    @ManyToOne(() => ClientEntity, client => client.upstream, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'client_id' })
+    client?: ClientEntity
+
+    @AutoMap()
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty({ name: 'client_id', nullable: true })
+    clientId?: string
+
     @IsOptional()
     @IsString()
     @AutoMap()
@@ -31,7 +45,7 @@ export class UpstreamEntity extends CommonEntity {
     @Type(() => StreamEntity)
     @AutoMap({ typeFn: () => StreamEntity })
     @ApiProperty()
-    @OneToMany(() => StreamEntity, stream => stream.upstreamId, {
+    @OneToMany(() => StreamEntity, stream => stream.upstream, {
         cascade: ['insert', 'update'],
         eager: true,
         createForeignKeyConstraints: false
@@ -42,7 +56,7 @@ export class UpstreamEntity extends CommonEntity {
     @Type(() => ServerEntity)
     @AutoMap({ typeFn: () => ServerEntity })
     @ApiProperty()
-    @OneToMany(() => ServerEntity, server => server.upstreamId, {
+    @OneToMany(() => ServerEntity, server => server.upstream, {
         cascade: true,
         eager: true,
         createForeignKeyConstraints: false

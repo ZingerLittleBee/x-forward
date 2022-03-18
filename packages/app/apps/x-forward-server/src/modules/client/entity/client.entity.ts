@@ -7,6 +7,7 @@ import { IsDate, IsEnum, IsOptional, IsPort, ValidateNested } from 'class-valida
 import { Column, Entity, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
+import { UpstreamEntity } from '../../upstream/entity/upstream.entity'
 
 @Entity('client')
 export class ClientEntity extends CommonEntity {
@@ -63,6 +64,21 @@ export class ClientEntity extends CommonEntity {
     @Type(() => StreamEntity)
     @AutoMap({ typeFn: () => StreamEntity })
     @ApiProperty()
-    @OneToMany(() => StreamEntity, stream => stream.clientId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => StreamEntity, stream => stream.client, {
+        cascade: true,
+        eager: true,
+        createForeignKeyConstraints: false
+    })
     stream?: StreamEntity[]
+
+    @ValidateNested({ each: true })
+    @Type(() => UpstreamEntity)
+    @AutoMap({ typeFn: () => UpstreamEntity })
+    @ApiProperty()
+    @OneToMany(() => UpstreamEntity, upstream => upstream.client, {
+        cascade: true,
+        eager: true,
+        createForeignKeyConstraints: false
+    })
+    upstream?: UpstreamEntity[]
 }

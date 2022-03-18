@@ -33,6 +33,6 @@ export class UserEntity extends CommonEntity {
     @Type(() => StreamEntity)
     @AutoMap({ typeFn: () => StreamEntity })
     @ApiProperty()
-    @OneToMany(() => StreamEntity, stream => stream.userId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => StreamEntity, stream => stream.user, { eager: true, createForeignKeyConstraints: false })
     stream?: StreamEntity[]
 }

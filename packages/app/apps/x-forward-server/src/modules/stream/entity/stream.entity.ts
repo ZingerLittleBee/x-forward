@@ -19,21 +19,33 @@ import { UserEntity } from '../../user/user.entity'
 
 @Entity('stream')
 export class StreamEntity extends CommonEntity {
-    @AutoMap()
+    @AutoMap({ typeFn: () => UserEntity })
     @IsOptional()
     @IsString()
     @ApiProperty()
     @ManyToOne(() => UserEntity, user => user.stream, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'user_id' })
+    user?: UserEntity
+
+    @AutoMap()
+    @IsOptional()
+    @IsString()
+    @ApiProperty()
+    @Column({ name: 'user_id', nullable: true })
     userId?: string
+
+    @AutoMap({ typeFn: () => ClientEntity })
+    @ApiProperty()
+    @ManyToOne(() => ClientEntity, client => client.stream, { createForeignKeyConstraints: false })
+    @JoinColumn({ name: 'client_id' })
+    client?: ClientEntity
 
     @AutoMap()
     @IsOptional()
     @IsString()
     @IsNotEmpty()
     @ApiProperty()
-    @ManyToOne(() => ClientEntity, client => client.stream, { createForeignKeyConstraints: false })
-    @JoinColumn({ name: 'client_id' })
+    @Column({ name: 'client_id', nullable: true })
     clientId?: string
 
     @AutoMap()
@@ -147,5 +159,10 @@ export class StreamEntity extends CommonEntity {
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.stream, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })
+    upstream?: UpstreamEntity
+
+    @AutoMap()
+    @ApiProperty()
+    @Column({ name: 'upstream_id', nullable: true })
     upstreamId?: string
 }

@@ -73,7 +73,7 @@ export class ClientService implements OnModuleInit {
     }
 
     async findAll() {
-        return this.clientRepository.find()
+        return this.clientRepository.find({ loadEagerRelations: false })
     }
 
     /**

@@ -43,8 +43,11 @@ export class UpstreamService {
         return res
     }
 
-    async findAll() {
-        return this.upstreamRepository.find()
+    async findAll(clientId: string) {
+        return this.upstreamRepository.find({
+            where: { clientId },
+            relations: ['server']
+        })
     }
 
     async findAllWithoutEager(clientId: string | undefined) {

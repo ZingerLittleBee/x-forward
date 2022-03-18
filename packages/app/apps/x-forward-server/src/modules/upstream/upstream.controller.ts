@@ -1,6 +1,6 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
-import { ApiExtraModels, ApiQuery, ApiTags } from '@nestjs/swagger'
+import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
 import { CreateServerDto } from '../server/dto/create-server.dto'
@@ -19,14 +19,14 @@ export class UpstreamController {
     @Get()
     @ApiResultResponse(UpstreamVo, { isArray: true })
     // https://github.com/nestjs/nest/issues/2169
-    @ApiQuery({
-        name: 'clientId',
-        required: false,
-        type: String
-    })
+    // @ApiQuery({
+    //     name: 'clientId',
+    //     required: false,
+    //     type: String
+    // })
     @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
     async findAll(@Query('clientId') clientId?: string) {
-        return Result.okData(await this.upstreamService.findAllWithoutEager(clientId))
+        return Result.okData(await this.upstreamService.findAll(clientId))
     }
 
     @Get(':id')
@@ -39,12 +39,14 @@ export class UpstreamController {
     @Post()
     @ApiExtraModels(UpstreamEntity, ServerEntity, CreateServerDto, UpdateServerDto, UpstreamVo)
     @ApiResultResponse(UpstreamEntity)
+    @UseInterceptors(optimizeFieldInterceptor)
     async create(@Body(MapPipe(UpstreamEntity, CreateUpstreamDto)) createUpstream: CreateUpstreamDto) {
         return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))
     }
 
     @Patch()
     @ApiResultResponse(UpstreamEntity)
+    @UseInterceptors(optimizeFieldInterceptor)
     async update(@Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto) {
         return Result.okData(await this.upstreamService.update(updateUpstreamDto as UpstreamEntity))
     }
