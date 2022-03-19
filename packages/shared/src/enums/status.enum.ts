@@ -1,4 +1,4 @@
-export enum StatusEnum {
+export enum NginxStatusEnum {
     // 正在运行
     Running = 'active (running)',
     // 正在检查
@@ -19,4 +19,10 @@ export enum OnlineEnum {
 export enum StateEnum {
     Able,
     Disable
+}
+
+export enum StateTipsEnum {
+    Able = '正在运行',
+    Disable = '已停止',
+    Unknown = '未知'
 }

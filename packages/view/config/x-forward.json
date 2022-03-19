@@ -29,7 +29,7 @@
                 "parameters": [
                     {
                         "name": "clientId",
-                        "required": false,
+                        "required": true,
                         "in": "query",
                         "schema": {
                             "type": "string"
@@ -444,6 +444,20 @@
                         }
                     }
                 ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "state": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
                         "description": "",
@@ -1182,7 +1196,7 @@
     "servers": [],
     "components": {
         "schemas": {
-            "StreamEntity": {
+            "UserEntity": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -1208,98 +1222,37 @@
                         "format": "date-time",
                         "type": "string"
                     },
-                    "userId": {
-                        "type": "string"
-                    },
-                    "clientId": {
-                        "type": "string"
-                    },
-                    "transitHost": {
+                    "username": {
                         "type": "string",
-                        "description": "中转地址"
+                        "description": "用户名"
                     },
-                    "transitPort": {
-                        "type": "number",
-                        "description": "中转端口"
-                    },
-                    "remoteHost": {
+                    "password": {
                         "type": "string",
-                        "description": "远程地址"
+                        "description": "密码"
                     },
-                    "remotePort": {
-                        "type": "number",
-                        "description": "远程端口"
-                    },
-                    "status": {
+                    "role": {
                         "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
+                            "User",
+                            "Admin"
                         ],
                         "type": "number",
-                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "type": "number",
-                        "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
-                    },
-                    "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
-                        "type": "string",
-                        "description": "转发协议"
-                    },
-                    "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
-                        "type": "string",
-                        "description": "失败重试"
-                    },
-                    "tries": {
-                        "type": "number",
-                        "minimum": 0,
-                        "description": "重试次数"
-                    },
-                    "retriesTimeout": {
-                        "type": "string",
-                        "description": "重试超时时间"
-                    },
-                    "connectTimeout": {
-                        "type": "string",
-                        "description": "连接超时时间"
-                    },
-                    "uploadRate": {
-                        "type": "string",
-                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "downloadRate": {
-                        "type": "string",
-                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "proxyTimeout": {
-                        "type": "string",
-                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                        "description": "角色, 用户名: Username,密码: Password,角色: Role,备注: Comment"
                     },
                     "comment": {
                         "type": "string",
-                        "description": "备注说明"
+                        "description": "备注"
                     },
-                    "upstreamId": {
-                        "type": "string"
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
                     }
-                }
+                },
+                "required": [
+                    "username",
+                    "password"
+                ]
             },
             "ServerEntity": {
                 "type": "object",
@@ -1369,6 +1322,9 @@
                         "type": "number",
                         "description": "不可用, 将服务器标记为永久不可用, False: 0,True: 1,0: False,1: True"
                     },
+                    "upstream": {
+                        "$ref": "#/components/schemas/UpstreamEntity"
+                    },
                     "upstreamId": {
                         "type": "string"
                     }
@@ -1404,6 +1360,12 @@
                         "format": "date-time",
                         "type": "string"
                     },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientEntity"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string",
                         "description": "upstream_name"
@@ -1435,6 +1397,191 @@
                     "name",
                     "server"
                 ]
+            },
+            "StreamEntity": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserEntity"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientEntity"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
+                    "transitHost": {
+                        "type": "string",
+                        "description": "中转地址"
+                    },
+                    "transitPort": {
+                        "type": "number",
+                        "description": "中转端口"
+                    },
+                    "remoteHost": {
+                        "type": "string",
+                        "description": "远程地址"
+                    },
+                    "remotePort": {
+                        "type": "number",
+                        "description": "远程端口"
+                    },
+                    "status": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
+                    },
+                    "protocol": {
+                        "enum": [
+                            "tcp",
+                            "udp"
+                        ],
+                        "type": "string",
+                        "description": "转发协议"
+                    },
+                    "isRetries": {
+                        "enum": [
+                            "on",
+                            "off"
+                        ],
+                        "type": "string",
+                        "description": "失败重试"
+                    },
+                    "tries": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "重试次数"
+                    },
+                    "retriesTimeout": {
+                        "type": "string",
+                        "description": "重试超时时间"
+                    },
+                    "connectTimeout": {
+                        "type": "string",
+                        "description": "连接超时时间"
+                    },
+                    "uploadRate": {
+                        "type": "string",
+                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "downloadRate": {
+                        "type": "string",
+                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "proxyTimeout": {
+                        "type": "string",
+                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "备注说明"
+                    },
+                    "upstream": {
+                        "$ref": "#/components/schemas/UpstreamEntity"
+                    },
+                    "upstreamId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "ClientEntity": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "port": {
+                        "type": "number"
+                    },
+                    "isOnline": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "False: 0,True: 1,0: False,1: True"
+                    },
+                    "lastCommunicationTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
+                    },
+                    "upstream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpstreamEntity"
+                        }
+                    }
+                }
             },
             "CreateServerDto": {
                 "type": "object",
@@ -1627,16 +1774,6 @@
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
                     },
-                    "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "type": "number",
-                        "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
-                    },
                     "protocol": {
                         "enum": [
                             "tcp",
@@ -1684,6 +1821,9 @@
                     },
                     "upstreamId": {
                         "type": "string"
+                    },
+                    "loadBalancing": {
+                        "type": "number"
                     }
                 },
                 "required": [
@@ -1693,6 +1833,9 @@
             "CreateUpstreamDto": {
                 "type": "object",
                 "properties": {
+                    "clientId": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string",
                         "description": "upstream_name"
@@ -1752,6 +1895,12 @@
                         "format": "date-time",
                         "type": "string"
                     },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientEntity"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
                     "name": {
                         "type": "string",
                         "description": "upstream_name"
@@ -1798,8 +1947,10 @@
                         "format": "date-time",
                         "type": "string"
                     },
-                    "updateTime": {
-                        "format": "date-time",
+                    "userId": {
+                        "type": "string"
+                    },
+                    "clientId": {
                         "type": "string"
                     },
                     "transitHost": {
@@ -1828,16 +1979,6 @@
                         ],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "type": "number",
-                        "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
                         "enum": [
@@ -1903,6 +2044,30 @@
                         "type": "number",
                         "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
                     },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserEntity"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientEntity"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
                     "transitHost": {
                         "type": "string",
                         "description": "中转地址"
@@ -1929,16 +2094,6 @@
                         ],
                         "type": "number",
                         "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "loadBalancing": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3
-                        ],
-                        "type": "number",
-                        "description": "负载算法, Random: 0,Weight: 1,Hash: 2,Least_conn: 3,0: Random,1: Weight,2: Hash,3: Least_conn"
                     },
                     "protocol": {
                         "enum": [
@@ -1985,7 +2140,13 @@
                         "type": "string",
                         "description": "备注说明"
                     },
+                    "upstream": {
+                        "$ref": "#/components/schemas/UpstreamEntity"
+                    },
                     "upstreamId": {
+                        "type": "string"
+                    },
+                    "commment": {
                         "type": "string"
                     }
                 }
@@ -2048,66 +2209,11 @@
                         "items": {
                             "$ref": "#/components/schemas/StreamEntity"
                         }
-                    }
-                }
-            },
-            "ClientEntity": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
                     },
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "createTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "updateTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "deleteTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "ip": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "domain": {
-                        "type": "string"
-                    },
-                    "port": {
-                        "type": "number"
-                    },
-                    "isOnline": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "False: 0,True: 1,0: False,1: True"
-                    },
-                    "lastCommunicationTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "comment": {
-                        "type": "string"
-                    },
-                    "stream": {
+                    "upstream": {
                         "type": "array",
                         "items": {
-                            "$ref": "#/components/schemas/StreamEntity"
+                            "$ref": "#/components/schemas/UpstreamEntity"
                         }
                     }
                 }
@@ -2150,6 +2256,12 @@
                         "type": "array",
                         "items": {
                             "$ref": "#/components/schemas/StreamEntity"
+                        }
+                    },
+                    "upstream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpstreamEntity"
                         }
                     }
                 }
@@ -2226,64 +2338,6 @@
                     "success",
                     "message",
                     "data"
-                ]
-            },
-            "UserEntity": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "createTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "updateTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "deleteTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "username": {
-                        "type": "string",
-                        "description": "用户名"
-                    },
-                    "password": {
-                        "type": "string",
-                        "description": "密码"
-                    },
-                    "role": {
-                        "enum": [
-                            "User",
-                            "Admin"
-                        ],
-                        "type": "number",
-                        "description": "角色, 用户名: Username,密码: Password,角色: Role,备注: Comment"
-                    },
-                    "comment": {
-                        "type": "string",
-                        "description": "备注"
-                    },
-                    "stream": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StreamEntity"
-                        }
-                    }
-                },
-                "required": [
-                    "username",
-                    "password"
                 ]
             },
             "LoginUserDto": {
