@@ -1,6 +1,6 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
 import { CreateStreamDto } from './dto/create-stream.dto'
@@ -35,8 +35,9 @@ export class StreamController {
      * @param state state
      */
     @Post(':id/state')
+    @ApiBody({ schema: { properties: { state: { type: 'number' } } } })
     @ApiResultResponse()
-    async updateStateById(@Param('id') id: string, @Body() { state }: { state: number }) {
+    async updateStateById(@Body() { state }: { state: number }, @Param('id') id: string) {
         await this.streamService.stateUpdate(id, state)
         return Result.ok()
     }
