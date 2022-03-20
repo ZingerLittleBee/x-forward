@@ -11,7 +11,7 @@ import ProForm, {
     ProFormText
 } from '@ant-design/pro-form'
 import { ServerEnum, ServerTipsEnum, UpstreamEnum } from '@x-forward/shared'
-import { Form } from 'antd'
+import { Form, message } from 'antd'
 import { FormInstance } from 'antd/es'
 import { isString } from 'lodash'
 import React, { useEffect } from 'react'
@@ -76,6 +76,10 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             trigger={trigger}
             visible={visible}
             onFinish={async (e: API.UpdateUpstreamDto | API.CreateUpstreamDto) => {
+                if (!e?.server?.length) {
+                    message.warn('最少添加一条 server')
+                    return
+                }
                 upstream ? onUpstreamSubmit({ ...e, id: upstream?.id }) : onUpstreamSubmit(e)
                 return true
             }}
@@ -128,6 +132,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                 creatorButtonText: '添加一条 server'
                             }}
                             alwaysShowItemLabel={true}
+                            min={1}
                         >
                             {() => {
                                 return (
