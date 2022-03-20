@@ -10,6 +10,11 @@ export enum IsOrNotEnum {
     True
 }
 
+export enum IsOrNotTipsEnum {
+    False = '否',
+    True = '是'
+}
+
 export enum OperationEnum {
     Operation = '操作',
     Editor = '编辑',

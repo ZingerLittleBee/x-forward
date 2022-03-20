@@ -7,7 +7,16 @@ import {
 } from '@/services/view/upstream'
 import { PlusCircleOutlined } from '@ant-design/icons'
 import ProTable, { ProColumns } from '@ant-design/pro-table'
-import { LoadBalancingEnum, OperationEnum, ServerEnum, StateEnum, UpstreamEnum } from '@x-forward/shared'
+import {
+    CommonEnum,
+    isDef,
+    IsOrNotTipsEnum,
+    LoadBalancingEnum,
+    OperationEnum,
+    ServerEnum,
+    StateEnum,
+    UpstreamEnum
+} from '@x-forward/shared'
 import { Badge, Button, message, Popconfirm } from 'antd'
 import { useState } from 'react'
 import { useModel, useRequest } from 'umi'
@@ -16,6 +25,7 @@ import { useUpdateEffect } from 'ahooks'
 export type UpstreamListItem = API.UpstreamVo
 
 const expandedRowRender = ({ server }: UpstreamListItem) => {
+    console.log('server', server)
     return (
         <ProTable
             columns={[
@@ -43,8 +53,24 @@ const expandedRowRender = ({ server }: UpstreamListItem) => {
                     dataIndex: 'failTimeout',
                     ellipsis: true
                 },
-                { title: ServerEnum.Backup, dataIndex: 'backup', ellipsis: true },
-                { title: ServerEnum.Down, dataIndex: 'down', ellipsis: true }
+                {
+                    title: ServerEnum.Backup,
+                    dataIndex: 'backup',
+                    ellipsis: true,
+                    render: (_, { backup }) => {
+                        if (isDef(backup)) return Boolean(backup) ? IsOrNotTipsEnum.True : IsOrNotTipsEnum.False
+                        return CommonEnum.PlaceHolder
+                    }
+                },
+                {
+                    title: ServerEnum.Down,
+                    dataIndex: 'down',
+                    ellipsis: true,
+                    render: (_, { down }) => {
+                        if (isDef(down)) return Boolean(down) ? IsOrNotTipsEnum.True : IsOrNotTipsEnum.False
+                        return CommonEnum.PlaceHolder
+                    }
+                }
             ]}
             headerTitle={false}
             search={false}
@@ -213,7 +239,19 @@ const Upstream = () => {
                     }
                     onUpstreamSubmit={async (e: API.CreateUpstreamDto | API.UpdateUpstreamDto) => {
                         try {
-                            const res = await addUpstream({ clientId: curClientId, ...(e as API.CreateUpstreamDto)})
+                            // handle 'backup' 'down' from boolean to 0 | 1
+                            if (e?.server) {
+                                e.server = e.server.map(s => {
+                                    if (isDef(s?.backup)) {
+                                        s.backup = Number(s.backup) as 0 | 1
+                                    }
+                                    if (isDef(s?.down)) {
+                                        s.down = Number(s.down) as 0 | 1
+                                    }
+                                    return s
+                                })
+                            }
+                            const res = await addUpstream({ clientId: curClientId, ...(e as API.CreateUpstreamDto) })
                             if (res?.id) {
                                 setExpandedRowKeys([...expandedRowKeys, res.id])
                             }
