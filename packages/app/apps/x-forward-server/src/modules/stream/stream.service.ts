@@ -58,19 +58,9 @@ export class StreamService {
      */
     @Preprocess()
     async create(@Optimized() streamEntity: StreamEntity) {
-        return this.streamRepository.save(streamEntity)
-        // await this.streamRepository
-        //     .createQueryBuilder()
-        //     .relation(StreamEntity, 'clientId')
-        //     .of(res.id)
-        //     .add(streamEntity?.clientId)
-        // return await this.streamRepository
-        //     .createQueryBuilder()
-        //     .insert()
-        //     .into(StreamEntity)
-        //     .values([streamEntity])
-        //     .execute()
-        // this.eventService.triggerCreateEvent({ clientId: streamEntity?.clientId })
+        const res = await this.streamRepository.save(streamEntity)
+        if (streamEntity?.clientId) this.eventService.triggerCreateEvent({ clientId: streamEntity.clientId })
+        return res
     }
 
     /**
