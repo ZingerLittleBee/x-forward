@@ -4,6 +4,7 @@ import { getEnvSetting } from '@x-forward/common/utils/env.utils'
 import { IExecutor } from '@x-forward/executor/interfaces'
 import {
     fetchDirectoryHandler,
+    getSystemTimeHandler,
     mainConfigPathHandler,
     nginxConfigArgsHandler,
     nginxPrefixHandler,
@@ -29,6 +30,9 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
         super()
         this.bin = bin
         this.cacheManager = cacheManager
+    }
+    async getSystemTime(): Promise<string> {
+        return getSystemTimeHandler()
     }
     tailFile(path: string): ProcessPromise<ProcessOutput> {
         return $`tail -f ${path}`

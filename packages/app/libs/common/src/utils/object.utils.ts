@@ -7,7 +7,8 @@ export const removeInvalidField = (value: any[] | any) => {
     const handlerObject = (obj: any) => {
         const res = {}
         for (const key in obj) {
-            if (typeof obj[key] !== 'object' && obj[key] != undefined) {
+            // typeof "Date" = "object"
+            if ((typeof obj[key] !== 'object' && obj[key] != undefined) || obj[key] instanceof Date) {
                 res[key] = obj[key]
                 continue
             }

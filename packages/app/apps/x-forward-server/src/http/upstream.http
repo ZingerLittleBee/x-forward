@@ -3,7 +3,7 @@ POST {{baseUrl}}{{upstream}}/
 Content-Type: application/json
 
 {
-    "name": "test2",
+    "name": "test6",
     "server": [
         {
             "upstreamHost": "bai.com",
@@ -11,6 +11,7 @@ Content-Type: application/json
         }
     ],
     "loadBalancing": 1,
+    "clientId": "affd715c-c6fb-4a28-80a1-2ce8bd03bdc9",
     "stream": [{
         "transitHost": "du.com",
         "transitPort": 3333,
@@ -42,7 +43,7 @@ Content-Type: application/json
 }
 
 ### findAll
-GET {{baseUrl}}{{upstream}}/
+GET {{baseUrl}}{{upstream}}?clientId=ab30b04e-c359-46d5-8a2e-c96e230497fd
 
 ### findOne
 GET {{baseUrl}}{{upstream}}/ab30b04e-c359-46d5-8a2e-c96e230497fd

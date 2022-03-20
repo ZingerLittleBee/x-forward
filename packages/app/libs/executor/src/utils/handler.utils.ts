@@ -195,11 +195,11 @@ export const updateFileContentHandler = async (
         throw new Error(`${path} 备份失败: ${backupRes}`)
     }
     if (options?.isRewrite) {
-        options.isDocker
+        options?.isDocker
             ? await rewriteFileInDocker(options?.containerName, path, content)
             : await rewriteFile(path, content)
     } else {
-        options.isDocker
+        options?.isDocker
             ? await appendFileInDocker(options?.containerName, path, content)
             : await appendFile(path, content)
     }
@@ -284,4 +284,16 @@ export const nginxReopenHandler = async (bin: string, options?: { isDocker?: boo
               `nginx reopen failed: ${nginxReopenRes?.res}, Is nginx running?, and then try run\n$ ${bin} -s reopen`
           )
     return nginxReopenRes.exitCode
+}
+
+export const getSystemTimeHandler = async (options?: { isDocker?: boolean; containerName?: string }) => {
+    const result = options?.isDocker
+        ? await dockerExec(options?.containerName, ShellEnum.DATE, '+%Y-%m-%d" "%T')
+        : await shellExec(ShellEnum.DATE, '+%Y-%m-%d" "%T')
+    if (result.exitCode === 0) {
+        Logger.verbose(`get system time success, ${result.res}`)
+        return result.res
+    }
+    Logger.error(`get system time error`)
+    return ''
 }

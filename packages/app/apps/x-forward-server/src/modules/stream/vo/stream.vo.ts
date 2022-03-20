@@ -1,15 +1,19 @@
+import { AutoMap } from '@automapper/classes'
 import { PickType } from '@nestjs/swagger'
+import { ProtocolEnum, RetriesEnum } from '@x-forward/common'
+import { LoadBalancingEnum, StateEnum, StatusEnum } from '@x-forward/shared'
 import { StreamEntity } from '../entity/stream.entity'
 
 export class StreamVo extends PickType(StreamEntity, [
     'id',
     'state',
+    'userId',
+    'clientId',
     'transitHost',
     'transitPort',
     'remoteHost',
     'remotePort',
     'status',
-    'loadBalancing',
     'protocol',
     'isRetries',
     'tries',
@@ -20,41 +24,48 @@ export class StreamVo extends PickType(StreamEntity, [
     'proxyTimeout',
     'comment',
     'upstreamId',
-    'createTime',
-    'updateTime'
+    'createTime'
 ]) {
-    // @AutoMap()
-    // readonly id: string
-    // @AutoMap()
-    // readonly state: StateEnum
-    // @AutoMap()
-    // readonly transitHost: string
-    // @AutoMap()
-    // readonly transitPort: number
-    // @AutoMap()
-    // readonly remoteHost: string
-    // @AutoMap()
-    // readonly remotePort: number
-    // @AutoMap()
-    // readonly status: number
-    // @AutoMap()
-    // readonly loadBalancing?: number
-    // @AutoMap()
-    // readonly protocol?: ProtocolEnum
-    // @AutoMap()
-    // readonly retries?: RetriesEnum
-    // @AutoMap()
-    // readonly retriesTimeout?: string
-    // @AutoMap()
-    // readonly connectTimeout?: string
-    // @AutoMap()
-    // readonly uploadRate?: string
-    // @AutoMap()
-    // readonly downloadRate?: string
-    // @AutoMap()
-    // readonly proxyTimeout?: string
-    // @AutoMap()
-    // readonly commment?: string
-    // @AutoMap()
-    // readonly upstreamId?: string
+    @AutoMap()
+    id: string
+    @AutoMap()
+    state: StateEnum
+    @AutoMap()
+    userId?: string
+    @AutoMap()
+    clientId?: string
+    @AutoMap()
+    transitHost?: string
+    @AutoMap()
+    transitPort?: number
+    @AutoMap()
+    remoteHost?: string
+    @AutoMap()
+    remotePort?: number
+    @AutoMap()
+    status?: StatusEnum
+    @AutoMap()
+    loadBalancing?: LoadBalancingEnum
+    @AutoMap()
+    protocol?: ProtocolEnum
+    @AutoMap()
+    isRetries?: RetriesEnum
+    @AutoMap()
+    tries?: number
+    @AutoMap()
+    retriesTimeout?: string
+    @AutoMap()
+    connectTimeout?: string
+    @AutoMap()
+    uploadRate?: string
+    @AutoMap()
+    downloadRate?: string
+    @AutoMap()
+    proxyTimeout?: string
+    @AutoMap()
+    comment?: string
+    @AutoMap()
+    upstreamId?: string
+    @AutoMap()
+    createTime?: Date
 }

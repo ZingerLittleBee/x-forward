@@ -1,5 +1,5 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
 import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
@@ -15,25 +15,18 @@ import { UpstreamVo } from './vo/upstream.vo'
 @Controller('upstream')
 export class UpstreamController {
     constructor(private readonly upstreamService: UpstreamService) {}
-    @Post()
-    @ApiExtraModels(UpstreamEntity, ServerEntity, CreateServerDto, UpdateServerDto, UpstreamVo)
-    @ApiResultResponse(UpstreamEntity)
-    async create(@Body(MapPipe(UpstreamEntity, CreateUpstreamDto)) createUpstream: CreateUpstreamDto) {
-        return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))
-    }
-
-    // @Get()
-    // @ApiResultResponse(UpstreamVo, { isArray: true })
-    // @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
-    // async findAll() {
-    //     return Result.okData(await this.upstreamService.findAll())
-    // }
 
     @Get()
     @ApiResultResponse(UpstreamVo, { isArray: true })
+    // https://github.com/nestjs/nest/issues/2169
+    // @ApiQuery({
+    //     name: 'clientId',
+    //     required: false,
+    //     type: String
+    // })
     @UseInterceptors(MapInterceptor(UpstreamVo, UpstreamEntity, { isArray: true }), optimizeFieldInterceptor)
-    async findAll() {
-        return Result.okData(await this.upstreamService.findAllWithoutEager())
+    async findAll(@Query('clientId') clientId?: string) {
+        return Result.okData(await this.upstreamService.findAll(clientId))
     }
 
     @Get(':id')
@@ -43,13 +36,19 @@ export class UpstreamController {
         return Result.okData(await this.upstreamService.findOne(id))
     }
 
-    @Patch(':id')
-    @ApiResultResponse('number')
-    async update(
-        @Param('id') id: string,
-        @Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto
-    ) {
-        return Result.okData((await this.upstreamService.update(id, updateUpstreamDto as UpstreamEntity)).affected)
+    @Post()
+    @ApiExtraModels(UpstreamEntity, ServerEntity, CreateServerDto, UpdateServerDto, UpstreamVo)
+    @ApiResultResponse(UpstreamEntity)
+    @UseInterceptors(optimizeFieldInterceptor)
+    async create(@Body(MapPipe(UpstreamEntity, CreateUpstreamDto)) createUpstream: CreateUpstreamDto) {
+        return Result.okData(await this.upstreamService.create(createUpstream as UpstreamEntity))
+    }
+
+    @Patch()
+    @ApiResultResponse(UpstreamEntity)
+    @UseInterceptors(optimizeFieldInterceptor)
+    async update(@Body(MapPipe(UpstreamEntity, UpdateUpstreamDto)) updateUpstreamDto: UpdateUpstreamDto) {
+        return Result.okData(await this.upstreamService.update(updateUpstreamDto as UpstreamEntity))
     }
 
     @Delete(':id')

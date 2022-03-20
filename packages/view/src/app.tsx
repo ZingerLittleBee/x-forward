@@ -1,16 +1,16 @@
+import Footer from '@/components/Footer'
+import RightContent from '@/components/RightContent'
+import LsConstant from '@/constants/localstorage.constant'
+import type { RequestConfig } from '@@/plugin-request/request'
 import type { Settings as LayoutSettings } from '@ant-design/pro-layout'
 import { PageLoading } from '@ant-design/pro-layout'
-import type { RunTimeLayoutConfig } from 'umi'
-import { history } from 'umi'
-import RightContent from '@/components/RightContent'
-import Footer from '@/components/Footer'
-import { io, Socket } from 'socket.io-client'
-import { EnvControllerGetNginxConfig, EnvControllerGetOverview } from '@/services/view/env'
 import { message } from 'antd'
-import type { RequestConfig } from '@@/plugin-request/request'
+import { history, RunTimeLayoutConfig } from 'umi'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
-import { RequestOptionsInit } from 'umi-request'
+import { RequestOptionsInit, ResponseError } from 'umi-request'
+import { ClientControllerGetAll } from './services/view/client'
+import { computeIfPresent } from './utils/localstorage.util'
 
 const loginPath = '/user/login'
 
@@ -19,54 +19,51 @@ export const initialStateConfig = {
     loading: <PageLoading />
 }
 
+export interface InitialState {
+    curClientId?: string
+    settings?: Partial<LayoutSettings>
+    clients?: API.ClientVo[]
+}
+
+let clients: API.ClientVo[] | undefined
+
+/**
+ * get all client
+ * @returns clients
+ */
+const fetchAllClient = async () => {
+    const clientController = new AbortController()
+    try {
+        return (await ClientControllerGetAll({ signal: clientController.signal }))?.data
+    } catch (error) {
+        clientController.abort()
+        message.error(`获取 clients 失败, ${error}`)
+    }
+    return undefined
+}
+
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
-export async function getInitialState(): Promise<{
-    settings?: Partial<LayoutSettings>
-    overview?: API.OverviewVo
-    nginxConfig?: API.NginxConfigVo
-    socket?: Socket
-}> {
-    const fetchOverview = async () => {
-        try {
-            return (await EnvControllerGetOverview()).data
-        } catch (error) {
-            message.warning('获取系统信息失败')
-        }
-        return undefined
-    }
-    const fetchNginxConfig = async () => {
-        try {
-            return (await EnvControllerGetNginxConfig()).data
-        } catch (error) {
-            message.warning('获取 nginx 参数失败')
-        }
-        return undefined
-    }
-    const createSocket = (url: string) => {
-        const socket = io(url)
-        socket.on('connect', () => {
-            console.log('ws connected success')
-        })
-        socket.on('connect_error', err => {
-            console.log('ws occurred error: ', err)
-        })
-        socket.on('disconnect', reason => {
-            console.log('ws disconnected: ', reason)
-        })
-        return socket
-    }
+export async function getInitialState(): Promise<InitialState> {
     // 如果是登录页面，不执行
     if (history.location.pathname !== loginPath) {
-        const overview = await fetchOverview()
-        const socket = createSocket('localhost:1234')
-        const nginxConfig = await fetchNginxConfig()
-        return {
-            overview,
-            nginxConfig,
-            settings: {},
-            socket
+        if (!clients) {
+            clients = await fetchAllClient()
+        }
+        const firstClientId = clients?.[0].id
+        let curClientId = computeIfPresent(LsConstant.CurClientId, firstClientId)
+        if (curClientId !== firstClientId) {
+            if (clients && clients.findIndex(c => c?.id === curClientId) < 0) {
+                curClientId = firstClientId
+            }
+        }
+        if (curClientId) {
+            return {
+                clients,
+                settings: {},
+                curClientId
+            }
         }
     }
     return {
@@ -101,12 +98,18 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
 const apiInterceptor = (url: string, options: RequestOptionsInit) => {
     return {
         url: `/api${url}`,
-        options: { ...options, interceptors: true }
+        options: {
+            ...options,
+            interceptors: true,
+            errorHandler: (err: ResponseError) => {
+                throw err?.data?.errorMessage || err
+            }
+        }
     }
 }
 
 export const request: RequestConfig = {
-    timeout: 5000,
+    timeout: 3000,
     errorConfig: {},
     middlewares: [],
     requestInterceptors: [apiInterceptor],

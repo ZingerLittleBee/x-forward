@@ -1,17 +1,23 @@
 import { AutoMap } from '@automapper/classes'
-import { PickType } from '@nestjs/swagger'
+import { PartialType } from '@nestjs/swagger'
 import { LoadBalancingEnum } from '@x-forward/shared'
-import { UpdateStreamDto } from '../../stream/dto/update-stream.dto'
 import { UpdateServerDto } from '../../server/dto/update-server.dto'
+import { UpdateStreamDto } from '../../stream/dto/update-stream.dto'
 import { UpstreamEntity } from '../entity/upstream.entity'
 
-export class UpdateUpstreamDto extends PickType(UpstreamEntity, ['name', 'loadBalancing']) {
+export class UpdateUpstreamDto extends PartialType(UpstreamEntity) {
     @AutoMap()
-    name: string
+    id?: string
+
+    @AutoMap()
+    name?: string
+
     @AutoMap()
     loadBalancing?: LoadBalancingEnum
+
     @AutoMap({ typeFn: () => UpdateStreamDto })
     stream?: UpdateStreamDto[]
+
     @AutoMap({ typeFn: () => UpdateServerDto })
     server: UpdateServerDto[]
 }

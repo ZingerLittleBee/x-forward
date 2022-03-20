@@ -32,6 +32,8 @@ export interface ISystem {
      */
     getSystemInfo(): Promise<SystemInfo>
 
+    getSystemTime(): Promise<string>
+
     /**
      * get IP
      */

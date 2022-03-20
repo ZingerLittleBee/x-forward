@@ -1,3 +1,6 @@
+## Get All
+GET http://localhost:3000/client
+
 ### Register
 POST http://localhost:3000/client
 Content-Type: application/json

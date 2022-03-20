@@ -14,8 +14,7 @@ export class ServerService {
     ) {}
 
     async createAll(createServer: ServerEntity[]) {
-        const res = await this.serverRepository.save(createServer)
-        return res
+        return this.serverRepository.save(createServer)
     }
 
     @Preprocess()
@@ -25,23 +24,6 @@ export class ServerService {
         }
         const res = await this.serverRepository.update(id, server)
         return res
-    }
-
-    async updateAll(servers: ServerEntity[]) {
-        const updateResults = await Promise.all(
-            servers.map(s => {
-                if (s.id) {
-                    return this.update(s.id, s)
-                } else {
-                    Promise.reject('id can not empty')
-                }
-            })
-        )
-        let affectCount = 0
-        updateResults.forEach(u => {
-            affectCount += u.affected
-        })
-        return affectCount
     }
 
     async remove(id: string) {

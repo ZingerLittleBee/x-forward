@@ -1,4 +1,4 @@
-export enum StatusEnum {
+export enum NginxStatusEnum {
     // 正在运行
     Running = 'active (running)',
     // 正在检查
@@ -11,7 +11,18 @@ export enum StatusEnum {
     Error = 'failed (Result: exit-code)'
 }
 
+export enum OnlineEnum {
+    Online = '在线',
+    Offline = '离线'
+}
+
 export enum StateEnum {
     Able,
     Disable
+}
+
+export enum StateTipsEnum {
+    Able = '正在运行',
+    Disable = '已停止',
+    Unknown = '未知'
 }

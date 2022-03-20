@@ -1,5 +1,5 @@
 import { StatusEnum } from '@x-forward/common'
-export class Overview {
+export interface Overview {
     os?: string
 
     nginxPath?: string
@@ -7,4 +7,6 @@ export class Overview {
     nginxUptime?: string
 
     nginxStatus?: StatusEnum | string
+
+    systemTime?: string
 }

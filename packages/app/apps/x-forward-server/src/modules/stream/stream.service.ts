@@ -31,7 +31,10 @@ export class StreamService {
     }
 
     async findByClientId(clientId: string) {
-        return this.streamRepository.find({ clientId })
+        return this.streamRepository.find({
+            where: { clientId },
+            loadRelationIds: true
+        })
     }
 
     /**
@@ -53,10 +56,21 @@ export class StreamService {
      * @param streamEntity Stream
      * @returns StreamEntity
      */
-    async create(streamEntity: StreamEntity) {
-        const res = await this.streamRepository.save(streamEntity)
-        this.eventService.triggerCreateEvent({ clientId: streamEntity?.clientId })
-        return res
+    @Preprocess()
+    async create(@Optimized() streamEntity: StreamEntity) {
+        return this.streamRepository.save(streamEntity)
+        // await this.streamRepository
+        //     .createQueryBuilder()
+        //     .relation(StreamEntity, 'clientId')
+        //     .of(res.id)
+        //     .add(streamEntity?.clientId)
+        // return await this.streamRepository
+        //     .createQueryBuilder()
+        //     .insert()
+        //     .into(StreamEntity)
+        //     .values([streamEntity])
+        //     .execute()
+        // this.eventService.triggerCreateEvent({ clientId: streamEntity?.clientId })
     }
 
     /**
@@ -67,7 +81,7 @@ export class StreamService {
     async createAll(streamEntities: StreamEntity[]) {
         const res = await this.streamRepository.save(streamEntities)
         // create only execute in same client
-        this.eventService.triggerCreateEvent({ clientId: streamEntities?.[0]?.clientId })
+        // this.eventService.triggerCreateEvent({ clientId: streamEntities?.[0]?.clientId })
         return res
     }
 
@@ -98,15 +112,22 @@ export class StreamService {
     }
 
     async updateAll(streamEntities: StreamEntity[]) {
-        return Promise.all(
+        let createNum = 0
+        const updateResults = await Promise.all(
             streamEntities.map(s => {
                 if (s.id) {
                     return this.update(s.id, s)
                 } else {
-                    Promise.reject('id can not empty')
+                    this.createAll([s])
+                    createNum++
                 }
             })
         )
+        let affectCount = 0
+        updateResults?.forEach(u => {
+            affectCount += u.affected
+        })
+        return affectCount + createNum
     }
 
     /**
@@ -115,7 +136,7 @@ export class StreamService {
      */
     async delete(id: string) {
         const res = await this.streamRepository.softDelete(id)
-        this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
+        // this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
         return res
     }
 
@@ -141,7 +162,7 @@ export class StreamService {
             .from(StreamEntity)
             .where('upstream_id = :id', { id })
             .execute()
-        this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
+        // this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
         return res
     }
 }

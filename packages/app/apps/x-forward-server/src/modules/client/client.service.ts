@@ -73,7 +73,7 @@ export class ClientService implements OnModuleInit {
     }
 
     async findAll() {
-        return this.clientRepository.find()
+        return this.clientRepository.find({ loadEagerRelations: false })
     }
 
     /**
@@ -83,6 +83,13 @@ export class ClientService implements OnModuleInit {
      */
     async setOnline(id: string, online: IsOrNotEnum) {
         return this.clientRepository.update(id, { isOnline: online })
+    }
+
+    async updateLastCommunicationTime(id: string, time: Date) {
+        return this.clientRepository.save({
+            id,
+            lastCommunicationTime: time
+        })
     }
 
     updateOnlineBatch(updateEntities: ClientEntity[]) {

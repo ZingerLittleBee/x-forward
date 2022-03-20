@@ -9,7 +9,8 @@
     "node": ">= 16"
   },
   "scripts": {
-    "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev",
+    "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev & pnpm -C ./packages/view client:dev",
+    "backend:start": "pnpm -C ./packages/app start & pnpm -C ./packages/view client:dev",
     "app-server:start": "pnpm -C ./packages/app start",
     "app-server:dev": "pnpm -C ./packages/app dev",
     "app-server:debug": "pnpm -C ./packages/app debug",
@@ -25,7 +26,7 @@
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
     "release": "standard-version",
-    "postinstall": "pnpm -C ./packages/shared build",
+    "postinstall": "pnpm -C ./packages/shared build & pnpm -C ./packages/view openapi",
     "preinstall": "npx only-allow pnpm -y"
   },
   "repository": {

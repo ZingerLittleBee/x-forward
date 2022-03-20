@@ -22,7 +22,7 @@ export class ServerEntity extends CommonEntity {
     @AutoMap()
     @ApiProperty({ description: ServerEnum.UpstreamPort })
     @Column({ name: 'upstream_port', type: 'smallint' })
-    upstreamPort: string | number
+    upstreamPort: number
 
     @IsOptional()
     @IsNumber()
@@ -81,8 +81,14 @@ export class ServerEntity extends CommonEntity {
     @Column({ type: 'tinyint', nullable: true })
     down?: IsOrNotEnum
 
+    @AutoMap({ typeFn: () => UpstreamEntity })
     @ApiProperty()
     @ManyToOne(() => UpstreamEntity, upstream => upstream.server, { createForeignKeyConstraints: false })
     @JoinColumn({ name: 'upstream_id' })
+    upstream?: UpstreamEntity
+
+    @AutoMap()
+    @ApiProperty()
+    @Column({ name: 'upstream_id', nullable: true })
     upstreamId?: string
 }

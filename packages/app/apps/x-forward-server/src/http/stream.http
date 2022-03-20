@@ -1,5 +1,5 @@
 ### 获取所有 stream 规则
-GET {{baseUrl}}{{stream}}
+GET {{baseUrl}}{{stream}}?clientId=0c4516d2-3e35-4715-b965-862b2cec9f64
 
 ### update UpstreamId by StreamId
 PATCH {{baseUrl}}{{stream}}/1163c139-e2b1-4df2-b255-7dc37718e188/name
@@ -14,6 +14,7 @@ POST {{baseUrl}}{{stream}}
 Content-Type: application/json
 
 {
+    "clientId": "0c4516d2-3e35-4715-b965-862b2cec9f64",
     "transitHost": "baidu.com",
     "transitPort": 1111,
     "remoteHost": "baidu.com",

@@ -20,6 +20,9 @@ export const getEnumKeyByValue = (value: any) => {
         .find(l => LoadBalancingEnum[l] === value)
 }
 
-export const turnState2Boolean = (state: number | undefined) => {
+export const turnState2Boolean = (state: number | undefined, defaultState?: boolean) => {
+    if (defaultState) {
+        return state ? state === 0 : defaultState
+    }
     return state === 0
 }

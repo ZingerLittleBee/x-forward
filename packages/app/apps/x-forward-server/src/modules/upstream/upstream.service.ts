@@ -1,10 +1,10 @@
 import { Injectable, Logger } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { EventEnum, Optimized, Preprocess, StateEnum } from '@x-forward/common'
-import { omit } from 'lodash'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
 import { ServerService } from '../server/server.service'
+import { StreamEntity } from '../stream/entity/stream.entity'
 import { StreamService } from '../stream/stream.service'
 import { UpstreamEntity } from './entity/upstream.entity'
 
@@ -17,15 +17,18 @@ export class UpstreamService {
         private eventService: EventService
     ) {}
 
-    async create(upstream: UpstreamEntity) {
-        // server - foreign key
-        if (upstream.server) {
-            await this.serverService.createAll(upstream.server)
-        }
-        // stream - foreign key
-        if (upstream.stream) {
-            await this.streamService.createAll(upstream.stream)
-        }
+    @Preprocess()
+    async create(@Optimized() upstream: UpstreamEntity) {
+        console.log('upstream', upstream)
+
+        // // server - foreign key
+        // if (upstream.server) {
+        //     await this.serverService.createAll(upstream.server)
+        // }
+        // // stream - foreign key
+        // if (upstream.stream) {
+        //     await this.streamService.createAll(upstream.stream)
+        // }
         // trigger event
         const upstreamEntity = await this.upstreamRepository.save(upstream)
         Logger.verbose(`${EventEnum.CONFIG_CREATE} triggered`)
@@ -43,17 +46,37 @@ export class UpstreamService {
         return res
     }
 
-    async findAll() {
-        return this.upstreamRepository.find()
+    async findAll(clientId: string) {
+        return this.upstreamRepository.find({
+            where: { clientId },
+            relations: ['server']
+        })
     }
 
-    async findAllWithoutEager() {
-        return this.upstreamRepository
-            .createQueryBuilder()
-            .select('upstream')
-            .from(UpstreamEntity, 'upstream')
-            .leftJoinAndSelect('upstream.server', 'server')
-            .getMany()
+    async findAllWithoutEager(clientId: string | undefined) {
+        return clientId
+            ? this.upstreamRepository
+                  .createQueryBuilder()
+                  .select('upstream')
+                  .from(UpstreamEntity, 'upstream')
+                  .where(qb => {
+                      const subQuery = qb
+                          .subQuery()
+                          .select('stream.upstream_id')
+                          .from(StreamEntity, 'stream')
+                          .where('stream.client_id = :clientId')
+                          .getQuery()
+                      return 'upstream.id IN' + subQuery
+                  })
+                  .setParameter('clientId', clientId)
+                  .leftJoinAndSelect('upstream.server', 'server')
+                  .getMany()
+            : this.upstreamRepository
+                  .createQueryBuilder()
+                  .select('upstream')
+                  .from(UpstreamEntity, 'upstream')
+                  .leftJoinAndSelect('upstream.server', 'server')
+                  .getMany()
     }
 
     async findEffect() {
@@ -73,16 +96,17 @@ export class UpstreamService {
     }
 
     @Preprocess()
-    async update(id: string, @Optimized() updateUpstream: UpstreamEntity) {
-        if (updateUpstream.server) {
-            await this.serverService.updateAll(updateUpstream.server)
-        }
-        if (updateUpstream.stream) {
-            await this.streamService.updateAll(updateUpstream.stream)
-        }
-        const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
-        Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
-        return res
+    async update(@Optimized() updateUpstream: UpstreamEntity) {
+        // if (updateUpstream.server) {
+        //     await this.serverService.updateAll(updateUpstream.server)
+        // }
+        // if (updateUpstream.stream) {
+        //     await this.streamService.updateAll(updateUpstream.stream)
+        // }
+        // const res = await this.upstreamRepository.update(id, omit(updateUpstream, 'server', 'stream'))
+        // Logger.verbose(`${EventEnum.CONFIG_UPDATE} triggered`)
+        // return res
+        return this.upstreamRepository.save(updateUpstream)
     }
 
     async remove(id: string) {

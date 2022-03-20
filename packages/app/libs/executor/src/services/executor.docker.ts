@@ -15,6 +15,7 @@ import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { IExecutor } from '@x-forward/executor/interfaces'
 import {
     fetchDirectoryHandler,
+    getSystemTimeHandler,
     mainConfigPathHandler,
     nginxConfigArgsHandler,
     nginxPrefixHandler,
@@ -39,6 +40,12 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
         super()
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    async getSystemTime(): Promise<string> {
+        return getSystemTimeHandler({
+            isDocker: true,
+            containerName: this.containerName
+        })
     }
     tailFile(path: string): ProcessPromise<ProcessOutput> {
         return $`docker exec -it ${this.containerName} ${ShellEnum.TAIL} -f ${path}`

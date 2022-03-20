@@ -10,6 +10,7 @@ service ExecutorService {
     rpc GetNginxStreamConfigContent(google.protobuf.Empty) returns(stringResult);
     rpc GetNginxStatus(google.protobuf.Empty) returns (NginxStatusResult);
     rpc GetSystemInfo(google.protobuf.Empty) returns (SystemInfoResult);
+    rpc GetSystemTime(google.protobuf.Empty) returns (stringResult);
     rpc FetchDirectory(Directory) returns (stringResult);
     rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
     rpc StreamPatch(StreamContent) returns(noDataResult);

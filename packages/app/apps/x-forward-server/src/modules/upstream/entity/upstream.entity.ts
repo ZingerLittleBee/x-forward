@@ -1,22 +1,40 @@
 import { AutoMap } from '@automapper/classes'
 import { ApiProperty } from '@nestjs/swagger'
-import { enumToString, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
+import { enumToString, getValuesOfEnum, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
-import { IsEnum, IsString, ValidateNested } from 'class-validator'
-import { Column, Entity, OneToMany } from 'typeorm'
+import { IsEnum, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'
+import { ClientEntity } from '../../client/entity/client.entity'
 import { ServerEntity } from '../../server/entity/server.entity'
 import { StreamEntity } from '../../stream/entity/stream.entity'
-import { getValuesOfEnum } from '@x-forward/shared'
 
 @Entity('upstream')
 export class UpstreamEntity extends CommonEntity {
+    @AutoMap({ typeFn: () => ClientEntity })
+    @ApiProperty()
+    @ManyToOne(() => ClientEntity, client => client.upstream, {
+        createForeignKeyConstraints: false
+    })
+    @JoinColumn({ name: 'client_id' })
+    client?: ClientEntity
+
+    @AutoMap()
+    @IsOptional()
+    @IsString()
+    @IsNotEmpty()
+    @ApiProperty()
+    @Column({ name: 'client_id', nullable: true })
+    clientId?: string
+
+    @IsOptional()
     @IsString()
     @AutoMap()
     @ApiProperty({ description: 'upstream_name' })
-    @Column({ type: 'varchar' })
+    @Column({ type: 'varchar', unique: true })
     name: string
 
+    @IsOptional()
     @IsEnum(LoadBalancingEnum)
     @AutoMap()
     @ApiProperty({
@@ -30,13 +48,21 @@ export class UpstreamEntity extends CommonEntity {
     @Type(() => StreamEntity)
     @AutoMap({ typeFn: () => StreamEntity })
     @ApiProperty()
-    @OneToMany(() => StreamEntity, stream => stream.upstreamId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => StreamEntity, stream => stream.upstream, {
+        cascade: ['insert', 'update'],
+        eager: true,
+        createForeignKeyConstraints: false
+    })
     stream?: StreamEntity[]
 
     @ValidateNested({ each: true })
     @Type(() => ServerEntity)
     @AutoMap({ typeFn: () => ServerEntity })
     @ApiProperty()
-    @OneToMany(() => ServerEntity, server => server.upstreamId, { eager: true, createForeignKeyConstraints: false })
+    @OneToMany(() => ServerEntity, server => server.upstream, {
+        cascade: true,
+        eager: true,
+        createForeignKeyConstraints: false
+    })
     server: ServerEntity[]
 }

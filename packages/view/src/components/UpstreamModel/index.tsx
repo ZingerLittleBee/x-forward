@@ -1,4 +1,6 @@
-import React, { useEffect } from 'react'
+import { isUndef } from '@/utils/commonUtils'
+import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
+import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
 import ProForm, {
     DrawerForm,
     ProFormDependency,
@@ -8,14 +10,12 @@ import ProForm, {
     ProFormSwitch,
     ProFormText
 } from '@ant-design/pro-form'
-import { Form } from 'antd'
 import { ServerEnum, ServerTipsEnum, UpstreamEnum } from '@x-forward/shared'
-import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
-import './index.less'
-import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
-import { isString } from 'lodash'
-import { isUndef } from '@/utils/commonUtils'
+import { Form } from 'antd'
 import { FormInstance } from 'antd/es'
+import { isString } from 'lodash'
+import React, { useEffect } from 'react'
+import './index.less'
 
 // const initialValues: DataSourceType = {
 //     id: '123123',
@@ -42,8 +42,9 @@ import { FormInstance } from 'antd/es'
 
 type UpstreamProps = {
     title?: string
-    trigger: JSX.Element
+    trigger?: JSX.Element
     onUpstreamSubmit: (data: API.UpdateUpstreamDto | API.CreateUpstreamDto) => void
+    visible?: boolean
     upstream?: API.UpstreamVo | undefined
     upstreamName?: Record<string, string> | string
     onUpstreamSelectChange?: (id: string) => void
@@ -55,6 +56,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
     trigger,
     upstream,
     upstreamName,
+    visible,
     onUpstreamSelectChange,
     onUpstreamSubmit,
     onClose
@@ -72,8 +74,9 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             title={title}
             form={form}
             trigger={trigger}
-            onFinish={async (e: API.UpdateUpstreamDto) => {
-                onUpstreamSubmit(e)
+            visible={visible}
+            onFinish={async (e: API.UpdateUpstreamDto | API.CreateUpstreamDto) => {
+                upstream ? onUpstreamSubmit({ ...e, id: upstream?.id }) : onUpstreamSubmit(e)
                 return true
             }}
             drawerProps={{
@@ -83,7 +86,12 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             }}
         >
             {isString(upstreamName) || isUndef(upstreamName) ? (
-                <ProFormText name="name" label={UpstreamEnum.Name} placeholder={`请输入${UpstreamEnum.Name}`} />
+                <ProFormText
+                    name="name"
+                    label={UpstreamEnum.Name}
+                    rules={[requiredRule(UpstreamEnum.Name)]}
+                    placeholder={`请输入${UpstreamEnum.Name}`}
+                />
             ) : (
                 <ProFormSelect
                     name="name"

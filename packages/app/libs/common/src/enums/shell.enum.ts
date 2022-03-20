@@ -14,7 +14,8 @@ export enum ShellEnum {
     LSB_RELEASE = 'lsb_release',
     Curl = 'curl',
     MK_DIR = 'mkdir',
-    TAIL = 'tail'
+    TAIL = 'tail',
+    DATE = 'date'
 }
 
 export enum ServiceEnum {

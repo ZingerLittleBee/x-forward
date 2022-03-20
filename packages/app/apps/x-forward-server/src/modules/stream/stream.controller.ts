@@ -1,7 +1,8 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseInterceptors } from '@nestjs/common'
-import { ApiExtraModels, ApiTags } from '@nestjs/swagger'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
+import { ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
+import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
 import { CreateStreamDto } from './dto/create-stream.dto'
 import { StreamDto } from './dto/stream.dto'
 import { StreamEntity } from './entity/stream.entity'
@@ -16,27 +17,17 @@ export class StreamController {
     @Get()
     @ApiResultResponse(StreamVo, { isArray: true })
     @ApiExtraModels(StreamVo)
-    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
-    async getAllStream() {
-        return Result.okData(await this.streamService.findAll())
+    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }), optimizeFieldInterceptor)
+    async getStream(@Query('clientId') clientId: string) {
+        return Result.okData(await this.streamService.findByClientId(clientId))
     }
 
     @Post()
     @ApiResultResponse(StreamVo)
-    @UseInterceptors(MapInterceptor(StreamVo, StreamEntity, { isArray: true }))
+    @UseInterceptors(optimizeFieldInterceptor)
     async createOne(@Body(MapPipe(StreamEntity, CreateStreamDto)) stream: CreateStreamDto) {
         return Result.okData(await this.streamService.create(stream as StreamEntity))
     }
-
-    // /**
-    //  * 批量添加 stream
-    //  * @param streamEntitys Stream[]
-    //  * @returns 添加的 id
-    //  */
-    // @Post()
-    // createStream(@Body(MapPipe(StreamEntity, CreateStreamDto, { isArray: true })) stream: CreateStreamDto[]) {
-    //     return this.streamService.streamSaveAll(stream as StreamEntity[])
-    // }
 
     /**
      * 更新 stream 规则的可用状态
@@ -44,10 +35,11 @@ export class StreamController {
      * @param state state
      */
     @Post(':id/state')
+    @ApiBody({ schema: { properties: { state: { type: 'number' } } } })
     @ApiResultResponse()
-    async updateStateById(@Param('id') id: string, @Body() { state }: { state: number }) {
+    async updateStateById(@Body() { state }: { state: number }, @Param('id') id: string) {
         await this.streamService.stateUpdate(id, state)
-        return Result.okMsg(`更新 id: ${id}, 成功`)
+        return Result.ok()
     }
 
     /**
@@ -80,7 +72,7 @@ export class StreamController {
     async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
         // 剔除 id 为空的选项
         await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
-        return Result.okMsg('更新成功')
+        return Result.ok()
     }
 
     /**

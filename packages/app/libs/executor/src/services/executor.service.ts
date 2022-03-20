@@ -226,4 +226,8 @@ export class ExecutorService implements OnModuleInit {
     getTailFileProcess(path: string) {
         return this.executor.tailFile(path)
     }
+
+    async getSystemTime() {
+        return this.executor.getSystemTime()
+    }
 }

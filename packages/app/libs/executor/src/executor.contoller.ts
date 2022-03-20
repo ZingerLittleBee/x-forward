@@ -52,6 +52,11 @@ export class ExecutorController {
     }
 
     @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async getSystemTime() {
+        return Result.okData(await this.executorService.getSystemTime())
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
     async streamPatch(args: { content: string }) {
         try {
             this.executorService.patchStream(args?.content)
