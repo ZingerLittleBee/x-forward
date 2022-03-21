@@ -83,7 +83,9 @@ export interface INginxConfig {
      * 4. 不通过则回滚 stream.conf.bak
      * @param content 新 stream 文件内容
      */
-    streamPatch(content: string): void
+    streamPatch(content: string): Promise<void>
+
+    streamRewrite(content: string): Promise<void>
 
     logSegmentation(): void
 

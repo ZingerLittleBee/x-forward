@@ -188,6 +188,11 @@ export class ExecutorService implements OnModuleInit {
         this.executor.streamPatch(content)
     }
 
+    async rewriteStream(content: string) {
+        Logger.verbose(`patch content: ${inspect(content)}`)
+        this.executor.streamRewrite(content)
+    }
+
     async queryNginxStatus() {
         return this.executor.queryNginxStatus()
     }

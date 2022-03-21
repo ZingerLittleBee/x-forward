@@ -176,7 +176,7 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
     }
 
     private async updateFileContent(path: string, content: string, options?: { isRewrite: boolean }) {
-        await updateFileContentHandler(await this.getNginxBin(), path, content, {
+        await updateFileContentHandler(await this.getNginxBin(), path, content, await this.getMainConfigPath(), {
             ...options,
             isDocker: true,
             containerName: this.containerName
@@ -194,6 +194,11 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
     async streamPatch(content: string) {
         const streamPath = await this.getStreamConfigPath()
         await this.updateFileContent(streamPath, content)
+    }
+
+    async streamRewrite(content: string) {
+        const streamPath = await this.getStreamConfigPath()
+        await this.updateFileContent(streamPath, content, { isRewrite: true })
     }
 
     async mainConfigRewrite(content: string) {

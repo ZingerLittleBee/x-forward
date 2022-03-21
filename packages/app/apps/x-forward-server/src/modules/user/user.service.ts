@@ -59,7 +59,7 @@ export class UserService implements OnModuleInit {
     }
 
     async delete(id: string) {
-        const { affected } = await this.userRepository.softDelete(id)
+        const { affected } = await this.userRepository.delete(id)
         return affected
     }
 }

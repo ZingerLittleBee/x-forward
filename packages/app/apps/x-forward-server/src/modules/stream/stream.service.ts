@@ -80,8 +80,15 @@ export class StreamService {
      * @param id StreamId
      * @param upstreamId upstreamId
      */
-    upstreamIdUpdate(id: string, upstreamId: string) {
-        return this.streamRepository.update(id, { upstreamId: upstreamId })
+    async upstreamIdUpdate(id: string, upstreamId: string) {
+        const res = await this.streamRepository.update(id, { upstreamId })
+        const clientId = await this.getClientIdById(id)
+        if (clientId) this.eventService.triggerCreateEvent({ clientId })
+        return res
+    }
+
+    async getClientIdById(id: string) {
+        return (await this.streamRepository.findOne(id))?.clientId
     }
 
     /**
@@ -92,13 +99,19 @@ export class StreamService {
      * @param state state
      * @returns UpdateResult
      */
-    stateUpdate(id: string, state: number) {
-        return this.streamRepository.update(id, { state: state })
+    async stateUpdate(id: string, state: number) {
+        const res = await this.streamRepository.update(id, { state: state })
+        const clientId = await this.getClientIdById(id)
+        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
+        return res
     }
 
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
-        return this.streamRepository.update(id, streamEntity)
+        const res = await this.streamRepository.update(id, streamEntity)
+        const clientId = await this.getClientIdById(id)
+        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
+        return res
     }
 
     async updateAll(streamEntities: StreamEntity[]) {
@@ -125,8 +138,9 @@ export class StreamService {
      * @param id primary key
      */
     async delete(id: string) {
-        const res = await this.streamRepository.softDelete(id)
-        // this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
+        const clientId = await this.getClientIdById(id)
+        const res = await this.streamRepository.delete(id)
+        if (clientId) this.eventService.triggerDeleteEvent({ clientId })
         return res
     }
 
@@ -146,13 +160,14 @@ export class StreamService {
     }
 
     async removeByFK(id: string) {
+        const clientId = await this.getClientIdById(id)
         const res = await this.streamRepository
             .createQueryBuilder()
-            .softDelete()
+            .delete()
             .from(StreamEntity)
             .where('upstream_id = :id', { id })
             .execute()
-        // this.eventService.triggerDeleteEvent({ clientId: (await this.streamRepository.findOne(id))?.clientId })
+        if (clientId) this.eventService.triggerDeleteEvent({ clientId })
         return res
     }
 }

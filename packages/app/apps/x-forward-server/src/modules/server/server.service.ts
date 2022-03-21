@@ -27,14 +27,13 @@ export class ServerService {
     }
 
     async remove(id: string) {
-        const res = await this.serverRepository.softDelete(id)
-        return res
+        return this.serverRepository.delete(id)
     }
 
     async removeByFK(id: string) {
         const removeResult = await this.serverRepository
             .createQueryBuilder()
-            .softDelete()
+            .delete()
             .from(ServerEntity)
             .where('upstream_id = :id', { id })
             .execute()

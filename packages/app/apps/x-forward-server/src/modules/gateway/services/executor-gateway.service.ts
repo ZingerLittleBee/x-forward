@@ -18,6 +18,13 @@ export class ExecutorGatewayService implements ExecutorGatewayApi {
         }
     }
 
+    async streamRewrite(clientId: string, content: string) {
+        const result = await firstValueFrom((await this.getClient(clientId))?.rewriteStream({ content }))
+        if (!result?.success) {
+            Logger.warn(`stream rewrite failed: ${result?.message}`)
+        }
+    }
+
     async MainConfigRewrite(clientId: string, content: string) {
         const result = await firstValueFrom((await this.getClient(clientId))?.rewriteMainConfig({ content }))
         if (!result?.success) {

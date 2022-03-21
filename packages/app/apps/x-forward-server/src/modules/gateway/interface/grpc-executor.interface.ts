@@ -14,6 +14,7 @@ export interface GrpcExecutorService {
     getNginxConfigArgs({}): Observable<IResult<GrpcNginxConfig>>
     rewriteMainConfig(arg: { content: string }): Observable<IResult<any>>
     streamPatch(arg: { content: string }): Observable<IResult<any>>
+    rewriteStream(arg: { content: string }): Observable<IResult<any>>
     getNginxStreamConfigContent({}): Observable<IResult<string>>
     fetchDirectory(arg: { url: string }): Observable<IResult<string>>
     getNginxStatus({}): Observable<IResult<NginxStatus>>
