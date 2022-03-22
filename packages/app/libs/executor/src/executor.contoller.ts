@@ -65,4 +65,14 @@ export class ExecutorController {
         }
         return Result.ok()
     }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async rewriteStream(args: { content: string }) {
+        try {
+            this.executorService.rewriteStream(args?.content)
+        } catch (e) {
+            return Result.noWithMsg(e)
+        }
+        return Result.ok()
+    }
 }

@@ -76,6 +76,10 @@ export class ClientService implements OnModuleInit {
         return this.clientRepository.find({ loadEagerRelations: false })
     }
 
+    async findByIdWithRelations(clientId: string) {
+        return this.clientRepository.findOne({ id: clientId })
+    }
+
     /**
      * set online status
      * @param id id

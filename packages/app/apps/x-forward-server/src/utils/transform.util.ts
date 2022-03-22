@@ -7,17 +7,15 @@ import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
  * @param streamEntities StreamEntity
  * @returns StreamServer
  */
-export function streamEntities2StreamServer(streamEntities: StreamEntity) {
+export function streamEntities2StreamServer(streamEntities: StreamEntity, upstreamName?: string) {
     // required field should init
     const streamServer: StreamServer = {
         listen_port: 0,
         proxy_pass: ''
     }
-    if (streamEntities.upstreamId) {
-        streamServer['proxy_pass'] = streamEntities.upstreamId
-    } else {
-        streamServer['proxy_pass'] = `${streamEntities.remoteHost}:${streamEntities.remotePort}`
-    }
+    streamServer['proxy_pass'] = upstreamName
+        ? upstreamName
+        : `${streamEntities.remoteHost}:${streamEntities.remotePort}`
     for (const key in streamEntities) {
         switch (key) {
             case 'transitPort':

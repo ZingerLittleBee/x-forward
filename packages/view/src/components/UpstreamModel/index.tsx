@@ -1,6 +1,6 @@
 import { isUndef } from '@/utils/commonUtils'
 import { getEnumKeyByValue, loadBalancingSelectProp } from '@/utils/enumUtils'
-import { hostRule, portRule, requiredRule, timeRule } from '@/utils/ruleUtil'
+import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import ProForm, {
     DrawerForm,
     ProFormDependency,
@@ -10,11 +10,18 @@ import ProForm, {
     ProFormSwitch,
     ProFormText
 } from '@ant-design/pro-form'
-import { ServerEnum, ServerTipsEnum, UpstreamEnum } from '@x-forward/shared'
-import { Form } from 'antd'
+import {
+    getKeysOfEnum,
+    ServerEnum,
+    ServerTipsEnum,
+    TimeUnitEnum,
+    TimeUnitTipsEnum,
+    UpstreamEnum
+} from '@x-forward/shared'
+import { Form, message, Select } from 'antd'
 import { FormInstance } from 'antd/es'
 import { isString } from 'lodash'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import './index.less'
 
 // const initialValues: DataSourceType = {
@@ -39,6 +46,8 @@ import './index.less'
 //     /** 将服务器标记为永久不可用; 0: false, 1: true */
 //     down: 0
 // }
+
+const { Option } = Select
 
 type UpstreamProps = {
     title?: string
@@ -69,6 +78,27 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             loadBalancing: upstream?.loadBalancing
         })
     }, [form, upstream])
+
+    const timeUnitKeys = getKeysOfEnum(TimeUnitEnum)
+
+    const [timeUnit, setTimeunit] = useState(TimeUnitEnum[timeUnitKeys[0]])
+
+    const selectUnitAfter = (
+        <Select
+            defaultValue={TimeUnitEnum[timeUnitKeys[0]]}
+            style={{
+                width: 60,
+                marginLeft: -8
+            }}
+            onChange={e => setTimeunit(e)}
+        >
+            {timeUnitKeys?.map(t => (
+                <Option key={t} value={TimeUnitEnum[t]}>
+                    {TimeUnitTipsEnum[t]}
+                </Option>
+            ))}
+        </Select>
+    )
     return (
         <DrawerForm
             title={title}
@@ -76,7 +106,19 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
             trigger={trigger}
             visible={visible}
             onFinish={async (e: API.UpdateUpstreamDto | API.CreateUpstreamDto) => {
-                upstream ? onUpstreamSubmit({ ...e, id: upstream?.id }) : onUpstreamSubmit(e)
+                if (!e?.server?.length) {
+                    message.warn('最少添加一条 server')
+                    return
+                }
+                // add time unit for failTimeout
+                e.server = e.server.map(s =>
+                    s?.failTimeout ? { ...s, failTimeout: `${s.failTimeout}${timeUnit}` } : s
+                )
+                try {
+                    upstream ? onUpstreamSubmit({ ...e, id: upstream?.id }) : onUpstreamSubmit(e)
+                } catch (e) {
+                    return false
+                }
                 return true
             }}
             drawerProps={{
@@ -128,6 +170,7 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                 creatorButtonText: '添加一条 server'
                             }}
                             alwaysShowItemLabel={true}
+                            min={1}
                         >
                             {() => {
                                 return (
@@ -165,12 +208,12 @@ const UpstreamModel: React.FC<UpstreamProps> = ({
                                             label={ServerEnum.MaxFails}
                                             tooltip={ServerTipsEnum.MaxFails}
                                         />
-                                        <ProFormText
+                                        <ProFormDigit
                                             width={100}
                                             name="failTimeout"
                                             label={ServerEnum.FailTimeout}
-                                            rules={[timeRule()]}
                                             tooltip={ServerTipsEnum.FailTimeout}
+                                            addonAfter={selectUnitAfter}
                                         />
                                         <ProFormSwitch
                                             name="backup"

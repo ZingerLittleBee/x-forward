@@ -179,10 +179,19 @@ export const streamDirectoryHandler = async (
           )
 }
 
+/**
+ * update file content and check with nginx -t
+ * @param bin nginx bin
+ * @param path need update file path
+ * @param content content
+ * @param mainConfigPath nginx main config path
+ * @param options options
+ */
 export const updateFileContentHandler = async (
     bin: string,
     path: string,
     content: string,
+    mainConfigPath: string,
     options?: { isRewrite: boolean; isDocker?: boolean; containerName?: string }
 ) => {
     const { exitCode: backupExitCode, res: backupRes } = options?.isDocker
@@ -204,8 +213,8 @@ export const updateFileContentHandler = async (
             : await appendFile(path, content)
     }
     const { res, exitCode } = options?.isDocker
-        ? await checkNginxConfigGrammarInDocker(options?.containerName, bin, path)
-        : await checkNginxConfigGrammar(bin, path)
+        ? await checkNginxConfigGrammarInDocker(options?.containerName, bin, mainConfigPath)
+        : await checkNginxConfigGrammar(bin, mainConfigPath)
     if (exitCode) {
         Logger.error(`配置文件格式有误: ${res}, 即将回滚`)
         // rollback

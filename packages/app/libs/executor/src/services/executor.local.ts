@@ -141,7 +141,7 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     getHTTPConfigPath: () => Promise<string>
 
     private async updateFileContent(path: string, content: string, options?: { isRewrite: boolean }) {
-        await updateFileContentHandler(await this.getNginxBin(), path, content, options)
+        await updateFileContentHandler(await this.getNginxBin(), path, content, await this.getMainConfigPath(), options)
         this.nginxReload()
     }
 
@@ -160,5 +160,10 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
     async streamPatch(content: string) {
         const streamPath = await this.getStreamConfigPath()
         await this.updateFileContent(streamPath, content)
+    }
+
+    async streamRewrite(content: string) {
+        const streamPath = await this.getStreamConfigPath()
+        await this.updateFileContent(streamPath, content, { isRewrite: true })
     }
 }

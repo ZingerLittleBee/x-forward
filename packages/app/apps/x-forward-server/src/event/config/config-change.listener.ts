@@ -26,20 +26,9 @@ export class ConfigChangeListener {
      * get full stream and data conversion
      * @returns Promise<{ servers: StreamServer[]; upstreams: StreamUpstream[]; }>
      */
-    private async collectModels() {
-        const { streamEntities, upstreamEntities } = await this.modelGatewayService.getFullStream()
-        streamEntities.forEach(s => {
-            // transform upstream_id to upstream_name
-            if (s.upstreamId) {
-                for (const upstream of upstreamEntities) {
-                    if (upstream.id === s.upstreamId) {
-                        s.upstreamId = upstream.name
-                        break
-                    }
-                }
-            }
-        })
-        const { servers, upstreams } = this.fieldTransformation(streamEntities, upstreamEntities)
+    private async collectModels(clientId: string) {
+        const { stream, upstream } = await this.clientService.findByIdWithRelations(clientId)
+        const { servers, upstreams } = this.fieldTransformation(stream, upstream)
         Logger.verbose(`Model -> servers: ${inspect(servers)}, upstreams: ${inspect(upstreams, { depth: 3 })}`)
         return { servers, upstreams }
     }
@@ -54,7 +43,12 @@ export class ConfigChangeListener {
         const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [] }
         const upstreams = upstreamEntities.map(u => upstreamEntities2StreamUpstream(u))
         upstreams && (res.upstreams = upstreams)
-        const servers = streamEntities.map(s => streamEntities2StreamServer(s))
+        const servers = streamEntities.map(s => {
+            if (s?.upstreamId) {
+                return streamEntities2StreamServer(s, upstreamEntities.find(u => u.id === s.upstreamId)?.name)
+            }
+            return streamEntities2StreamServer(s)
+        })
         servers && (res.servers = servers)
         return res
     }
@@ -68,21 +62,21 @@ export class ConfigChangeListener {
     @OnEvent(EventEnum.CONFIG_CREATE)
     async handleConfigCreate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels())
-        this.executorGateway.streamPatch(payload?.clientId, content)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
     }
 
     @OnEvent(EventEnum.CONFIG_UPDATE)
     async handleConfigUpdate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels())
-        this.executorGateway.streamPatch(payload?.clientId, content)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
     async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels())
-        this.executorGateway.streamPatch(payload?.clientId, content)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
     }
 }

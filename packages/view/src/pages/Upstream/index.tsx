@@ -25,7 +25,6 @@ import { useUpdateEffect } from 'ahooks'
 export type UpstreamListItem = API.UpstreamVo
 
 const expandedRowRender = ({ server }: UpstreamListItem) => {
-    console.log('server', server)
     return (
         <ProTable
             columns={[
