@@ -2,9 +2,9 @@ FROM nginx
 
 WORKDIR /usr/share/nginx/html/
 
-COPY ./docker/nginx.conf /etc/nginx/conf.d/default.conf
+COPY deploy/0.0.1/nginx.conf /etc/nginx/conf.d/default.conf
 
-COPY packages/view/  /usr/share/nginx/html/
+COPY packages/view/dist  /usr/share/nginx/html/
 
 EXPOSE 80
 
