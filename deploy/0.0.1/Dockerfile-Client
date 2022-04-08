@@ -30,6 +30,6 @@ ENV NPM_CONFIG_LOGLEVEL warn
 RUN npm install -g pnpm@next-7
 RUN pnpm install -P --registry=https://registry.npmmirror.com; exit 0
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD service nginx start && pm2-runtime start ecosystem.config.js
