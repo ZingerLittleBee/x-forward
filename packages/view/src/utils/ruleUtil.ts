@@ -1,4 +1,4 @@
-import { domainRegExp, ipRegExp } from '@x-forward/shared'
+import { domainRegExp, ipRegExp } from '@forwardx/shared'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import type { RuleType } from 'rc-field-form/lib/interface'

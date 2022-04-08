@@ -1,5 +1,5 @@
-import { isUndef } from '@x-forward/shared'
-import { EnvKeyEnum, DefaultEnum } from '..'
+import { isUndef } from '@forwardx/shared'
+import { DefaultEnum, EnvKeyEnum } from '..'
 
 /**
  * Firstly, try to get value from ${process.env[key]}

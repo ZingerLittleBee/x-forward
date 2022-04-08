@@ -1,0 +1,13 @@
+version: '3'
+services:
+    app:
+        container_name: x-forward-client
+        image: 'x-forward:0.0.1'
+        restart: always
+        ports:
+            - '3000:3000'
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "10"

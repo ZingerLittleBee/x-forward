@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes'
+import { enumToString, getValuesOfEnum, LoadBalancingEnum, UpstreamEnum } from '@forwardx/shared'
 import { ApiProperty } from '@nestjs/swagger'
-import { enumToString, getValuesOfEnum, LoadBalancingEnum, UpstreamEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
 import { IsEnum, IsNotEmpty, IsOptional, IsString, ValidateNested } from 'class-validator'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany } from 'typeorm'

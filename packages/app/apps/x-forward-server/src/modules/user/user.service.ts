@@ -1,6 +1,6 @@
+import { RoleEnum } from '@forwardx/shared'
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { RoleEnum } from '@x-forward/shared'
 import { Repository } from 'typeorm'
 import { LoginUserDto } from './user.dto'
 import { UserEntity } from './user.entity'

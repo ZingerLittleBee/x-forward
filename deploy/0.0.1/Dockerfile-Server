@@ -1,0 +1,27 @@
+FROM keymetrics/pm2:16-buster
+
+# Create app directory
+WORKDIR /usr/x-forward
+
+# Bundle APP files
+# When using COPY with more than one source file, the destination must be a directory and end with a /
+COPY packages/app/dist/apps/x-forward-server/* ./
+COPY packages/app/protos ./protos
+COPY packages/app/package.json .
+RUN sed -i 's/workspace:\*/^0.0.1/g' package.json
+COPY packages/app/apps/x-forward-server/ecosystem.config.js .
+
+# Install app dependencies
+ENV NPM_CONFIG_LOGLEVEL warn
+RUN npm install -g pnpm@next-7
+RUN pnpm install -P --registry=https://registry.npmmirror.com; exit 0
+# RUN npm install --production
+
+# Expose the listening port of your app
+EXPOSE 3000
+EXPOSE 3001
+
+# Show current folder structure in logs
+RUN ls -al -R
+
+CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]

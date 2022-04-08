@@ -1,7 +1,7 @@
 import { AutoMap } from '@automapper/classes'
+import { enumToString, getValuesOfEnum, IsOrNotEnum } from '@forwardx/shared'
 import { ApiProperty } from '@nestjs/swagger'
 import { IsHost } from '@x-forward/common'
-import { enumToString, getValuesOfEnum, IsOrNotEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
 import { IsDate, IsEnum, IsOptional, IsPort, ValidateNested } from 'class-validator'
 import { Column, Entity, OneToMany } from 'typeorm'

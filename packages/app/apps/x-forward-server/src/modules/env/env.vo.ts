@@ -1,7 +1,6 @@
+import { enumToString, getValuesOfEnum, NginxStatusEnum } from '@forwardx/shared'
 import { ApiProperty } from '@nestjs/swagger'
-import { StatusEnum } from '@x-forward/common'
 import { NginxConfig, SystemInfo } from '@x-forward/executor'
-import { enumToString, getValuesOfEnum } from '@x-forward/shared'
 import { Overview } from './env.interface'
 
 export class SystemInfoVo implements SystemInfo {
@@ -41,10 +40,10 @@ export class OverviewVo implements Overview {
     nginxUptime?: string
 
     @ApiProperty({
-        enum: getValuesOfEnum(StatusEnum),
-        description: `Nginx 运行状态; ${enumToString(StatusEnum)}`
+        enum: getValuesOfEnum(NginxStatusEnum),
+        description: `Nginx 运行状态; ${enumToString(NginxStatusEnum)}`
     })
-    nginxStatus?: StatusEnum | string
+    nginxStatus?: NginxStatusEnum | string
 
     @ApiProperty({
         description: `系统时间`

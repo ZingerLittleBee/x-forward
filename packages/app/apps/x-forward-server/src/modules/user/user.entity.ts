@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes'
+import { enumToString, RoleEnum, UserEnum } from '@forwardx/shared'
 import { ApiProperty } from '@nestjs/swagger'
-import { enumToString, RoleEnum, UserEnum } from '@x-forward/shared'
 import { Type } from 'class-transformer'
 import { ValidateNested } from 'class-validator'
 import { Column, Entity, OneToMany } from 'typeorm'

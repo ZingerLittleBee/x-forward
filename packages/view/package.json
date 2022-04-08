@@ -51,7 +51,7 @@
     "@ant-design/pro-table": "^2.30.8",
     "@umijs/route-utils": "^1.0.36",
     "@x-forward/app": "workspace:^0.0.1",
-    "@x-forward/shared": "workspace:*",
+    "@forwardx/shared": "workspace:*",
     "ahooks": "^2.10.9",
     "ansi-colors": "^4.1.1",
     "antd": "^4.14.0",

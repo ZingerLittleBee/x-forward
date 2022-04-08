@@ -17,7 +17,7 @@ import {
     TimeUnitEnum,
     TimeUnitTipsEnum,
     UpstreamEnum
-} from '@x-forward/shared'
+} from '@forwardx/shared'
 import { Form, message, Select } from 'antd'
 import { FormInstance } from 'antd/es'
 import { isString } from 'lodash'

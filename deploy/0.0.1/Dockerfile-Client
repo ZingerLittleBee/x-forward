@@ -1,0 +1,35 @@
+# nginx + node + pm2
+FROM nginx
+
+# Create app directory
+WORKDIR /usr/x-forward
+
+# change apt source
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+
+# install node
+RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get -y update
+
+RUN apt-get install -y nodejs python3
+
+# manage node project with pm2
+RUN npm install pm2 -g
+
+# Bundle APP files
+# When using COPY with more than one source file, the destination must be a directory and end with a /
+COPY packages/app/dist/apps/x-forward-client/* ./
+COPY packages/app/protos ./protos
+COPY packages/app/package.json .
+RUN sed -i 's/workspace:\*/^0.0.1/g' package.json
+COPY packages/app/apps/x-forward-server/ecosystem.config.js .
+
+
+# Install app dependencies
+ENV NPM_CONFIG_LOGLEVEL warn
+RUN npm install -g pnpm@next-7
+RUN pnpm install -P --registry=https://registry.npmmirror.com; exit 0
+
+EXPOSE 3000
+
+CMD service nginx start && pm2-runtime start ecosystem.config.js

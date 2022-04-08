@@ -1,15 +1,16 @@
 import { AutoMap } from '@automapper/classes'
-import { ApiProperty } from '@nestjs/swagger'
-import { IsPort, ProtocolEnum, RetriesEnum, StatusEnum } from '@x-forward/common'
-import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
 import {
     enumToString,
     getValuesOfEnum,
     SpeedUnitEnum,
+    StatusEnum,
     StreamItemEnum,
     StreamTipsEnum,
     TimeUnitEnum
-} from '@x-forward/shared'
+} from '@forwardx/shared'
+import { ApiProperty } from '@nestjs/swagger'
+import { IsPort, ProtocolEnum, RetriesEnum } from '@x-forward/common'
+import { IsHost, IsNginxUnit } from '@x-forward/common/decorators/valid.decorator'
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional, IsString, Min } from 'class-validator'
 import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm'
 import { CommonEntity } from '../../../common/common.entity'

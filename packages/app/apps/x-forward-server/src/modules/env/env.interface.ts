@@ -1,4 +1,4 @@
-import { StatusEnum } from '@x-forward/common'
+import { StatusEnum } from '@forwardx/shared'
 export interface Overview {
     os?: string
 

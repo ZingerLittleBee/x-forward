@@ -3,13 +3,13 @@ import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
 import ProList from '@ant-design/pro-list'
-import { CommonEnum, EnvEnum, NginxStatusEnum } from '@x-forward/shared'
+import { CommonEnum, EnvEnum, NginxStatusEnum } from '@forwardx/shared'
 import { message } from 'antd'
 import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
 import { useEffect, useState } from 'react'
-import defaultSettings from '../../../config/defaultSettings'
 import { inspect } from 'util'
+import defaultSettings from '../../../config/defaultSettings'
 
 type StatisticProps = {
     title: EnvEnum

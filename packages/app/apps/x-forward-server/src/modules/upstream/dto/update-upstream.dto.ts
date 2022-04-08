@@ -1,6 +1,6 @@
 import { AutoMap } from '@automapper/classes'
+import { LoadBalancingEnum } from '@forwardx/shared'
 import { PartialType } from '@nestjs/swagger'
-import { LoadBalancingEnum } from '@x-forward/shared'
 import { UpdateServerDto } from '../../server/dto/update-server.dto'
 import { UpdateStreamDto } from '../../stream/dto/update-stream.dto'
 import { UpstreamEntity } from '../entity/upstream.entity'
