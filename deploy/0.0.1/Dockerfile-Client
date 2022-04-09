@@ -1,6 +1,8 @@
 # nginx + node + pm2
 FROM nginx
 
+ARG SHARED_VERSION=0.0.3
+
 # Create app directory
 WORKDIR /usr/x-forward
 
@@ -9,14 +11,14 @@ RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
 
 # install node
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
-RUN apt-get install -y nodejs python3
+RUN apt-get install -y nodejs python3 make build-essential
 
 # Bundle APP files
 # When using COPY with more than one source file, the destination must be a directory and end with a /
 COPY packages/app/dist/apps/x-forward-client/* ./
 COPY packages/app/protos ./protos
 COPY packages/app/package.json .
-RUN sed -i 's/workspace:\*/^0.0.3/g' package.json
+RUN sed -i "s/workspace:\*/^${SHARED_VERSION}/g" package.json
 COPY packages/app/apps/x-forward-server/ecosystem.config.js .
 
 # manage node project with pm2

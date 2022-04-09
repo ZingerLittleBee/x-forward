@@ -1,6 +1,8 @@
 # FROM keymetrics/pm2:16-buster
 FROM node:16.14.2-bullseye-slim
 
+ARG SHARED_VERSION=0.0.3
+
 # Create app directory
 WORKDIR /usr/x-forward
 
@@ -14,7 +16,7 @@ RUN apt-get install -y make python3 build-essential
 COPY packages/app/dist/apps/x-forward-server/* ./
 COPY packages/app/protos ./protos
 COPY packages/app/package.json .
-RUN sed -i 's/workspace:\*/^0.0.3/g' package.json
+RUN sed -i "s/workspace:\*/^${SHARED_VERSION}/g" package.json
 COPY packages/app/apps/x-forward-server/ecosystem.config.js .
 
 # Install app dependencies
