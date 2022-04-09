@@ -4,6 +4,7 @@
  * @param enums enum
  */
 export const getEnumKeyByValue = (value: any, enums: any) => {
+    if (!value) return []
     return Object.keys(enums)
         .filter(key => {
             return enums[key] !== undefined
@@ -16,6 +17,7 @@ export const getEnumKeyByValue = (value: any, enums: any) => {
  * @param enums enum
  */
 export const enumToString = (enums: any) => {
+    if (!enums) return []
     return Object.keys(enums)
         .filter(key => {
             return enums[key] !== undefined
@@ -28,6 +30,7 @@ export const enumToString = (enums: any) => {
  * @param enums enum
  */
 export const getValuesOfEnum = (enums: Record<string, string | number>) => {
+    if (!enums) return []
     return Object.keys(enums)
         .filter(key => !(parseInt(key) >= 0))
         .map(e => enums[e])
@@ -38,5 +41,6 @@ export const getValuesOfEnum = (enums: Record<string, string | number>) => {
  * @param enums
  */
 export const getKeysOfEnum = (enums: any) => {
+    if (!enums) return []
     return Object.keys(enums).filter(key => !(parseInt(key) >= 0))
 }
