@@ -95,7 +95,6 @@ importers:
       '@types/uuid': ^8.3.4
       '@typescript-eslint/eslint-plugin': ^4.33.0
       '@typescript-eslint/parser': ^4.33.0
-      '@x-forward/view': workspace:^0.0.1
       axios: ^0.26.0
       better-sqlite3: ^7.5.0
       cache-manager: ^3.6.0
@@ -143,7 +142,6 @@ importers:
       '@nestjs/swagger': 5.2.0_38eca4536baffb2b57680ba96366df97
       '@nestjs/typeorm': 8.0.3_677ecdef8b8569bbfcfe6edbe0eed33b
       '@nestjs/websockets': 8.4.1_cbbf95cc7baa446d560e72f24d5529bf
-      '@x-forward/view': link:../view
       axios: 0.26.1
       better-sqlite3: 7.5.0
       cache-manager: 3.6.0

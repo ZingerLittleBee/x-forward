@@ -4,7 +4,7 @@ import { SomethingNotFound } from '@x-forward/common/errors/something-not-found.
 import { findSomething, getEnvSetting } from '@x-forward/common/utils'
 import { CacheKeyEnum } from '@x-forward/executor/enums/key.enum'
 import { IExecutor } from '@x-forward/executor/interfaces'
-import nginxMainConfig from '@x-forward/render/template/nginxMainConfig'
+import nginxMainConfig, { streamBlock } from '@x-forward/render/template/nginxMainConfig'
 import { Cache } from 'cache-manager'
 import { renderString } from 'nunjucks'
 import { inspect } from 'util'
@@ -57,10 +57,6 @@ export class ExecutorService implements OnModuleInit {
         // 判断目录是否存在, 不存在则创建
         await this.existOrCreate(streamDir)
         Logger.debug(`nginx stream 目录: ${streamDir}`)
-        // 检索 includes ${streamDir}/*.conf
-        const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
-        const nginxIncludeBlock = streamConfigIncludeReg.exec(nginxMainConfigContent)
-        Logger.verbose(`nginxIncludeBlock: ${nginxIncludeBlock}`)
         const streamBlockValue = {
             streamDir,
             logPrefix: getEnvSetting(EnvKeyEnum.LogPrefix),
@@ -68,7 +64,17 @@ export class ExecutorService implements OnModuleInit {
             logFormat: getEnvSetting(EnvKeyEnum.LogFormat)
         }
         Logger.verbose(`streamBlockValue: ${inspect(streamBlockValue)}`)
-        if (!nginxIncludeBlock || !nginxMainConfigContent.match(/stream\s*{[\s\S]*}/)) {
+        if (!nginxMainConfigContent.match(/stream\s*{[\s\S]*}/)) {
+            Logger.verbose(
+                `未找到 stream 模块, nginx config 将 append:\n${renderString(streamBlock, streamBlockValue)}`
+            )
+            await this.patchMainConfig(renderString(streamBlock, streamBlockValue))
+        }
+        // 检索 includes ${streamDir}/*.conf
+        const streamConfigIncludeReg = new RegExp(`include\\s*${streamDir}/\\*.conf;`, 'i')
+        const nginxIncludeBlock = streamConfigIncludeReg.exec(await this.executor.getMainConfigContent())
+        Logger.verbose(`nginxIncludeBlock: ${nginxIncludeBlock}`)
+        if (!nginxIncludeBlock) {
             Logger.verbose(
                 `未找到 stream 模块, nginx config 将被重写为:\n${renderString(nginxMainConfig, streamBlockValue)}`
             )
@@ -79,19 +85,26 @@ export class ExecutorService implements OnModuleInit {
             `(?<=access_log\\s)[\-a-zA-Z/\.]+(?=\\s${getEnvSetting(EnvKeyEnum.LogFormat)})`,
             'g'
         )
-        const streamLogPath = streamLogPathReg.exec(nginxMainConfigContent)?.[0]
+        const streamLogPath = streamLogPathReg.exec(await this.executor.getMainConfigContent())?.[0]
+        Logger.verbose(`stream log path: ${streamLogPath}`)
         if (streamLogPath) {
             await this.cacheManager.set(EnvKeyEnum.StreamLogPath, streamLogPath)
-            Logger.verbose(`stream log path: ${streamLogPath}`)
             await this.existOrCreate(streamLogPath)
+            Logger.verbose('executor 初始化完毕')
         } else {
             Logger.warn(
                 `未提取到 stream log 路径, nginx config 将被重写为\n${renderString(nginxMainConfig, streamBlockValue)}`
             )
             await this.rewriteMainConfig(renderString(nginxMainConfig, streamBlockValue))
-            await this.initNginxConfig()
+            setTimeout(() => {
+                this.initNginxConfig()
+            }, 2000)
         }
-        Logger.verbose('executor 初始化完毕')
+    }
+
+    async patchMainConfig(content: string) {
+        Logger.verbose(`patch main config content: ${inspect(content)}`)
+        this.executor.mainConfigAppend(content)
     }
 
     async rewriteMainConfig(content: string) {

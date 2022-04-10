@@ -7,7 +7,7 @@ ARG SHARED_VERSION=0.0.3
 WORKDIR /usr/x-forward
 
 # change apt source
-RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN sed -i 's/deb.debian.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apt/sources.list
 
 # install node
 RUN curl -fsSL https://deb.nodesource.com/setup_16.x | bash -

@@ -17,7 +17,7 @@ services:
                 max-file: "10"
     app:
         container_name: x-forward-server
-        image: x-forward-server:0.0.1
+        image: x-forward-server:latest
         restart: always
         depends_on:
             - db
@@ -33,7 +33,7 @@ services:
                 max-file: "10"
     view:
         container_name: x-forward-view
-        image: x-forward-view:0.0.1
+        image: x-forward-view:latest
         restart: always
         ports:
             - "80:80"
