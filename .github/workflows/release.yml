@@ -1,8 +1,8 @@
 name: Publish Shared CI
 on:
     push:
-        branches:
-            - 'main'
+        tags:
+            - V0.0.*
 jobs:
     build:
         runs-on: ubuntu-latest
