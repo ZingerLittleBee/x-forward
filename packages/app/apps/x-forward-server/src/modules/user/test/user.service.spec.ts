@@ -1,9 +1,9 @@
+import { RoleEnum } from '@forwardx/shared'
 import { Test } from '@nestjs/testing'
 import { getRepositoryToken, TypeOrmModule } from '@nestjs/typeorm'
 import { Repository } from 'typeorm/repository/Repository'
 import { UserEntity } from '../user.entity'
 import { UserService } from '../user.service'
-import { RoleEnum } from '@x-forward/shared'
 
 describe('UserService', () => {
     let userService: UserService

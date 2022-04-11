@@ -1,6 +1,6 @@
 import lsConstant from '@/constants/localstorage.constant'
 import { DisconnectOutlined, WifiOutlined } from '@ant-design/icons'
-import { OnlineEnum } from '@x-forward/shared'
+import { OnlineEnum } from '@forwardx/shared'
 import { Select, Tag } from 'antd'
 import React from 'react'
 

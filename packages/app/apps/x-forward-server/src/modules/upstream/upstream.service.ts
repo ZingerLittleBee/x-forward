@@ -1,6 +1,7 @@
+import { StateEnum } from '@forwardx/shared'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Optimized, Preprocess, StateEnum } from '@x-forward/common'
+import { Optimized, Preprocess } from '@x-forward/common'
 import { Repository } from 'typeorm'
 import { EventService } from '../event/event.service'
 import { ServerService } from '../server/server.service'

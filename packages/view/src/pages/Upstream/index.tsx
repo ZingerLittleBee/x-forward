@@ -16,11 +16,11 @@ import {
     ServerEnum,
     StateEnum,
     UpstreamEnum
-} from '@x-forward/shared'
+} from '@forwardx/shared'
+import { useUpdateEffect } from 'ahooks'
 import { Badge, Button, message, Popconfirm } from 'antd'
 import { useState } from 'react'
 import { useModel, useRequest } from 'umi'
-import { useUpdateEffect } from 'ahooks'
 
 export type UpstreamListItem = API.UpstreamVo
 

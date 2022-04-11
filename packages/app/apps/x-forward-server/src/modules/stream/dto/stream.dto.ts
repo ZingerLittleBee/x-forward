@@ -1,6 +1,7 @@
 import { AutoMap } from '@automapper/classes'
+import { StateEnum } from '@forwardx/shared'
 import { PartialType } from '@nestjs/swagger'
-import { ProtocolEnum, RetriesEnum, StateEnum } from '@x-forward/common'
+import { ProtocolEnum, RetriesEnum } from '@x-forward/common'
 import { StreamEntity } from '../entity/stream.entity'
 
 export class StreamDto extends PartialType(StreamEntity) {

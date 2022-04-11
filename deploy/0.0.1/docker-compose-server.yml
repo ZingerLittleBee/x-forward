@@ -1,0 +1,45 @@
+version: "3"
+services:
+    db:
+        container_name: x-forward-db
+        image: mongo
+        restart: always
+        ports:
+            - 27017:27017
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: root
+            MONGO_INITDB_ROOT_PASSWORD: root
+            MONGO_INITDB_DATABASE: logs
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "10"
+    app:
+        container_name: x-forward-server
+        image: x-forward-server:latest
+        restart: always
+        depends_on:
+            - db
+        env_file:
+            - .env
+        ports:
+            - "3000:3000"
+            - "3001:3001"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "10"
+    view:
+        container_name: x-forward-view
+        image: x-forward-view:latest
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+        logging:
+            driver: "json-file"
+            options:
+                max-size: "10m"
+                max-file: "10"

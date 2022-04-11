@@ -1,4 +1,5 @@
 import UpstreamModel from '@/components/UpstreamModel/index'
+import StreamForm from '@/pages/Stream/components/StreamForm'
 import {
     StreamControllerDelete,
     StreamControllerGetStream,
@@ -22,13 +23,12 @@ import {
 } from '@ant-design/icons'
 import ProCard from '@ant-design/pro-card'
 import ProDescriptions from '@ant-design/pro-descriptions'
-import { CommonEnum, StateEnum, StateTipsEnum, StreamItemEnum } from '@x-forward/shared'
+import { CommonEnum, StateEnum, StateTipsEnum, StreamItemEnum } from '@forwardx/shared'
 import { useUpdateEffect } from 'ahooks'
 import { Badge, Button, Dropdown, Form, Menu, message, Popconfirm, Result, Spin, Tag, Typography } from 'antd'
 import { useEffect, useState } from 'react'
 import { useModel, useRequest } from 'umi'
 import { inspect } from 'util'
-import StreamForm from '@/pages/Stream/components/StreamForm'
 
 const { Text, Paragraph } = Typography
 
@@ -354,9 +354,9 @@ export default () => {
                                                             >
                                                                 {upstreamId
                                                                     ? getEnumKeyByValue(
-                                                                          upstreamData?.find(u => u.id === upstreamId)
-                                                                              ?.loadBalancing
-                                                                      )
+                                                                        upstreamData?.find(u => u.id === upstreamId)
+                                                                            ?.loadBalancing
+                                                                    )
                                                                     : remotePort}
                                                             </span>
                                                         </div>

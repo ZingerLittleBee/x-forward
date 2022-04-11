@@ -1,5 +1,5 @@
 {
-  "name": "@x-forward/shared",
+  "name": "@forwardx/shared",
   "version": "0.0.1",
   "description": "shared for x-forward",
   "main": "dist/index.js",

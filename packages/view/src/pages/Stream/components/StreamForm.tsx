@@ -1,3 +1,7 @@
+import { serverType } from '@/pages/Stream'
+import { StreamControllerCreateOne, StreamControllerUpdateStreamById } from '@/services/view/stream'
+import { getKeyByValue } from '@/utils/objectUtil'
+import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import ProForm, {
     ModalForm,
     ProFormInstance,
@@ -6,16 +10,11 @@ import ProForm, {
     ProFormText,
     ProFormTextArea
 } from '@ant-design/pro-form'
-import { getKeyByValue } from '@/utils/objectUtil'
+import { StreamItemEnum, UpstreamEnum } from '@forwardx/shared'
+import { FormInstance, message } from 'antd'
 import { omit } from 'lodash-es'
-import { StreamControllerCreateOne, StreamControllerUpdateStreamById } from '@/services/view/stream'
-import { message } from 'antd'
-import { StreamItemEnum, UpstreamEnum } from '@x-forward/shared'
-import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
-import { FormInstance } from 'antd'
-import { useRequest } from 'umi'
 import { useRef } from 'react'
-import { serverType } from '@/pages/Stream'
+import { useRequest } from 'umi'
 
 export type StreamFormProp = {
     form: FormInstance<any>

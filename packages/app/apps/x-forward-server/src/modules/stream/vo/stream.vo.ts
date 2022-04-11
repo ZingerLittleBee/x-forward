@@ -1,7 +1,7 @@
 import { AutoMap } from '@automapper/classes'
+import { LoadBalancingEnum, StateEnum, StatusEnum } from '@forwardx/shared'
 import { PickType } from '@nestjs/swagger'
 import { ProtocolEnum, RetriesEnum } from '@x-forward/common'
-import { LoadBalancingEnum, StateEnum, StatusEnum } from '@x-forward/shared'
 import { StreamEntity } from '../entity/stream.entity'
 
 export class StreamVo extends PickType(StreamEntity, [

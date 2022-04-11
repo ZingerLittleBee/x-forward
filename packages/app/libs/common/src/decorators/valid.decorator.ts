@@ -1,4 +1,4 @@
-import { domainRegExp, getValuesOfEnum, ipRegExp, unitRegExp } from '@x-forward/shared'
+import { domainRegExp, getValuesOfEnum, ipRegExp, unitRegExp } from '@forwardx/shared'
 import { registerDecorator, ValidationOptions } from 'class-validator'
 
 export function IsHost(validationOptions?: ValidationOptions) {

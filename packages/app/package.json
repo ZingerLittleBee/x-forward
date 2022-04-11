@@ -4,11 +4,10 @@
     "description": "ui for nginx stream",
     "license": "MIT",
     "scripts": {
-        "pkg": "pkg . -d",
         "prebuild": "rimraf dist",
-        "build": "nest build",
+        "build:server": "nest build",
+        "build:client": "nest build x-forward-client",
         "build:lib": "nest build common",
-        "gen": "nest g resource",
         "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
         "start": "nest start",
         "dev": "nest start --watch",
@@ -45,8 +44,7 @@
         "@nestjs/swagger": "^5.2.0",
         "@nestjs/typeorm": "^8.0.3",
         "@nestjs/websockets": "^8.3.0",
-        "@x-forward/shared": "workspace:*",
-        "@x-forward/view": "workspace:^0.0.1",
+        "@forwardx/shared": "workspace:*",
         "axios": "^0.26.0",
         "better-sqlite3": "^7.5.0",
         "cache-manager": "^3.6.0",
@@ -67,6 +65,7 @@
         "swagger-ui-express": "^4.3.0",
         "typeorm": "^0.2.41",
         "uuid": "^8.3.2",
+        "socket.io": "^4.4.1",
         "zx": "^4.3.0"
     },
     "devDependencies": {
@@ -85,10 +84,8 @@
         "@types/uuid": "^8.3.4",
         "@typescript-eslint/eslint-plugin": "^4.33.0",
         "@typescript-eslint/parser": "^4.33.0",
-        "socket.io": "^4.4.1",
         "supertest": "^6.2.2",
         "ts-loader": "^9.2.6",
-        "ts-node": "^10.5.0",
         "tsconfig-paths": "^3.12.0"
     },
     "jest": {
@@ -118,19 +115,5 @@
             "<rootDir>/libs/"
         ]
     },
-    "bin": "dist/main.js",
-    "pkg": {
-        "scripts": [
-            "dist/**/*.js",
-            "node_modules/lodash/cloneDeep.js"
-        ],
-        "assets": [
-            "temp/**",
-            "node_modules/better-sqlite3/build/Release/better_sqlite3.node"
-        ],
-        "targets": [
-            "node16-linux-x64"
-        ],
-        "outputPath": "pkg"
-    }
+    "bin": "dist/main.js"
 }

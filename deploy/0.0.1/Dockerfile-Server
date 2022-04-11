@@ -1,0 +1,29 @@
+# FROM keymetrics/pm2:16-buster
+FROM node:16.14.2-bullseye-slim
+
+ARG SHARED_VERSION=0.0.3
+
+# Create app directory
+WORKDIR /usr/x-forward
+
+# change apt source
+RUN sed -i 's/deb.debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list
+RUN apt-get -y update
+RUN apt-get install -y make python3 build-essential
+
+# Bundle APP files
+# When using COPY with more than one source file, the destination must be a directory and end with a /
+COPY packages/app/dist/apps/x-forward-server/* ./
+COPY packages/app/protos ./protos
+COPY packages/app/package.json .
+RUN sed -i "s/workspace:\*/^${SHARED_VERSION}/g" package.json
+COPY packages/app/apps/x-forward-server/ecosystem.config.js .
+
+# Install app dependencies
+RUN npm install pm2 -g --registry=https://registry.npmmirror.com
+RUN npm i --production --registry=https://registry.npmmirror.com
+
+# Expose the listening port of your app
+EXPOSE 3000 3001
+
+CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]

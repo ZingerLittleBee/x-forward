@@ -1,5 +1,5 @@
+import { LoadBalancingEnum } from '@forwardx/shared'
 import { ProtocolEnum } from '@x-forward/common'
-import { LoadBalancingEnum } from '@x-forward/shared'
 
 // 为了配置项的一目了然, 这里还是遵循 nginx 的下划线写法吧
 export interface StreamServer {

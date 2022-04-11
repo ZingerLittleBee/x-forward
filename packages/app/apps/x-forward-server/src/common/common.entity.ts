@@ -1,7 +1,6 @@
 import { AutoMap } from '@automapper/classes'
+import { enumToString, getValuesOfEnum, StateEnum } from '@forwardx/shared'
 import { ApiProperty } from '@nestjs/swagger'
-import { StateEnum } from '@x-forward/common'
-import { enumToString, getValuesOfEnum } from '@x-forward/shared'
 import { IsEnum, IsOptional } from 'class-validator'
 import { Column, CreateDateColumn, DeleteDateColumn, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 export abstract class CommonEntity {
