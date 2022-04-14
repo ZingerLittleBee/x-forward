@@ -5,6 +5,10 @@ module.exports = {
             colors: {
                 'dawn-purple': '#722ED1',
             }
+        },
+        colors: {
+            primary: 'var(--color-primary)',
+            secondary: 'var(--color-secondary)',
         }
     }
 }

@@ -11,8 +11,10 @@ import { turnState2Boolean } from '@/utils/enumUtils'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { state2Boolean } from '@/utils/statusUtils'
 import {
+    CloseCircleOutlined,
     DeleteOutlined,
     EditOutlined,
+    IssuesCloseOutlined,
     PauseCircleOutlined,
     PlayCircleOutlined,
     PlusCircleOutlined
@@ -20,18 +22,19 @@ import {
 import ProCard from '@ant-design/pro-card'
 import { StateEnum } from '@forwardx/shared'
 import { useUpdateEffect } from 'ahooks'
-import { Badge, Button, Form, message, Popconfirm, Result, Spin } from 'antd'
+import { Badge, Button, Form, message, Popconfirm, Result, Space, Spin } from 'antd'
 import { useEffect, useState } from 'react'
 import { useModel, useRequest } from 'umi'
 import { inspect } from 'util'
 import styles from './index.less'
 import StreamContent from '@/pages/Stream/components/StreamContent'
+import BatchAction, { DropDownMenu } from '@/pages/Stream/components/BatchAction'
 
 export type serverType = { remoteHost: string; remotePort: number }
 
 export default () => {
     const { initialState } = useModel('@@initialState')
-    const [curClientId, setCurClientId] = useState<string>(initialState?.curClientId ? initialState?.curClientId : '')
+    const [curClientId, setCurClientId] = useState(initialState?.curClientId ? initialState?.curClientId : '')
 
     useUpdateEffect(() => {
         setCurClientId(initialState?.curClientId ? initialState?.curClientId : '')
@@ -162,6 +165,43 @@ export default () => {
         setCardLoading(new Array(streamData?.length).fill(false))
     }, [streamData])
 
+    const [applyAllServer, setApplyAllServer] = useState(false)
+
+    const getCurClientTag = (): string =>
+        initialState?.curClient?.domain ? initialState?.curClient?.domain : initialState?.curClient?.ip || 'Unknown'
+
+    const menus: DropDownMenu[] = [
+        {
+            type: '重启',
+            label: '全部重启',
+            icon: <IssuesCloseOutlined style={{ fontSize: 20, color: '#345995' }} />,
+            onOk: () => {
+                if (applyAllServer) {
+                    console.log('this is apply all server')
+                }
+                console.log('OK')
+            }
+        },
+        {
+            type: '停止',
+            label: '全部停止',
+            icon: <PauseCircleOutlined style={{ fontSize: 20, color: '#fcae63' }} />,
+            onOk: () => console.log('OK')
+        },
+        {
+            type: '开始',
+            label: '全部开始',
+            icon: <PlayCircleOutlined style={{ fontSize: 20, color: '#acce16' }} />,
+            onOk: () => console.log('OK')
+        },
+        {
+            type: '删除',
+            label: '全部删除',
+            icon: <CloseCircleOutlined style={{ fontSize: 20, color: 'red' }} />,
+            onOk: () => console.log('OK')
+        }
+    ]
+
     // @ts-ignore
     // https://github.com/ant-design/pro-components/issues/2553
     Badge.Ribbon.isProCard = true
@@ -171,11 +211,21 @@ export default () => {
                 gutter={[16, 16]}
                 title="转发规则"
                 headStyle={{ paddingTop: 0 }}
-                extra={streamModuleForm(
-                    <Button type="primary" icon={<PlusCircleOutlined />}>
-                        添加规则
-                    </Button>
-                )}
+                extra={
+                    <Space>
+                        {streamModuleForm(
+                            <Button type="primary" icon={<PlusCircleOutlined />}>
+                                添加规则
+                            </Button>
+                        )}
+                        <BatchAction
+                            menus={menus}
+                            curClientTag={getCurClientTag()}
+                            onCheckChange={checked => setApplyAllServer(checked)}
+                            onCancel={() => setApplyAllServer(false)}
+                        />
+                    </Space>
+                }
                 wrap
                 ghost
             >
