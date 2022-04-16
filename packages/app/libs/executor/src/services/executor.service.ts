@@ -248,4 +248,20 @@ export class ExecutorService implements OnModuleInit {
     async getSystemTime() {
         return this.executor.getSystemTime()
     }
+
+    nginxStart() {
+        this.executor.nginxStart()
+    }
+
+    nginxStop() {
+        this.executor.nginxStop()
+    }
+
+    nginxReload() {
+        this.executor.nginxReload()
+    }
+
+    nginxRestart() {
+        this.executor.nginxRestart()
+    }
 }

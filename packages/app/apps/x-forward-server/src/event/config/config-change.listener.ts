@@ -1,4 +1,4 @@
-import { removeProtocol } from '@forwardx/shared'
+import { removeProtocol, StateEnum } from '@forwardx/shared'
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EventEnum } from '@x-forward/common'
@@ -7,7 +7,6 @@ import { StreamServer, StreamUpstream } from '@x-forward/render/render.interface
 import { inspect } from 'util'
 import { ClientService } from '../../modules/client/client.service'
 import { ExecutorGatewayService } from '../../modules/gateway/services/executor-gateway.service'
-import { ModelGatewayService } from '../../modules/gateway/services/model-gateway.service'
 import { StreamEntity } from '../../modules/stream/entity/stream.entity'
 import { UpstreamEntity } from '../../modules/upstream/entity/upstream.entity'
 import { streamEntities2StreamServer, upstreamEntities2StreamUpstream } from '../../utils/transform.util'
@@ -17,7 +16,6 @@ import { ConfigChangePayload } from './config-change.interface'
 export class ConfigChangeListener {
     constructor(
         private executorGateway: ExecutorGatewayService,
-        private modelGatewayService: ModelGatewayService,
         private readonly renderService: RenderService,
         private readonly clientService: ClientService
     ) {}
@@ -40,16 +38,22 @@ export class ConfigChangeListener {
      * @returns RenderModel
      */
     private fieldTransformation(streamEntities: StreamEntity[], upstreamEntities: UpstreamEntity[]) {
-        const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [] }
-        const upstreams = upstreamEntities.map(u => upstreamEntities2StreamUpstream(u))
-        upstreams && (res.upstreams = upstreams)
-        const servers = streamEntities.map(s => {
-            if (s?.upstreamId) {
-                return streamEntities2StreamServer(s, upstreamEntities.find(u => u.id === s.upstreamId)?.name)
+        const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [], upstreams: [] }
+        upstreamEntities.forEach(u => {
+            if (u.state === StateEnum.Able) {
+                res.upstreams.push(upstreamEntities2StreamUpstream(u))
             }
-            return streamEntities2StreamServer(s)
         })
-        servers && (res.servers = servers)
+        streamEntities.forEach(s => {
+            if (s.state === StateEnum.Able) {
+                if (s?.upstreamId) {
+                    res.servers.push(
+                        streamEntities2StreamServer(s, upstreamEntities.find(u => u.id === s.upstreamId)?.name)
+                    )
+                }
+                res.servers.push(streamEntities2StreamServer(s))
+            }
+        })
         return res
     }
 
@@ -76,6 +80,33 @@ export class ConfigChangeListener {
     @OnEvent(EventEnum.CONFIG_DELETE)
     async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_START)
+    async handleConfigBatchStart(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_START} event}`)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_RESTART)
+    async handleConfigBatchRestart(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_RESTART} event}`)
+        this.executorGateway.nginxRestart(payload?.clientId)
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_STOP)
+    async handleConfigBatchStop(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_STOP} event}`)
+        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
+        this.executorGateway.streamRewrite(payload?.clientId, content)
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_DELETE)
+    async handleConfigBatchDelet(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_DELETE} event}`)
         const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
         this.executorGateway.streamRewrite(payload?.clientId, content)
     }

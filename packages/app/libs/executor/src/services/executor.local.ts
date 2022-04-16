@@ -12,7 +12,9 @@ import {
     nginxReloadHandler,
     nginxReopenHandler,
     nginxRestartHandler,
+    nginxStartHandler,
     nginxStatusHandler,
+    nginxStopHandler,
     nginxVersionHandler,
     streamConfigPathHandler,
     streamDirectoryHandler,
@@ -30,6 +32,12 @@ export class ExecutorLocal extends ExecutorAbs implements IExecutor {
         super()
         this.bin = bin
         this.cacheManager = cacheManager
+    }
+    async nginxStop() {
+        await nginxStopHandler()
+    }
+    async nginxStart() {
+        await nginxStartHandler()
     }
     async getSystemTime(): Promise<string> {
         return getSystemTimeHandler()

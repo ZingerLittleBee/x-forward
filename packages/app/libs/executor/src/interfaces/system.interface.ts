@@ -28,6 +28,16 @@ export interface ISystem {
     nginxRestart(): void
 
     /**
+     * nginx stop
+     */
+    nginxStop(): void
+
+    /**
+     * nginx start
+     */
+    nginxStart(): void
+
+    /**
      * get system info
      */
     getSystemInfo(): Promise<SystemInfo>

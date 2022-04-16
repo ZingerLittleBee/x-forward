@@ -10,6 +10,7 @@ import {
     MongoRegister,
     TypeOrmRegister
 } from './config/register.config'
+import { ClientPortModule } from './event/client/client-port.module'
 import { ConfigChangeModule } from './event/config/config-change.module'
 import { ClientModule } from './modules/client/client.module'
 import { EnvModule } from './modules/env/env.module'
@@ -33,6 +34,7 @@ import { UserModule } from './modules/user/user.module'
             isGlobal: true
         }),
         ScheduleModule.forRoot(),
+        ClientPortModule,
         ConfigChangeModule,
         ShellModule,
         UserModule,

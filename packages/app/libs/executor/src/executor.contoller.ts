@@ -75,4 +75,22 @@ export class ExecutorController {
         }
         return Result.ok()
     }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxStart() {
+        this.executorService.nginxStart()
+        return Result.ok()
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxStop() {
+        this.executorService.nginxStop()
+        return Result.ok()
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxRestart() {
+        this.executorService.nginxRestart()
+        return Result.ok()
+    }
 }
