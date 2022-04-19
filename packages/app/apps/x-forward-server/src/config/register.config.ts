@@ -6,6 +6,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter'
 import { MongooseModule } from '@nestjs/mongoose'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
+import { ClientEntity } from '../modules/client/entity/client.entity'
 import { ServerEntity } from '../modules/server/entity/server.entity'
 import { StreamEntity } from '../modules/stream/entity/stream.entity'
 import { UpstreamEntity } from '../modules/upstream/entity/upstream.entity'
@@ -34,7 +35,7 @@ export const TypeOrmRegister = () =>
         type: 'better-sqlite3',
         database: `${process.cwd()}/x-forward.db`,
         // to solve pkg which can not find entity in ormconfig.json
-        entities: [UserEntity, StreamEntity, UpstreamEntity, ServerEntity],
+        entities: [UserEntity, StreamEntity, UpstreamEntity, ServerEntity, ClientEntity],
         autoLoadEntities: true,
         synchronize: true,
         logging: false

@@ -63,51 +63,72 @@ export class ConfigChangeListener {
         return `${host}:${client?.port}`
     }
 
+    private async rewriteStream(clientId: string, content?: string) {
+        this.executorGateway.streamRewrite(
+            clientId,
+            content ? content : await this.renderService.renderStream(await this.collectModels(clientId))
+        )
+    }
+
     @OnEvent(EventEnum.CONFIG_CREATE)
     async handleConfigCreate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
     }
 
     @OnEvent(EventEnum.CONFIG_UPDATE)
     async handleConfigUpdate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
     async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
     }
 
     @OnEvent(EventEnum.CONFIG_BATCH_START)
     async handleConfigBatchStart(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_BATCH_START} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
+        if (payload?.clientId) {
+            this.rewriteStream(payload.clientId)
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.rewriteStream(c.id))
+        }
     }
 
     @OnEvent(EventEnum.CONFIG_BATCH_RESTART)
     async handleConfigBatchRestart(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_BATCH_RESTART} event}`)
         this.executorGateway.nginxRestart(payload?.clientId)
+        if (payload?.clientId) {
+            this.executorGateway.nginxRestart(payload.clientId)
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.executorGateway.nginxRestart(c.id))
+        }
     }
 
     @OnEvent(EventEnum.CONFIG_BATCH_STOP)
     async handleConfigBatchStop(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_BATCH_STOP} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        if (payload?.clientId) {
+            this.rewriteStream(payload.clientId, '')
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.rewriteStream(c.id, ''))
+        }
     }
 
     @OnEvent(EventEnum.CONFIG_BATCH_DELETE)
-    async handleConfigBatchDelet(payload: ConfigChangePayload) {
+    async handleConfigBatchDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_BATCH_DELETE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        const clients = await this.clientService.getIds()
+        payload?.clientId
+            ? this.rewriteStream(payload.clientId, '')
+            : clients?.forEach(c => this.rewriteStream(c.id, ''))
     }
 }

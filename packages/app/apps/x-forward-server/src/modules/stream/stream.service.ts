@@ -145,20 +145,27 @@ export class StreamService {
         return res
     }
 
+    async deleteAll(clientId?: string) {
+        this.eventService.triggerBatchDelete({ clientId })
+        return clientId
+            ? this.streamRepository.delete({ clientId })
+            : this.streamRepository.createQueryBuilder().delete().from(StreamEntity).where('id IS NOT NULL').execute()
+    }
+
     /**
      * 更新所有记录的 delete_time
      * @returns affect rows
      */
-    async deleteAll(clientId: string) {
-        const res = await this.streamRepository
-            .createQueryBuilder()
-            .update(StreamEntity)
-            .set({ deleteTime: new Date() })
-            .where('delete_time is NULL')
-            .execute()
-        this.eventService.triggerDeleteEvent({ clientId })
-        return res
-    }
+    // async deleteAll(clientId: string) {
+    //     const res = await this.streamRepository
+    //         .createQueryBuilder()
+    //         .update(StreamEntity)
+    //         .set({ deleteTime: new Date() })
+    //         .where('delete_time is NULL')
+    //         .execute()
+    //     this.eventService.triggerDeleteEvent({ clientId })
+    //     return res
+    // }
 
     async removeByFK(id: string) {
         const clientId = await this.getClientIdById(id)
