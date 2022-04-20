@@ -92,21 +92,6 @@ export class StreamService {
         return (await this.streamRepository.findOne(id))?.clientId
     }
 
-    /**
-     * 更新 stream 的 state 状态
-     * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
-     * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
-     * @param id streamID
-     * @param state state
-     * @returns UpdateResult
-     */
-    async stateUpdate(id: string, state: number) {
-        const res = await this.streamRepository.update(id, { state: state })
-        const clientId = await this.getClientIdById(id)
-        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
-        return res
-    }
-
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
         const res = await this.streamRepository.update(id, streamEntity)
@@ -132,6 +117,45 @@ export class StreamService {
             affectCount += u.affected
         })
         return affectCount + createNum
+    }
+
+    /**
+     * 更新 stream 的 state 状态
+     * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
+     * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
+     * @param id streamID
+     * @param state state
+     * @returns UpdateResult
+     */
+    async stateUpdate(id: string, state: number) {
+        const res = await this.streamRepository.update(id, { state: state })
+        const clientId = await this.getClientIdById(id)
+        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
+        return res
+    }
+
+    async updateStateByClientId(clientId: string, state: StateEnum) {
+        this.eventService.triggerBatchRestart({})
+        return this.streamRepository.update({ clientId }, { state })
+    }
+
+    async updateAllState(state: StateEnum) {
+        this.eventService.triggerBatchRestart({})
+        return this.streamRepository.createQueryBuilder().update().set({ state }).where('id IS NOT NULL').execute()
+    }
+
+    async restartAll(clientId?: string) {
+        this.eventService.triggerBatchRestart({ clientId })
+    }
+
+    async startAll(clientId?: string) {
+        return clientId ? this.updateStateByClientId(clientId, StateEnum.Able) : this.updateAllState(StateEnum.Able)
+    }
+
+    async stopAll(clientId?: string) {
+        return clientId
+            ? this.updateStateByClientId(clientId, StateEnum.Disable)
+            : this.updateAllState(StateEnum.Disable)
     }
 
     /**

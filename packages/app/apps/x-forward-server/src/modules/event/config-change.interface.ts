@@ -1,3 +1,3 @@
 export interface ConfigChangePayload {
-    clientId: string
+    clientId?: string
 }
