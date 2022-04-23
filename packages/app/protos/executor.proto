@@ -19,7 +19,7 @@ service ExecutorService {
     rpc NginxRestart(google.protobuf.Empty) returns(NoDataResult);
     rpc NginxStop(google.protobuf.Empty) returns(NoDataResult);
 
-    rpc UpdatePortAndUserRelation(UserProperties) returns(noDataResult);
+    rpc UpdatePortAndUserRelation(UserProperties) returns(NoDataResult);
 }
 
 message UserProperties {

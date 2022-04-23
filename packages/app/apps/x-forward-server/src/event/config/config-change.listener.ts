@@ -64,10 +64,9 @@ export class ConfigChangeListener {
     }
 
     private async rewriteStream(clientId: string, content?: string) {
-        this.executorGateway.streamRewrite(
-            clientId,
-            content ? content : await this.renderService.renderStream(await this.collectModels(clientId))
-        )
+        const config = content ? content : await this.renderService.renderStream(await this.collectModels(clientId))
+        Logger.verbose(`clientId: ${clientId}, new stream config: ${config}`)
+        this.executorGateway.streamRewrite(clientId, config)
     }
 
     @OnEvent(EventEnum.CONFIG_CREATE)

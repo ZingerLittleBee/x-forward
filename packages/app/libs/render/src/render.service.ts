@@ -1,9 +1,10 @@
 import { LoadBalancingEnum } from '@forwardx/shared'
-import { Injectable } from '@nestjs/common'
+import { Injectable, Logger } from '@nestjs/common'
 import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
 import { existsSync, mkdirSync, readdirSync } from 'fs'
 import { configure, renderString } from 'nunjucks'
 import { join } from 'path'
+import { inspect } from 'util'
 import { v4, validate } from 'uuid'
 import { checkChain } from './render.check'
 import { RenderModel, StreamUpstream, UpstreamServer } from './render.interface'
@@ -20,6 +21,9 @@ export class RenderService {
             return ''
         }
         const { upstreams: checkedUpstreams, servers: checkedServers } = await checkChain({ servers, upstreams })
+        Logger.verbose(
+            `renderStream, checkedUpstreams: ${inspect(checkedUpstreams)}, checkedServers: ${inspect(checkedServers)}`
+        )
         return renderString(nginxStreamConfig, {
             checkedUpstreams,
             checkedServers,

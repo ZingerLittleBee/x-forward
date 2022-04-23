@@ -202,7 +202,7 @@ export class ExecutorService implements OnModuleInit {
     }
 
     async rewriteStream(content: string) {
-        Logger.verbose(`patch content: ${inspect(content)}`)
+        Logger.verbose(`rewrite content: ${inspect(content)}`)
         this.executor.streamRewrite(content)
     }
 
