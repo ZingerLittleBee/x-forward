@@ -67,10 +67,11 @@ export class StreamController {
      * 根据 stream id 更新 stream
      * @param stream 要更新的内容, 不存在的属性保持默认
      */
-    @Patch(':id')
-    @ApiResultResponse('number')
-    async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
-        return Result.okData((await this.streamService.update(id, stream as StreamEntity)).affected)
+    @Patch()
+    @ApiExtraModels(StreamDto)
+    async updateStream(@Query('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
+        await this.streamService.update(id, stream as StreamEntity)
+        return Result.ok()
     }
 
     /**
@@ -90,17 +91,17 @@ export class StreamController {
         return Result.ok()
     }
 
-    /**
-     * 根据 stream id 更新所有 stream
-     * @param streams
-     */
-    @Patch()
-    @ApiResultResponse()
-    async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
-        // 剔除 id 为空的选项
-        await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
-        return Result.ok()
-    }
+    // /**
+    //  * 根据 stream id 更新所有 stream
+    //  * @param streams
+    //  */
+    // @Patch()
+    // @ApiResultResponse()
+    // async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
+    //     // 剔除 id 为空的选项
+    //     await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
+    //     return Result.ok()
+    // }
 
     /**
      * 根据 id 删除 stream

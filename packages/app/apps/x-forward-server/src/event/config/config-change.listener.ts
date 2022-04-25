@@ -89,8 +89,7 @@ export class ConfigChangeListener {
 
     @OnEvent(EventEnum.CONFIG_BATCH_START)
     async handleConfigBatchStart(payload: ConfigChangePayload) {
-        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_START} event}`)
-        this.rewriteStream(payload?.clientId)
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_START} event`)
         if (payload?.clientId) {
             this.rewriteStream(payload.clientId)
         } else {
@@ -101,8 +100,7 @@ export class ConfigChangeListener {
 
     @OnEvent(EventEnum.CONFIG_BATCH_RESTART)
     async handleConfigBatchRestart(payload: ConfigChangePayload) {
-        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_RESTART} event}`)
-        this.executorGateway.nginxRestart(payload?.clientId)
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_RESTART} event with ${inspect(payload)}`)
         if (payload?.clientId) {
             this.executorGateway.nginxRestart(payload.clientId)
         } else {

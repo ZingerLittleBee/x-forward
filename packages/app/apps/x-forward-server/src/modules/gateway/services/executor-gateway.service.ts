@@ -33,12 +33,12 @@ export class ExecutorGatewayService implements ExecutorGatewayApi {
     }
 
     async nginxStart(clientId: string) {
-        ;(await this.getClient(clientId))?.nginxStart({})
+        await firstValueFrom((await this.getClient(clientId))?.nginxStart({}))
     }
     async nginxStop(clientId: string) {
-        ;(await this.getClient(clientId))?.nginxStop({})
+        await firstValueFrom((await this.getClient(clientId))?.nginxStop({}))
     }
     async nginxRestart(clientId: string) {
-        ;(await this.getClient(clientId))?.nginxRestart({})
+        await firstValueFrom((await this.getClient(clientId))?.nginxRestart({}))
     }
 }

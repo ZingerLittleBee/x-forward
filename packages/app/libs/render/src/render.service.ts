@@ -25,8 +25,8 @@ export class RenderService {
             `renderStream, checkedUpstreams: ${inspect(checkedUpstreams)}, checkedServers: ${inspect(checkedServers)}`
         )
         return renderString(nginxStreamConfig, {
-            checkedUpstreams,
-            checkedServers,
+            upstreams: checkedUpstreams,
+            servers: checkedServers,
             generateLoadBalancing: RenderService.generateLoadBalancing,
             generateUpstreamServer: RenderService.generateUpstreamServer
         })

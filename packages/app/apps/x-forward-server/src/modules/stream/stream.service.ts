@@ -135,12 +135,12 @@ export class StreamService {
     }
 
     async updateStateByClientId(clientId: string, state: StateEnum) {
-        this.eventService.triggerBatchRestart({})
+        state ? this.eventService.triggerBatchStop({ clientId }) : this.eventService.triggerBatchStart({ clientId })
         return this.streamRepository.update({ clientId }, { state })
     }
 
     async updateAllState(state: StateEnum) {
-        this.eventService.triggerBatchRestart({})
+        state ? this.eventService.triggerBatchStop({}) : this.eventService.triggerBatchStart({})
         return this.streamRepository.createQueryBuilder().update().set({ state }).where('id IS NOT NULL').execute()
     }
 
