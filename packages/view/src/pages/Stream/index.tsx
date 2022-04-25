@@ -3,6 +3,8 @@ import StreamForm from '@/pages/Stream/components/StreamForm'
 import {
     StreamControllerDelete,
     StreamControllerGetStream,
+    StreamControllerRestart,
+    StreamControllerUpdateAllState,
     StreamControllerUpdateStateById,
     StreamControllerUpdateUpstreamIdById
 } from '@/services/view/stream'
@@ -176,23 +178,26 @@ export default () => {
             label: '全部重启',
             icon: <IssuesCloseOutlined style={{ fontSize: 20, color: '#345995' }} />,
             onOk: () => {
-                if (applyAllServer) {
-                    console.log('this is apply all server')
-                }
-                console.log('OK')
+                applyAllServer ? StreamControllerRestart({}) : StreamControllerRestart({ clientId: curClientId })
             }
         },
         {
             type: '停止',
             label: '全部停止',
             icon: <PauseCircleOutlined style={{ fontSize: 20, color: '#fcae63' }} />,
-            onOk: () => console.log('OK')
+            onOk: () =>
+                applyAllServer
+                    ? StreamControllerUpdateAllState({ state: StateEnum.Disable })
+                    : StreamControllerUpdateAllState({ state: StateEnum.Disable, clientId: curClientId })
         },
         {
             type: '开始',
             label: '全部开始',
             icon: <PlayCircleOutlined style={{ fontSize: 20, color: '#acce16' }} />,
-            onOk: () => console.log('OK')
+            onOk: () =>
+                applyAllServer
+                    ? StreamControllerUpdateAllState({ state: StateEnum.Able })
+                    : StreamControllerUpdateAllState({ state: StateEnum.Able, clientId: curClientId })
         },
         {
             type: '删除',
