@@ -2,6 +2,7 @@ import UpstreamModel from '@/components/UpstreamModel/index'
 import StreamForm from '@/pages/Stream/components/StreamForm'
 import {
     StreamControllerDelete,
+    StreamControllerDeleteAllStream,
     StreamControllerGetStream,
     StreamControllerRestart,
     StreamControllerUpdateAllState,
@@ -13,6 +14,7 @@ import { turnState2Boolean } from '@/utils/enumUtils'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { state2Boolean } from '@/utils/statusUtils'
 import {
+    CheckCircleOutlined,
     CloseCircleOutlined,
     DeleteOutlined,
     EditOutlined,
@@ -31,6 +33,7 @@ import { inspect } from 'util'
 import styles from './index.less'
 import StreamContent from '@/pages/Stream/components/StreamContent'
 import BatchAction, { DropDownMenu } from '@/pages/Stream/components/BatchAction'
+import BatchAdd from '@/pages/Stream/components/BatchAdd'
 
 export type serverType = { remoteHost: string; remotePort: number }
 
@@ -172,38 +175,86 @@ export default () => {
     const getCurClientTag = (): string =>
         initialState?.curClient?.domain ? initialState?.curClient?.domain : initialState?.curClient?.ip || 'Unknown'
 
+    const [batchAddModel, setBatchAddModel] = useState(false)
+
     const menus: DropDownMenu[] = [
+        {
+            type: '添加到',
+            label: '批量添加',
+            icon: <CheckCircleOutlined style={{ fontSize: 20, color: '#70d6ff' }} />,
+            menuClick: () => setBatchAddModel(true)
+        },
         {
             type: '重启',
             label: '全部重启',
             icon: <IssuesCloseOutlined style={{ fontSize: 20, color: '#345995' }} />,
-            onOk: () => {
-                applyAllServer ? StreamControllerRestart({}) : StreamControllerRestart({ clientId: curClientId })
+            onOk: async () => {
+                try {
+                    applyAllServer
+                        ? await StreamControllerRestart({})
+                        : await StreamControllerRestart({ clientId: curClientId })
+                } catch (e) {
+                    message.error(`全部重启失败, ${e}`)
+                    return
+                }
+                streamRefresh()
+                upstreamRefresh()
+                message.success(`全部重启成功`)
             }
         },
         {
             type: '停止',
             label: '全部停止',
             icon: <PauseCircleOutlined style={{ fontSize: 20, color: '#fcae63' }} />,
-            onOk: () =>
-                applyAllServer
-                    ? StreamControllerUpdateAllState({ state: StateEnum.Disable })
-                    : StreamControllerUpdateAllState({ state: StateEnum.Disable, clientId: curClientId })
+            onOk: async () => {
+                try {
+                    applyAllServer
+                        ? await StreamControllerUpdateAllState({ state: StateEnum.Disable })
+                        : await StreamControllerUpdateAllState({ state: StateEnum.Disable, clientId: curClientId })
+                } catch (e) {
+                    message.error(`全部停止失败, ${e}`)
+                    return
+                }
+                streamRefresh()
+                upstreamRefresh()
+                message.success(`全部停止成功`)
+            }
         },
         {
             type: '开始',
             label: '全部开始',
             icon: <PlayCircleOutlined style={{ fontSize: 20, color: '#acce16' }} />,
-            onOk: () =>
-                applyAllServer
-                    ? StreamControllerUpdateAllState({ state: StateEnum.Able })
-                    : StreamControllerUpdateAllState({ state: StateEnum.Able, clientId: curClientId })
+            onOk: async () => {
+                try {
+                    applyAllServer
+                        ? await StreamControllerUpdateAllState({ state: StateEnum.Able })
+                        : await StreamControllerUpdateAllState({ state: StateEnum.Able, clientId: curClientId })
+                } catch (e) {
+                    message.error(`全部开始失败, ${e}`)
+                    return
+                }
+                streamRefresh()
+                upstreamRefresh()
+                message.success(`全部开始成功`)
+            }
         },
         {
             type: '删除',
             label: '全部删除',
             icon: <CloseCircleOutlined style={{ fontSize: 20, color: 'red' }} />,
-            onOk: () => console.log('OK')
+            onOk: async () => {
+                try {
+                    applyAllServer
+                        ? await StreamControllerDeleteAllStream({})
+                        : await StreamControllerDeleteAllStream({ clientId: curClientId })
+                } catch (e) {
+                    message.error(`全部删除失败, ${e}`)
+                    return
+                }
+                streamRefresh()
+                upstreamRefresh()
+                message.success(`全部删除成功`)
+            }
         }
     ]
 
@@ -211,172 +262,182 @@ export default () => {
     // https://github.com/ant-design/pro-components/issues/2553
     Badge.Ribbon.isProCard = true
     return (
-        <Spin spinning={!!streamLoading || !!upstreamLoading}>
-            <ProCard
-                gutter={[16, 16]}
-                title="转发规则"
-                headStyle={{ paddingTop: 0 }}
-                extra={
-                    <Space>
-                        {streamModuleForm(
-                            <Button type="primary" icon={<PlusCircleOutlined />}>
-                                添加规则
-                            </Button>
-                        )}
-                        <BatchAction
-                            menus={menus}
-                            curClientTag={getCurClientTag()}
-                            onCheckChange={checked => setApplyAllServer(checked)}
-                            onCancel={() => setApplyAllServer(false)}
-                        />
-                    </Space>
-                }
-                wrap
-                ghost
-            >
-                {streamData && streamData.length !== 0 ? (
-                    streamData?.map((d, index) => (
-                        <Badge.Ribbon
-                            key={d?.id}
-                            placement="end"
-                            text="100ms"
-                            color={''}
-                            // @ts-ignore
-                            // https://github.com/ant-design/pro-components/issues/2553
-                            colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
-                        >
-                            <Spin spinning={cardLoading?.[index]}>
-                                <ProCard
-                                    hoverable
-                                    bordered
-                                    bodyStyle={{ paddingBottom: 0 }}
-                                    className={styles.checked}
-                                    onDoubleClick={() => console.log('db')}
-                                    actions={[
-                                        <Popconfirm
-                                            title="确定删除?"
-                                            onConfirm={async () => {
-                                                if (d.id) {
-                                                    try {
-                                                        const data = await streamDeleteRun(d.id)
-                                                        if (data && data > 0) {
-                                                            streamRefresh()
+        <>
+            <Spin spinning={!!streamLoading || !!upstreamLoading}>
+                <ProCard
+                    gutter={[16, 16]}
+                    title="转发规则"
+                    headStyle={{ paddingTop: 0 }}
+                    extra={
+                        <Space>
+                            {streamModuleForm(
+                                <Button type="primary" icon={<PlusCircleOutlined />}>
+                                    添加规则
+                                </Button>
+                            )}
+                            <BatchAction
+                                menus={menus}
+                                curClientTag={getCurClientTag()}
+                                onCheckChange={checked => setApplyAllServer(checked)}
+                                onCancel={() => setApplyAllServer(false)}
+                            />
+                        </Space>
+                    }
+                    wrap
+                    ghost
+                >
+                    {streamData && streamData.length !== 0 ? (
+                        streamData?.map((d, index) => (
+                            <Badge.Ribbon
+                                key={d?.id}
+                                placement="end"
+                                text="100ms"
+                                color={''}
+                                // @ts-ignore
+                                // https://github.com/ant-design/pro-components/issues/2553
+                                colSpan={{ xs: 24, sm: 12, md: 12, lg: 8, xl: 6, xxl: 4 }}
+                            >
+                                <Spin spinning={cardLoading?.[index]}>
+                                    <ProCard
+                                        hoverable
+                                        bordered
+                                        bodyStyle={{ paddingBottom: 0 }}
+                                        className={styles.checked}
+                                        onDoubleClick={() => console.log('db')}
+                                        actions={[
+                                            <Popconfirm
+                                                title="确定删除?"
+                                                onConfirm={async () => {
+                                                    if (d.id) {
+                                                        try {
+                                                            const data = await streamDeleteRun(d.id)
+                                                            if (data && data > 0) {
+                                                                streamRefresh()
+                                                            }
+                                                        } catch (e: unknown) {
+                                                            message.error(`规则删除失败, ${inspect(e as string)}`)
                                                         }
-                                                    } catch (e: unknown) {
-                                                        message.error(`规则删除失败, ${inspect(e as string)}`)
                                                     }
-                                                }
-                                            }}
-                                        >
-                                            <DeleteOutlined key="delete" />
-                                        </Popconfirm>,
-                                        streamModuleForm(
-                                            <EditOutlined
-                                                key="edit"
-                                                onClick={() => {
-                                                    setCurrStreamData(d)
-                                                    setCurrUpstream(upstreamData?.find(u => u.id === currUpstream?.id))
                                                 }}
-                                            />
-                                        ),
-                                        <div
-                                            onClick={async () => {
-                                                // update card loading status
-                                                setCardLoading(cardLoading?.map((c, i) => (i === index ? true : c)))
-                                                if (d.id) {
-                                                    try {
-                                                        await StreamControllerUpdateStateById(
-                                                            { id: d.id },
-                                                            { state: d.state ? StateEnum.Able : StateEnum.Disable }
+                                            >
+                                                <DeleteOutlined key="delete" />
+                                            </Popconfirm>,
+                                            streamModuleForm(
+                                                <EditOutlined
+                                                    key="edit"
+                                                    onClick={() => {
+                                                        setCurrStreamData(d)
+                                                        setCurrUpstream(
+                                                            upstreamData?.find(u => u.id === currUpstream?.id)
                                                         )
-                                                    } catch (e) {
-                                                        message.error(`操作失败: ${e}`)
+                                                    }}
+                                                />
+                                            ),
+                                            <div
+                                                onClick={async () => {
+                                                    // update card loading status
+                                                    setCardLoading(cardLoading?.map((c, i) => (i === index ? true : c)))
+                                                    if (d.id) {
+                                                        try {
+                                                            await StreamControllerUpdateStateById(
+                                                                { id: d.id },
+                                                                { state: d.state ? StateEnum.Able : StateEnum.Disable }
+                                                            )
+                                                        } catch (e) {
+                                                            message.error(`操作失败: ${e}`)
+                                                        }
+                                                        setCardLoading(
+                                                            cardLoading?.map((c, i) => (i === index ? false : c))
+                                                        )
+                                                        streamRefresh()
                                                     }
-                                                    setCardLoading(
-                                                        cardLoading?.map((c, i) => (i === index ? false : c))
-                                                    )
-                                                    streamRefresh()
-                                                }
+                                                }}
+                                            >
+                                                {d?.state ? (
+                                                    <PlayCircleOutlined key="Play" />
+                                                ) : (
+                                                    <PauseCircleOutlined key="Pause" />
+                                                )}
+                                            </div>
+                                        ]}
+                                        key={d.id}
+                                    >
+                                        <StreamContent
+                                            dataSource={d}
+                                            getUpstreamById={upstreamId => upstreamData?.find(u => u.id === upstreamId)}
+                                            onUpstreamClick={(streamId, upstreamId) => {
+                                                setId(streamId)
+                                                setUpstreamVisible(true)
+                                                setCurrUpstream(upstreamData?.find(u => u.id === upstreamId))
                                             }}
-                                        >
-                                            {d?.state ? (
-                                                <PlayCircleOutlined key="Play" />
-                                            ) : (
-                                                <PauseCircleOutlined key="Pause" />
-                                            )}
-                                        </div>
-                                    ]}
-                                    key={d.id}
-                                >
-                                    <StreamContent
-                                        dataSource={d}
-                                        getUpstreamById={upstreamId => upstreamData?.find(u => u.id === upstreamId)}
-                                        onUpstreamClick={(streamId, upstreamId) => {
-                                            setId(streamId)
-                                            setUpstreamVisible(true)
-                                            setCurrUpstream(upstreamData?.find(u => u.id === upstreamId))
-                                        }}
-                                    />
-                                </ProCard>
-                            </Spin>
-                        </Badge.Ribbon>
-                    ))
-                ) : (
-                    <Result
-                        status="404"
-                        title="空空如也"
-                        subTitle="抱歉, 您还未创建转发规则, 点击按钮开始吧"
-                        extra={streamModuleForm(
-                            <Button type="primary" icon={<PlusCircleOutlined />}>
-                                添加规则
-                            </Button>
-                        )}
-                    />
-                )}
-            </ProCard>
-            <UpstreamModel
-                upstream={currUpstream}
-                upstreamName={upstreamNameSelectEnum}
-                visible={upstreamVisible}
-                onUpstreamSelectChange={e => {
-                    setCurrUpstream(upstreamData?.find(u => u.id === e))
-                }}
-                onClose={form => {
-                    setUpstreamVisible(false)
-                    setCurrUpstream(upstreamData?.find(u => u.id === currUpstream?.id))
-                    form?.resetFields()
-                }}
-                onUpstreamSubmit={async e => {
-                    const { name } = e
-                    const selectUpstreamId = getKeyByValue(upstreamNameSelectEnum, name)
-                    // remove upstream
-                    if (id && (selectUpstreamId !== currUpstream?.id || (!selectUpstreamId && !currUpstream))) {
-                        try {
-                            await StreamControllerUpdateUpstreamIdById(
-                                { id },
-                                { data: { upstreamId: selectUpstreamId } }
-                            )
-                        } catch (error) {
-                            message.error(`更新 stream 失败, ${inspect(error)}`)
+                                        />
+                                    </ProCard>
+                                </Spin>
+                            </Badge.Ribbon>
+                        ))
+                    ) : (
+                        <Result
+                            status="404"
+                            title="空空如也"
+                            subTitle="抱歉, 您还未创建转发规则, 点击按钮开始吧"
+                            extra={streamModuleForm(
+                                <Button type="primary" icon={<PlusCircleOutlined />}>
+                                    添加规则
+                                </Button>
+                            )}
+                        />
+                    )}
+                </ProCard>
+                <UpstreamModel
+                    upstream={currUpstream}
+                    upstreamName={upstreamNameSelectEnum}
+                    visible={upstreamVisible}
+                    onUpstreamSelectChange={e => {
+                        setCurrUpstream(upstreamData?.find(u => u.id === e))
+                    }}
+                    onClose={form => {
+                        setUpstreamVisible(false)
+                        setCurrUpstream(upstreamData?.find(u => u.id === currUpstream?.id))
+                        form?.resetFields()
+                    }}
+                    onUpstreamSubmit={async e => {
+                        const { name } = e
+                        const selectUpstreamId = getKeyByValue(upstreamNameSelectEnum, name)
+                        // remove upstream
+                        if (id && (selectUpstreamId !== currUpstream?.id || (!selectUpstreamId && !currUpstream))) {
+                            try {
+                                await StreamControllerUpdateUpstreamIdById(
+                                    { id },
+                                    { data: { upstreamId: selectUpstreamId } }
+                                )
+                            } catch (error) {
+                                message.error(`更新 stream 失败, ${inspect(error)}`)
+                            }
                         }
-                    }
-                    // update upstream
-                    if (id && selectUpstreamId) {
-                        try {
-                            await UpstreamControllerUpdate({
-                                id: selectUpstreamId,
-                                ...(e as API.UpdateUpstreamDto)
-                            })
-                        } catch (error) {
-                            message.error(`更新 upstream 失败, ${inspect(error)}`)
+                        // update upstream
+                        if (id && selectUpstreamId) {
+                            try {
+                                await UpstreamControllerUpdate({
+                                    id: selectUpstreamId,
+                                    ...(e as API.UpdateUpstreamDto)
+                                })
+                            } catch (error) {
+                                message.error(`更新 upstream 失败, ${inspect(error)}`)
+                            }
                         }
-                    }
-                    setUpstreamVisible(false)
-                    // may be can optimize
-                    setTimeout(streamRefresh, 100)
-                    setTimeout(upstreamRefresh, 100)
-                }}
+                        setUpstreamVisible(false)
+                        // may be can optimize
+                        setTimeout(streamRefresh, 100)
+                        setTimeout(upstreamRefresh, 100)
+                    }}
+                />
+            </Spin>
+            <BatchAdd
+                title="批量添加规则"
+                visible={batchAddModel}
+                onVisibleChange={visible => setBatchAddModel(visible)}
+                onFinish={() => Promise.resolve()}
             />
-        </Spin>
+        </>
     )
 }

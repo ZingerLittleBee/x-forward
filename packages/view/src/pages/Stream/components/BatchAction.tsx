@@ -18,7 +18,8 @@ export type DropDownMenu = {
     label: string
     key?: string
     icon?: React.ReactNode
-    onOk: () => void
+    onOk?: () => Promise<void>
+    menuClick?: () => void
 }
 
 const dropDownOverlay = (
@@ -28,38 +29,47 @@ const dropDownOverlay = (
     onCancel: () => void
 ) => (
     <Menu>
-        {menus.map(({ type, label, key = '', icon = <></>, onOk }, index) => (
-            <Menu.Item
-                key={key ? key : index}
-                icon={icon}
-                onClick={() => {
-                    confirm({
-                        title: (
-                            <span>
-                                是否确定{type}
-                                {
-                                    <Text underline code>
-                                        {curClientTag}
-                                    </Text>
-                                }
-                                下所有规则 ?
-                            </span>
-                        ),
-                        icon: icon,
-                        visible: true,
-                        content: <Checkbox onChange={e => onCheckChange(e.target.checked)}>应用到所有服务器</Checkbox>,
-                        onOk() {
-                            onOk?.()
-                        },
-                        onCancel() {
-                            onCancel?.()
-                        }
-                    })
-                }}
-            >
-                {label}
-            </Menu.Item>
-        ))}
+        {menus.map((menus, index) => {
+            const { type, label, key = '', icon = <></>, onOk } = menus
+            return (
+                <Menu.Item
+                    key={key ? key : index}
+                    icon={icon}
+                    onClick={() => {
+                        menus.menuClick
+                            ? menus.menuClick()
+                            : confirm({
+                                  title: (
+                                      <span>
+                                          是否确定{type}
+                                          {
+                                              <Text underline code>
+                                                  {curClientTag}
+                                              </Text>
+                                          }
+                                          下所有规则 ?
+                                      </span>
+                                  ),
+                                  icon: icon,
+                                  visible: true,
+                                  content: (
+                                      <Checkbox onChange={e => onCheckChange(e.target.checked)}>
+                                          应用到所有服务器
+                                      </Checkbox>
+                                  ),
+                                  onOk() {
+                                      onOk?.()
+                                  },
+                                  onCancel() {
+                                      onCancel?.()
+                                  }
+                              })
+                    }}
+                >
+                    {label}
+                </Menu.Item>
+            )
+        })}
     </Menu>
 )
 
