@@ -95,7 +95,7 @@ importers:
       '@types/uuid': 8.3.4
       '@typescript-eslint/eslint-plugin': 4.33.0
       '@typescript-eslint/parser': 4.33.0
-      axios: 0.26.1
+      axios: 0.27.2
       better-sqlite3: 7.5.1
       cache-manager: 3.6.1
       class-transformer: 0.5.1
@@ -142,7 +142,7 @@ importers:
       '@nestjs/swagger': 5.2.1_0d02518704b9480274bb3a5bf7280c33
       '@nestjs/typeorm': 8.0.3_5565c6793a20156d0e1b2452a26558b0
       '@nestjs/websockets': 8.4.4_3014fe44fe56dc306f12143fbc824279
-      axios: 0.26.1
+      axios: 0.27.2
       better-sqlite3: 7.5.1
       cache-manager: 3.6.1
       class-transformer: 0.5.1
@@ -8177,6 +8177,15 @@ packages:
       - debug
     dev: false
 
+  /axios/0.27.2:
+    resolution: {integrity: sha512-t+yRIyySRTp/wua5xEr+z1q60QmLq8ABsS5O9Me1AsE5dfKqgnCFzwiCZZ/cGNd1lq4/7akDWMxdhVlucjmnOQ==}
+    dependencies:
+      follow-redirects: 1.14.9
+      form-data: 4.0.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
+
   /babel-core/7.0.0-bridge.0_@babel+core@7.12.10:
     resolution: {integrity: sha512-poPX9mZH/5CSanm50Q+1toVci6pv5KSRv/5TWCwtzQS5XEwn40BcCrgIeMFWP9CKKIniKXNxoIOnOq4VVlGXhg==}
     peerDependencies:
@@ -12645,7 +12654,6 @@ packages:
       asynckit: 0.4.0
       combined-stream: 1.0.8
       mime-types: 2.1.35
-    dev: true
 
   /format/0.2.2:
     resolution: {integrity: sha1-1hcBB+nv3E7TDJ3DkBbflCtctYs=}
