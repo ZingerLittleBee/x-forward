@@ -42,31 +42,31 @@
   "dependencies": {
     "@x-forward/app": "workspace:*",
     "@x-forward/view": "workspace:*",
-    "lodash": "^4.17.21"
+    "lodash": "4.17.21"
   },
   "devDependencies": {
-    "@commitlint/cli": "^15.0.0",
-    "@commitlint/config-conventional": "^15.0.0",
-    "@types/jest": "^27.4.0",
-    "@types/lodash": "^4.14.178",
+    "@commitlint/cli": "15.0.0",
+    "@commitlint/config-conventional": "15.0.0",
+    "@types/jest": "27.4.1",
+    "@types/lodash": "4.14.182",
     "@typescript-eslint/eslint-plugin": "5.7.0",
     "@typescript-eslint/parser": "5.7.0",
-    "eslint": "^8.9.0",
+    "eslint": "8.14.0",
     "eslint-config-prettier": "8.3.0",
     "eslint-define-config": "1.2.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-prettier": "4.0.0",
-    "git-cz": "^4.8.0",
-    "husky": "^7.0.4",
-    "jest": "^27.5.1",
-    "lint-staged": "^12.3.4",
+    "git-cz": "4.8.0",
+    "husky": "7.0.4",
+    "jest": "27.5.1",
+    "lint-staged": "12.4.1",
     "prettier": "2.5.1",
-    "pretty-quick": "^3.1.3",
-    "standard-version": "^9.3.2",
-    "stylelint": "^14.5.0",
-    "stylelint-config-standard": "^24.0.0",
-    "ts-jest": "^27.1.3",
-    "typescript": "^4.5.5"
+    "pretty-quick": "3.1.3",
+    "standard-version": "9.3.2",
+    "stylelint": "14.8.1",
+    "stylelint-config-standard": "24.0.0",
+    "ts-jest": "27.1.4",
+    "typescript": "4.6.4"
   },
   "config": {
     "commitizen": {
