@@ -14,7 +14,7 @@ importers:
       '@x-forward/view': workspace:*
       eslint: 8.14.0
       eslint-config-prettier: 8.5.0
-      eslint-define-config: 1.2.0
+      eslint-define-config: 1.4.0
       eslint-plugin-import: 2.25.3
       eslint-plugin-prettier: 4.0.0
       git-cz: 4.8.0
@@ -42,7 +42,7 @@ importers:
       '@typescript-eslint/parser': 5.7.0_eslint@8.14.0+typescript@4.6.4
       eslint: 8.14.0
       eslint-config-prettier: 8.5.0_eslint@8.14.0
-      eslint-define-config: 1.2.0
+      eslint-define-config: 1.4.0
       eslint-plugin-import: 2.25.3_eslint@8.14.0
       eslint-plugin-prettier: 4.0.0_740be41c8168d0cc214a306089357ad0
       git-cz: 4.8.0
@@ -11464,9 +11464,9 @@ packages:
       eslint: 8.14.0
     dev: true
 
-  /eslint-define-config/1.2.0:
-    resolution: {integrity: sha512-EQ8d9F9LmJVRfkZW9WgSa5VBAVZialrLZKy0k1062zlhM8KFUyFoAC8xRI+mdp5m81FNMPnpKZfyq0AfJDyNTg==}
-    engines: {node: '>= 16.9.0', npm: '>= 7.0.0', pnpm: '>= 6.17.0'}
+  /eslint-define-config/1.4.0:
+    resolution: {integrity: sha512-DJGEdzX4fkdkhPSzPgOpBbBjhT+b9DcgbAgxfrEUcipVWlSuesQJriKffHz1JF5mhKFm7PGoiZz4D2nb4GslNA==}
+    engines: {node: '>= 14.6.0', npm: '>= 6.0.0', pnpm: '>= 6.32.9'}
     dev: true
 
   /eslint-formatter-pretty/4.1.0:
