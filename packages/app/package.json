@@ -65,7 +65,7 @@
         "swagger-ui-express": "^4.3.0",
         "typeorm": "^0.2.41",
         "uuid": "^8.3.2",
-        "socket.io": "^4.4.1",
+        "socket.io": "4.5.0",
         "zx": "^4.3.0"
     },
     "devDependencies": {
