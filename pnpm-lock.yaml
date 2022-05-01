@@ -241,7 +241,7 @@ importers:
       mockjs: 1.1.0
       moment: 2.29.3
       omit.js: 2.0.2
-      postcss: 7.0.39
+      postcss: 8.4.13
       puppeteer-core: 8.0.0
       rc-menu: 9.5.5
       rc-resize-observer: 1.2.0
@@ -319,7 +319,7 @@ importers:
       gh-pages: 3.2.3
       jsdom-global: 3.0.2
       mockjs: 1.1.0
-      postcss: 7.0.39
+      postcss: 8.4.13
       puppeteer-core: 8.0.0
       rc-menu: 9.5.5_react-dom@17.0.2+react@17.0.2
       swagger-ui-react: 4.10.3_react-dom@17.0.2+react@17.0.2
