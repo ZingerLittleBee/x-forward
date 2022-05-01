@@ -51,7 +51,7 @@
         "class-transformer": "0.5.1",
         "class-validator": "0.13.2",
         "cron": "1.8.3",
-        "helmet": "4.6.0",
+        "helmet": "5.0.2",
         "moment": "2.29.3",
         "mongoose": "6.3.1",
         "node-pty": "0.10.1",
