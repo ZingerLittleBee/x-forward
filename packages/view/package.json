@@ -93,7 +93,7 @@
     "@umijs/preset-dumi": "1.1.40",
     "@umijs/preset-react": "1.8.30",
     "@umijs/yorkie": "2.0.5",
-    "autoprefixer": "9.8.8",
+    "autoprefixer": "10.4.5",
     "carlo": "0.9.46",
     "cross-env": "7.0.3",
     "cross-port-killer": "1.4.0",
