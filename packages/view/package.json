@@ -52,7 +52,7 @@
     "@umijs/route-utils": "1.0.37",
     "@x-forward/app": "workspace:^0.0.1",
     "@forwardx/shared": "workspace:*",
-    "ahooks": "2.10.14",
+    "ahooks": "3.3.10",
     "ansi-colors": "4.1.1",
     "antd": "4.20.2",
     "classnames": "2.3.1",

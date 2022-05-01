@@ -222,7 +222,7 @@ importers:
       '@umijs/route-utils': 1.0.37
       '@umijs/yorkie': 2.0.5
       '@x-forward/app': workspace:^0.0.1
-      ahooks: 2.10.14
+      ahooks: 3.3.10
       ansi-colors: 4.1.1
       antd: 4.20.2
       autoprefixer: 10.4.5
@@ -269,7 +269,7 @@ importers:
       '@forwardx/shared': link:../shared
       '@umijs/route-utils': 1.0.37
       '@x-forward/app': link:../app
-      ahooks: 2.10.14_react@17.0.2
+      ahooks: 3.3.10_react@17.0.2
       ansi-colors: 4.1.1
       antd: 4.20.2_react-dom@17.0.2+react@17.0.2
       classnames: 2.3.1
@@ -335,6 +335,7 @@ packages:
       lodash.debounce: 4.0.8
       lodash.throttle: 4.1.1
       react: 17.0.2
+    dev: true
 
   /@amap/amap-jsapi-loader/0.0.3:
     resolution: {integrity: sha512-3Tz50UdmRY2BiONK/mafEQzshYGUinK2hmDlKjYtoJHC/aVydiMOolHENWmP98F603RcrWTM7aLxOFMgesFfug==}
@@ -7656,20 +7657,22 @@ packages:
       indent-string: 4.0.0
     dev: true
 
-  /ahooks/2.10.14_react@17.0.2:
-    resolution: {integrity: sha512-axWa7VoAgu7bxA56dDl0CXW4rvaQmDBiov/d3tAy0x1YNYywYMKokL8TdLgJ5zO/oXGiWmG7BxlGOQGkqE/zkQ==}
+  /ahooks-v3-count/1.0.0:
+    resolution: {integrity: sha512-V7uUvAwnimu6eh/PED4mCDjE7tokeZQLKlxg9lCTMPhN+NjsSbtdacByVlR1oluXQzD3MOw55wylDmQo4+S9ZQ==}
+    dev: false
+
+  /ahooks/3.3.10_react@17.0.2:
+    resolution: {integrity: sha512-CNZQRnNkvbafV5qdGcx7AT81XJNPa7vAo1XoShvdI8s6oHigTrmc+kWkyWWEywiEchF992Z6oIQEXkSsL034fw==}
     engines: {node: '>=8.0.0'}
     peerDependencies:
-      react: ^16.8.6 || ^17.0
+      react: ^16.8.0 || ^17.0.0 || ^18.0.0
     dependencies:
-      '@ahooksjs/use-request': 2.8.15_react@17.0.2
       '@types/js-cookie': 2.2.7
+      ahooks-v3-count: 1.0.0
       dayjs: 1.11.0
-      intersection-observer: 0.7.0
+      intersection-observer: 0.12.0
       js-cookie: 2.2.1
-      lodash.debounce: 4.0.8
-      lodash.isequal: 4.5.0
-      lodash.throttle: 4.1.1
+      lodash: 4.17.21
       react: 17.0.2
       resize-observer-polyfill: 1.5.1
       screenfull: 5.2.0
@@ -13940,8 +13943,8 @@ packages:
     engines: {node: '>= 0.10'}
     dev: true
 
-  /intersection-observer/0.7.0:
-    resolution: {integrity: sha512-Id0Fij0HsB/vKWGeBe9PxeY45ttRiBmhFyyt/geBdDHBYNctMRTE3dC1U3ujzz3lap+hVXlEcVaB56kZP/eEUg==}
+  /intersection-observer/0.12.0:
+    resolution: {integrity: sha512-2Vkz8z46Dv401zTWudDGwO7KiGHNDkMv417T5ItcNYfmvHR/1qCTVBO9vwH8zZmQ0WkA/1ARwpysR9bsnop4NQ==}
     dev: false
 
   /intl-format-cache/4.3.1:
@@ -16067,6 +16070,7 @@ packages:
 
   /lodash.debounce/4.0.8:
     resolution: {integrity: sha1-gteb/zCmfEAF/9XiUVMArZyk168=}
+    dev: true
 
   /lodash.escape/4.0.1:
     resolution: {integrity: sha1-yQRGkMIeBClL6qUXcS/e0fqI3pg=}
@@ -16145,6 +16149,7 @@ packages:
 
   /lodash.throttle/4.1.1:
     resolution: {integrity: sha1-wj6RtxAkKscMN/HhzaknTMOb8vQ=}
+    dev: true
 
   /lodash.tonumber/4.0.3:
     resolution: {integrity: sha1-C5azGzVnJ5Prf1pj7nkfG56QJdk=}
