@@ -68,7 +68,7 @@ importers:
       '@nestjs/axios': 0.0.7
       '@nestjs/cli': 8.2.5
       '@nestjs/common': 8.4.4
-      '@nestjs/config': 1.2.1
+      '@nestjs/config': 2.0.0
       '@nestjs/core': 8.4.4
       '@nestjs/event-emitter': 1.1.0
       '@nestjs/jwt': 8.0.0
@@ -129,7 +129,7 @@ importers:
       '@grpc/proto-loader': 0.6.9
       '@nestjs/axios': 0.0.7_7670df531e7a1503cdbe395599f41db7
       '@nestjs/common': 8.4.4_ea528571bae7e3437ac6e354bb00c0f4
-      '@nestjs/config': 1.2.1_7670df531e7a1503cdbe395599f41db7
+      '@nestjs/config': 2.0.0_7670df531e7a1503cdbe395599f41db7
       '@nestjs/core': 8.4.4_5d10a4a11dc88185c32174eb7df924c6
       '@nestjs/event-emitter': 1.1.0_8a3f4045e53a03a04c90c8adfa35dfce
       '@nestjs/jwt': 8.0.0_@nestjs+common@8.4.4
@@ -5019,8 +5019,8 @@ packages:
       - debug
     dev: false
 
-  /@nestjs/config/1.2.1_7670df531e7a1503cdbe395599f41db7:
-    resolution: {integrity: sha512-EgaGTXvG4unD5lGWmdSrUFrkGpX32lQGE/8qS60EnL82sIZV7HT1ZL7ib5S86P1nB+DnFDbDhDqTaZ3mivTyOg==}
+  /@nestjs/config/2.0.0_7670df531e7a1503cdbe395599f41db7:
+    resolution: {integrity: sha512-Hi1k/1S5ogsS5c0OtNm72thiLSngijOaLDFaGI5ZPxNGpF23lctPg6ox3pYIOhXVRX/u+eiUIp71gswH2k8YNw==}
     peerDependencies:
       '@nestjs/common': ^7.0.0 || ^8.0.0
       reflect-metadata: ^0.1.13
@@ -5028,7 +5028,7 @@ packages:
     dependencies:
       '@nestjs/common': 8.4.4_ea528571bae7e3437ac6e354bb00c0f4
       dotenv: 16.0.0
-      dotenv-expand: 5.1.0
+      dotenv-expand: 8.0.2
       lodash: 4.17.21
       reflect-metadata: 0.1.13
       rxjs: 7.5.5
@@ -10789,8 +10789,9 @@ packages:
       is-obj: 2.0.0
     dev: true
 
-  /dotenv-expand/5.1.0:
-    resolution: {integrity: sha512-YXQl1DSa4/PQyRfgrv6aoNjhasp/p4qs9FjJ4q4cQk+8m4r6k4ZSiEyytKG8f8W9gi8WsQtIObNmKd+tMzNTmA==}
+  /dotenv-expand/8.0.2:
+    resolution: {integrity: sha512-vKKAk+VOzAWOV/dPIeSYqhgC/TQY+6L6Ibkzfsr8xd1stdBsTuGu9asCOXgbYbBeS+f2Y6lqqEuw7riOA+xEUQ==}
+    engines: {node: '>=12'}
     dev: false
 
   /dotenv/16.0.0:
