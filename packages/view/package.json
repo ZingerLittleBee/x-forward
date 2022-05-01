@@ -103,7 +103,7 @@
     "gh-pages": "3.2.3",
     "jsdom-global": "3.0.2",
     "mockjs": "1.1.0",
-    "postcss": "7.0.39",
+    "postcss": "8.4.13",
     "puppeteer-core": "8.0.0",
     "rc-menu": "9.5.5",
     "swagger-ui-react": "4.10.3",
