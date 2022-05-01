@@ -59,7 +59,7 @@ importers:
 
   packages/app:
     specifiers:
-      '@automapper/classes': 7.3.14
+      '@automapper/classes': 8.3.3
       '@automapper/core': 7.3.14
       '@automapper/nestjs': 7.3.14
       '@forwardx/shared': workspace:*
@@ -121,7 +121,7 @@ importers:
       uuid: 8.3.2
       zx: 4.3.0
     dependencies:
-      '@automapper/classes': 7.3.14_reflect-metadata@0.1.13
+      '@automapper/classes': 8.3.3_7ca00b5ba51803eca180033cfa9ea7e5
       '@automapper/core': 7.3.14
       '@automapper/nestjs': 7.3.14_a78378ec5f3cecc3c353ed91b578f3e6
       '@forwardx/shared': link:../shared
@@ -1486,12 +1486,14 @@ packages:
       - supports-color
     dev: false
 
-  /@automapper/classes/7.3.14_reflect-metadata@0.1.13:
-    resolution: {integrity: sha512-baqTwUoIIUWPcW+ScAckmNTkM9AUkc3S8IPpyU2vCNkwxTwkDjPWH1dhCMpKhxn6VQ0C7i+gi8csNDUqKP0s9Q==}
-    engines: {node: '>=12.0.0'}
+  /@automapper/classes/8.3.3_7ca00b5ba51803eca180033cfa9ea7e5:
+    resolution: {integrity: sha512-wPpxe3HtsSa0dbZrwg8Jz0aLV7R14FN4u1rNewONc7Z2W4F2o68CGEQ/S/YW5vVmr1w7g5Z+vNUwQAj11uv9dQ==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
+      '@automapper/core': 8.3.3
       reflect-metadata: ~0.1.13
     dependencies:
+      '@automapper/core': 7.3.14
       reflect-metadata: 0.1.13
     dev: false
 
