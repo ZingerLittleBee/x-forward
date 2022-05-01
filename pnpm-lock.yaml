@@ -61,7 +61,7 @@ importers:
     specifiers:
       '@automapper/classes': 8.3.3
       '@automapper/core': 7.3.14
-      '@automapper/nestjs': 7.3.14
+      '@automapper/nestjs': 8.3.3
       '@forwardx/shared': workspace:*
       '@grpc/grpc-js': 1.6.7
       '@grpc/proto-loader': 0.6.9
@@ -123,7 +123,7 @@ importers:
     dependencies:
       '@automapper/classes': 8.3.3_7ca00b5ba51803eca180033cfa9ea7e5
       '@automapper/core': 7.3.14
-      '@automapper/nestjs': 7.3.14_a78378ec5f3cecc3c353ed91b578f3e6
+      '@automapper/nestjs': 8.3.3_edf3cac17551e55185cca7614dc2bf71
       '@forwardx/shared': link:../shared
       '@grpc/grpc-js': 1.6.7
       '@grpc/proto-loader': 0.6.9
@@ -1502,13 +1502,15 @@ packages:
     engines: {node: '>=12.0.0'}
     dev: false
 
-  /@automapper/nestjs/7.3.14_a78378ec5f3cecc3c353ed91b578f3e6:
-    resolution: {integrity: sha512-2in2vFROdrSKmgBPflLdu+MyGzPPeAV9ODtyhvGN8krCPjL59hbvSvmzNmPj+EWKqG9eZR2OWMlymYRrqRzq+w==}
-    engines: {node: '>=12.0.0'}
+  /@automapper/nestjs/8.3.3_edf3cac17551e55185cca7614dc2bf71:
+    resolution: {integrity: sha512-9WQ6f9PIa8lCrZ4vPs+vVtifLgdmWPNNQ/xcKMOyLl3Cs+5J1Nk2rxErmBOOunWK7dgCMWskDugj11DAHOTf0Q==}
+    engines: {node: '>=14.0.0'}
     peerDependencies:
+      '@automapper/core': 8.3.3
       '@nestjs/common': ^7.0.0 || ^8.0.0
       '@nestjs/core': ^7.0.0 || ^8.0.0
     dependencies:
+      '@automapper/core': 7.3.14
       '@nestjs/common': 8.4.4_ea528571bae7e3437ac6e354bb00c0f4
       '@nestjs/core': 8.4.4_5d10a4a11dc88185c32174eb7df924c6
     dev: false
