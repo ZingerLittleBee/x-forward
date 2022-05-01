@@ -45,7 +45,7 @@
         "@nestjs/typeorm": "8.0.3",
         "@nestjs/websockets": "8.4.4",
         "@forwardx/shared": "workspace:*",
-        "axios": "0.26.1",
+        "axios": "0.27.2",
         "better-sqlite3": "7.5.1",
         "cache-manager": "3.6.1",
         "class-transformer": "0.5.1",
