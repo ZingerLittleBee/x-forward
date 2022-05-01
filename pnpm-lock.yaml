@@ -219,7 +219,7 @@ importers:
       '@umijs/preset-ant-design-pro': 1.3.3
       '@umijs/preset-dumi': 1.1.40
       '@umijs/preset-react': 1.8.30
-      '@umijs/route-utils': 1.0.37
+      '@umijs/route-utils': 2.0.5
       '@umijs/yorkie': 2.0.5
       '@x-forward/app': workspace:^0.0.1
       ahooks: 3.3.10
@@ -267,7 +267,7 @@ importers:
       '@ant-design/pro-list': 1.21.57_c54c956d85194678e97e637ac1b6955c
       '@ant-design/pro-table': 2.73.0_c54c956d85194678e97e637ac1b6955c
       '@forwardx/shared': link:../shared
-      '@umijs/route-utils': 1.0.37
+      '@umijs/route-utils': 2.0.5
       '@x-forward/app': link:../app
       ahooks: 3.3.10_react@17.0.2
       ansi-colors: 4.1.1
@@ -7198,15 +7198,6 @@ packages:
     transitivePeerDependencies:
       - react-router
     dev: true
-
-  /@umijs/route-utils/1.0.37:
-    resolution: {integrity: sha512-RQYMYd0w3mKWlCvhUqYN2/dcCD8LxQWsr46DXpaLtqe2Y/8662qXA3E6moaFpyfokKJK6UHt2VxNGhkKPNJIgQ==}
-    dependencies:
-      '@qixian.cs/path-to-regexp': 6.1.0
-      fast-deep-equal: 3.1.3
-      lodash.isequal: 4.5.0
-      memoize-one: 5.2.1
-    dev: false
 
   /@umijs/route-utils/2.0.5:
     resolution: {integrity: sha512-HSuQebvOmupsWvzl6P2ZRH5cFOs+Wla3wlnKIG1n1bDXnAYuJ5gHpA0uAf0AZIP4wIL5xsxOqlgYqAoOuOSuKw==}
