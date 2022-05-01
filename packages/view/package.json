@@ -104,7 +104,7 @@
     "jsdom-global": "3.0.2",
     "mockjs": "1.1.0",
     "postcss": "8.4.13",
-    "puppeteer-core": "8.0.0",
+    "puppeteer-core": "13.7.0",
     "rc-menu": "9.5.5",
     "swagger-ui-react": "4.10.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat"
