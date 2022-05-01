@@ -210,7 +210,7 @@ importers:
       '@types/lodash-es': 4.17.6
       '@types/node': 16.11.32
       '@types/react': 17.0.44
-      '@types/react-dom': 17.0.16
+      '@types/react-dom': 18.0.3
       '@types/react-helmet': 6.1.5
       '@umijs/openapi': 1.4.4
       '@umijs/plugin-blocks': 2.2.2
@@ -299,7 +299,7 @@ importers:
       '@types/lodash-es': 4.17.6
       '@types/node': 16.11.32
       '@types/react': 17.0.44
-      '@types/react-dom': 17.0.16
+      '@types/react-dom': 18.0.3
       '@types/react-helmet': 6.1.5
       '@umijs/openapi': 1.4.4
       '@umijs/plugin-blocks': 2.2.2_10f1d6666b0d6cac778c7c62b74948e3
@@ -5900,8 +5900,8 @@ packages:
     dependencies:
       '@types/react': 16.14.24
 
-  /@types/react-dom/17.0.16:
-    resolution: {integrity: sha512-DWcXf8EbMrO/gWnQU7Z88Ws/p16qxGpPyjTKTpmBSFKeE+HveVubqGO1CVK7FrwlWD5MuOcvh8gtd0/XO38NdQ==}
+  /@types/react-dom/18.0.3:
+    resolution: {integrity: sha512-1RRW9kst+67gveJRYPxGmVy8eVJ05O43hg77G2j5m76/RFJtMbcfAs2viQ2UNsvvDg8F7OfQZx8qQcl6ymygaQ==}
     dependencies:
       '@types/react': 17.0.44
     dev: true
