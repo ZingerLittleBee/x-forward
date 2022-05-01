@@ -60,7 +60,7 @@ importers:
   packages/app:
     specifiers:
       '@automapper/classes': 8.3.3
-      '@automapper/core': 7.3.14
+      '@automapper/core': 8.3.3
       '@automapper/nestjs': 8.3.3
       '@forwardx/shared': workspace:*
       '@grpc/grpc-js': 1.6.7
@@ -121,9 +121,9 @@ importers:
       uuid: 8.3.2
       zx: 4.3.0
     dependencies:
-      '@automapper/classes': 8.3.3_7ca00b5ba51803eca180033cfa9ea7e5
-      '@automapper/core': 7.3.14
-      '@automapper/nestjs': 8.3.3_edf3cac17551e55185cca7614dc2bf71
+      '@automapper/classes': 8.3.3_c501efeca5a6390fc4af6c272177b9a6
+      '@automapper/core': 8.3.3
+      '@automapper/nestjs': 8.3.3_2e8ffbae1d965d595c3587d5f3e283e8
       '@forwardx/shared': link:../shared
       '@grpc/grpc-js': 1.6.7
       '@grpc/proto-loader': 0.6.9
@@ -1487,23 +1487,23 @@ packages:
       - supports-color
     dev: false
 
-  /@automapper/classes/8.3.3_7ca00b5ba51803eca180033cfa9ea7e5:
+  /@automapper/classes/8.3.3_c501efeca5a6390fc4af6c272177b9a6:
     resolution: {integrity: sha512-wPpxe3HtsSa0dbZrwg8Jz0aLV7R14FN4u1rNewONc7Z2W4F2o68CGEQ/S/YW5vVmr1w7g5Z+vNUwQAj11uv9dQ==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
       '@automapper/core': 8.3.3
       reflect-metadata: ~0.1.13
     dependencies:
-      '@automapper/core': 7.3.14
+      '@automapper/core': 8.3.3
       reflect-metadata: 0.1.13
     dev: false
 
-  /@automapper/core/7.3.14:
-    resolution: {integrity: sha512-l20PUmE9bvNBVsbeEqhYNoLd7cd2ycM9IK5XidHl6QrlrvK4yznkImwgRdt/T0ApLb6zYH/NdaHCa21Kc09sEg==}
-    engines: {node: '>=12.0.0'}
+  /@automapper/core/8.3.3:
+    resolution: {integrity: sha512-KXqdaPLqiTi+WMf67+EgCt2h+Q5pr6xNqMhaa5wGAZLapQEGi8ZEq3hsNm64y0YrBIVRXemMBUSs4DRvDhdSSw==}
+    engines: {node: '>=14.0.0'}
     dev: false
 
-  /@automapper/nestjs/8.3.3_edf3cac17551e55185cca7614dc2bf71:
+  /@automapper/nestjs/8.3.3_2e8ffbae1d965d595c3587d5f3e283e8:
     resolution: {integrity: sha512-9WQ6f9PIa8lCrZ4vPs+vVtifLgdmWPNNQ/xcKMOyLl3Cs+5J1Nk2rxErmBOOunWK7dgCMWskDugj11DAHOTf0Q==}
     engines: {node: '>=14.0.0'}
     peerDependencies:
@@ -1511,7 +1511,7 @@ packages:
       '@nestjs/common': ^7.0.0 || ^8.0.0
       '@nestjs/core': ^7.0.0 || ^8.0.0
     dependencies:
-      '@automapper/core': 7.3.14
+      '@automapper/core': 8.3.3
       '@nestjs/common': 8.4.4_ea528571bae7e3437ac6e354bb00c0f4
       '@nestjs/core': 8.4.4_5d10a4a11dc88185c32174eb7df924c6
     dev: false
