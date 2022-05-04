@@ -1,6 +1,7 @@
 import { MapInterceptor, MapPipe } from '@automapper/nestjs'
+import { StateEnum } from '@forwardx/shared'
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseInterceptors } from '@nestjs/common'
-import { ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger'
+import { ApiBody, ApiExtraModels, ApiQuery, ApiTags } from '@nestjs/swagger'
 import { ApiResultResponse, Result } from '@x-forward/common'
 import { optimizeFieldInterceptor } from '../../interceptor/result.interceptor'
 import { CreateStreamDto } from './dto/create-stream.dto'
@@ -29,10 +30,19 @@ export class StreamController {
         return Result.okData(await this.streamService.create(stream as StreamEntity))
     }
 
+    @Post('restart')
+    @ApiQuery({
+        name: 'clientId',
+        required: false,
+        type: String
+    })
+    async restart(@Query('clientId') clientId?: string) {
+        this.streamService.restartAll(clientId)
+        return Result.ok()
+    }
+
     /**
      * 更新 stream 规则的可用状态
-     * @param id id
-     * @param state state
      */
     @Post(':id/state')
     @ApiBody({ schema: { properties: { state: { type: 'number' } } } })
@@ -55,29 +65,46 @@ export class StreamController {
 
     /**
      * 根据 stream id 更新 stream
-     * @param streamEntity 要更新的内容, 不存在的属性保持默认
-     */
-    @Patch(':id')
-    @ApiResultResponse('number')
-    async updateStreamById(@Param('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
-        return Result.okData((await this.streamService.update(id, stream as StreamEntity)).affected)
-    }
-
-    /**
-     * 根据 stream id 更新所有 stream
-     * @param streams
+     * @param stream 要更新的内容, 不存在的属性保持默认
      */
     @Patch()
-    @ApiResultResponse()
-    async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
-        // 剔除 id 为空的选项
-        await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
+    @ApiExtraModels(StreamDto)
+    async updateStream(@Query('id') id: string, @Body(MapPipe(StreamEntity, StreamDto)) stream: StreamDto) {
+        await this.streamService.update(id, stream as StreamEntity)
         return Result.ok()
     }
 
     /**
-     * 根据 id 删除 stream (软删除)
-     * 更新 delete_time 字段
+     * 更新 stream state
+     */
+    @Patch('state')
+    // https://github.com/nestjs/nest/issues/2169
+    @ApiQuery({
+        name: 'clientId',
+        required: false,
+        type: String
+    })
+    async updateAllState(@Query('state') state: StateEnum, @Query('clientId') clientId?: string) {
+        clientId
+            ? await this.streamService.updateStateByClientId(clientId, state)
+            : await this.streamService.updateAllState(state)
+        return Result.ok()
+    }
+
+    // /**
+    //  * 根据 stream id 更新所有 stream
+    //  * @param streams
+    //  */
+    // @Patch()
+    // @ApiResultResponse()
+    // async updateAllStream(@Body(MapPipe(StreamEntity, StreamDto, { isArray: true })) streams: StreamDto[]) {
+    //     // 剔除 id 为空的选项
+    //     await this.streamService.updateAll(streams.filter(s => s.id) as StreamEntity[])
+    //     return Result.ok()
+    // }
+
+    /**
+     * 根据 id 删除 stream
      * @param id id
      */
     @Delete(':id')
@@ -87,12 +114,16 @@ export class StreamController {
     }
 
     /**
-     * 删除所有 stream (软删除)
-     * 更新 delete_time 字段
+     * 删除所有 stream
      */
-    @Delete(':clientId')
-    @ApiResultResponse('number')
-    async deleteAllStream(@Param('clientId') clientId: string) {
-        return Result.okData((await this.streamService.deleteAll(clientId)).affected)
+    @Delete()
+    @ApiQuery({
+        name: 'clientId',
+        required: false,
+        type: String
+    })
+    async deleteAllStream(@Query('clientId') clientId?: string) {
+        await this.streamService.deleteAll(clientId)
+        return Result.ok()
     }
 }

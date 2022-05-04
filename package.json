@@ -10,7 +10,7 @@
   },
   "scripts": {
     "start": "pnpm -C ./packages/app start & pnpm -C ./packages/view start:dev & pnpm -C ./packages/view client:dev",
-    "backend:start": "pnpm -C ./packages/app start & pnpm -C ./packages/view client:dev",
+    "backend:start": "pnpm -C ./packages/app start & pnpm -C ./packages/app client:start",
     "app-server:start": "pnpm -C ./packages/app start",
     "app-server:dev": "pnpm -C ./packages/app dev",
     "app-server:debug": "pnpm -C ./packages/app debug",

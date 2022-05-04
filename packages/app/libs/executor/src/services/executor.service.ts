@@ -202,7 +202,7 @@ export class ExecutorService implements OnModuleInit {
     }
 
     async rewriteStream(content: string) {
-        Logger.verbose(`patch content: ${inspect(content)}`)
+        Logger.verbose(`rewrite content: ${inspect(content)}`)
         this.executor.streamRewrite(content)
     }
 
@@ -247,5 +247,21 @@ export class ExecutorService implements OnModuleInit {
 
     async getSystemTime() {
         return this.executor.getSystemTime()
+    }
+
+    nginxStart() {
+        this.executor.nginxStart()
+    }
+
+    nginxStop() {
+        this.executor.nginxStop()
+    }
+
+    nginxReload() {
+        this.executor.nginxReload()
+    }
+
+    nginxRestart() {
+        this.executor.nginxRestart()
     }
 }

@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common'
+import { Controller, Logger } from '@nestjs/common'
 import { GrpcMethod } from '@nestjs/microservices'
 import { Result } from '@x-forward/common'
 import { GrpcEndPoint } from '@x-forward/common/constants/endpoint.constant'
@@ -73,6 +73,25 @@ export class ExecutorController {
         } catch (e) {
             return Result.noWithMsg(e)
         }
+        return Result.ok()
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxStart() {
+        this.executorService.nginxStart()
+        return Result.ok()
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxStop() {
+        this.executorService.nginxStop()
+        return Result.ok()
+    }
+
+    @GrpcMethod(GrpcEndPoint.EXECUTOR_SERVICE)
+    async nginxRestart() {
+        Logger.verbose(`received nginxRestart by grpc`)
+        this.executorService.nginxRestart()
         return Result.ok()
     }
 }

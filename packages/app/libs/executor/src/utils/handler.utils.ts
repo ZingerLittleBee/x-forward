@@ -283,6 +283,24 @@ export const nginxReloadHandler = async (bin: string, options?: { isDocker?: boo
     return nginxReloadRes.exitCode
 }
 
+export const nginxStartHandler = async (options?: { isDocker?: boolean; containerName?: string }) => {
+    const nginxRestartRes = options?.isDocker
+        ? await dockerExec(options?.containerName, ShellEnum.SERVICE, 'nginx', 'start')
+        : await shellExec(ShellEnum.SERVICE, 'nginx', 'start')
+    nginxRestartRes.exitCode === 0
+        ? Logger.verbose(`nginx start 成功`)
+        : Logger.error(`nginx start 失败, ${nginxRestartRes.res}`)
+}
+
+export const nginxStopHandler = async (options?: { isDocker?: boolean; containerName?: string }) => {
+    const nginxRestartRes = options?.isDocker
+        ? await dockerExec(options?.containerName, ShellEnum.SERVICE, 'nginx', 'stop')
+        : await shellExec(ShellEnum.SERVICE, 'nginx', 'stop')
+    nginxRestartRes.exitCode === 0
+        ? Logger.verbose(`nginx stop 成功`)
+        : Logger.error(`nginx stop 失败, ${nginxRestartRes.res}`)
+}
+
 export const nginxReopenHandler = async (bin: string, options?: { isDocker?: boolean; containerName?: string }) => {
     const nginxReopenRes = options?.isDocker
         ? await dockerExec(options?.containerName, bin, '-s', 'reopen')

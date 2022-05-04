@@ -1,4 +1,4 @@
-import { removeProtocol } from '@forwardx/shared'
+import { removeProtocol, StateEnum } from '@forwardx/shared'
 import { Injectable, Logger } from '@nestjs/common'
 import { OnEvent } from '@nestjs/event-emitter'
 import { EventEnum } from '@x-forward/common'
@@ -7,7 +7,6 @@ import { StreamServer, StreamUpstream } from '@x-forward/render/render.interface
 import { inspect } from 'util'
 import { ClientService } from '../../modules/client/client.service'
 import { ExecutorGatewayService } from '../../modules/gateway/services/executor-gateway.service'
-import { ModelGatewayService } from '../../modules/gateway/services/model-gateway.service'
 import { StreamEntity } from '../../modules/stream/entity/stream.entity'
 import { UpstreamEntity } from '../../modules/upstream/entity/upstream.entity'
 import { streamEntities2StreamServer, upstreamEntities2StreamUpstream } from '../../utils/transform.util'
@@ -17,7 +16,6 @@ import { ConfigChangePayload } from './config-change.interface'
 export class ConfigChangeListener {
     constructor(
         private executorGateway: ExecutorGatewayService,
-        private modelGatewayService: ModelGatewayService,
         private readonly renderService: RenderService,
         private readonly clientService: ClientService
     ) {}
@@ -40,16 +38,22 @@ export class ConfigChangeListener {
      * @returns RenderModel
      */
     private fieldTransformation(streamEntities: StreamEntity[], upstreamEntities: UpstreamEntity[]) {
-        const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [] }
-        const upstreams = upstreamEntities.map(u => upstreamEntities2StreamUpstream(u))
-        upstreams && (res.upstreams = upstreams)
-        const servers = streamEntities.map(s => {
-            if (s?.upstreamId) {
-                return streamEntities2StreamServer(s, upstreamEntities.find(u => u.id === s.upstreamId)?.name)
+        const res: { servers: StreamServer[]; upstreams?: StreamUpstream[] } = { servers: [], upstreams: [] }
+        upstreamEntities.forEach(u => {
+            if (u.state === StateEnum.Able) {
+                res.upstreams.push(upstreamEntities2StreamUpstream(u))
             }
-            return streamEntities2StreamServer(s)
         })
-        servers && (res.servers = servers)
+        streamEntities.forEach(s => {
+            if (s.state === StateEnum.Able) {
+                if (s?.upstreamId) {
+                    res.servers.push(
+                        streamEntities2StreamServer(s, upstreamEntities.find(u => u.id === s.upstreamId)?.name)
+                    )
+                }
+                res.servers.push(streamEntities2StreamServer(s))
+            }
+        })
         return res
     }
 
@@ -59,24 +63,69 @@ export class ConfigChangeListener {
         return `${host}:${client?.port}`
     }
 
+    private async rewriteStream(clientId: string, content?: string) {
+        const config = content ? content : await this.renderService.renderStream(await this.collectModels(clientId))
+        Logger.verbose(`clientId: ${clientId}, new stream config: ${config}`)
+        this.executorGateway.streamRewrite(clientId, config)
+    }
+
     @OnEvent(EventEnum.CONFIG_CREATE)
     async handleConfigCreate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_CREATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
     }
 
     @OnEvent(EventEnum.CONFIG_UPDATE)
     async handleConfigUpdate(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_UPDATE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
     }
 
     @OnEvent(EventEnum.CONFIG_DELETE)
     async handleConfigDelete(payload: ConfigChangePayload) {
         Logger.verbose(`received ${EventEnum.CONFIG_DELETE} event}`)
-        const content = await this.renderService.renderStream(await this.collectModels(payload?.clientId))
-        this.executorGateway.streamRewrite(payload?.clientId, content)
+        this.rewriteStream(payload?.clientId)
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_START)
+    async handleConfigBatchStart(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_START} event`)
+        if (payload?.clientId) {
+            this.rewriteStream(payload.clientId)
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.rewriteStream(c.id))
+        }
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_RESTART)
+    async handleConfigBatchRestart(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_RESTART} event with ${inspect(payload)}`)
+        if (payload?.clientId) {
+            this.executorGateway.nginxRestart(payload.clientId)
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.executorGateway.nginxRestart(c.id))
+        }
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_STOP)
+    async handleConfigBatchStop(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_STOP} event}`)
+        if (payload?.clientId) {
+            this.rewriteStream(payload.clientId, '')
+        } else {
+            const clients = await this.clientService.getIds()
+            clients?.forEach(c => this.rewriteStream(c.id, ''))
+        }
+    }
+
+    @OnEvent(EventEnum.CONFIG_BATCH_DELETE)
+    async handleConfigBatchDelete(payload: ConfigChangePayload) {
+        Logger.verbose(`received ${EventEnum.CONFIG_BATCH_DELETE} event}`)
+        const clients = await this.clientService.getIds()
+        payload?.clientId
+            ? this.rewriteStream(payload.clientId, '')
+            : clients?.forEach(c => this.rewriteStream(c.id, ''))
     }
 }

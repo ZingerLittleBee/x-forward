@@ -25,10 +25,20 @@ export class ExecutorGatewayService implements ExecutorGatewayApi {
         }
     }
 
-    async MainConfigRewrite(clientId: string, content: string) {
+    async mainConfigRewrite(clientId: string, content: string) {
         const result = await firstValueFrom((await this.getClient(clientId))?.rewriteMainConfig({ content }))
         if (!result?.success) {
             Logger.warn(`main config patch failed: ${result?.message}`)
         }
+    }
+
+    async nginxStart(clientId: string) {
+        await firstValueFrom((await this.getClient(clientId))?.nginxStart({}))
+    }
+    async nginxStop(clientId: string) {
+        await firstValueFrom((await this.getClient(clientId))?.nginxStop({}))
+    }
+    async nginxRestart(clientId: string) {
+        await firstValueFrom((await this.getClient(clientId))?.nginxRestart({}))
     }
 }

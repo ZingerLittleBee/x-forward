@@ -92,21 +92,6 @@ export class StreamService {
         return (await this.streamRepository.findOne(id))?.clientId
     }
 
-    /**
-     * 更新 stream 的 state 状态
-     * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
-     * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
-     * @param id streamID
-     * @param state state
-     * @returns UpdateResult
-     */
-    async stateUpdate(id: string, state: number) {
-        const res = await this.streamRepository.update(id, { state: state })
-        const clientId = await this.getClientIdById(id)
-        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
-        return res
-    }
-
     @Preprocess()
     async update(id: string, @Optimized() streamEntity: StreamEntity) {
         const res = await this.streamRepository.update(id, streamEntity)
@@ -135,6 +120,45 @@ export class StreamService {
     }
 
     /**
+     * 更新 stream 的 state 状态
+     * typeorm + sqlite 无法正确返回 affect rows https://github.com/typeorm/typeorm/issues/7374
+     * 2021.10.24 更换为 better-sqlite3, 可以正确返回 affect rows
+     * @param id streamID
+     * @param state state
+     * @returns UpdateResult
+     */
+    async stateUpdate(id: string, state: number) {
+        const res = await this.streamRepository.update(id, { state: state })
+        const clientId = await this.getClientIdById(id)
+        if (clientId) this.eventService.triggerUpdateEvent({ clientId })
+        return res
+    }
+
+    async updateStateByClientId(clientId: string, state: StateEnum) {
+        state ? this.eventService.triggerBatchStop({ clientId }) : this.eventService.triggerBatchStart({ clientId })
+        return this.streamRepository.update({ clientId }, { state })
+    }
+
+    async updateAllState(state: StateEnum) {
+        state ? this.eventService.triggerBatchStop({}) : this.eventService.triggerBatchStart({})
+        return this.streamRepository.createQueryBuilder().update().set({ state }).where('id IS NOT NULL').execute()
+    }
+
+    async restartAll(clientId?: string) {
+        this.eventService.triggerBatchRestart({ clientId })
+    }
+
+    async startAll(clientId?: string) {
+        return clientId ? this.updateStateByClientId(clientId, StateEnum.Able) : this.updateAllState(StateEnum.Able)
+    }
+
+    async stopAll(clientId?: string) {
+        return clientId
+            ? this.updateStateByClientId(clientId, StateEnum.Disable)
+            : this.updateAllState(StateEnum.Disable)
+    }
+
+    /**
      * 更新 delete_time 字段
      * @param id primary key
      */
@@ -145,20 +169,27 @@ export class StreamService {
         return res
     }
 
+    async deleteAll(clientId?: string) {
+        this.eventService.triggerBatchDelete({ clientId })
+        return clientId
+            ? this.streamRepository.delete({ clientId })
+            : this.streamRepository.createQueryBuilder().delete().from(StreamEntity).where('id IS NOT NULL').execute()
+    }
+
     /**
      * 更新所有记录的 delete_time
      * @returns affect rows
      */
-    async deleteAll(clientId: string) {
-        const res = await this.streamRepository
-            .createQueryBuilder()
-            .update(StreamEntity)
-            .set({ deleteTime: new Date() })
-            .where('delete_time is NULL')
-            .execute()
-        this.eventService.triggerDeleteEvent({ clientId })
-        return res
-    }
+    // async deleteAll(clientId: string) {
+    //     const res = await this.streamRepository
+    //         .createQueryBuilder()
+    //         .update(StreamEntity)
+    //         .set({ deleteTime: new Date() })
+    //         .where('delete_time is NULL')
+    //         .execute()
+    //     this.eventService.triggerDeleteEvent({ clientId })
+    //     return res
+    // }
 
     async removeByFK(id: string) {
         const clientId = await this.getClientIdById(id)

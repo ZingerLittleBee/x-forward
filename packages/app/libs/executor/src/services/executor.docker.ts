@@ -23,7 +23,9 @@ import {
     nginxReloadHandler,
     nginxReopenHandler,
     nginxRestartHandler,
+    nginxStartHandler,
     nginxStatusHandler,
+    nginxStopHandler,
     nginxVersionHandler,
     streamConfigPathHandler,
     streamDirectoryHandler,
@@ -40,6 +42,12 @@ export class ExecutorDocker extends ExecutorAbs implements IExecutor {
         super()
         this.containerName = containerName
         this.cacheManager = cacheManager
+    }
+    nginxStop() {
+        nginxStopHandler({ isDocker: true, containerName: this.containerName })
+    }
+    nginxStart() {
+        nginxStartHandler({ isDocker: true, containerName: this.containerName })
     }
     async getSystemTime(): Promise<string> {
         return getSystemTimeHandler({

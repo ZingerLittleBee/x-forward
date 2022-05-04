@@ -20,5 +20,8 @@ export interface GrpcExecutorService {
     getNginxStatus({}): Observable<IResult<NginxStatus>>
     getSystemInfo({}): Observable<IResult<SystemInfo>>
     getSystemTime({}): Observable<IResult<string>>
+    nginxStart({}): Observable<IResult<any>>
+    nginxStop({}): Observable<IResult<any>>
+    nginxRestart({}): Observable<IResult<any>>
     updatePortAndUserRelation(args: { userProperties: UserProperty[] }): Observable<IResult<any>>
 }

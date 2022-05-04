@@ -5,18 +5,21 @@ package executor;
 import "google/protobuf/empty.proto";
 
 service ExecutorService {
-    rpc GetNginxBin(google.protobuf.Empty) returns(stringResult);
+    rpc GetNginxBin(google.protobuf.Empty) returns(StringResult);
     rpc GetNginxConfigArgs(google.protobuf.Empty) returns(NginxArgsResult);
-    rpc GetNginxStreamConfigContent(google.protobuf.Empty) returns(stringResult);
+    rpc GetNginxStreamConfigContent(google.protobuf.Empty) returns(StringResult);
     rpc GetNginxStatus(google.protobuf.Empty) returns (NginxStatusResult);
     rpc GetSystemInfo(google.protobuf.Empty) returns (SystemInfoResult);
-    rpc GetSystemTime(google.protobuf.Empty) returns (stringResult);
-    rpc FetchDirectory(Directory) returns (stringResult);
+    rpc GetSystemTime(google.protobuf.Empty) returns (StringResult);
+    rpc FetchDirectory(Directory) returns (StringResult);
     rpc RewriteMainConfig(MainConfigContent) returns(google.protobuf.Empty);
-    rpc StreamPatch(StreamContent) returns(noDataResult);
-    rpc RewriteStream(StreamContent) returns(noDataResult);
+    rpc StreamPatch(StreamContent) returns(NoDataResult);
+    rpc RewriteStream(StreamContent) returns(NoDataResult);
+    rpc NginxStart(google.protobuf.Empty) returns(NoDataResult);
+    rpc NginxRestart(google.protobuf.Empty) returns(NoDataResult);
+    rpc NginxStop(google.protobuf.Empty) returns(NoDataResult);
 
-    rpc UpdatePortAndUserRelation(UserProperties) returns(noDataResult);
+    rpc UpdatePortAndUserRelation(UserProperties) returns(NoDataResult);
 }
 
 message UserProperties {
@@ -72,12 +75,12 @@ message MainConfigContent {
     string content = 1;
 }
 
-message noDataResult {
+message NoDataResult {
     string success = 1;
     string message = 2;
 }
 
-message stringResult {
+message StringResult {
     string success = 1;
     string message = 2;
     string data = 3;

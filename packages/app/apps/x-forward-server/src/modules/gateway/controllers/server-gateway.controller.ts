@@ -11,7 +11,7 @@ import { ClientEntity } from '../../client/entity/client.entity'
 import { ClientGatewayService } from '../services/client-gateway.service'
 
 @Controller()
-export class ClientGatewayController {
+export class ServerGatewayController {
     constructor(private readonly clientGatewayService: ClientGatewayService) {}
 
     @UseInterceptors(CommunicationKeyAuthInterceptor)

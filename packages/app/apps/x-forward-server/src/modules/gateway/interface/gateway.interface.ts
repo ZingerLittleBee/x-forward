@@ -9,6 +9,31 @@ export interface ExecutorGatewayApi {
      * @param content content
      */
     streamPatch: (url: string, content: string) => void
+
+    /**
+     * rewrite stream config
+     */
+    streamRewrite: (clientId: string, content: string) => void
+
+    /**
+     * rewrite nginx main config
+     */
+    mainConfigRewrite: (clientId: string, content: string) => void
+
+    /**
+     * service nginx start
+     */
+    nginxStart: (clientId: string) => void
+
+    /**
+     * service nginx stop
+     */
+    nginxStop: (clientId: string) => void
+
+    /**
+     * service nginx restart
+     */
+    nginxRestart: (clientId: string) => void
 }
 
 export interface QueryGatewayApi {
@@ -38,5 +63,8 @@ export interface QueryGatewayApi {
 }
 
 export interface ModelGatewayApi {
+    /**
+     * get stream with upstream, exclude state !== 0
+     */
     getFullStream: () => Promise<{ streamEntities: StreamEntity[]; upstreamEntities: UpstreamEntity[] }>
 }

@@ -7,8 +7,8 @@ import { GrpcClientCenterModule } from '../grpc-client-center/grpc-client-center
 import { LogsModule } from '../logs/logs.module'
 import { StreamModule } from '../stream/stream.module'
 import { UpstreamModule } from '../upstream/upstream.module'
-import { ClientGatewayController } from './controllers/client-gateway.controller'
 import { LogsGatewayController } from './controllers/logs-gateway.controller'
+import { ServerGatewayController } from './controllers/server-gateway.controller'
 import { ClientGatewayService } from './services/client-gateway.service'
 import { ExecutorGatewayService } from './services/executor-gateway.service'
 import { LogsGatewayService } from './services/logs-gateway.service'
@@ -25,7 +25,7 @@ import { QueryGatewayService } from './services/query-gateway.service'
         ClientProfile,
         LogsGatewayService
     ],
-    controllers: [ClientGatewayController, LogsGatewayController],
+    controllers: [ServerGatewayController, LogsGatewayController],
     exports: [
         ExecutorGatewayService,
         ModelGatewayService,

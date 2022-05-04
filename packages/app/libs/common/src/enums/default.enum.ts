@@ -33,7 +33,9 @@ export enum DefaultEnum {
 
     LOGS_UPLOAD_INTERVAL = '*/1 * * * *',
 
-    HEART_BEAT_CRON = '*/2 * * * *'
+    HEART_BEAT_CRON = '*/2 * * * *',
+
+    DNS_SERVERS = "['4.4.4.4', '[2001:4860:4860::8888]', '4.4.4.4:1053', '[2001:4860:4860::8888]:1053']"
 }
 
 export enum DefaultTimeEnum {

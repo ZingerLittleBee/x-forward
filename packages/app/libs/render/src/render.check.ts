@@ -12,7 +12,7 @@ export const dnsCheck = async ({ servers, upstreams }: RenderModel) => {
             setServers(JSON.parse(getEnvSetting(EnvKeyEnum.DnsServers)))
             Logger.verbose(`DNS Server 设置为: ${JSON.parse(getEnvSetting(EnvKeyEnum.DnsServers))}`)
         } catch (e) {
-            Logger.warn(`DNS: ${getEnvSetting(EnvKeyEnum.DnsServers)}, 设置失败, 请检查是否满足 JSON 格式`)
+            Logger.warn(`DNS: ${getEnvSetting(EnvKeyEnum.DnsServers)}, 设置失败: ${e}`)
         }
     }
     const parseMap = new Map()

@@ -1,4 +1,4 @@
-import { IsOrNotEnum } from '@forwardx/shared'
+import { IsOrNotEnum, StateEnum } from '@forwardx/shared'
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { SchedulerRegistry } from '@nestjs/schedule'
 import { InjectRepository } from '@nestjs/typeorm'
@@ -14,7 +14,7 @@ import { ClientEntity } from './entity/client.entity'
 export class ClientService implements OnModuleInit {
     constructor(
         @InjectRepository(ClientEntity)
-        private readonly clientRepository: Repository<ClientEntity>,
+        private clientRepository: Repository<ClientEntity>,
         private readonly schedulerRegistry: SchedulerRegistry,
         private readonly streamService: StreamService
     ) {}
@@ -74,6 +74,13 @@ export class ClientService implements OnModuleInit {
 
     async findAll() {
         return this.clientRepository.find({ loadEagerRelations: false })
+    }
+
+    async getIds() {
+        return this.clientRepository.find({
+            select: ['id'],
+            where: { state: StateEnum.Able }
+        })
     }
 
     async findByIdWithRelations(clientId: string) {
