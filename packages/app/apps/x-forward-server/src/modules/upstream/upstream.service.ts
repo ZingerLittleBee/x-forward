@@ -72,11 +72,11 @@ export class UpstreamService {
     }
 
     async findEffect() {
-        return this.upstreamRepository.find({ state: StateEnum.Able })
+        return this.upstreamRepository.find({ where: { state: StateEnum.Able } })
     }
 
     async findByName(name: string) {
-        return this.upstreamRepository.findOne({ name })
+        return this.upstreamRepository.findOne({ where: { name } })
     }
 
     async findByNames(names: string[]) {
@@ -84,11 +84,11 @@ export class UpstreamService {
     }
 
     async findOne(id: string) {
-        return this.upstreamRepository.findOne(id)
+        return this.upstreamRepository.findOne({ where: { id } })
     }
 
     async getClientIdById(id: string) {
-        return (await this.upstreamRepository.findOne({ id }))?.clientId
+        return (await this.upstreamRepository.findOne({ where: { id } }))?.clientId
     }
 
     @Preprocess()

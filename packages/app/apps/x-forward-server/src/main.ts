@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core'
 import { MicroserviceOptions, Transport } from '@nestjs/microservices'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { EnvKeyEnum, getEnvSetting } from '@x-forward/common'
-import * as helmet from 'helmet'
+import helmet from 'helmet'
 import { AppModule } from './app.module'
 import { GlobalExceptionFilter } from './filter/global-exception.filter'
 

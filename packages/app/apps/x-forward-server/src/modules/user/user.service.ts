@@ -16,7 +16,7 @@ export class UserService implements OnModuleInit {
     }
 
     async login({ username, password }: LoginUserDto) {
-        return this.userRepository.findOne({ username, password })
+        return this.userRepository.findOne({ where: { username, password } })
     }
 
     private readonly defaultUsers: UserEntity[] = [
@@ -43,7 +43,7 @@ export class UserService implements OnModuleInit {
     }
 
     async findOne(username: string) {
-        return this.userRepository.findOne({ username })
+        return this.userRepository.findOne({ where: { username } })
     }
 
     async findAll(): Promise<UserEntity[]> {
