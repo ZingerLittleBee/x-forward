@@ -23,6 +23,480 @@
                 }
             }
         },
+        "/gateway/relation/{clientId}": {
+            "get": {
+                "operationId": "ServerGatewayController___getPortAndUserRelation",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/gateway/register": {
+            "post": {
+                "operationId": "ServerGatewayController___register",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateClientDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
+        },
+        "/client": {
+            "get": {
+                "operationId": "ClientController_getAll",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/ClientVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "client"
+                ]
+            }
+        },
+        "/client/id/{id}": {
+            "get": {
+                "operationId": "ClientController_getById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ClientVo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "client"
+                ]
+            }
+        },
+        "/client/ip/{ip}": {
+            "get": {
+                "operationId": "ClientController_getByIp",
+                "parameters": [
+                    {
+                        "name": "ip",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/ClientVo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "client"
+                ]
+            }
+        },
+        "/stream": {
+            "get": {
+                "operationId": "StreamController_getStream",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/StreamVo"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            },
+            "post": {
+                "operationId": "StreamController_createOne",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateStreamDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/StreamVo"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            },
+            "patch": {
+                "operationId": "StreamController_updateStream",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/StreamDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            },
+            "delete": {
+                "operationId": "StreamController_deleteAllStream",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/restart": {
+            "post": {
+                "operationId": "StreamController_restart",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/{id}/state": {
+            "post": {
+                "operationId": "StreamController_updateStateById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "state": {
+                                        "type": "number"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "201": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/{id}/upstream_id": {
+            "patch": {
+                "operationId": "StreamController_updateUpstreamIdById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/state": {
+            "patch": {
+                "operationId": "StreamController_updateAllState",
+                "parameters": [
+                    {
+                        "name": "state",
+                        "required": true,
+                        "in": "query",
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "clientId",
+                        "required": false,
+                        "in": "query",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": ""
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
+        "/stream/{id}": {
+            "delete": {
+                "operationId": "StreamController_delete",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean"
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "data": {
+                                            "type": "number"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": [
+                    "stream"
+                ]
+            }
+        },
         "/upstream": {
             "get": {
                 "operationId": "UpstreamController_findAll",
@@ -307,501 +781,6 @@
                 },
                 "tags": [
                     "server"
-                ]
-            }
-        },
-        "/stream": {
-            "get": {
-                "operationId": "StreamController_getStream",
-                "parameters": [
-                    {
-                        "name": "clientId",
-                        "required": true,
-                        "in": "query",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/StreamVo"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            },
-            "post": {
-                "operationId": "StreamController_createOne",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateStreamDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/StreamVo"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            },
-            "patch": {
-                "operationId": "StreamController_updateAllStream",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "type": "array",
-                                "items": {
-                                    "type": "string"
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
-        "/stream/{id}/state": {
-            "post": {
-                "operationId": "StreamController_updateStateById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "state": {
-                                        "type": "number"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "201": {
-                        "description": ""
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
-        "/stream/{id}/upstream_id": {
-            "patch": {
-                "operationId": "StreamController_updateUpstreamIdById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "number"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
-        "/stream/{id}": {
-            "patch": {
-                "operationId": "StreamController_updateStreamById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/StreamDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "number"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            },
-            "delete": {
-                "operationId": "StreamController_delete",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "number"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
-        "/stream/{clientId}": {
-            "delete": {
-                "operationId": "StreamController_deleteAllStream",
-                "parameters": [
-                    {
-                        "name": "clientId",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "type": "number"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "stream"
-                ]
-            }
-        },
-        "/gateway/relation/{clientId}": {
-            "get": {
-                "operationId": "ClientGatewayController___getPortAndUserRelation",
-                "parameters": [
-                    {
-                        "name": "clientId",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/gateway/register": {
-            "post": {
-                "operationId": "ClientGatewayController___register",
-                "parameters": [],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "$ref": "#/components/schemas/CreateClientDto"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": ""
-                    }
-                }
-            }
-        },
-        "/client": {
-            "get": {
-                "operationId": "ClientController_getAll",
-                "parameters": [],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "data": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/components/schemas/ClientVo"
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "client"
-                ]
-            }
-        },
-        "/client/id/{id}": {
-            "get": {
-                "operationId": "ClientController_getById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ClientVo"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "client"
-                ]
-            }
-        },
-        "/client/ip/{ip}": {
-            "get": {
-                "operationId": "ClientController_getByIp",
-                "parameters": [
-                    {
-                        "name": "ip",
-                        "required": true,
-                        "in": "path",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "success": {
-                                            "type": "boolean"
-                                        },
-                                        "message": {
-                                            "type": "string"
-                                        },
-                                        "data": {
-                                            "$ref": "#/components/schemas/ClientVo"
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "tags": [
-                    "client"
                 ]
             }
         },
@@ -1205,10 +1184,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1263,10 +1243,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1343,10 +1324,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1398,6 +1380,74 @@
                     "server"
                 ]
             },
+            "ClientEntity": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "port": {
+                        "type": "number"
+                    },
+                    "isOnline": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "False: 0,True: 1,0: False,1: True"
+                    },
+                    "lastCommunicationTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
+                    },
+                    "upstream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpstreamEntity"
+                        }
+                    }
+                }
+            },
             "StreamEntity": {
                 "type": "object",
                 "properties": {
@@ -1407,10 +1457,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1516,7 +1567,7 @@
                     }
                 }
             },
-            "ClientEntity": {
+            "CreateClientDto": {
                 "type": "object",
                 "properties": {
                     "id": {
@@ -1525,10 +1576,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1580,6 +1632,376 @@
                         "items": {
                             "$ref": "#/components/schemas/UpstreamEntity"
                         }
+                    }
+                }
+            },
+            "ClientVo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "ip": {
+                        "type": "string"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "domain": {
+                        "type": "string"
+                    },
+                    "isOnline": {
+                        "enum": [
+                            0,
+                            1
+                        ],
+                        "type": "number",
+                        "description": "False: 0,True: 1,0: False,1: True"
+                    },
+                    "lastCommunicationTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "comment": {
+                        "type": "string"
+                    },
+                    "stream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/StreamEntity"
+                        }
+                    },
+                    "upstream": {
+                        "type": "array",
+                        "items": {
+                            "$ref": "#/components/schemas/UpstreamEntity"
+                        }
+                    }
+                }
+            },
+            "StreamVo": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
+                    "transitHost": {
+                        "type": "string",
+                        "description": "中转地址"
+                    },
+                    "transitPort": {
+                        "type": "number",
+                        "description": "中转端口"
+                    },
+                    "remoteHost": {
+                        "type": "string",
+                        "description": "远程地址"
+                    },
+                    "remotePort": {
+                        "type": "number",
+                        "description": "远程端口"
+                    },
+                    "status": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
+                    },
+                    "protocol": {
+                        "enum": [
+                            "tcp",
+                            "udp"
+                        ],
+                        "type": "string",
+                        "description": "转发协议"
+                    },
+                    "isRetries": {
+                        "enum": [
+                            "on",
+                            "off"
+                        ],
+                        "type": "string",
+                        "description": "失败重试"
+                    },
+                    "tries": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "重试次数"
+                    },
+                    "retriesTimeout": {
+                        "type": "string",
+                        "description": "重试超时时间"
+                    },
+                    "connectTimeout": {
+                        "type": "string",
+                        "description": "连接超时时间"
+                    },
+                    "uploadRate": {
+                        "type": "string",
+                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "downloadRate": {
+                        "type": "string",
+                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "proxyTimeout": {
+                        "type": "string",
+                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "备注说明"
+                    },
+                    "upstreamId": {
+                        "type": "string"
+                    }
+                }
+            },
+            "CreateStreamDto": {
+                "type": "object",
+                "properties": {
+                    "state": {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
+                    "transitHost": {
+                        "type": "string",
+                        "description": "中转地址"
+                    },
+                    "transitPort": {
+                        "type": "number",
+                        "description": "中转端口"
+                    },
+                    "remoteHost": {
+                        "type": "string",
+                        "description": "远程地址"
+                    },
+                    "remotePort": {
+                        "type": "number",
+                        "description": "远程端口"
+                    },
+                    "status": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
+                    },
+                    "protocol": {
+                        "enum": [
+                            "tcp",
+                            "udp"
+                        ],
+                        "type": "string",
+                        "description": "转发协议"
+                    },
+                    "isRetries": {
+                        "enum": [
+                            "on",
+                            "off"
+                        ],
+                        "type": "string",
+                        "description": "失败重试"
+                    },
+                    "tries": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "重试次数"
+                    },
+                    "retriesTimeout": {
+                        "type": "string",
+                        "description": "重试超时时间"
+                    },
+                    "connectTimeout": {
+                        "type": "string",
+                        "description": "连接超时时间"
+                    },
+                    "uploadRate": {
+                        "type": "string",
+                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "downloadRate": {
+                        "type": "string",
+                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "proxyTimeout": {
+                        "type": "string",
+                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "备注说明"
+                    },
+                    "upstreamId": {
+                        "type": "string"
+                    },
+                    "loadBalancing": {
+                        "type": "number"
+                    }
+                },
+                "required": [
+                    "clientId"
+                ]
+            },
+            "StreamDto": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string"
+                    },
+                    "state": {
+                        "enum": [
+                            0,
+                            1,
+                            2
+                        ],
+                        "type": "number",
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
+                    },
+                    "createTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "updateTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "deleteTime": {
+                        "format": "date-time",
+                        "type": "string"
+                    },
+                    "user": {
+                        "$ref": "#/components/schemas/UserEntity"
+                    },
+                    "userId": {
+                        "type": "string"
+                    },
+                    "client": {
+                        "$ref": "#/components/schemas/ClientEntity"
+                    },
+                    "clientId": {
+                        "type": "string"
+                    },
+                    "transitHost": {
+                        "type": "string",
+                        "description": "中转地址"
+                    },
+                    "transitPort": {
+                        "type": "number",
+                        "description": "中转端口"
+                    },
+                    "remoteHost": {
+                        "type": "string",
+                        "description": "远程地址"
+                    },
+                    "remotePort": {
+                        "type": "number",
+                        "description": "远程端口"
+                    },
+                    "status": {
+                        "enum": [
+                            0,
+                            1,
+                            2,
+                            3,
+                            4
+                        ],
+                        "type": "number",
+                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
+                    },
+                    "protocol": {
+                        "enum": [
+                            "tcp",
+                            "udp"
+                        ],
+                        "type": "string",
+                        "description": "转发协议"
+                    },
+                    "isRetries": {
+                        "enum": [
+                            "on",
+                            "off"
+                        ],
+                        "type": "string",
+                        "description": "失败重试"
+                    },
+                    "tries": {
+                        "type": "number",
+                        "minimum": 0,
+                        "description": "重试次数"
+                    },
+                    "retriesTimeout": {
+                        "type": "string",
+                        "description": "重试超时时间"
+                    },
+                    "connectTimeout": {
+                        "type": "string",
+                        "description": "连接超时时间"
+                    },
+                    "uploadRate": {
+                        "type": "string",
+                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "downloadRate": {
+                        "type": "string",
+                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
+                    },
+                    "proxyTimeout": {
+                        "type": "string",
+                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
+                    },
+                    "comment": {
+                        "type": "string",
+                        "description": "备注说明"
+                    },
+                    "upstream": {
+                        "$ref": "#/components/schemas/UpstreamEntity"
+                    },
+                    "upstreamId": {
+                        "type": "string"
+                    },
+                    "commment": {
+                        "type": "string"
                     }
                 }
             },
@@ -1694,10 +2116,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1731,103 +2154,6 @@
                 "required": [
                     "name",
                     "server"
-                ]
-            },
-            "CreateStreamDto": {
-                "type": "object",
-                "properties": {
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "clientId": {
-                        "type": "string"
-                    },
-                    "transitHost": {
-                        "type": "string",
-                        "description": "中转地址"
-                    },
-                    "transitPort": {
-                        "type": "number",
-                        "description": "中转端口"
-                    },
-                    "remoteHost": {
-                        "type": "string",
-                        "description": "远程地址"
-                    },
-                    "remotePort": {
-                        "type": "number",
-                        "description": "远程端口"
-                    },
-                    "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "type": "number",
-                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
-                        "type": "string",
-                        "description": "转发协议"
-                    },
-                    "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
-                        "type": "string",
-                        "description": "失败重试"
-                    },
-                    "tries": {
-                        "type": "number",
-                        "minimum": 0,
-                        "description": "重试次数"
-                    },
-                    "retriesTimeout": {
-                        "type": "string",
-                        "description": "重试超时时间"
-                    },
-                    "connectTimeout": {
-                        "type": "string",
-                        "description": "连接超时时间"
-                    },
-                    "uploadRate": {
-                        "type": "string",
-                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "downloadRate": {
-                        "type": "string",
-                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "proxyTimeout": {
-                        "type": "string",
-                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
-                    },
-                    "comment": {
-                        "type": "string",
-                        "description": "备注说明"
-                    },
-                    "upstreamId": {
-                        "type": "string"
-                    },
-                    "loadBalancing": {
-                        "type": "number"
-                    }
-                },
-                "required": [
-                    "clientId"
                 ]
             },
             "CreateUpstreamDto": {
@@ -1878,10 +2204,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -1929,343 +2256,6 @@
                     }
                 }
             },
-            "StreamVo": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "createTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "userId": {
-                        "type": "string"
-                    },
-                    "clientId": {
-                        "type": "string"
-                    },
-                    "transitHost": {
-                        "type": "string",
-                        "description": "中转地址"
-                    },
-                    "transitPort": {
-                        "type": "number",
-                        "description": "中转端口"
-                    },
-                    "remoteHost": {
-                        "type": "string",
-                        "description": "远程地址"
-                    },
-                    "remotePort": {
-                        "type": "number",
-                        "description": "远程端口"
-                    },
-                    "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "type": "number",
-                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
-                        "type": "string",
-                        "description": "转发协议"
-                    },
-                    "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
-                        "type": "string",
-                        "description": "失败重试"
-                    },
-                    "tries": {
-                        "type": "number",
-                        "minimum": 0,
-                        "description": "重试次数"
-                    },
-                    "retriesTimeout": {
-                        "type": "string",
-                        "description": "重试超时时间"
-                    },
-                    "connectTimeout": {
-                        "type": "string",
-                        "description": "连接超时时间"
-                    },
-                    "uploadRate": {
-                        "type": "string",
-                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "downloadRate": {
-                        "type": "string",
-                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "proxyTimeout": {
-                        "type": "string",
-                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
-                    },
-                    "comment": {
-                        "type": "string",
-                        "description": "备注说明"
-                    },
-                    "upstreamId": {
-                        "type": "string"
-                    }
-                }
-            },
-            "StreamDto": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "createTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "updateTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "deleteTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "user": {
-                        "$ref": "#/components/schemas/UserEntity"
-                    },
-                    "userId": {
-                        "type": "string"
-                    },
-                    "client": {
-                        "$ref": "#/components/schemas/ClientEntity"
-                    },
-                    "clientId": {
-                        "type": "string"
-                    },
-                    "transitHost": {
-                        "type": "string",
-                        "description": "中转地址"
-                    },
-                    "transitPort": {
-                        "type": "number",
-                        "description": "中转端口"
-                    },
-                    "remoteHost": {
-                        "type": "string",
-                        "description": "远程地址"
-                    },
-                    "remotePort": {
-                        "type": "number",
-                        "description": "远程端口"
-                    },
-                    "status": {
-                        "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
-                        ],
-                        "type": "number",
-                        "description": "联通状态, Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
-                    },
-                    "protocol": {
-                        "enum": [
-                            "tcp",
-                            "udp"
-                        ],
-                        "type": "string",
-                        "description": "转发协议"
-                    },
-                    "isRetries": {
-                        "enum": [
-                            "on",
-                            "off"
-                        ],
-                        "type": "string",
-                        "description": "失败重试"
-                    },
-                    "tries": {
-                        "type": "number",
-                        "minimum": 0,
-                        "description": "重试次数"
-                    },
-                    "retriesTimeout": {
-                        "type": "string",
-                        "description": "重试超时时间"
-                    },
-                    "connectTimeout": {
-                        "type": "string",
-                        "description": "连接超时时间"
-                    },
-                    "uploadRate": {
-                        "type": "string",
-                        "description": "上传速率, 从客户端读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "downloadRate": {
-                        "type": "string",
-                        "description": "下载速率, 从上游服务器读数据的速率，单位为每秒字节数，默认为0，不限速, 单位为字节每秒, 例如 100k"
-                    },
-                    "proxyTimeout": {
-                        "type": "string",
-                        "description": "存活时间, 配置与客户端上游服务器连接的两次成功读/写操作的超时时间，如果超时，将自动断开连接, 即连接存活时间，通过它可以释放不活跃的连接，默认10分钟"
-                    },
-                    "comment": {
-                        "type": "string",
-                        "description": "备注说明"
-                    },
-                    "upstream": {
-                        "$ref": "#/components/schemas/UpstreamEntity"
-                    },
-                    "upstreamId": {
-                        "type": "string"
-                    },
-                    "commment": {
-                        "type": "string"
-                    }
-                }
-            },
-            "CreateClientDto": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "state": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
-                    },
-                    "createTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "updateTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "deleteTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "ip": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "domain": {
-                        "type": "string"
-                    },
-                    "port": {
-                        "type": "number"
-                    },
-                    "isOnline": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "False: 0,True: 1,0: False,1: True"
-                    },
-                    "lastCommunicationTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "comment": {
-                        "type": "string"
-                    },
-                    "stream": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StreamEntity"
-                        }
-                    },
-                    "upstream": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/UpstreamEntity"
-                        }
-                    }
-                }
-            },
-            "ClientVo": {
-                "type": "object",
-                "properties": {
-                    "id": {
-                        "type": "string"
-                    },
-                    "updateTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "ip": {
-                        "type": "string"
-                    },
-                    "name": {
-                        "type": "string"
-                    },
-                    "domain": {
-                        "type": "string"
-                    },
-                    "isOnline": {
-                        "enum": [
-                            0,
-                            1
-                        ],
-                        "type": "number",
-                        "description": "False: 0,True: 1,0: False,1: True"
-                    },
-                    "lastCommunicationTime": {
-                        "format": "date-time",
-                        "type": "string"
-                    },
-                    "comment": {
-                        "type": "string"
-                    },
-                    "stream": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/StreamEntity"
-                        }
-                    },
-                    "upstream": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/UpstreamEntity"
-                        }
-                    }
-                }
-            },
             "UserVo": {
                 "type": "object",
                 "properties": {
@@ -2275,10 +2265,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "createTime": {
                         "format": "date-time",
@@ -2363,10 +2354,11 @@
                     "state": {
                         "enum": [
                             0,
-                            1
+                            1,
+                            2
                         ],
                         "type": "number",
-                        "description": "是否生效; Able: 0,Disable: 1,0: Able,1: Disable"
+                        "description": "是否生效; Able: 0,Disable: 1,Unknown: 2,0: Able,1: Disable,2: Unknown"
                     },
                     "username": {
                         "type": "string",
@@ -2435,15 +2427,13 @@
                         "description": "Nginx Uptime"
                     },
                     "nginxStatus": {
-                        "type": "number",
+                        "type": "string",
                         "enum": [
-                            0,
-                            1,
-                            2,
-                            3,
-                            4
+                            "active (running)",
+                            "inactive (dead)",
+                            "failed (Result: exit-code)"
                         ],
-                        "description": "Nginx 运行状态; Running: 0,Checking: 1,Stop: 2,NotInstall: 3,Error: 4,0: Running,1: Checking,2: Stop,3: NotInstall,4: Error"
+                        "description": "Nginx 运行状态; active (running): Running,inactive (dead): Stop,failed (Result: exit-code): Error"
                     },
                     "systemTime": {
                         "type": "string",

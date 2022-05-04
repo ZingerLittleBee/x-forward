@@ -78,9 +78,12 @@ TODO
 The following are the features I want to achieve or are under development:
 
 - [x] use pnpm workspace to manage multiple projects
-- [x] build service use PKG for docker
+- [x] ~~build service use PKG for docker~~
 - [x] unit test
 - [x] support cluster
+- [x] batch operation, such as add, start, stop, restart, delete
+- [ ] config export and import
+- [ ] tcp delay on rule card
 - [ ] x-forward-cli, install uninstall update
 - [ ] client manage page
 - [ ] user system

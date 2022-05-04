@@ -21,6 +21,7 @@ export const initialStateConfig = {
 
 export interface InitialState {
     curClientId?: string
+    curClient?: API.ClientVo
     settings?: Partial<LayoutSettings>
     clients?: API.ClientVo[]
 }
@@ -62,7 +63,8 @@ export async function getInitialState(): Promise<InitialState> {
             return {
                 clients,
                 settings: {},
-                curClientId
+                curClientId,
+                curClient: clients?.find(c => c.id === curClientId)
             }
         }
     }
