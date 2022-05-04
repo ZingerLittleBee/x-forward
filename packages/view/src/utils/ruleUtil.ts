@@ -50,3 +50,17 @@ export const timeRule = () => {
         }
     })
 }
+
+export const batchAddTextRule = () => {
+    return () => ({
+        validator(_: any, value: any) {
+            const lines = value?.split('\n')
+            if (!lines?.length) return Promise.resolve()
+            for (let i = 0; i < lines.length; i++) {
+                const singleRule = lines[i].split(':')
+                if (singleRule?.length > 3) return Promise.reject(new Error('The format is wrong!'))
+            }
+            return Promise.resolve()
+        }
+    })
+}

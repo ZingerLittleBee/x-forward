@@ -3,7 +3,7 @@ import { useModel } from '@@/plugin-model/useModel'
 import { CheckSquareOutlined, MacCommandOutlined } from '@ant-design/icons'
 import ProCard, { StatisticCard } from '@ant-design/pro-card'
 import ProList from '@ant-design/pro-list'
-import { CommonEnum, EnvEnum, StatusEnum } from '@forwardx/shared'
+import { CommonEnum, EnvEnum, NginxStatusEnum, StatusTipsEnum } from '@forwardx/shared'
 import { message } from 'antd'
 import type { BadgeProps } from 'antd/lib/badge'
 import RcResizeObserver from 'rc-resize-observer'
@@ -107,16 +107,12 @@ const Module = () => {
             value: overview?.nginxStatus !== undefined ? overview?.nginxStatus : CommonEnum.PlaceHolder,
             status: () => {
                 switch (overview?.nginxStatus as unknown) {
-                    case StatusEnum.Running:
-                        return { value: '正在运行', status: 'processing' }
-                    case StatusEnum.NotInstall:
-                        return { value: '未安装', status: 'default' }
-                    case StatusEnum.Stop:
-                        return { value: '已停止', status: 'warning' }
-                    case StatusEnum.Error:
-                        return { value: '出错', status: 'error' }
-                    case StatusEnum.Checking:
-                        return { value: 'Checking', status: 'warning' }
+                    case NginxStatusEnum.Running:
+                        return { value: StatusTipsEnum.Running, status: 'processing' }
+                    case NginxStatusEnum.Stop:
+                        return { value: StatusTipsEnum.Stop, status: 'warning' }
+                    case NginxStatusEnum.Error:
+                        return { value: StatusTipsEnum.Error, status: 'error' }
                     default:
                         return { value: '未知', status: 'default' }
                 }

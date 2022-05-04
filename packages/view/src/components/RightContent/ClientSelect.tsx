@@ -1,6 +1,6 @@
 import lsConstant from '@/constants/localstorage.constant'
 import { DisconnectOutlined, WifiOutlined } from '@ant-design/icons'
-import { OnlineEnum } from '@forwardx/shared'
+import { OnlineTipsEnum } from '@forwardx/shared'
 import { Select, Tag } from 'antd'
 import React from 'react'
 
@@ -16,7 +16,7 @@ export interface ClientProps {
 const optionLabel = (c: API.ClientVo) => (
     <>
         <Tag icon={c?.isOnline ? <WifiOutlined /> : <DisconnectOutlined />} color={c?.isOnline ? '#722ED1' : '#cd201f'}>
-            {c?.isOnline ? OnlineEnum.Online : OnlineEnum.Offline}
+            {c?.isOnline ? OnlineTipsEnum.Online : OnlineTipsEnum.Offline}
         </Tag>
         <span className="font-bold">{c.domain ? c.domain : c.ip}</span>
     </>

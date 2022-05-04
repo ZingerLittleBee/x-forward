@@ -1,5 +1,5 @@
 import { serverType } from '@/pages/Stream'
-import { StreamControllerCreateOne, StreamControllerUpdateStreamById } from '@/services/view/stream'
+import { StreamControllerCreateOne, StreamControllerUpdateStream } from '@/services/view/stream'
 import { getKeyByValue } from '@/utils/objectUtil'
 import { hostRule, portRule, requiredRule } from '@/utils/ruleUtil'
 import ProForm, {
@@ -73,12 +73,21 @@ const StreamForm = ({
                 }
                 // update if it has id
                 if (currStreamData?.id) {
-                    const { data } = await StreamControllerUpdateStreamById({ id: currStreamData.id }, values)
+                    const { data } = await StreamControllerUpdateStream({ id: currStreamData.id }, values)
                     if (data && data > 0) {
                         message.success('提交成功')
                         streamRefresh()
                         return true
                     }
+                    try {
+                        await StreamControllerUpdateStream({ id: currStreamData.id }, values)
+                    } catch (e) {
+                        message.error(`更新失败, ${e}`)
+                        return false
+                    }
+                    message.success('提交成功')
+                    streamRefresh()
+                    return true
                 } else {
                     // create if it doesn't have id
                     const createValue: Record<string, any> = {}
