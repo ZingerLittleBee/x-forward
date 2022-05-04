@@ -24,7 +24,7 @@
         "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
     },
     "dependencies": {
-        "@automapper/classes": "8.3.3",
+        "@automapper/classes": "8.3.4",
         "@automapper/core": "8.3.3",
         "@automapper/nestjs": "8.3.3",
         "@grpc/grpc-js": "1.6.7",
