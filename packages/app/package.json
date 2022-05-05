@@ -24,9 +24,10 @@
         "test:e2e": "jest --config ./apps/x-forward-app/test/jest-e2e.json"
     },
     "dependencies": {
-        "@automapper/classes": "8.3.4",
-        "@automapper/core": "8.3.4",
-        "@automapper/nestjs": "8.3.4",
+        "@automapper/classes": "7.3.14",
+        "@automapper/core": "7.3.14",
+        "@automapper/nestjs": "7.3.14",
+        "@forwardx/shared": "workspace:*",
         "@grpc/grpc-js": "1.6.7",
         "@grpc/proto-loader": "0.6.11",
         "@nestjs/axios": "0.0.7",
@@ -42,9 +43,8 @@
         "@nestjs/platform-socket.io": "8.4.4",
         "@nestjs/schedule": "1.1.0",
         "@nestjs/swagger": "5.2.1",
-        "@nestjs/typeorm": "8.0.3",
+        "@nestjs/typeorm": "9.0.0-next.2",
         "@nestjs/websockets": "8.4.4",
-        "@forwardx/shared": "workspace:*",
         "axios": "0.27.2",
         "better-sqlite3": "7.5.1",
         "cache-manager": "3.6.1",
@@ -59,14 +59,14 @@
         "passport": "0.5.2",
         "passport-jwt": "4.0.0",
         "passport-local": "1.0.0",
-        "reflect-metadata": "0.1.13",
+        "reflect-metadata": "^0.1.13",
         "rimraf": "3.0.2",
         "rxjs": "7.5.5",
+        "socket.io": "^4.4.1",
         "swagger-ui-express": "4.3.0",
         "typeorm": "0.3.6",
         "uuid": "8.3.2",
-        "socket.io": "^4.4.1",
-        "zx": "6.1.0"
+        "zx": "4.3.0"
     },
     "devDependencies": {
         "@nestjs/cli": "8.2.5",
@@ -82,11 +82,10 @@
         "@types/passport-local": "1.0.34",
         "@types/supertest": "2.0.12",
         "@types/uuid": "8.3.4",
-        "@typescript-eslint/eslint-plugin": "5.22.0",
-        "@typescript-eslint/parser": "5.22.0",
         "supertest": "6.2.3",
         "ts-loader": "9.3.0",
-        "tsconfig-paths": "4.0.0"
+        "tsconfig-paths": "4.0.0",
+        "typescript": "4.6.4"
     },
     "jest": {
         "moduleFileExtensions": [
@@ -114,6 +113,5 @@
             "<rootDir>/apps/",
             "<rootDir>/libs/"
         ]
-    },
-    "bin": "dist/main.js"
+    }
 }

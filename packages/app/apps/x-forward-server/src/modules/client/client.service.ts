@@ -60,16 +60,28 @@ export class ClientService implements OnModuleInit {
     }
 
     async register(client: ClientEntity) {
-        const registeredClient = await this.clientRepository.findOne({ ip: client.ip })
+        const registeredClient = await this.clientRepository.findOne({
+            where: {
+                ip: client?.ip
+            }
+        })
         return registeredClient ? registeredClient.id : (await this.clientRepository.save(client)).id
     }
 
     async getById(id: string) {
-        return this.clientRepository.findOne(id)
+        return this.clientRepository.findOne({
+            where: {
+                id
+            }
+        })
     }
 
     async getByIp(ip: string) {
-        return this.clientRepository.findOne({ ip })
+        return this.clientRepository.findOne({
+            where: {
+                ip
+            }
+        })
     }
 
     async findAll() {
@@ -84,7 +96,9 @@ export class ClientService implements OnModuleInit {
     }
 
     async findByIdWithRelations(clientId: string) {
-        return this.clientRepository.findOne({ id: clientId })
+        return this.clientRepository.findOne({
+            where: { id: clientId }
+        })
     }
 
     /**

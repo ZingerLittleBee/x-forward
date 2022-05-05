@@ -24,11 +24,16 @@ export class StreamService {
     }
 
     async findById(id: string) {
-        return this.streamRepository.findOne(id, { loadRelationIds: true })
+        return this.streamRepository.findOne({
+            where: {
+                id
+            },
+            loadRelationIds: true
+        })
     }
 
     async findByUserId(userId: string) {
-        return this.streamRepository.find({ userId })
+        return this.streamRepository.find({ where: { userId } })
     }
 
     async findByClientId(clientId: string) {
@@ -89,7 +94,7 @@ export class StreamService {
     }
 
     async getClientIdById(id: string) {
-        return (await this.streamRepository.findOne(id))?.clientId
+        return (await this.streamRepository.findOne({ where: { id } }))?.clientId
     }
 
     @Preprocess()

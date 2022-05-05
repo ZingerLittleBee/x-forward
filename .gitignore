@@ -431,6 +431,9 @@ pnpx.CMD
 
 # pnpm
 .pnpm-debug.log
-
+pnpm-lock.yaml
 
 packages/view/src/services
+
+# eslint
+v8-compile-cache-*
