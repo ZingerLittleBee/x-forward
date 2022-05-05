@@ -25,7 +25,7 @@
     },
     "dependencies": {
         "@automapper/classes": "8.3.4",
-        "@automapper/core": "8.3.4",
+        "@automapper/core": "8.3.5",
         "@automapper/nestjs": "8.3.4",
         "@grpc/grpc-js": "1.6.7",
         "@grpc/proto-loader": "0.6.11",
