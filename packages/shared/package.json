@@ -30,6 +30,6 @@
   },
   "homepage": "https://github.com/ZingerLittleBee/x-forward#readme",
   "devDependencies": {
-    "tsup": "5.12.6"
+    "tsup": "5.12.7"
   }
 }
