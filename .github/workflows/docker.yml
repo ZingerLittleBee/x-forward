@@ -24,7 +24,7 @@ jobs:
             - name: Run build 🧇
               run: sh deploy/0.0.1/build.sh
             - name: Set up QEMU 💿
-              uses: docker/setup-qemu-action@v1
+              uses: docker/setup-qemu-action@v2
             - name: Set up Docker Buildx for server 🔩
               uses: docker/setup-buildx-action@v1
               id: build1
