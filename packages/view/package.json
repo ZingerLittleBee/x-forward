@@ -47,7 +47,7 @@
     "@ant-design/pro-descriptions": "^1.10.0",
     "@ant-design/pro-form": "^1.64.0",
     "@ant-design/pro-layout": "^6.35.0",
-    "@ant-design/pro-list": "1.21.57",
+    "@ant-design/pro-list": "1.21.61",
     "@ant-design/pro-table": "^2.71.0",
     "@forwardx/shared": "workspace:*",
     "@umijs/route-utils": "^2.0.0",
