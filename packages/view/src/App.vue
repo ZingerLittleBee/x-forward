@@ -1,5 +1,7 @@
 <template>
     <div>
+        <button data-set-theme="" class="btn">default</button>
+        <button data-set-theme="dark" class="btn">dark</button>
         <!-- The button to open modal -->
         <label for="my-modal" class="btn modal-button">open modal</label>
 
@@ -18,3 +20,12 @@
         </div>
     </div>
 </template>
+
+<script setup lang="ts">
+import { themeChange } from 'theme-change'
+import { onMounted } from 'vue'
+
+onMounted(() => {
+    themeChange(false)
+})
+</script>
