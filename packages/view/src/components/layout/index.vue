@@ -1,0 +1,23 @@
+<template>
+    <div class="h-full">
+        <div class="flex flex-col h-full w-full">
+            <Header class="border-b-2 border-indigo-500" />
+            <div class="flex flex-row h-full w-full">
+                <SideBar />
+                <div class="flex flex-col h-full w-full">
+                    <Container class="h-full bg-base-200" />
+                    <Footer class="w-full" />
+                </div>
+            </div>
+        </div>
+    </div>
+</template>
+<script>
+import Header from './Header/index.vue'
+import Footer from './Footer/index.vue'
+import SideBar from './SideBar/index.tsx'
+import Container from './Container/index.vue'
+export default {
+    components: { Container, SideBar, Footer, Header }
+}
+</script>

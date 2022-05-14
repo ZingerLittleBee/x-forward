@@ -26,7 +26,7 @@
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
     "release": "standard-version",
-    "postinstall": "pnpm -C ./packages/shared build",
+    "postinstall": "husky install && pnpm -C ./packages/shared build",
     "preinstall": "npx only-allow pnpm -y"
   },
   "repository": {
@@ -74,5 +74,15 @@
     "commitizen": {
       "path": "git-cz"
     }
-  }
+  },
+    "lint-staged": {
+        "**/*.{js,jsx,tsx,ts}": [
+            "npm run lint:fix",
+            "git add ."
+        ],
+        "**/*.{scss, css}": [
+            "npm run lint:style",
+            "git add ."
+        ]
+    }
 }
