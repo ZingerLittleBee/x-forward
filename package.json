@@ -26,7 +26,7 @@
     "prepare": "husky install",
     "prerelease": "standard-version --prerelease",
     "release": "standard-version",
-    "postinstall": "pnpm -C ./packages/shared build & pnpm -C ./packages/view openapi",
+    "postinstall": "pnpm -C ./packages/shared build",
     "preinstall": "npx only-allow pnpm -y"
   },
   "repository": {
@@ -56,6 +56,7 @@
     "eslint-define-config": "1.4.0",
     "eslint-plugin-import": "2.25.3",
     "eslint-plugin-prettier": "4.0.0",
+    "eslint-plugin-vue": "^8.7.1",
     "git-cz": "4.8.0",
     "husky": "8.0.1",
     "jest": "28.1.0",
@@ -66,7 +67,8 @@
     "stylelint": "14.8.2",
     "stylelint-config-standard": "25.0.0",
     "ts-jest": "28.0.2",
-    "typescript": "4.6.4"
+    "typescript": "4.6.4",
+    "vue-eslint-parser": "^9.0.1"
   },
   "config": {
     "commitizen": {
