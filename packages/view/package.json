@@ -115,7 +115,7 @@
     "mockjs": "^1.1.0",
     "postcss": "8.4.13",
     "prettier": "^2.5.0",
-    "puppeteer-core": "13.7.0",
+    "puppeteer-core": "14.1.0",
     "rc-field-form": "^1.26.4",
     "rc-menu": "9.6.0",
     "react-router": "5.0.0",
