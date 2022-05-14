@@ -82,10 +82,12 @@
         "@types/passport-local": "1.0.34",
         "@types/supertest": "2.0.12",
         "@types/uuid": "8.3.4",
+        "express": "4.18.1",
         "supertest": "6.2.3",
         "ts-loader": "9.3.0",
         "tsconfig-paths": "4.0.0",
-        "typescript": "4.6.4"
+        "typescript": "4.6.4",
+        "webpack": "^5.72.0"
     },
     "jest": {
         "moduleFileExtensions": [
