@@ -5,15 +5,7 @@ import Icons from 'unplugin-icons/vite'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
 export default defineConfig({
-    plugins: [
-        vue(),
-        Icons({
-            /* options */
-        }),
-        vueJsx({
-            // options are passed on to @vue/babel-plugin-jsx
-        })
-    ],
+    plugins: [vue(), Icons({}), vueJsx({})],
     resolve: {
         alias: [
             {
@@ -25,5 +17,21 @@ export default defineConfig({
                 replacement: resolve(__dirname, './src')
             }
         ]
+    },
+    server: {
+        port: 50000,
+        proxy: {
+            // 选项写法
+            '/api': {
+                target: 'http://localhost:3000',
+                changeOrigin: true,
+                rewrite: path => path.replace(/^\/api/, '')
+            },
+            // Proxying websockets or socket.io
+            '/socket.io': {
+                target: 'ws://localhost:3000',
+                ws: true
+            }
+        }
     }
 })

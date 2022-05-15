@@ -3,11 +3,13 @@ import 'vue-router'
 import Dashboard from '@/pages/dashboard/index.vue'
 import IconDashboard from '~icons/carbon/dashboard-reference'
 import IconModule from '~icons/mdi/view-dashboard-outline'
+import IconClient from '~icons/clarity/rack-server-outline-badged'
 import IconStream from '~icons/carbon/flow-stream'
 import IconUpstream from '~icons/ant-design/cloud-server-outlined'
 import IconTerminal from '~icons/bi/terminal-plus'
 import { FunctionalComponent, SVGAttributes, VNode } from 'vue'
 import Module from '@/pages/module/index.vue'
+import Client from '@/pages/client/index.vue'
 import Stream from '@/pages/stream/index.vue'
 import Upstream from '@/pages/upstream/index.vue'
 import Terminal from '@/pages/terminal/index.vue'
@@ -36,6 +38,14 @@ const routes: RouteRecordRaw[] = [
         name: '模块',
         meta: {
             icon: IconModule
+        }
+    },
+    {
+        path: '/client',
+        component: Client,
+        name: '客户端',
+        meta: {
+            icon: IconClient
         }
     },
     {
