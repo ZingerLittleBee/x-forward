@@ -9,12 +9,14 @@ export type SingleRoute = {
 
 export const getRouterInfo = (): SingleRoute[] => {
     const routes = useRouter().options.routes
-    return routes.map(r => {
-        const singleRoute: SingleRoute = {
-            path: r.path,
-            name: r.name ? r.name : r.path
-        }
-        r.meta?.icon && (singleRoute['icon'] = h(r.meta?.icon))
-        return singleRoute
-    })
+    return routes
+        .filter(r => !r.meta?.hidden)
+        .map(r => {
+            const singleRoute: SingleRoute = {
+                path: r.path,
+                name: r.name ? r.name : r.path
+            }
+            r.meta?.icon && (singleRoute['icon'] = h(r.meta?.icon))
+            return singleRoute
+        })
 }
