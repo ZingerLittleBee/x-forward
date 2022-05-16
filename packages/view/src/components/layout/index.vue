@@ -1,12 +1,18 @@
 <template>
-    <div class="h-full">
+    <div class="h-full overflow-hidden">
         <div class="flex flex-col h-full w-full">
             <Header class="border-b-2 border-indigo-500" />
-            <div class="flex flex-row h-full w-full">
-                <SideBar />
+            <div class="flex flex-row w-full h-full overflow-auto">
+                <div>
+                    <SideBar class="overflow-auto" />
+                </div>
                 <div class="flex flex-col h-full w-full">
-                    <Container class="h-full bg-base-200" />
-                    <Footer class="w-full" />
+                    <div class="overflow-auto h-full bg-base-200">
+                        <Container />
+                    </div>
+                    <div class="relative">
+                        <Footer class="relative bottom-0" />
+                    </div>
                 </div>
             </div>
         </div>
