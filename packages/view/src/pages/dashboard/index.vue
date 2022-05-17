@@ -5,12 +5,12 @@
 </template>
 
 <script setup lang="ts">
-import { AlertProp } from '@/components/Alert'
 import { inject } from 'vue'
+import { Alert } from '@/plugins/alert'
 
-const createAlert = inject<(props: AlertProp) => void>('createAlert')
+const alert = inject<(props: Alert) => void>('$alert')
 const handleClick = () => {
-    createAlert?.({
+    alert?.({
         message: 'Ok',
         type: 'success'
     })

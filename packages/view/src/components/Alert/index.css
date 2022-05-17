@@ -1,0 +1,13 @@
+.fade-enter-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from {
+    opacity: 0;
+}
+
+.fade-leave-active {
+    transform: translateY(-1.5rem);
+    transition-duration: 300ms;
+    opacity: 0;
+}
