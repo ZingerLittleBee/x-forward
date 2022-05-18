@@ -43,7 +43,7 @@ const Alert = defineComponent({
             return (
                 <div class="absolute top-8 left-0 right-0 w-1/2 m-auto z-50">
                     <div>
-                        <TransitionGroup name="fade">{props.alerts?.map(a => alert(a))}</TransitionGroup>
+                        <TransitionGroup name="alert-fade">{props.alerts?.map(a => alert(a))}</TransitionGroup>
                     </div>
                 </div>
             )

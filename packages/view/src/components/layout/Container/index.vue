@@ -1,7 +1,7 @@
 <template>
     <router-view v-slot="{ Component }">
-        <transition name="fade">
-            <div :key="$route.name">
+        <transition name="container-fade">
+            <div :key="$route.name" class="h-full">
                 <component :is="Component" />
             </div>
         </transition>
@@ -9,6 +9,7 @@
 </template>
 
 <script>
+import './index.css'
 export default {
     name: 'Container'
 }
