@@ -1,5 +1,5 @@
 import { defineComponent, reactive } from 'vue'
-import { getRouterInfo } from '../../../hooks/router.hook'
+import { getRouterInfo } from '@/hooks/router.hook'
 
 const SideBar = defineComponent({
     setup() {
