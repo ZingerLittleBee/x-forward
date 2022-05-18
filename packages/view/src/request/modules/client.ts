@@ -1,7 +1,8 @@
 import { request } from '../index'
+import { ClientVo } from '@x-forward/app/apps/x-forward-server/src/modules/client/vo/client.vo'
 
 export const getAllClient = () =>
-    request('/client', {
+    request<ClientVo[]>('/client', {
         method: 'GET'
     })
 
