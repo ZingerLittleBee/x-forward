@@ -1,6 +1,13 @@
 import { App, createApp, ref } from 'vue'
 import Alert, { AlertProp } from '@/components/Alert/index'
 
+// Usage
+// const alert = inject<(props: Alert) => void>('$alert')
+// alert?.({
+//     message: 'Ok',
+//     type: 'success'
+// })
+
 export type Alert = Omit<AlertProp, 'id' | 'onClose'>
 
 export default {
@@ -31,5 +38,6 @@ export default {
             )
         }
         app.provide<(props: Alert) => void>('$alert', addAlert)
+        app.config.globalProperties.$alert = addAlert
     }
 }

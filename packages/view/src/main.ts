@@ -10,3 +10,5 @@ app.use(createPinia())
 app.use(router)
 app.use(AlertInstance)
 app.mount('#app')
+
+export { app }

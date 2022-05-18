@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { app } from '@/main'
 
 const instance = axios.create({
     baseURL: '/api',
@@ -20,8 +21,17 @@ instance.interceptors.response.use(
         if (respData?.success) {
             return respData
         }
+        app.config.globalProperties.$alert?.({
+            message: respData.message,
+            type: 'warning'
+        })
+        return Promise.reject()
     },
     error => {
+        app.config.globalProperties.$alert?.({
+            message: error.message,
+            type: 'error'
+        })
         return Promise.reject(error)
     }
 )
