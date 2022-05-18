@@ -1,4 +1,4 @@
-import { defineComponent, FunctionalComponent, h, PropType, SVGAttributes } from 'vue'
+import { defineComponent, FunctionalComponent, h, onMounted, PropType, ref, SVGAttributes } from 'vue'
 
 export type ColorType = 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'neutral'
 
@@ -22,6 +22,10 @@ export type Content = {
     type?: ColorType
 }
 
+const textOverflowCheck = (div: HTMLElement) => {
+    return div.scrollWidth > div.offsetWidth
+}
+
 const Card = defineComponent({
     props: {
         id: {
@@ -35,17 +39,56 @@ const Card = defineComponent({
         btnGroup: {
             type: Object as PropType<BtnGroup>,
             required: false
+        },
+        width: {
+            type: String
         }
     },
     setup(props) {
         const btnGroup = props.btnGroup
+        const cardKey = ref<any[]>([])
+        const cardValue = ref<any[]>([])
+        const isKeyOverflow = ref<boolean[]>([])
+        const isValueOverflow = ref<boolean[]>([])
+        onMounted(() => {
+            isKeyOverflow.value = cardKey.value.map(c => textOverflowCheck(c))
+            isValueOverflow.value = cardValue.value.map(c => textOverflowCheck(c))
+        })
         return () => (
-            <div class="card w-72 bg-base-100 shadow-xl">
-                <div class="card-body p-6">
+            <div class={`card ${props.width ? props.width : 'w-72'} bg-base-100 shadow-xl overflow-visible`}>
+                <div class="card-body p-4">
                     {props.group.map((g, index) => (
-                        <p key={g.index ? g.index : index} class="prose flex items-center place-content-between">
-                            <span class="text-sm">{g.key}:</span>
-                            <span class={`${g.type && `badge badge-${g.type}`}`}>{g.value}</span>
+                        <p
+                            key={g.index ? g.index : index}
+                            class="prose grid grid-cols-3 gap-1 place-items-start justify-center items-center"
+                        >
+                            <div
+                                class={`${isKeyOverflow.value[index] ? 'tooltip' : ''} col-span-1 grid`}
+                                data-tip={g.key}
+                            >
+                                <span
+                                    class="text-sm truncate"
+                                    ref={el => {
+                                        if (el) cardKey.value[index] = el
+                                    }}
+                                >
+                                    {g.key}
+                                    {g.key ? ':' : ''}
+                                </span>
+                            </div>
+                            <div
+                                class={`${isValueOverflow.value[index] ? 'tooltip' : ''} col-span-2 grid`}
+                                data-tip={g.value}
+                            >
+                                <span
+                                    class={`${g.type ? `badge badge-${g.type}` : ''} truncate`}
+                                    ref={el => {
+                                        if (el) cardValue.value[index] = el
+                                    }}
+                                >
+                                    {g.value}
+                                </span>
+                            </div>
                         </p>
                     ))}
                 </div>
