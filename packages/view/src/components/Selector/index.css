@@ -1,0 +1,12 @@
+.selector-fade-enter-active,
+.selector-fade-leave-active {
+    transition: transform 0.4s linear;
+    transform: rotate(45deg);
+    opacity: 0;
+}
+
+.selector-fade-enter-from,
+.selector-fade-leave-to {
+    transform: rotate(135deg);
+    opacity: 1;
+}
