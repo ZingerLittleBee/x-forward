@@ -1,16 +1,43 @@
 <template>
-    <div>
-        <button class="btn" @click="handleClick">Click Me</button>
-        <card id="123" :group="cardGroup" :btn-group="btnGroup" />
+    <div class="grid place-content-center">
+        <!--        <button class="btn" @click="handleClick">Click Me</button>-->
+        <!--        <card id="123" :group="cardGroup" :btn-group="btnGroup" />-->
+        <!--        <toggle />-->
+        <Form :store="store" :on-submit="handleSubmit" class="w-96">
+            <Field name="username" label="username">
+                <input class="input input-bordered input-primary w-full" />
+            </Field>
+            <Field name="password" label="password">
+                <input type="password" class="input input-bordered input-secondary w-full" />
+            </Field>
+            <Field name="check" label="check">
+                <input type="checkbox" class="checkbox" @change="e => store.set('check', e.target.checked ? 1 : 0)" />
+            </Field>
+            <Field name="toggle" label="check">
+                <input type="checkbox" class="toggle" />
+            </Field>
+            <button class="btn">Submit</button>
+        </Form>
     </div>
 </template>
 
 <script setup lang="ts">
 import { inject } from 'vue'
 import { Alert } from '@/plugins/alert'
-import Card, { BtnGroup } from '@/components/Card/index'
+import { BtnGroup } from '@/components/Card'
 import IconModule from '~icons/mdi/view-dashboard-outline'
+import Field from '@/components/form/Field'
+import { FormStore } from '@/components/form/formStore'
+import Form from '@/components/form/index.vue'
 
+let store = new FormStore({
+    username: 'username',
+    password: 'password'
+})
+
+const handleSubmit = () => {
+    console.log('Submit', store.get())
+}
 const alert = inject<(props: Alert) => void>('$alert')
 const handleClick = () => {
     alert?.({
