@@ -4,31 +4,39 @@
         <!--        <card id="123" :group="cardGroup" :btn-group="btnGroup" />-->
         <!--        <toggle />-->
         <Form :store="store" :on-submit="handleSubmit" class="w-96">
-            <Field name="username" label="username">
+            <FormItem.Field name="username" label="username">
                 <input class="input input-bordered input-primary w-full" />
-            </Field>
-            <Field name="password" label="password">
+            </FormItem.Field>
+            <FormItem.Field name="password" label="password">
                 <input type="password" class="input input-bordered input-secondary w-full" />
-            </Field>
-            <Field name="check" label="check">
-                <input type="checkbox" class="checkbox" @change="e => store.set('check', e.target.checked ? 1 : 0)" />
-            </Field>
-            <Field name="toggle" label="check">
-                <input type="checkbox" class="toggle" />
-            </Field>
+            </FormItem.Field>
+            <FormItem.Field name="check" label="check">
+                <input
+                    type="checkbox"
+                    class="checkbox"
+                    @change="e => store.set('checkbox', (e.target as HTMLInputElement).checked ? 1 : 0)"
+                />
+            </FormItem.Field>
+            <FormItem.Field name="toggle" label="check">
+                <input
+                    type="checkbox"
+                    class="toggle"
+                    @change="e => store.set('toggle', (e.target as HTMLInputElement).checked ? 1 : 0)"
+                />
+            </FormItem.Field>
             <button class="btn">Submit</button>
         </Form>
     </div>
 </template>
 
 <script setup lang="ts">
-import { inject } from 'vue'
-import { Alert } from '@/plugins/alert'
 import { BtnGroup } from '@/components/Card'
-import IconModule from '~icons/mdi/view-dashboard-outline'
-import Field from '@/components/form/Field'
+import * as FormItem from '@/components/form'
 import { FormStore } from '@/components/form/formStore'
 import Form from '@/components/form/index.vue'
+import { Alert } from '@/plugins/alert'
+import { inject } from 'vue'
+import IconModule from '~icons/mdi/view-dashboard-outline'
 
 let store = new FormStore({
     username: 'username',

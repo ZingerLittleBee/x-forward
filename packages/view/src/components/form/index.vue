@@ -13,6 +13,6 @@ provide(STORE, props.store)
         @submit="props.onSubmit"
         class="grid grid-cols-1 gap-4 p-4 content-center place-content-center justify-center items-center rounded-xl shadow-xl bg-base-100"
     >
-        <slot class="slot-x"></slot>
+        <slot></slot>
     </form>
 </template>
