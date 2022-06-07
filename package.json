@@ -17,7 +17,7 @@
     "app-client:start": "pnpm -C ./packages/app client:start",
     "app-client:dev": "pnpm -C ./packages/app client:dev",
     "app-client:debug": "pnpm -C ./packages/app client:debug",
-    "view:start": "pnpm -C ./packages/view start:dev",
+    "view:dev": "pnpm -C ./packages/view dev",
     "cz": "pnpm exec git-cz",
     "format": "prettier --write .",
     "lint": "eslint . --ext .vue,.js,.ts,.jsx,.tsx --max-warnings 0 && pretty-quick --check",
@@ -75,14 +75,14 @@
       "path": "git-cz"
     }
   },
-    "lint-staged": {
-        "**/*.{js,jsx,tsx,ts}": [
-            "npm run lint:fix",
-            "git add ."
-        ],
-        "**/*.{scss, css}": [
-            "npm run lint:style",
-            "git add ."
-        ]
-    }
+  "lint-staged": {
+    "**/*.{js,jsx,tsx,ts}": [
+      "npm run lint:fix",
+      "git add ."
+    ],
+    "**/*.{scss, css}": [
+      "npm run lint:style",
+      "git add ."
+    ]
+  }
 }
