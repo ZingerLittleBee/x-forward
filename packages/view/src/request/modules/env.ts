@@ -1,9 +1,10 @@
+import { NginxConfig } from '@x-forward/app/libs/executor/src/interfaces/nginx-config.interface'
 import { request } from '../index'
 
 const ENV_BASE = '/env'
 
 export const getNginxInfo = (clientId: string) =>
-    request(`${ENV_BASE}/${clientId}/nginx`, {
+    request<NginxConfig>(`${ENV_BASE}/${clientId}/nginx`, {
         method: 'GET'
     })
 
