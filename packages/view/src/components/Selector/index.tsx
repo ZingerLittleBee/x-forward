@@ -1,9 +1,19 @@
-import { defineComponent, FunctionalComponent, h, PropType, ref, SVGAttributes, Transition } from 'vue'
+import {
+    defineComponent,
+    FunctionalComponent,
+    h,
+    PropType,
+    ref,
+    SVGAttributes,
+    Transition,
+    watch,
+    watchEffect
+} from 'vue'
 import LessIcon from '~icons/ci/unfold-less'
 import MoreIcon from '~icons/ci/unfold-more'
 import './index.css'
 
-type BadgeType =
+export type BadgeType =
     | 'outline'
     | 'lg'
     | 'md'
@@ -19,7 +29,7 @@ type BadgeType =
     | 'error'
 
 export type SelectItem = {
-    id?: string
+    id: string
     icon?: FunctionalComponent<SVGAttributes>
     badge?: {
         type: BadgeType
@@ -89,7 +99,12 @@ const getBadgeType = (type: BadgeType) => {
 }
 
 const Selector = defineComponent({
+    name: 'Selector',
     props: {
+        defaultSelectedId: {
+            type: String,
+            required: false
+        },
         width: {
             type: [Number, String],
             required: false
@@ -112,10 +127,53 @@ const Selector = defineComponent({
             itemVisible.value = true
         }
         const handleFocusout = () => (focusStatus.value = false)
+
+        const selectedId = ref()
+        const selectedList = ref()
+        const inputValue = ref()
+
+        watchEffect(() => {
+            selectedId.value = props.defaultSelectedId
+        })
+
+        watch(
+            selectedId,
+            newValue => {
+                console.log('newValue', newValue)
+                console.log('props.defaultSelectedId', props.defaultSelectedId)
+                selectedList.value = props.list.find(item => item.id === newValue)
+                inputValue.value = selectedList.value?.message
+            },
+            {
+                immediate: true
+            }
+        )
+
         return () => (
             <div class={`dropdown ${focusStatus.value ? 'dropdown-open' : ''}`}>
                 <div tabindex="0" class="rounded-full">
-                    <label class="relative block">
+                    <label class="relative flex items-center">
+                        {selectedList.value?.badge && (
+                            <span
+                                class={`badge ${getBadgeType(
+                                    selectedList.value?.badge?.type
+                                )} rounded-md absolute p-3 left-0 ml-2 cursor-pointer`}
+                            >
+                                {selectedList.value?.badge?.tips}
+                            </span>
+                        )}
+                        <input
+                            ref={inputRef}
+                            type="text"
+                            value={inputValue.value}
+                            placeholder={props.placeHolder}
+                            style={props.width ? { width: props.width } : ''}
+                            class={`w-72 pr-12 input input-bordered input-accent max-w-lg text-md font-bold ${
+                                selectedList.value?.badge ? 'pl-16' : ''
+                            }`}
+                            onFocus={handleFocus}
+                            onFocusout={handleFocusout}
+                        />
                         <label class="absolute inset-y-0 right-0 items-center pr-2 cursor-pointer">
                             <Transition name="selector-fade">
                                 {focusStatus.value ? (
@@ -138,15 +196,6 @@ const Selector = defineComponent({
                                 )}
                             </Transition>
                         </label>
-                        <input
-                            ref={inputRef}
-                            type="text"
-                            placeholder={props.placeHolder}
-                            style={props.width ? { width: props.width } : ''}
-                            class="w-72 pr-12 input input-bordered input-accent max-w-lg"
-                            onFocus={handleFocus}
-                            onFocusout={handleFocusout}
-                        />
                     </label>
                 </div>
                 <ul
@@ -159,14 +208,22 @@ const Selector = defineComponent({
                     onClick={() => (itemVisible.value = false)}
                 >
                     {props.list.map((l, index) => (
-                        <li key={l.id ? l.id : String(index)} onClick={() => l.onClick?.(l.id ? l.id : String(index))}>
-                            <a class="justify-between">
+                        <li
+                            key={l.id ? l.id : String(index)}
+                            onClick={() => {
+                                l.onClick?.(l.id ? l.id : String(index))
+                                selectedId.value = l.id
+                            }}
+                        >
+                            <a class={`justify-between ${selectedId.value === l.id ? 'active' : ''}`}>
                                 <span class="flex flex-row items-center gap-1">
                                     {l.icon ? h(l.icon) : ''}
                                     {l.message}
                                 </span>
                                 {l.badge ? (
-                                    <span class={`badge ${getBadgeType(l.badge.type)}`}>{l.badge?.tips}</span>
+                                    <span class={`badge rounded-md ${getBadgeType(l.badge.type)}`}>
+                                        {l.badge?.tips}
+                                    </span>
                                 ) : (
                                     ''
                                 )}

@@ -11,17 +11,9 @@ type ClientStore = {
 }
 
 export const useClientStore = defineStore('client', {
-    state: () => ({ clients: [] } as ClientStore),
+    state: () => ({ clients: [], currentClentId: '' } as ClientStore),
     getters: {
-        getCurrentClientId: state => {
-            if (state.currentClentId) {
-                return state.currentClentId
-            }
-            if (get(currentClentIdKey)) {
-                return get(currentClentIdKey)
-            }
-            return state.clients?.[0]?.id
-        }
+        getCurrentClientId: state => state.currentClentId
     },
     actions: {
         changeCurrentClient(newClientId: string) {
@@ -32,6 +24,13 @@ export const useClientStore = defineStore('client', {
             try {
                 const { data: clients } = await getAllClient()
                 this.clients = clients ? clients.value : []
+                const defaultIdInStorage = get(currentClentIdKey)
+                if (defaultIdInStorage && this.clients?.some(client => client.id === defaultIdInStorage)) {
+                    this.currentClentId = defaultIdInStorage
+                } else {
+                    this.currentClentId = this.clients?.[0]?.id
+                }
+                console.log('currentClentId', this.currentClentId)
             } catch (e) {
                 console.error(`获取客户端列表失败：${e}`)
             }

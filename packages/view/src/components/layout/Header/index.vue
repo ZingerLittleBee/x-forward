@@ -4,7 +4,7 @@
             <a class="btn btn-ghost normal-case text-xl">daisyUI</a>
         </div>
         <div class="flex-none gap-2">
-            <Selector :list="selector" />
+            <ClientSelector />
             <label class="swap swap-rotate">
                 <input type="checkbox" />
                 <svg
@@ -53,9 +53,10 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import ClientSelector from '@/components/layout/Header/ClientSelector/index.vue'
+import { SelectItem } from '@/components/Selector'
 import { themeChange } from 'theme-change'
-import Selector, { SelectItem } from '@/components/Selector'
+import { onMounted } from 'vue'
 import IconModule from '~icons/mdi/view-dashboard-outline'
 
 onMounted(() => {
