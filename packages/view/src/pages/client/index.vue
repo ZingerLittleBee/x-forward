@@ -11,7 +11,7 @@ import Card, { BtnGroup, Content } from '@/components/Card/index'
 import { useClientStore } from '@/stores/client'
 import { ClientEnum } from '@forwardx/shared'
 import { ClientVo } from '@x-forward/app/apps/x-forward-server/src/modules/client/vo/client.vo'
-import { onMounted, ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 
 const cards = ref<{ id: string; group: Content[] }[]>([])
 
@@ -29,10 +29,7 @@ const btnGroup: BtnGroup = {
 
 const clientStore = useClientStore()
 
-onMounted(async () => {
-    if (!clientStore.getCurrentClientId) {
-        await clientStore.initClient()
-    }
+watchEffect(() => {
     clientStore.clients?.forEach((client: ClientVo) => {
         cards.value.push({
             id: client.id ? client.id : '',

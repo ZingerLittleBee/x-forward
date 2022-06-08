@@ -3,9 +3,14 @@
 </template>
 
 <script setup lang="ts">
+import Layout from '@/components/layout/index.vue'
 import { themeChange } from 'theme-change'
 import { onMounted } from 'vue'
-import Layout from '@/components/layout/index.vue'
+import { useClientStore } from './stores/client'
+
+// init client
+const clientStore = useClientStore()
+clientStore.initClient()
 
 onMounted(() => {
     themeChange(false)

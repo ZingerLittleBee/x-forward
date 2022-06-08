@@ -9,7 +9,7 @@
 import List, { ListData } from '@/components/List'
 import { getNginxInfo } from '@/request/modules/env'
 import { useClientStore } from '@/stores/client'
-import { onMounted, ref } from 'vue'
+import { ref, watchEffect } from 'vue'
 import ParamIcon from '~icons/carbon/parameter'
 import PackageIcon from '~icons/lucide/package-check'
 
@@ -18,10 +18,7 @@ const clientStore = useClientStore()
 let nginxParam = ref<ListData[]>([])
 let nginxMoudle = ref<ListData[]>([])
 
-onMounted(async () => {
-    if (!clientStore.getCurrentClientId) {
-        await clientStore.initClient()
-    }
+watchEffect(async () => {
     if (clientStore.getCurrentClientId) {
         const { data } = await getNginxInfo(clientStore.getCurrentClientId)
         let rawData = data.value
