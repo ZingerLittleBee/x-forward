@@ -7,10 +7,11 @@
 </template>
 
 <script setup lang="ts">
-import { getAllClient } from '@/request'
 import Card, { BtnGroup, Content } from '@/components/Card/index'
-import { onMounted, ref } from 'vue'
+import { useClientStore } from '@/stores/client'
 import { ClientEnum } from '@forwardx/shared'
+import { ClientVo } from '@x-forward/app/apps/x-forward-server/src/modules/client/vo/client.vo'
+import { onMounted, ref } from 'vue'
 
 const cards = ref<{ id: string; group: Content[] }[]>([])
 
@@ -26,9 +27,13 @@ const btnGroup: BtnGroup = {
     }
 }
 
+const clientStore = useClientStore()
+
 onMounted(async () => {
-    const { data: clients } = await getAllClient()
-    clients.value?.forEach(client => {
+    if (!clientStore.getCurrentClientId) {
+        await clientStore.initClient()
+    }
+    clientStore.clients?.forEach((client: ClientVo) => {
         cards.value.push({
             id: client.id ? client.id : '',
             group: Object.keys(client)

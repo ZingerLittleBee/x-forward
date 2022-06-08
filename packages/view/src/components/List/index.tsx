@@ -1,7 +1,4 @@
-import { getNginxInfo } from '@/request/modules/env'
-import { useClientStore } from '@/stores/client'
-import { NginxConfig } from '@x-forward/app/libs/executor/src/interfaces/nginx-config.interface'
-import { defineComponent, FunctionalComponent, h, onMounted, PropType, ref, SVGAttributes } from 'vue'
+import { defineComponent, FunctionalComponent, h, PropType, SVGAttributes } from 'vue'
 
 export type ListData = {
     key?: string
@@ -31,22 +28,8 @@ const List = defineComponent({
         }
     },
     setup(props) {
-        const clientStore = useClientStore()
-
-        let nginxInfo = ref<NginxConfig>()
-
-        onMounted(async () => {
-            if (!clientStore.getCurrentClientId) {
-                await clientStore.initClient()
-            }
-            if (clientStore.getCurrentClientId) {
-                const { data } = await getNginxInfo(clientStore.getCurrentClientId)
-                nginxInfo.value = data.value
-            }
-        })
-
         return () => (
-            <div class="flex flex-col bg-base-100 space-y-2">
+            <div class="flex flex-col bg-base-100 space-y-2 p-2">
                 {props.title && <div>{props.title}</div>}
                 <div class="overflow-y-auto">
                     {props.data.map(d => {
