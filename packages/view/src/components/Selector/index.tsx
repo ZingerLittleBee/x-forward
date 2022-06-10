@@ -139,8 +139,6 @@ const Selector = defineComponent({
         watch(
             selectedId,
             newValue => {
-                console.log('newValue', newValue)
-                console.log('props.defaultSelectedId', props.defaultSelectedId)
                 selectedList.value = props.list.find(item => item.id === newValue)
                 inputValue.value = selectedList.value?.message
             },

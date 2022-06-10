@@ -30,7 +30,6 @@ export const useClientStore = defineStore('client', {
                 } else {
                     this.currentClentId = this.clients?.[0]?.id
                 }
-                console.log('currentClentId', this.currentClentId)
             } catch (e) {
                 console.error(`获取客户端列表失败：${e}`)
             }

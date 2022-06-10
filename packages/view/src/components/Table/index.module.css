@@ -1,0 +1,3 @@
+.subrow + tr {
+    @apply table-row;
+}
