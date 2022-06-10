@@ -27,10 +27,19 @@ const Upstream = defineComponent({
                     color: 'Purple2'
                 },
                 operation: [
-                    <div onClick={e => console.log('123', e)}>
-                        <button class="btn" onClick={e => console.log('click me', e)}>
-                            Click
-                        </button>
+                    <div onClick={e => console.log('div click', e)}>
+                        <span onClick={e => console.log('span click', e)}>
+                            <button class="btn" onClick={e => console.log('btn click', e)}>
+                                Click
+                            </button>
+                        </span>
+                    </div>,
+                    <div onClick={e => console.log('div click', e)}>
+                        <span onClick={e => console.log('span click', e)}>
+                            <button class="btn btn-ghost btn-xs" onClick={e => console.log('btn click', e)}>
+                                Click
+                            </button>
+                        </span>
                     </div>
                 ]
             },

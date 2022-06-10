@@ -1,4 +1,4 @@
-import { okOrEmpty } from '@/utils/common.util'
+import { appendParamOnClick, getTextFromVNode, okOrEmpty } from '@/utils/common.util'
 import { defineComponent, h, isVNode, PropType, ref, VNode } from 'vue'
 import styles from './index.module.css'
 
@@ -70,7 +70,6 @@ const Table = defineComponent({
                             {props.columns.map(c => (
                                 <th>{c.label ? c.label : c.prop}</th>
                             ))}
-                            {okOrEmpty(!!props?.operationGroup?.length, <th></th>)}
                         </tr>
                     </thead>
                     <tbody>
@@ -85,24 +84,22 @@ const Table = defineComponent({
                                         {props.columns.map(c => (
                                             <td>{isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}</td>
                                         ))}
-                                        <th>
-                                            {okOrEmpty(
-                                                record.operation,
-                                                record.operation?.map((o: VNode) => {
-                                                    if (o?.props?.onClick) {
-                                                        let click = o.props.onClick
-                                                        o.props.onClick = function () {
-                                                            return click(record)
-                                                        }
-                                                    }
-                                                    return h(o)
-                                                })
-                                            )}
-                                        </th>
-
-                                        <th>
-                                            <button class="btn btn-ghost btn-xs">details</button>
-                                        </th>
+                                        {/* handle operation */}
+                                        {okOrEmpty(
+                                            record?.operation,
+                                            record?.operation?.map((o: VNode) => {
+                                                if (!isVNode(o)) return h(o)
+                                                let rowData: Record<string | number, any> = {}
+                                                Object.keys(record)
+                                                    ?.filter(r => r !== 'operation')
+                                                    ?.forEach(r => {
+                                                        rowData[r] = record[r]
+                                                    })
+                                                let param = getTextFromVNode(rowData)
+                                                // add param on click event
+                                                return <th>{h(appendParamOnClick(o, param))}</th>
+                                            })
+                                        )}
                                     </tr>
                                     {/* subrow */}
                                     {okOrEmpty(
