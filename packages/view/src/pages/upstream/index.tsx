@@ -1,65 +1,31 @@
 import Table, { TableColumn } from '@/components/Table'
 import { getAllUpstream } from '@/request'
-import { defineComponent, h, watchEffect } from 'vue'
+import { defineComponent, ref, watchEffect } from 'vue'
 const Upstream = defineComponent({
     name: 'Upstream',
     setup() {
         const { data: upstreams } = getAllUpstream()
+        const data = ref<any>([])
         watchEffect(() => {
             console.log(upstreams.value)
-        })
-        const data = [
-            {
-                name: (
-                    <div class="flex items-center space-x-3">
-                        <div>
-                            <div class="font-bold">Hart Hagerty</div>
-                            <div class="text-sm opacity-50">United States</div>
-                        </div>
-                    </div>
-                ),
-                job: (
-                    <>
-                        Zemlak, Daniel and Leannon
-                        <br />
-                        <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                    </>
-                ),
-                color: h('div', 'Purple'),
-                subRow: {
-                    name: 'John Brown2',
-                    job: 'Zemlak, Daniel and Leannon2',
-                    color: 'Purple2'
-                },
-                operation: [
-                    <div onClick={e => console.log('div click', e)}>
-                        <span onClick={e => console.log('span click', e)}>
-                            <button class="btn" onClick={e => console.log('btn click', e)}>
-                                Click
-                            </button>
-                        </span>
-                    </div>,
-                    <div onClick={e => console.log('div click', e)}>
-                        <span onClick={e => console.log('span click', e)}>
-                            <button class="btn btn-ghost btn-xs" onClick={e => console.log('btn click', e)}>
-                                Click
-                            </button>
-                        </span>
-                    </div>
-                ]
-            },
-            {
-                name: 'Jim Green',
-                job: 'Zemlak, Daniel and Leannon',
-                color: 'Purple',
-                subRow: ['John Brown2', 'Zemlak, Daniel and Leannon2', 'Purple2']
-            },
-            {
-                name: 'Joe Black',
-                job: 'Zemlak, Daniel and Leannon',
-                color: 'Purple'
+            if (upstreams.value) {
+                data.value = upstreams.value?.map(upstream => {
+                    return {
+                        name: (
+                            <div class="flex items-center space-x-3">
+                                <div>
+                                    <div class="font-bold">{upstream.name}</div>
+                                    {/* <div class="text-sm opacity-50">United States</div> */}
+                                </div>
+                            </div>
+                        ),
+                        state: <span class="badge badge-ghost badge-sm">{upstream.state}</span>,
+                        loadBalancing: upstream.loadBalancing,
+                        upstreamCount: <span class="badge badge-ghost badge-sm">{upstream.server?.length}</span>
+                    }
+                })
             }
-        ]
+        })
         const columns: TableColumn[] = [
             {
                 prop: 'name',
@@ -77,28 +43,34 @@ const Upstream = defineComponent({
                 width: 200
             },
             {
+                prop: 'upstreamCount',
+                label: '上游数量',
+                width: 200
+            },
+            {
                 prop: 'operation',
                 label: [
                     <div onClick={e => console.log('div click', e)}>
                         <span onClick={e => console.log('span click', e)}>
-                            <button class="btn" onClick={e => console.log('btn click', e)}>
+                            <button class="btn btn-primary btn-sm" onClick={e => console.log('btn click', e)}>
                                 Click
                             </button>
                         </span>
                     </div>,
                     <div onClick={e => console.log('div click', e)}>
                         <span onClick={e => console.log('span click', e)}>
-                            <button class="btn btn-ghost btn-xs" onClick={e => console.log('btn click', e)}>
+                            <button class="btn btn-secondary btn-sm" onClick={e => console.log('btn click', e)}>
                                 Click
                             </button>
                         </span>
                     </div>
-                ]
+                ],
+                width: 50
             }
         ]
         return () => (
             <div class="w-full flex p-4">
-                <Table columns={columns} data={data} selection={{ color: 'primary' }} />
+                <Table columns={columns} data={data.value} selection={{ color: 'primary' }} />
             </div>
         )
     }

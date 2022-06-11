@@ -1,7 +1,7 @@
-import { request } from '../index'
 import { CreateUpstreamDto } from '@x-forward/app/apps/x-forward-server/src/modules/upstream/dto/create-upstream.dto'
 import { UpdateUpstreamDto } from '@x-forward/app/apps/x-forward-server/src/modules/upstream/dto/update-upstream.dto'
 import { UpstreamVo } from '@x-forward/app/apps/x-forward-server/src/modules/upstream/vo/upstream.vo'
+import { request } from '../index'
 
 const UPSTREAM_BASE = '/upstream'
 
@@ -11,7 +11,7 @@ export const getUpstreamById = (id: string) =>
     })
 
 export const getAllUpstream = () =>
-    request(UPSTREAM_BASE, {
+    request<UpstreamVo[]>(UPSTREAM_BASE, {
         method: 'GET'
     })
 

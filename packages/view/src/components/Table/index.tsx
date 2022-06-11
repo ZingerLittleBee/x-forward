@@ -64,6 +64,10 @@ const Table = defineComponent({
         // checkbox status
         const isChecked = ref(new Array(props.data.length).fill(false))
         const isAllChecked = ref(false)
+        watchEffect(() => {
+            isSubrow.value = new Array(props.data.length).fill(false)
+            isChecked.value = new Array(props.data.length).fill(false)
+        })
 
         watchEffect(() => {
             isAllChecked.value = isChecked.value.every(v => isTrue(v))
@@ -95,11 +99,22 @@ const Table = defineComponent({
                                     </label>
                                 </th>
                             )}
-                            {props.columns
-                                .filter(c => c.prop !== 'operation')
-                                .map(c => (
-                                    <th>{c.label ? c.label : c.prop}</th>
-                                ))}
+                            {props.columns.map(c => {
+                                // handle operation width
+                                if (c.prop === 'operation') {
+                                    if (Array.isArray(c.label)) {
+                                        return c.label.map(l => (
+                                            <th style={c.width ? { width: `${c.width}px` } : {}}></th>
+                                        ))
+                                    }
+                                    return <th style={c.width ? { width: `${c.width}px` } : {}}></th>
+                                }
+                                return (
+                                    <th style={c.width ? { width: `${c.width}px` } : {}}>
+                                        {c.label ? c.label : c.prop}
+                                    </th>
+                                )
+                            })}
                         </tr>
                     </thead>
                     <tbody>
@@ -121,7 +136,7 @@ const Table = defineComponent({
                                         {/* checkbox */}
                                         {okOrEmpty(
                                             !!props.selection,
-                                            <th>
+                                            <th class="w-10">
                                                 <label>
                                                     <input
                                                         type="checkbox"
