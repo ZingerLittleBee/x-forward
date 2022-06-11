@@ -1,7 +1,9 @@
 import { appendParamOnClick, getTextFromVNode, okOrEmpty } from '@/utils/common.util'
 import { isTrue } from '@forwardx/shared'
+import { isBoolean } from 'lodash'
 import { defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
 import styles from './index.module.css'
+import { CheckboxStyle, computedCheckboxStyle } from './styleHelper'
 
 export type TableColumn = {
     prop: number | string
@@ -42,9 +44,13 @@ const Table = defineComponent({
             type: Object as PropType<TableProps['columns']>,
             required: true
         },
+        /**
+         * type: `[Object as PropType<CheckboxStyle>, Boolean]`
+         * hover will get error `No overload matches this call`
+         */
         selection: {
-            type: Boolean,
-            default: true
+            type: [Object, Boolean],
+            default: false
         },
         subRowAlign: {
             type: String as PropType<'left' | 'center' | 'right' | 'justify' | 'char' | undefined>,
@@ -67,14 +73,18 @@ const Table = defineComponent({
                 <table class="table table-compact w-full">
                     <thead>
                         <tr>
-                            {/* {selectionBlock(isAllChecked, e => (isChecked.value = isChecked.value.map(() => e)))} */}
                             {okOrEmpty(
-                                props.selection,
+                                !!props.selection,
                                 <th>
                                     <label>
                                         <input
                                             type="checkbox"
-                                            class="checkbox"
+                                            class={`checkbox
+                                            ${okOrEmpty(
+                                                !isBoolean(props.selection),
+                                                computedCheckboxStyle(props.selection as CheckboxStyle)
+                                            )}
+                                             `}
                                             checked={isAllChecked.value}
                                             onChange={e =>
                                                 (isChecked.value = isChecked.value.map(
@@ -108,12 +118,15 @@ const Table = defineComponent({
                                     >
                                         {/* checkbox */}
                                         {okOrEmpty(
-                                            props.selection,
+                                            !!props.selection,
                                             <th>
                                                 <label>
                                                     <input
                                                         type="checkbox"
-                                                        class="checkbox"
+                                                        class={`checkbox ${okOrEmpty(
+                                                            !isBoolean(props.selection),
+                                                            computedCheckboxStyle(props.selection as CheckboxStyle)
+                                                        )}`}
                                                         checked={isChecked.value[i]}
                                                         onChange={e =>
                                                             (isChecked.value[i] = (

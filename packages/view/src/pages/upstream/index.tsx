@@ -74,7 +74,7 @@ const Upstream = defineComponent({
         ]
         return () => (
             <div class="w-full flex p-4">
-                <Table columns={columns} data={data} />
+                <Table columns={columns} data={data} selection={{ color: 'primary' }} />
             </div>
         )
     }
