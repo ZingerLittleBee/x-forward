@@ -1,5 +1,6 @@
 import { appendParamOnClick, getTextFromVNode, okOrEmpty } from '@/utils/common.util'
-import { defineComponent, h, isVNode, PropType, ref, VNode } from 'vue'
+import { isTrue } from '@forwardx/shared'
+import { defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
 import styles from './index.module.css'
 
 export type TableColumn = {
@@ -52,21 +53,38 @@ const Table = defineComponent({
         }
     },
     setup(props) {
-        const selectionBlock = okOrEmpty(
-            props.selection,
-            <th>
-                <label>
-                    <input type="checkbox" class="checkbox" />
-                </label>
-            </th>
-        )
-        const isSubrow = ref(new Array().fill(false))
+        // show subrow or not
+        const isSubrow = ref(new Array(props.data.length).fill(false))
+        // checkbox status
+        const isChecked = ref(new Array(props.data.length).fill(false))
+        const isAllChecked = ref(false)
+
+        watchEffect(() => {
+            isAllChecked.value = isChecked.value.every(v => isTrue(v))
+        })
         return () => (
             <div class="overflow-x-auto w-full border-2">
                 <table class="table table-compact w-full">
                     <thead>
                         <tr>
-                            {selectionBlock}
+                            {/* {selectionBlock(isAllChecked, e => (isChecked.value = isChecked.value.map(() => e)))} */}
+                            {okOrEmpty(
+                                props.selection,
+                                <th>
+                                    <label>
+                                        <input
+                                            type="checkbox"
+                                            class="checkbox"
+                                            checked={isAllChecked.value}
+                                            onChange={e =>
+                                                (isChecked.value = isChecked.value.map(
+                                                    () => (e.target as HTMLInputElement).checked
+                                                ))
+                                            }
+                                        />
+                                    </label>
+                                </th>
+                            )}
                             {props.columns.map(c => (
                                 <th>{c.label ? c.label : c.prop}</th>
                             ))}
@@ -78,9 +96,34 @@ const Table = defineComponent({
                                 <>
                                     <tr
                                         class={`hover ${okOrEmpty(isSubrow.value[i], styles.subrow)}`}
-                                        onClick={() => (isSubrow.value[i] = !isSubrow.value[i])}
+                                        onClick={e => {
+                                            // checkbox and btn can not trigger subrow visibility
+                                            if (
+                                                (e.target as HTMLInputElement).type === 'checkbox' ||
+                                                (e.target as HTMLButtonElement).tagName === 'BUTTON'
+                                            )
+                                                return
+                                            isSubrow.value[i] = !isSubrow.value[i]
+                                        }}
                                     >
-                                        {selectionBlock}
+                                        {/* checkbox */}
+                                        {okOrEmpty(
+                                            props.selection,
+                                            <th>
+                                                <label>
+                                                    <input
+                                                        type="checkbox"
+                                                        class="checkbox"
+                                                        checked={isChecked.value[i]}
+                                                        onChange={e =>
+                                                            (isChecked.value[i] = (
+                                                                e.target as HTMLInputElement
+                                                            ).checked)
+                                                        }
+                                                    />
+                                                </label>
+                                            </th>
+                                        )}
                                         {props.columns.map(c => (
                                             <td>{isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}</td>
                                         ))}
