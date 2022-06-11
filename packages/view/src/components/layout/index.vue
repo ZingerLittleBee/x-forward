@@ -18,11 +18,12 @@
         </div>
     </div>
 </template>
-<script>
-import Header from './Header/index.vue'
-import Footer from './Footer/index.vue'
-import SideBar from './SideBar/index.tsx'
+
+<script lang="ts">
 import Container from './Container/index.vue'
+import Footer from './Footer/index.vue'
+import Header from './Header/index.vue'
+import SideBar from './SideBar/index'
 export default {
     components: { Container, SideBar, Footer, Header }
 }
