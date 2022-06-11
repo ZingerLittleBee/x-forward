@@ -1,8 +1,13 @@
 import Table, { TableColumn } from '@/components/Table'
-import { defineComponent, h } from 'vue'
+import { getAllUpstream } from '@/request'
+import { defineComponent, h, watchEffect } from 'vue'
 const Upstream = defineComponent({
     name: 'Upstream',
     setup() {
+        const { data: upstreams } = getAllUpstream()
+        watchEffect(() => {
+            console.log(upstreams.value)
+        })
         const data = [
             {
                 name: (
@@ -58,18 +63,37 @@ const Upstream = defineComponent({
         const columns: TableColumn[] = [
             {
                 prop: 'name',
-                label: '姓名',
+                label: '上游名称',
                 width: 200
             },
             {
-                prop: 'job',
-                label: 'JOB',
+                prop: 'state',
+                label: '状态',
                 width: 200
             },
             {
-                prop: 'color',
-                label: 'FAVORITE COLOR',
+                prop: 'loadBalancing',
+                label: '负载算法',
                 width: 200
+            },
+            {
+                prop: 'operation',
+                label: [
+                    <div onClick={e => console.log('div click', e)}>
+                        <span onClick={e => console.log('span click', e)}>
+                            <button class="btn" onClick={e => console.log('btn click', e)}>
+                                Click
+                            </button>
+                        </span>
+                    </div>,
+                    <div onClick={e => console.log('div click', e)}>
+                        <span onClick={e => console.log('span click', e)}>
+                            <button class="btn btn-ghost btn-xs" onClick={e => console.log('btn click', e)}>
+                                Click
+                            </button>
+                        </span>
+                    </div>
+                ]
             }
         ]
         return () => (

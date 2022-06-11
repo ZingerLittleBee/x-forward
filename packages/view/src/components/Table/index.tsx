@@ -1,13 +1,13 @@
-import { appendParamOnClick, getTextFromVNode, okOrEmpty } from '@/utils/common.util'
+import { appendParamOnClick, getTextFromVNode, okOrEmpty, SimpleVNode } from '@/utils/common.util'
 import { isTrue } from '@forwardx/shared'
-import { isBoolean } from 'lodash'
+import { isBoolean, isString } from 'lodash'
 import { defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
 import styles from './index.module.css'
 import { CheckboxStyle, computedCheckboxStyle } from './styleHelper'
 
 export type TableColumn = {
     prop: number | string
-    label?: string
+    label?: string | VNode[]
     width?: number
 }
 
@@ -95,9 +95,11 @@ const Table = defineComponent({
                                     </label>
                                 </th>
                             )}
-                            {props.columns.map(c => (
-                                <th>{c.label ? c.label : c.prop}</th>
-                            ))}
+                            {props.columns
+                                .filter(c => c.prop !== 'operation')
+                                .map(c => (
+                                    <th>{c.label ? c.label : c.prop}</th>
+                                ))}
                         </tr>
                     </thead>
                     <tbody>
@@ -137,25 +139,25 @@ const Table = defineComponent({
                                                 </label>
                                             </th>
                                         )}
-                                        {props.columns.map(c => (
-                                            <td>{isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}</td>
-                                        ))}
-                                        {/* handle operation */}
-                                        {okOrEmpty(
-                                            record?.operation,
-                                            record?.operation?.map((o: VNode) => {
-                                                if (!isVNode(o)) return h(o)
-                                                let rowData: Record<string | number, any> = {}
-                                                Object.keys(record)
-                                                    ?.filter(r => r !== 'operation')
-                                                    ?.forEach(r => {
-                                                        rowData[r] = record[r]
+                                        {props.columns.map(c => {
+                                            // handle operation
+                                            if (c.prop === 'operation') {
+                                                if (isString(c.label)) return <button class="btn">{c.prop}</button>
+                                                let param = getTextFromVNode(c.label as unknown as SimpleVNode)
+                                                if (Array.isArray(c.label)) {
+                                                    return (c.label as unknown as VNode[]).map(l => {
+                                                        return <th>{h(appendParamOnClick(l, param))}</th>
                                                     })
-                                                let param = getTextFromVNode(rowData)
+                                                }
                                                 // add param on click event
-                                                return <th>{h(appendParamOnClick(o, param))}</th>
-                                            })
-                                        )}
+                                                return (
+                                                    <th>{h(appendParamOnClick(c.label as unknown as VNode, param))}</th>
+                                                )
+                                            }
+                                            return (
+                                                <td>{isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}</td>
+                                            )
+                                        })}
                                     </tr>
                                     {/* subrow */}
                                     {okOrEmpty(
