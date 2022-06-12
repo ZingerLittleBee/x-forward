@@ -6,7 +6,7 @@
                 <div>
                     <SideBar class="overflow-auto" />
                 </div>
-                <div class="flex flex-col h-full w-full">
+                <div class="flex flex-col h-full w-full overflow-x-hidden">
                     <div class="overflow-auto h-full bg-base-200">
                         <Container />
                     </div>

@@ -1,14 +1,16 @@
 import { appendParamOnClick, getTextFromVNode, okOrEmpty, SimpleVNode } from '@/utils/common.util'
 import { isTrue } from '@forwardx/shared'
 import { isBoolean, isString } from 'lodash'
-import { defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
+import { computed, defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
 import styles from './index.module.css'
 import { CheckboxStyle, computedCheckboxStyle } from './styleHelper'
+import { handleSubRow } from './subRow'
 
 export type TableColumn = {
     prop: number | string
     label?: string | VNode[]
     width?: number
+    fixed?: boolean | 'left' | 'right'
 }
 
 type TableProps = {
@@ -44,6 +46,11 @@ const Table = defineComponent({
             type: Object as PropType<TableProps['columns']>,
             required: true
         },
+        fixHeader: {
+            type: Boolean,
+            required: false,
+            default: true
+        },
         /**
          * type: `[Object as PropType<CheckboxStyle>, Boolean]`
          * hover will get error `No overload matches this call`
@@ -55,7 +62,7 @@ const Table = defineComponent({
         subRowAlign: {
             type: String as PropType<'left' | 'center' | 'right' | 'justify' | 'char' | undefined>,
             required: false,
-            default: 'center'
+            default: 'left'
         }
     },
     setup(props) {
@@ -68,18 +75,24 @@ const Table = defineComponent({
             isSubrow.value = new Array(props.data.length).fill(false)
             isChecked.value = new Array(props.data.length).fill(false)
         })
-
+        const columnNums = computed(() => {
+            if (props.columns.length === 0) {
+                return 0
+            }
+            const labelLength = props.columns[props.columns.length - 1]?.label?.length
+            return labelLength ? props.columns.length + labelLength - 1 : props.columns.length
+        })
         watchEffect(() => {
             isAllChecked.value = isChecked.value.every(v => isTrue(v))
         })
         return () => (
-            <div class="overflow-x-auto w-full border-2">
-                <table class="table table-compact w-full">
+            <div class="overflow-auto border-2">
+                <table class="table-fixed table table-compact w-full">
                     <thead>
-                        <tr>
+                        <tr class={`${props.fixHeader ? 'sticky top-0 z-20' : ''}`}>
                             {okOrEmpty(
                                 !!props.selection,
-                                <th>
+                                <th class="w-10">
                                     <label>
                                         <input
                                             type="checkbox"
@@ -100,18 +113,14 @@ const Table = defineComponent({
                                 </th>
                             )}
                             {props.columns.map(c => {
-                                // handle operation width
-                                if (c.prop === 'operation') {
-                                    if (Array.isArray(c.label)) {
-                                        return c.label.map(l => (
-                                            <th style={c.width ? { width: `${c.width}px` } : {}}></th>
-                                        ))
-                                    }
-                                    return <th style={c.width ? { width: `${c.width}px` } : {}}></th>
-                                }
                                 return (
-                                    <th style={c.width ? { width: `${c.width}px` } : {}}>
-                                        {c.label ? c.label : c.prop}
+                                    <th
+                                        class={`${
+                                            c.fixed ? (c.fixed === 'left' ? 'sticky left-0' : 'sticky right-0') : ''
+                                        }`}
+                                        style={c.width ? { width: `${c.width}px` } : {}}
+                                    >
+                                        {c.prop === 'operation' ? 'operation' : c.label ? c.label : c.prop}
                                     </th>
                                 )
                             })}
@@ -136,7 +145,7 @@ const Table = defineComponent({
                                         {/* checkbox */}
                                         {okOrEmpty(
                                             !!props.selection,
-                                            <th class="w-10">
+                                            <th>
                                                 <label>
                                                     <input
                                                         type="checkbox"
@@ -160,17 +169,51 @@ const Table = defineComponent({
                                                 if (isString(c.label)) return <button class="btn">{c.prop}</button>
                                                 let param = getTextFromVNode(c.label as unknown as SimpleVNode)
                                                 if (Array.isArray(c.label)) {
-                                                    return (c.label as unknown as VNode[]).map(l => {
-                                                        return <th>{h(appendParamOnClick(l, param))}</th>
-                                                    })
+                                                    return (
+                                                        <th
+                                                            class={`${
+                                                                c.fixed
+                                                                    ? c.fixed === 'left'
+                                                                        ? 'sticky left-0'
+                                                                        : 'sticky right-0'
+                                                                    : ''
+                                                            }`}
+                                                        >
+                                                            <div class="flex space-x-2">
+                                                                {(c.label as unknown as VNode[]).map(l =>
+                                                                    h(appendParamOnClick(l, param))
+                                                                )}
+                                                            </div>
+                                                        </th>
+                                                    )
                                                 }
                                                 // add param on click event
                                                 return (
-                                                    <th>{h(appendParamOnClick(c.label as unknown as VNode, param))}</th>
+                                                    <th
+                                                        class={`${
+                                                            c.fixed
+                                                                ? c.fixed === 'left'
+                                                                    ? 'sticky left-0'
+                                                                    : 'sticky right-0'
+                                                                : ''
+                                                        }`}
+                                                    >
+                                                        {h(appendParamOnClick(c.label as unknown as VNode, param))}
+                                                    </th>
                                                 )
                                             }
                                             return (
-                                                <td>{isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}</td>
+                                                <td
+                                                    class={`${
+                                                        c.fixed
+                                                            ? c.fixed === 'left'
+                                                                ? 'sticky left-0'
+                                                                : 'sticky right-0'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    {isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}
+                                                </td>
                                             )
                                         })}
                                     </tr>
@@ -178,23 +221,8 @@ const Table = defineComponent({
                                     {okOrEmpty(
                                         isSubrow.value[i] && record.subRow,
                                         <tr class="hidden">
-                                            <th colspan="100" align={props.subRowAlign}>
-                                                {Array.isArray(record.subRow) ? (
-                                                    record.subRow?.map(s => <p>{s}</p>)
-                                                ) : typeof record.subRow === 'object' ? (
-                                                    Array.isArray(record.subRow) ? (
-                                                        record.subRow?.map(s => <p>{s}</p>)
-                                                    ) : (
-                                                        Object.keys(record.subRow).map(s => (
-                                                            <p>
-                                                                <span>{s}: </span>
-                                                                <span>{record.subRow[s]}</span>
-                                                            </p>
-                                                        ))
-                                                    )
-                                                ) : (
-                                                    <p>{record.subRow}</p>
-                                                )}
+                                            <th colspan={columnNums.value} align={props.subRowAlign}>
+                                                {handleSubRow(record.subRow)}
                                             </th>
                                         </tr>
                                     )}
