@@ -1,8 +1,8 @@
 <div align="center">
   <img src="./packages/view/public/pro_icon.svg" alt="">
   <p align="center">An Ambitious NginxUI for Stream.</p>
+  <a href="https://discord.gg/TzewJWf94K"> <img src="https://img.shields.io/discord/878241940888489984.svg?logo=discord&style=flat-square" alt="Discord Link" /> </a>
   <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-  <a href="https://gitter.im/x-forward/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank"><img src="https://badges.gitter.im/x-forward/community.svg" alt="Join the chat at https://gitter.im/x-forward/community" /></a>
 </div>
 
 > Coming soon ⚡️
