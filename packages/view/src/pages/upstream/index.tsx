@@ -1,42 +1,37 @@
+import Collapse from '@/components/Collapse'
 import Table, { TableColumn } from '@/components/Table'
 import { getAllUpstream } from '@/request'
+import { capitalizeFirstLetter, okOrEmpty } from '@/utils/common.util'
+import { ServerEnum } from '@forwardx/shared'
 import { defineComponent, ref, watchEffect } from 'vue'
+import useUpstreamData, { ServerColumns, UpstreamShowColumns } from './useUpstreamData'
+
 const Upstream = defineComponent({
     name: 'Upstream',
     setup() {
-        const { data: upstreams } = getAllUpstream()
+        const { data: rawUpstreams } = getAllUpstream()
         const data = ref<any>([])
+
+        const upstream = useUpstreamData(rawUpstreams)
+
         watchEffect(() => {
-            if (upstreams.value) {
-                data.value = upstreams.value?.map(upstream => ({
+            if (upstream.value) {
+                data.value = upstream.value?.map(u => ({
                     name: (
                         <div class="flex items-center space-x-3">
                             <div>
-                                <div class="font-bold">{upstream.name}</div>
+                                <div class="font-bold">{u.name}</div>
                                 {/* <div class="text-sm opacity-50">United States</div> */}
                             </div>
                         </div>
                     ),
-                    state: <span class="badge badge-ghost badge-sm">{upstream.state}</span>,
-                    loadBalancing: upstream.loadBalancing,
+                    state: <span class="badge badge-ghost badge-sm">{u.state}</span>,
+                    loadBalancing: u.loadBalancing,
                     upstreamCount: (
-                        <span class={`badge ${upstream.server?.length > 0 ? 'badge-accent' : 'badge-ghost'}`}>
-                            {upstream.server?.length > 0 ? upstream.server.length : 0}
+                        <span class={`badge ${u.serverLength > 0 ? 'badge-accent' : 'badge-ghost'}`}>
+                            {u.serverLength > 0 ? u.serverLength : 0}
                         </span>
-                    ),
-                    subRow: upstream.server?.map(s => {
-                        let row: Record<string, string | number> = {}
-                        s.upstreamHost && (row['host'] = s.upstreamHost)
-                        s.upstreamPort && (row['port'] = s.upstreamPort)
-                        s.weight && (row['weight'] = s.weight)
-                        s.maxCons && (row['maxCons'] = s.maxCons)
-                        s.maxFails && (row['maxFails'] = s.maxFails)
-                        s.failTimeout && (row['failTimeout'] = s.failTimeout)
-                        s.state && (row['state'] = s.state)
-                        s.backup && (row['backup'] = s.backup)
-                        s.down && (row['down'] = s.down)
-                        return row
-                    })
+                    )
                 }))
             }
         })
@@ -89,11 +84,34 @@ const Upstream = defineComponent({
                 width: 170
             }
         ]
-        return () => (
-            <div class="w-full flex p-4">
-                <Table columns={columns} data={data.value} selection={{ color: 'primary' }} />
-            </div>
-        )
+        return () =>
+            upstream.value.map(d => (
+                <Collapse
+                    title={
+                        <div class="grid grid-cols-5 items-center relative">
+                            {UpstreamShowColumns.map(c => (
+                                <span>{d[c]}</span>
+                            ))}
+                        </div>
+                    }
+                    content={okOrEmpty(
+                        !!d.server,
+                        <div class="w-full flex pt-4">
+                            <Table
+                                columns={ServerColumns.map(sc => {
+                                    return {
+                                        prop: sc,
+                                        label: ServerEnum[capitalizeFirstLetter(sc) as keyof typeof ServerEnum]
+                                    }
+                                })}
+                                data={d.server}
+                                selection={{ color: 'primary' }}
+                            />
+                        </div>
+                    )}
+                    class="pt-6 px-10"
+                />
+            ))
     }
 })
 

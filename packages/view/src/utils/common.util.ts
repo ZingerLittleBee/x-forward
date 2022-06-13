@@ -131,3 +131,11 @@ export const appendParamOnClick = (node: VNode, param: Record<string | number, u
     }
     return node
 }
+
+export const combineClasses = (classes: string | string[] | undefined) => {
+    return classes ? (Array.isArray(classes) ? classes.join(' ') : classes) : ''
+}
+
+export const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
