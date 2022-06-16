@@ -2,14 +2,14 @@
   <img src="./packages/view/public/pro_icon.svg" alt="">
   <p align="center">An Ambitious NginxUI for Stream.</p>
   <a href="https://discord.gg/TzewJWf94K"> <img src="https://img.shields.io/discord/878241940888489984.svg?logo=discord&style=flat-square" alt="Discord Link" /> </a>
-  <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
+  <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img alt="license" src="https://img.shields.io/github/license/ZingerLittleBee/x-forward?style=flat-square"></a>
 </div>
 
 > Coming soon ⚡️
 >
 > -   New UI base [daisyui](https://github.com/saadeghi/daisyui)
 > -   New JavaScript Framework build with `Vue3`、`Pinia`、`Vue-Router`、`Vite`
-> -   100% component libary build by my hand (may be come component libary in future)
+> -   100% component library build by my hand (may become component library in future)
 
 ## Introduction
 
