@@ -139,3 +139,7 @@ export const combineClasses = (classes: string | string[] | undefined) => {
 export const capitalizeFirstLetter = (str: string) => {
     return str.charAt(0).toUpperCase() + str.slice(1)
 }
+
+export const textOverflowCheck = (div: HTMLElement) => {
+    return div.scrollWidth > div.offsetWidth
+}

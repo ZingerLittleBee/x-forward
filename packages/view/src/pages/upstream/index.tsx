@@ -90,7 +90,7 @@ const Upstream = defineComponent({
                     title={
                         <div class="grid grid-cols-5 items-center relative">
                             {UpstreamShowColumns.map(c => (
-                                <span>{d[c]}</span>
+                                <span class="truncate">{d[c]}</span>
                             ))}
                         </div>
                     }

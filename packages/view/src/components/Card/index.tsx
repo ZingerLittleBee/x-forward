@@ -1,4 +1,5 @@
 import { defineComponent, FunctionalComponent, h, onMounted, PropType, ref, SVGAttributes } from 'vue'
+import { textOverflowCheck } from '@/utils/common.util'
 
 export type ColorType = 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error' | 'neutral'
 
@@ -20,10 +21,6 @@ export type Content = {
     key: string
     value: string
     type?: ColorType
-}
-
-const textOverflowCheck = (div: HTMLElement) => {
-    return div.scrollWidth > div.offsetWidth
 }
 
 const Card = defineComponent({
