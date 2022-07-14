@@ -1,7 +1,7 @@
 import { appendParamOnClick, getTextFromVNode, okOrEmpty, SimpleVNode } from '@/utils/common.util'
 import { isTrue } from '@forwardx/shared'
 import { isBoolean, isString } from 'lodash'
-import { computed, defineComponent, h, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
+import { computed, defineComponent, h, isProxy, isVNode, PropType, ref, VNode, watchEffect } from 'vue'
 import styles from './index.module.css'
 import { CheckboxStyle, computedCheckboxStyle } from './styleHelper'
 import { handleSubRow } from './subRow'
@@ -169,7 +169,7 @@ const Table = defineComponent({
                                                 // handle operation
                                                 if (c.prop === 'operation') {
                                                     if (isString(c.label)) return <button class="btn">{c.prop}</button>
-                                                    let param = getTextFromVNode(c.label as unknown as SimpleVNode)
+                                                    const param = getTextFromVNode(c.label as unknown as SimpleVNode)
                                                     if (Array.isArray(c.label)) {
                                                         return (
                                                             <th
@@ -183,7 +183,12 @@ const Table = defineComponent({
                                                             >
                                                                 <div class="flex space-x-2">
                                                                     {(c.label as unknown as VNode[]).map(l =>
-                                                                        h(appendParamOnClick(l, param))
+                                                                        h(
+                                                                            appendParamOnClick(
+                                                                                l,
+                                                                                isProxy(record) ? { ...record } : record
+                                                                            )
+                                                                        )
                                                                     )}
                                                                 </div>
                                                             </th>
@@ -200,7 +205,12 @@ const Table = defineComponent({
                                                                     : ''
                                                             }`}
                                                         >
-                                                            {h(appendParamOnClick(c.label as unknown as VNode, param))}
+                                                            {h(
+                                                                appendParamOnClick(
+                                                                    c.label as unknown as VNode,
+                                                                    isProxy(record) ? { ...record } : record
+                                                                )
+                                                            )}
                                                         </th>
                                                     )
                                                 }
