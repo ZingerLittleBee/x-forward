@@ -2,19 +2,20 @@ import { combineClasses, okOrEmpty } from '@/utils/common.util'
 import { defineComponent, h, isVNode, PropType, ref, VNode } from 'vue'
 import LeftArrowIcon from '~icons/bi/arrow-down-circle-fill'
 import RightArrowIcon from '~icons/bi/arrow-right-circle-fill'
+import { isString } from 'lodash'
 
 const Collapse = defineComponent({
     name: 'Collapse',
     props: {
         title: {
             validator(value: VNode | string) {
-                return isVNode(value) || typeof value === 'string'
+                return isVNode(value) || isString(value)
             },
             required: true
         },
         content: {
             validator(value: VNode | string) {
-                return isVNode(value) || typeof value === 'string'
+                return isVNode(value) || isString(value)
             },
             required: true
         },

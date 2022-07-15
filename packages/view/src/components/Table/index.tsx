@@ -91,7 +91,7 @@ const Table = defineComponent({
                     !!props.data,
                     <table class="table-fixed table table-compact w-full">
                         <thead>
-                            <tr class={`${props.fixHeader ? 'sticky top-0 z-20' : ''}`}>
+                            <tr class={okOrEmpty(props.fixHeader, 'sticky top-0 z-20')}>
                                 {okOrEmpty(
                                     !!props.selection,
                                     <th class="w-10">
@@ -114,22 +114,21 @@ const Table = defineComponent({
                                         </label>
                                     </th>
                                 )}
-                                {props.columns.map(c => {
-                                    return (
-                                        <th
-                                            class={`${
-                                                c.fixed ? (c.fixed === 'left' ? 'sticky left-0' : 'sticky right-0') : ''
-                                            }`}
-                                            style={c.width ? { width: `${c.width}px` } : {}}
-                                        >
-                                            {c.prop === 'operation' ? 'operation' : c.label ? c.label : c.prop}
-                                        </th>
-                                    )
-                                })}
+                                {props.columns.map(c => (
+                                    <th
+                                        class={`${
+                                            c.fixed ? (c.fixed === 'left' ? 'sticky left-0' : 'sticky right-0') : ''
+                                        }`}
+                                        style={c.width ? { width: `${c.width}px` } : {}}
+                                    >
+                                        {c.prop === 'operation' ? 'operation' : c.label ? c.label : c.prop}
+                                    </th>
+                                ))}
                             </tr>
                         </thead>
                         <tbody>
                             {props.data?.map((record, i) => {
+                                console.log('record', record)
                                 return (
                                     <>
                                         <tr
@@ -173,13 +172,13 @@ const Table = defineComponent({
                                                     if (Array.isArray(c.label)) {
                                                         return (
                                                             <th
-                                                                class={`${
+                                                                class={
                                                                     c.fixed
                                                                         ? c.fixed === 'left'
                                                                             ? 'sticky left-0'
                                                                             : 'sticky right-0'
                                                                         : ''
-                                                                }`}
+                                                                }
                                                             >
                                                                 <div class="flex space-x-2">
                                                                     {(c.label as unknown as VNode[]).map(l =>
@@ -197,13 +196,13 @@ const Table = defineComponent({
                                                     // add param on click event
                                                     return (
                                                         <th
-                                                            class={`${
+                                                            class={
                                                                 c.fixed
                                                                     ? c.fixed === 'left'
                                                                         ? 'sticky left-0'
                                                                         : 'sticky right-0'
                                                                     : ''
-                                                            }`}
+                                                            }
                                                         >
                                                             {h(
                                                                 appendParamOnClick(
