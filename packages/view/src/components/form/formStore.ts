@@ -54,6 +54,15 @@ export class FormStore {
         this.notify(name)
     }
 
+    setSome(val: Record<string, any>) {
+        this.values = { ...this.values, ...val }
+        const keys = Object.keys(val)
+        keys.forEach(key => {
+            this.validate(key)
+            this.notify(key)
+        })
+    }
+
     // 重置表单值
     reset() {
         // 清空错误信息

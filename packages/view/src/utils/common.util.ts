@@ -115,9 +115,7 @@ export const getTextFromVNode = (node: SimpleVNode): any => {
 export const appendParamOnClick = (node: VNode, param: Record<string | number, unknown>) => {
     if (node.props?.onClick) {
         const click = node.props?.onClick
-        node.props.onClick = function () {
-            return click(param)
-        }
+        node.props.onClick = () => click(param)
     }
     if (node.children) {
         if (isVNode(node.children)) {

@@ -31,7 +31,6 @@
 
 <script setup lang="ts">
 import { BtnGroup } from '@/components/Card'
-import * as FormItem from '@/components/form'
 import { FormStore } from '@/components/form/formStore'
 import Form from '@/components/form/index.vue'
 import { Alert } from '@/plugins/alert'

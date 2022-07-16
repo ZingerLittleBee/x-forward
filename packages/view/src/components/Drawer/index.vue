@@ -20,7 +20,7 @@ const { side } = props
 const sideClass = side === 'left' ? 'drawer' : 'drawer drawer-end'
 
 const containerClasses = computed(() => {
-    return props.modelValue ? `${sideClass} h-screen` : `${sideClass}`
+    return props.modelValue ? `${sideClass} h-screen` : `${sideClass} h-0`
 })
 
 const Trigger = (props: { trigger: string | VNode; value?: boolean }) => {
@@ -47,7 +47,7 @@ const Trigger = (props: { trigger: string | VNode; value?: boolean }) => {
 
 <template>
     <teleport to="body" :disabled="!props.teleportToBody">
-        <div class="absolute h-0 top-0 left-0 z-50" :class="containerClasses">
+        <div class="absolute top-0 left-0 z-50" :class="containerClasses">
             <input
                 id="my-drawer"
                 type="checkbox"

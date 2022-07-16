@@ -8,9 +8,10 @@ import { handleSubRow } from './subRow'
 
 export type TableColumn = {
     prop: number | string
-    label?: string | VNode[]
+    label?: string | VNode | VNode[]
     width?: number
     fixed?: boolean | 'left' | 'right'
+    onClick?: (e: Record<string, unknown>) => void
 }
 
 type TableProps = {
@@ -128,7 +129,6 @@ const Table = defineComponent({
                         </thead>
                         <tbody>
                             {props.data?.map((record, i) => {
-                                console.log('record', record)
                                 return (
                                     <>
                                         <tr
@@ -168,62 +168,60 @@ const Table = defineComponent({
                                                 // handle operation
                                                 if (c.prop === 'operation') {
                                                     if (isString(c.label)) return <button class="btn">{c.prop}</button>
-                                                    const param = getTextFromVNode(c.label as unknown as SimpleVNode)
-                                                    if (Array.isArray(c.label)) {
-                                                        return (
-                                                            <th
-                                                                class={
-                                                                    c.fixed
-                                                                        ? c.fixed === 'left'
-                                                                            ? 'sticky left-0'
-                                                                            : 'sticky right-0'
-                                                                        : ''
-                                                                }
-                                                            >
-                                                                <div class="flex space-x-2">
-                                                                    {(c.label as unknown as VNode[]).map(l =>
-                                                                        h(
-                                                                            appendParamOnClick(
-                                                                                l,
-                                                                                isProxy(record) ? { ...record } : record
-                                                                            )
-                                                                        )
-                                                                    )}
-                                                                </div>
-                                                            </th>
-                                                        )
-                                                    }
+                                                    // if (Array.isArray(c.label)) {
+                                                    //     return (
+                                                    //         <th
+                                                    //             class={
+                                                    //                 c.fixed
+                                                    //                     ? c.fixed === 'left'
+                                                    //                         ? 'sticky left-0'
+                                                    //                         : 'sticky right-0'
+                                                    //                     : ''
+                                                    //             }
+                                                    //         >
+                                                    //             <div class="flex space-x-2">
+                                                    //                 {(c.label as unknown as VNode[]).map(l =>
+                                                    //                     h(
+                                                    //                         appendParamOnClick(
+                                                    //                             l,
+                                                    //                             isProxy(record) ? { ...record } : record
+                                                    //                         )
+                                                    //                     )
+                                                    //                 )}
+                                                    //             </div>
+                                                    //         </th>
+                                                    //     )
+                                                    // }
                                                     // add param on click event
                                                     return (
                                                         <th
-                                                            class={
-                                                                c.fixed
-                                                                    ? c.fixed === 'left'
-                                                                        ? 'sticky left-0'
-                                                                        : 'sticky right-0'
-                                                                    : ''
-                                                            }
-                                                        >
-                                                            {h(
-                                                                appendParamOnClick(
-                                                                    c.label as unknown as VNode,
-                                                                    isProxy(record) ? { ...record } : record
-                                                                )
+                                                            class={okOrEmpty(
+                                                                !!c.fixed,
+                                                                c.fixed === 'left' ? 'sticky left-0' : 'sticky right-0'
                                                             )}
+                                                        >
+                                                            {/*{appendParamOnClick(*/}
+                                                            {/*    c.label as unknown as VNode,*/}
+                                                            {/*    isProxy(record) ? { ...record } : record*/}
+                                                            {/*)}*/}
+                                                            {h(c.label, {
+                                                                onClick: () => {
+                                                                    c.onClick?.(
+                                                                        isProxy(record) ? { ...record } : record
+                                                                    )
+                                                                }
+                                                            })}
                                                         </th>
                                                     )
                                                 }
                                                 return (
                                                     <td
-                                                        class={`${
-                                                            c.fixed
-                                                                ? c.fixed === 'left'
-                                                                    ? 'sticky left-0'
-                                                                    : 'sticky right-0'
-                                                                : ''
-                                                        }`}
+                                                        class={okOrEmpty(
+                                                            !!c.fixed,
+                                                            c.fixed === 'left' ? 'sticky left-0' : 'sticky right-0'
+                                                        )}
                                                     >
-                                                        {isVNode(record[c.prop]) ? h(record[c.prop]) : record[c.prop]}
+                                                        {record[c.prop]}
                                                     </td>
                                                 )
                                             })}
