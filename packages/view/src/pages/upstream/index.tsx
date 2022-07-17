@@ -44,7 +44,7 @@ const Upstream = defineComponent({
 
         watchEffect(() => {
             if (!model.value) {
-                show.value = false
+                setTimeout(() => (show.value = false), 100)
             }
         })
 
@@ -55,7 +55,7 @@ const Upstream = defineComponent({
             onClick: e => {
                 store.value = new FormStore(e)
                 show.value = true
-                model.value = !model.value
+                setTimeout(() => (model.value = !model.value), 100)
             },
             // <button class="btn btn-secondary btn-outline btn-sm" onClick={e => console.log('Delete click', e)}>
             //     Delete

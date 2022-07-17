@@ -4,26 +4,26 @@
         <!--        <card id="123" :group="cardGroup" :btn-group="btnGroup" />-->
         <!--        <toggle />-->
         <Form :store="store" :on-submit="handleSubmit" class="w-96">
-            <FormItem.Field name="username" label="username">
+            <Field name="username" label="username">
                 <input class="input input-bordered input-primary w-full" />
-            </FormItem.Field>
-            <FormItem.Field name="password" label="password">
+            </Field>
+            <Field name="password" label="password">
                 <input type="password" class="input input-bordered input-secondary w-full" />
-            </FormItem.Field>
-            <FormItem.Field name="check" label="check">
+            </Field>
+            <Field name="check" label="check">
                 <input
                     type="checkbox"
                     class="checkbox"
                     @change="e => store.set('checkbox', (e.target as HTMLInputElement).checked ? 1 : 0)"
                 />
-            </FormItem.Field>
-            <FormItem.Field name="toggle" label="check">
+            </Field>
+            <Field name="toggle" label="check">
                 <input
                     type="checkbox"
                     class="toggle"
                     @change="e => store.set('toggle', (e.target as HTMLInputElement).checked ? 1 : 0)"
                 />
-            </FormItem.Field>
+            </Field>
             <button class="btn">Submit</button>
         </Form>
     </div>
@@ -36,6 +36,7 @@ import Form from '@/components/form/index.vue'
 import { Alert } from '@/plugins/alert'
 import { inject } from 'vue'
 import IconModule from '~icons/mdi/view-dashboard-outline'
+import { Field } from '@/components/form/index.ts'
 
 let store = new FormStore({
     username: 'username',

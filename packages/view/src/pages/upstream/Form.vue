@@ -37,7 +37,7 @@
 import Field from '@/components/form/field'
 import Form from '@/components/form/index.vue'
 import { Alert } from '@/plugins/alert'
-import { inject, defineProps, watch } from 'vue'
+import { inject, watch } from 'vue'
 
 const props = defineProps<{
     store: any
