@@ -1,7 +1,8 @@
 <template>
-    <DrawerExample />
+    <ModalExample />
+    <span>123</span>
 </template>
 
 <script setup lang="ts">
-import DrawerExample from '@/examples/drawer.vue'
+import ModalExample from '@/examples/modal.vue'
 </script>
