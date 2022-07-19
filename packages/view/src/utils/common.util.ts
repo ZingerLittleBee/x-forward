@@ -5,6 +5,8 @@ export const okOrEmpty = (flag: boolean, truely: unknown, falsely = '') => {
     return flag ? truely : falsely
 }
 
+export type SimpleVNode = Record<string | number, Record<string | number, unknown>>
+
 /**
  * Recursion get { key: Text } in VNode
  * and Text on same level, will combine to array
@@ -69,8 +71,8 @@ export const okOrEmpty = (flag: boolean, truely: unknown, falsely = '') => {
  * @param node { name: VNode, age: VNode }
  * @returns Array consisting of Text
  */
-export const getTextFromVNode = (node: Record<string | number, Record<string | number, unknown>>): any => {
-    const handleVNode = (node: Record<string | number, unknown>): unknown => {
+export const getTextFromVNode = (node: SimpleVNode): any => {
+    const handleVNode = (node: SimpleVNode): unknown => {
         const children = node?.children
         if (isNil(children)) {
             return isObject(node) && !isVNode(node) ? node : ''
@@ -80,11 +82,11 @@ export const getTextFromVNode = (node: Record<string | number, Record<string | n
             return children.map(c => handleVNode(c)).filter(c => !!c)
         }
 
-        return handleVNode(children as Record<string | number, unknown>)
+        return handleVNode(children as Record<string | number, Record<string | number, unknown>>)
     }
 
     return Object.keys(node).map(key => {
-        const res = handleVNode(node[key])
+        const res = handleVNode(node[key] as SimpleVNode)
         return {
             [key]: Array.isArray(res) ? res.flat(5) : res
         }
@@ -113,9 +115,7 @@ export const getTextFromVNode = (node: Record<string | number, Record<string | n
 export const appendParamOnClick = (node: VNode, param: Record<string | number, unknown>) => {
     if (node.props?.onClick) {
         const click = node.props?.onClick
-        node.props.onClick = function () {
-            return click(param)
-        }
+        node.props.onClick = () => click(param)
     }
     if (node.children) {
         if (isVNode(node.children)) {
@@ -128,4 +128,16 @@ export const appendParamOnClick = (node: VNode, param: Record<string | number, u
         }
     }
     return node
+}
+
+export const combineClasses = (classes: string | string[] | undefined) => {
+    return classes ? (Array.isArray(classes) ? classes.join(' ') : classes) : ''
+}
+
+export const capitalizeFirstLetter = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export const textOverflowCheck = (div: HTMLElement) => {
+    return div.scrollWidth > div.offsetWidth
 }

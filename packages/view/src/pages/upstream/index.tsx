@@ -1,81 +1,103 @@
-import Table, { TableColumn } from '@/components/Table'
-import { defineComponent, h } from 'vue'
+import Collapse from '@/components/Collapse'
+import Table from '@/components/Table'
+import { getAllUpstream } from '@/request'
+import { capitalizeFirstLetter, okOrEmpty } from '@/utils/common.util'
+import { ServerEnum } from '@forwardx/shared'
+import { defineAsyncComponent, defineComponent, ref, watchEffect } from 'vue'
+import useUpstreamData, { ServerColumns, UpstreamShowColumns } from './useUpstreamData'
+import Form from './Form.vue'
+import { FormStore } from '@/components/form/formStore'
+
+const AsyncComp = defineAsyncComponent(() => import('@/components/Drawer/index.vue'))
+
 const Upstream = defineComponent({
     name: 'Upstream',
     setup() {
-        const data = [
-            {
-                name: (
-                    <div class="flex items-center space-x-3">
-                        <div>
-                            <div class="font-bold">Hart Hagerty</div>
-                            <div class="text-sm opacity-50">United States</div>
+        const { data: rawUpstreams } = getAllUpstream()
+        const data = ref<any>([])
+        const upstream = useUpstreamData(rawUpstreams)
+
+        watchEffect(() => {
+            if (upstream.value) {
+                data.value = upstream.value?.map(u => ({
+                    name: (
+                        <div class="flex items-center space-x-3">
+                            <div>
+                                <div class="font-bold">{u.name}</div>
+                                {/* <div class="text-sm opacity-50">United States</div> */}
+                            </div>
                         </div>
-                    </div>
-                ),
-                job: (
-                    <>
-                        Zemlak, Daniel and Leannon
-                        <br />
-                        <span class="badge badge-ghost badge-sm">Desktop Support Technician</span>
-                    </>
-                ),
-                color: h('div', 'Purple'),
-                subRow: {
-                    name: 'John Brown2',
-                    job: 'Zemlak, Daniel and Leannon2',
-                    color: 'Purple2'
-                },
-                operation: [
-                    <div onClick={e => console.log('div click', e)}>
-                        <span onClick={e => console.log('span click', e)}>
-                            <button class="btn" onClick={e => console.log('btn click', e)}>
-                                Click
-                            </button>
+                    ),
+                    state: <span class="badge badge-ghost badge-sm">{u.state}</span>,
+                    loadBalancing: u.loadBalancing,
+                    upstreamCount: (
+                        <span class={`badge ${u.serverLength > 0 ? 'badge-accent' : 'badge-ghost'}`}>
+                            {u.serverLength > 0 ? u.serverLength : 0}
                         </span>
-                    </div>,
-                    <div onClick={e => console.log('div click', e)}>
-                        <span onClick={e => console.log('span click', e)}>
-                            <button class="btn btn-ghost btn-xs" onClick={e => console.log('btn click', e)}>
-                                Click
-                            </button>
-                        </span>
-                    </div>
-                ]
-            },
-            {
-                name: 'Jim Green',
-                job: 'Zemlak, Daniel and Leannon',
-                color: 'Purple',
-                subRow: ['John Brown2', 'Zemlak, Daniel and Leannon2', 'Purple2']
-            },
-            {
-                name: 'Joe Black',
-                job: 'Zemlak, Daniel and Leannon',
-                color: 'Purple'
+                    )
+                }))
             }
-        ]
-        const columns: TableColumn[] = [
-            {
-                prop: 'name',
-                label: '姓名',
-                width: 200
-            },
-            {
-                prop: 'job',
-                label: 'JOB',
-                width: 200
-            },
-            {
-                prop: 'color',
-                label: 'FAVORITE COLOR',
-                width: 200
+        })
+        const model = ref(false)
+        const show = ref(false)
+        const store = ref()
+
+        watchEffect(() => {
+            if (!model.value) {
+                setTimeout(() => (show.value = false), 100)
             }
-        ]
+        })
+
+        const operation = {
+            prop: 'operation',
+            fixed: true,
+            label: <button class="btn btn-primary btn-outline btn-sm">Edit</button>,
+            onClick: e => {
+                store.value = new FormStore(e)
+                show.value = true
+                setTimeout(() => (model.value = !model.value), 100)
+            },
+            // <button class="btn btn-secondary btn-outline btn-sm" onClick={e => console.log('Delete click', e)}>
+            //     Delete
+            // </button>
+            width: 170
+        }
         return () => (
-            <div class="w-full flex p-4">
-                <Table columns={columns} data={data} />
-            </div>
+            <>
+                {upstream.value.map(d => (
+                    <Collapse
+                        title={
+                            <div class="grid grid-cols-5 items-center relative">
+                                {UpstreamShowColumns.map(c => (
+                                    <span class="truncate">{d[c]}</span>
+                                ))}
+                            </div>
+                        }
+                        content={okOrEmpty(
+                            !!d.server,
+                            <div class="w-full flex pt-4">
+                                <Table
+                                    columns={[
+                                        ...ServerColumns.map(sc => ({
+                                            prop: sc,
+                                            label: ServerEnum[capitalizeFirstLetter(sc) as keyof typeof ServerEnum]
+                                        })),
+                                        operation
+                                    ]}
+                                    data={d.server}
+                                    selection={{ color: 'primary' }}
+                                />
+                            </div>
+                        )}
+                        class="pt-6 px-10"
+                    />
+                ))}
+                {show.value && (
+                    <AsyncComp v-model={model.value}>
+                        <Form store={store.value} />
+                    </AsyncComp>
+                )}
+            </>
         )
     }
 })
