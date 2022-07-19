@@ -1,5 +1,5 @@
 {
-  "name": "@x-forward/view",
+  "name": "@x-forward/react",
   "version": "0.0.1",
   "private": true,
   "description": "ui for nginx stream",
