@@ -1,9 +1,15 @@
 <div align="center">
   <img src="./packages/view/public/pro_icon.svg" alt="">
   <p align="center">An Ambitious NginxUI for Stream.</p>
-  <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-  <a href="https://gitter.im/x-forward/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge" target="_blank"><img src="https://badges.gitter.im/x-forward/community.svg" alt="Join the chat at https://gitter.im/x-forward/community" /></a>
+  <a href="https://discord.gg/TzewJWf94K"> <img src="https://img.shields.io/discord/878241940888489984.svg?logo=discord&style=flat-square" alt="Discord Link" /> </a>
+  <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img alt="license" src="https://img.shields.io/github/license/ZingerLittleBee/x-forward?style=flat-square"></a>
 </div>
+
+> Coming soon ⚡️
+>
+> -   New UI base [daisyui](https://github.com/saadeghi/daisyui)
+> -   New JavaScript Framework build with `Vue3`、`Pinia`、`Vue-Router`、`Vite`
+> -   100% component library build by my hand (may become component library in future)
 
 ## Introduction
 
@@ -21,21 +27,19 @@
 
 ## Table of Contents
 
-- [Introduction](#introduction)
-  - [Features](#features)
-- [Table of Contents](#table-of-contents)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Snapshot](#snapshot)
-  - [模块管理](#模块管理)
-  - [本地终端](#本地终端)
-  - [Stream 模块](#stream-模块)
-  - [Upstream 模块](#upstream-模块)
-- [Roadmap](#roadmap)
-- [How to Develop](#how-to-develop)
-- [Thanks](#thanks)
-- [Change Logs](#change-logs)
+-   [Introduction](#introduction)
+    -   [Features](#features)
+-   [Table of Contents](#table-of-contents)
+-   [Getting Started](#getting-started)
+    -   [Prerequisites](#prerequisites)
+    -   [Installation](#installation)
+-   [~~Snapshot~~](#snapshot)
+    -   [~~Module~~](#module)
+    -   [~~Terminal~~](#terminal)
+    -   [~~Stream~~](#stream)
+    -   [~~Upstream~~](#upstream)
+-   [Roadmap](#roadmap)
+-   [How to Develop](#how-to-develop)
 
 ## Getting Started
 
@@ -53,22 +57,22 @@
 
 TODO
 
-## Snapshot
+## ~~Snapshot~~
 
-### 模块管理
+### ~~Module~~
 
 ![module](./snapshot/module.png)
 
-### 本地终端
+### ~~Terminal~~
 
 ![local terminal](./snapshot/terminal.png)
 
-### Stream 模块
+### ~~Stream~~
 
 ![stream-list](./snapshot/stream.png)
 ![stream-modify](./snapshot/modify-stream.png)
 
-### Upstream 模块
+### ~~Upstream~~
 
 ![upstream](./snapshot/upstream.png)
 ![upstream-modify](./snapshot/modify-upstream.png)
@@ -77,21 +81,20 @@ TODO
 
 The following are the features I want to achieve or are under development:
 
-- [x] use pnpm workspace to manage multiple projects
-- [x] ~~build service use PKG for docker~~
-- [x] unit test
-- [x] support cluster
-- [x] batch operation, such as add, start, stop, restart, delete
-- [ ] config export and import
-- [ ] tcp delay on rule card
-- [ ] x-forward-cli, install uninstall update
-- [ ] client manage page
-- [ ] user system
-- [ ] control traffic
-- [ ] log dashboard
-- [ ] ssh for client
-- [ ] better UI
-
+-   [x] use pnpm workspace to manage multiple projects
+-   [x] ~~build service use PKG for docker~~
+-   [x] unit test
+-   [x] support cluster
+-   [x] batch operation, such as add, start, stop, restart, delete
+-   [ ] config export and import
+-   [ ] tcp delay on rule card
+-   [ ] x-forward-cli, install uninstall update
+-   [ ] client manage page
+-   [ ] user system
+-   [ ] control traffic
+-   [ ] log dashboard
+-   [ ] ssh for client
+-   [ ] better UI
 
 ## How to Develop
 
@@ -99,17 +102,3 @@ The following are the features I want to achieve or are under development:
    `pnpm install`
 2. Run project
    `pnpm start`
-
-## Thanks
-
--   React
--   Ant Design
--   Nginx
--   Node
--   NestJS
--   SocketIO
--   Xterm
--   Node-pty
--   TailWindCSS
-
-## Change Logs

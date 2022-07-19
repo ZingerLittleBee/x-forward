@@ -1,0 +1,9 @@
+.container-fade-enter-active,
+.container-fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.container-fade-enter-from,
+.container-fade-leave-to {
+    opacity: 0;
+}
