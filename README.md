@@ -5,12 +5,6 @@
   <a href="https://github.com/ZingerLittleBee/x-forward/blob/main/LICENSE" target="_blank"><img alt="license" src="https://img.shields.io/github/license/ZingerLittleBee/x-forward?style=flat-square"></a>
 </div>
 
-> Coming soon ⚡️
->
-> -   New UI base [daisyui](https://github.com/saadeghi/daisyui)
-> -   New JavaScript Framework build with `Vue3`、`Pinia`、`Vue-Router`、`Vite`
-> -   100% component library build by my hand (may become component library in future)
-
 ## Introduction
 
 ### Features
@@ -31,17 +25,22 @@
     -   [Features](#features)
 -   [Table of Contents](#table-of-contents)
 -   [Getting Started](#getting-started)
-    -   [Prerequisites](#prerequisites)
     -   [Installation](#installation)
--   [~~Snapshot~~](#snapshot)
-    -   [~~Module~~](#module)
-    -   [~~Terminal~~](#terminal)
-    -   [~~Stream~~](#stream)
-    -   [~~Upstream~~](#upstream)
+    -   [How to Develop](#how-to-develop)
+-   [Snapshot](#snapshot)
+    -   [Module](#module)
+    -   [Terminal](#terminal)
+    -   [Stream](#stream)
+    -   [Upstream](#upstream)
 -   [Roadmap](#roadmap)
--   [How to Develop](#how-to-develop)
 
 ## Getting Started
+
+### Installation
+
+TODO
+
+## How to Develop
 
 ### Prerequisites
 
@@ -53,26 +52,28 @@
 -   [npm](https://www.npmjs.com) (>= 6.x) or [yarn](https://yarnpkg.com) (>= 1.22)
 -   [Git](https://git-scm.com) (>= 2.0)
 
-### Installation
+1. Build dependencies
+   `pnpm install`
+2. Run project
+   `pnpm start`
 
-TODO
+## Snapshot
 
-## ~~Snapshot~~
-
-### ~~Module~~
+### Module
 
 ![module](./snapshot/module.png)
 
-### ~~Terminal~~
+### Terminal
 
 ![local terminal](./snapshot/terminal.png)
 
-### ~~Stream~~
+### Stream
 
 ![stream-list](./snapshot/stream.png)
 ![stream-modify](./snapshot/modify-stream.png)
+![batch-action](./snapshot/batch-action.png)
 
-### ~~Upstream~~
+### Upstream
 
 ![upstream](./snapshot/upstream.png)
 ![upstream-modify](./snapshot/modify-upstream.png)
@@ -96,9 +97,14 @@ The following are the features I want to achieve or are under development:
 -   [ ] ssh for client
 -   [ ] better UI
 
-## How to Develop
+## Release Notes
 
-1. Build dependencies
-   `pnpm install`
-2. Run project
-   `pnpm start`
+SEE [CHANGELOG](./CHANGELOG.md)
+
+## Others
+
+> `packages/vue`
+>
+> -   New UI base [daisyui](https://github.com/saadeghi/daisyui)
+> -   New JavaScript Framework build with `Vue3`、`Pinia`、`Vue-Router`、`Vite`
+> -   100% component library build by myself (may become component library in future)
